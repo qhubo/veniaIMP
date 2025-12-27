@@ -1,0 +1,1 @@
+ <?php include_partial('concilia_banco/vista', array('banco' => $banco)) ?>  

@@ -1,0 +1,10 @@
+login:
+  is_secure: false;
+Registrar:
+  is_secure: false
+ValidaToken:
+  is_secure: false
+Recuperaclave:
+  is_secure: false
+Recupera:
+  is_secure: false

@@ -1,0 +1,18 @@
+logoutSuccess:
+  has_layout:   false
+  
+loginSuccess:
+  
+  has_layout:   false
+  
+registrarSuccess:
+  
+  has_layout:   false
+  
+recuperaclaveSuccess:
+  
+  has_layout:   false
+
+recuperaSuccess:
+  
+  has_layout:   false

@@ -1,0 +1,2138 @@
+propel:
+  usuario:
+    _attributes: { phpName: Usuario, idMethod: native }
+    id:                                ~
+    usuario:                           { type: varchar(32), required: true , primaryString: true}
+    nombre_completo:                   { type: varchar(320) }
+    tipo_usuario:                      { type: varchar(50) }
+    clave:                             { type: varchar(50) }
+    correo:                            { type: varchar(255) }
+    estado:                            { type: varchar(32) }
+    imagen:                            { type: varchar(255) }
+    administrador:                     { type: boolean, default: false }
+    ultimo_ingreso:                    { type: timestamp }
+    token:                             { type: longvarchar } 
+    activo:                            { type: boolean, default: true }  
+    validado:                          { type: boolean, default: false }
+    nivel_usuario:                     { type: varchar(50), default: '' }
+    ip:                                { type: varchar(15) }
+    tienda_id:                         ~
+    empresa_id:                        ~
+    vendedor_id:                        ~
+    _uniques:
+       llave:                          [ usuario ] 
+       
+  usuario_logueo:
+    _attributes: { phpName: UsuarioLogueo, idMethod: native }
+    id:                                ~
+    usuario:                           { type: varchar(255) }
+    fecha:                             { type: timestamp }
+    ip:                                { type: varchar(15) }
+    
+    
+  usuario_tienda:
+    _attributes: { phpName: UsuarioTienda, idMethod: native }
+    id:                                ~
+    usuario_id:                        ~
+    tienda_id:                        ~   
+
+  usuario_empresa:
+    _attributes: { phpName: UsuarioEmpresa, idMethod: native }
+    id:                                ~
+    usuario_id:                        ~
+    empresa_id:                        ~
+   
+  usuario_logueo:
+    _attributes: { phpName: UsuarioLogueo, idMethod: native }
+    id:                                ~
+    usuario:                           { type: varchar(255) }
+    fecha:                             { type: timestamp }
+    ip:                                { type: varchar(15) }       
+       
+  empresa:
+    _attributes: { phpName: Empresa, idMethod: native }
+    id:                                ~
+    codigo:                            { type: varchar(50) }  
+    nombre:                            { type: varchar(150), required: true , primaryString: true }   
+    nomenclatura:                      { type: varchar(50) }    
+    telefono:                          { type: varchar(50) }   
+    departamento_id:                   ~
+    municipio_id:                      ~  
+    direccion:                         { type: varchar(250) } 
+    mapa_geo:                          { type: longvarchar } 
+    logo:                              { type: varchar(150) } 
+    contacto_nombre:                   { type: varchar(250) } 
+    contacto_telefono:                 { type: varchar(50) } 
+    contacto_movil:                    { type: varchar(50) } 
+    observaciones:                     { type: longvarchar }
+#    tipo_cuenta:                       { type: varchar(50) }  
+    # (propietairio, vivienda) 
+    factura_electronica:               { type: boolean, default: false }
+#    pago_ach:                          { type: boolean, default: false }
+#    pago_tarjeta:                      { type: boolean, default: false }  
+#    pago_deposito:                     { type: boolean, default: false }
+#    pago_cheque:                       { type: boolean, default: false } 
+#    pago_efectivo:                     { type: boolean, default: false }
+#    notifica_sms:                      { type: boolean, default: false }
+#    notifica_whatapss:                 { type: boolean, default: false }
+#    utiliza_sector:                    { type: boolean, default: false }
+#    utiliza_amenida:                   { type: boolean, default: false }
+#    utiliza_convocatoria:              { type: boolean , default: false} 
+#    biblioteca_archivo:                { type: boolean , default: false}
+#    utiliza_votaciones:                { type: boolean , default: false} 
+##    valida_proveedores:                { type: boolean , default: false}
+#    utiliza_ticket:                    { type: boolean , default: false}
+#    maximo_usuario_propiedad:          { type: boolean , default: false} 
+    contacto_correo:                   { type: varchar(150) } 
+    feel_nombre:                       { type: varchar(150) }  
+    feel_usuario:                      { type: varchar(150) } 
+    feel_token:                        { type: varchar(150) }   
+    feel_llave:                        { type: varchar(150) }   
+    feel_escenario_frase:              { type: varchar(150) }  
+    dias_credito:                      { type: integer } 
+    retiene_isr:                       { type: boolean, default: false } 
+    moneda_q:                          { type: varchar(2), default: 'Q' }      
+         
+  banco:
+    _attributes: { phpName: Banco, idMethod: native }
+    id:                               ~ 
+    empresa_id:                       ~ 
+    codigo:                           { type: varchar(50) } 
+    nombre:                           { type: varchar(150) , required: true , primaryString: true }
+    cuenta:                           { type: varchar(150) } 
+    tipo_banco:                       { type: varchar(50) } 
+    observaciones:                    { type: longvarchar }
+    activo:                           { type: boolean, default: true } 
+    cuenta_contable:                  { type: varchar(50) } 
+    nombre_banco_id:                   ~ 
+    pago_cheque:                      { type: boolean, default: false }  
+    dolares:                          { type: boolean, default: false }  
+    
+  banco_termporal:
+    _attributes: { phpName: BancoTemporal, idMethod: native }
+    id:                               ~ 
+    empresa_id:                       ~ 
+    fecha:                            { type: date }  
+    banco_id:                         ~ 
+    saldo_banco:                      { type: double }    
+    deposito_transito:                { type: double }
+    nota_credito_transito:            { type: double } 
+    cheques_circulacion:              { type: double } 
+    nota_debito_transito:             { type: double }
+    saldo_libros:                     { type: double }
+    deposito_registrar:               { type: double }
+    nota_credito_registrar:           { type: double }  
+    cheques_registrar:                { type: double }
+    nota_debito_registrar:            { type: double }
+
+
+  operacion: 
+    _attributes: { phpName: Operacion, idMethod: native }
+    id:                               ~ 
+    codigo:                           { type: varchar(50) }
+    tipo:                             { type: varchar(50) }
+    estatus:                          { type: varchar(50) }
+    empresa_id:                       ~
+    usuario:                          { type: varchar(50) }
+    nombre:                           { type: varchar(300) }
+    nit:                              { type: varchar(50), default: ''  }
+    correo:                           { type: varchar(150), default: ''  }
+    fecha:                            { type: timestamp }
+    valor_total:                      { type: double, default 0 }
+    valor_pagado:                     { type: double, default 0 }
+    codigo_factura:                   { type: varchar(25), default: '' }
+    face_serie_factura:               { type: varchar(250) }
+    face_numero_factura:              { type: varchar(250) }
+    face_referencia:                  { type: varchar(250) }
+    face_fecha_emision:               { type: timestamp }
+    face_firma:                       { type: varchar(250) }
+    face_error:                       { type: varchar(450) }
+    face_estado:                      { type: varchar(50), default: '' }    
+    cuenta_contable:                  { type: varchar(50), default: '' }
+    partida_no:                       { type: integer, default: 0 } 
+    codigo_establecimiento:           { type: varchar(50) }
+    sub_total:                        { type: double }    
+    iva:                              { type: double } 
+    tienda_id:                       ~
+    pagado:                           { type: boolean, default: false }
+    anulado:                          { type: boolean, default: false } 
+    observaciones:                    { type: varchar(250) }
+    anulo_usuario:                    { type: varchar(50) }
+    fecha_anulo:                      { type: timestamp }
+    docentry:                         { type: varchar(50) }
+    recetario_id:                     ~    
+    anula_face_serie_factura:         { type: varchar(250) }
+    anula_face_numero_factura:         { type: varchar(250) }
+    anula_face_referencia:            { type: varchar(250) }
+    anula_face_fecha_emision:         { type: varchar(200) }
+    anula_docentry:                   { type: varchar(50) }
+    anula_face_firma:                  { type: varchar(250) }
+    cliente_id:                        ~
+    cantidad_total_caja:              { type: integer }
+    peso_total:                       { type: varchar(150) }
+    vendedor_id:                      ~ 
+    ruta_cobro:                       { type: varchar(250) }
+    fecha_cobro:                      { type: date }  
+    permite_facturar:                 { type: boolean, default: false }
+    observa_facturar:                 { type: varchar(250) }
+    pais_id:                           ~
+
+
+  operacion_detalle:
+    _attributes: { phpName: OperacionDetalle, idMethod: native }
+    id:                               ~
+    codigo:                           { type: varchar(50) }
+    empresa_id:                       ~
+    operacion_id:                     ~
+    producto_id:                      ~
+    detalle:                          { type: varchar(250) } 
+    cantidad:                         { type: integer } 
+    valor_total:                      { type: double } 
+    servicio_id:                      ~
+    valor_unitario:                   { type: double, default 0 }
+    descuento:                        { type: double, default 0 }
+    total_iva:                        { type: double }  
+    costo_unitario:                   { type: double } 
+    linea_no:                         { type: varchar(50) }
+    _uniques:
+       llave:                         [ linea_no ]     
+    
+   
+  operacion_pago:
+    _attributes: { phpName: OperacionPago, idMethod: native }
+    id:                               ~
+    empresa_id:                       ~
+    operacion_id:                     ~
+    tipo:                             { type: varchar(50) } 
+    valor:                            { type: double }
+    documento:                        { type: varchar(50) }
+    fecha_documento:                  { type: date } 
+    banco_id:                         ~
+    cuenta_contable:                  { type: varchar(50), default: '' }
+    partida_no:                       { type: integer, default: 0 }  
+    usuario:                          { type: varchar(52) }
+    fecha_creo:                       { type: timestamp }
+    cxc_cobrar:                       { type: varchar(50) } 
+    comision:                         { type: double } 
+    vuelto:                           { type: double }
+
+  pais:
+    _attributes: { phpName: Pais, idMethod: native }
+    id:                                ~
+    principal:                         { type: boolean, default: false }
+    codigo_iso:	                     { type: varchar(32) }
+    nombre:                            { type: varchar(260), required: true, primaryString: true , default: '' } 
+    activo:                            { type: boolean, default: true }
+    created_by:                        { type: varchar(32) }
+    updated_by:                        { type: varchar(32) }
+    created_at:                        ~
+    updated_at:                        ~  	
+    observaciones:                     { type: longvarchar }
+       
+  departamento:
+     _attributes: { phpName: Departamento, idMethod: native }
+     id:                                ~
+     pais_id:                           ~
+     codigo:	                        { type: varchar(32) }
+     nombre:                            { type: varchar(260), required: true, primaryString: true, default: ''  } 
+     activo:                            { type: boolean, default: true }
+     created_by:                        { type: varchar(32) }
+     updated_by:                        { type: varchar(32) }
+     created_at:                        ~
+     updated_at:                        ~  	
+     observaciones:                     { type: longvarchar }
+     codigo_cargo:                      { type: varchar(32) } 
+    
+  municipio:
+     _attributes: { phpName: Municipio, idMethod: native }
+     id:                                ~
+     departamento_id:                   ~
+     descripcion:                       { type: varchar(260), required: true, primaryString: true , default: '' } 
+     abreviatura:                       { type: varchar(32) }
+     codigo_postal:                     { type: varchar(20) }
+     activo:                            { type: boolean, default: true }
+     observaciones:                     { type: longvarchar }      
+     created_by:                        { type: varchar(32) }
+     updated_by:                        { type: varchar(32) }
+     created_at:                        ~
+     updated_at:                        ~  
+     codigo_cargo:                       { type: varchar(32) }    
+       
+  
+  proveedor:
+    _attributes: { phpName: Proveedor, idMethod: native }
+    id:                                ~
+    empresa_id:                        ~
+    codigo:	                       { type: varchar(32) }
+    nombre:                            { type: varchar(260), required: true, primaryString: true, default: ''  } 
+    razon_social:                      { type: varchar(160) }
+    pequeno_contribuye:                { type: boolean, default: false }
+    regimen_isr:                       { type:  varchar(160) }
+    direccion:                         { type: varchar(160) }
+    sitio_web:                         { type: varchar(260) }
+    telefono:                          { type: varchar(60) }
+    correo_electronico:                { type: varchar(160) }
+    observaciones:                     { type: longvarchar }	
+    nit:                               { type: varchar(20) }
+    dias_credito:                      { type: integer }
+    tipo_proveedor:                    { type: varchar(120) }
+    activo:                            { type: boolean, default: true }
+    tiene_credito:                     { type: boolean, default: false }
+    avenida_calle:                     { type: varchar(10) }
+    zona:                              { type: varchar(10) }
+    departamento_id:                   ~
+    municipio_id:                      ~
+    activo:                            { type: boolean, default: true }
+    contacto:                          { type: varchar(160) }
+    correo_contacto:                   { type: varchar(160) }
+    imagen:                            { type: varchar(160) }
+    telefono_contacto:                 { type: varchar(60) }
+    tipificacion:                      { type: integer, default:0 }
+    fecha:                             { type: timestamp }
+    tipo_producto:                     { type: varchar(30) }
+    porcentaje_negociado:              { type: double, default:0 } 
+    token_visa:                        { type: longvarchar }
+    token_visa_test:                   { type: longvarchar }
+    epay_terminal:                     { type: varchar(450) }
+    epay_merchant:                     { type: varchar(450) }
+    epay_user:                         { type: varchar(450) }
+    epay_key:                          { type: varchar(450) }
+    test_visa:                         { type: boolean, default: true }
+    merchand_id:                       { type: varchar(260) }
+    org_id:                            { type: varchar(50) } 
+    numero_cliente_vol:                { type: varchar(50) } 
+    retiene_iva:                       { type: boolean, default: false }
+    retine_isr:                        { type: boolean, default: false }  
+    exento_isr:                        { type: boolean, default: false } 
+    cuenta_contable:                   { type: varchar(20) }
+     
+     
+   
+  tipo_servicio:
+     _attributes: { phpName: TipoServicio, idMethod: native }
+     id:                               ~ 
+     empresa_id:                       ~ 
+     codigo:                           { type: varchar(50) } 
+     nombre:                           { type: varchar(150) , required: true , primaryString: true }
+     activo:                           { type: boolean, default: true } 
+     dia_credito:                      { type: integer, default:0 }
+     cuenta_contable:                  { type: varchar(50) }
+     precio:                           { type: double, default:0 } 
+     impuesto_hotelero:                { type: boolean, default: false }  
+    
+   
+  orden_proveedor:
+     _attributes: { phpName: OrdenProveedor, idMethod: native }
+     id:                               ~
+     codigo:                           { type: varchar(50) }
+     empresa_id:                       ~ 
+     proveedor_id:                     ~  
+     nit:                              { type: varchar(50) }
+     nombre:                           { type: varchar(150) }
+     no_documento:                     { type: varchar(50) }
+     fecha_documento:                  { type: date } 
+     fecha_contabilizacion:            { type: date }  
+     fecha:                            { type: timestamp }
+     dia_credito:                      { type: integer, default:0 }
+     excento:                          { type: boolean, default: false}  
+     usuario:                          { type: varchar(50) }
+     estatus:                          { type: varchar(50) }
+     comentario:                       { type: varchar(450) } 
+     sub_total:                        { type: double }    
+     iva:                              { type: double } 
+     valor_total:                      { type: double }    
+     partida_no:                       { type: integer, default: 0 }  
+     tienda_id:                        ~ 
+     serie:                            { type: varchar(50) }
+     token:                            { type: varchar(50) }
+     usuario_confirmo:                 { type: varchar(50) }
+     fecha_confirmo:                   { type: timestamp }
+     despacho:                         { type: boolean, default: false}
+     valor_pagado:                     { type: double }
+     aplica_isr:                       { type: boolean, default: true } 
+     aplica_iva:                       { type: boolean, default: true }
+     valor_impuesto:                   { type: double } 
+     excento_isr:                      { type: boolean, default: false }
+     valor_isr:                        { type: double }  
+     valor_retiene_iva:                { type: double }  
+     confrontado_sat:                  { type: boolean, default: false }
+     no_sat:                           { type: integer, default: 0,index: true  }
+     impuesto_gas:                     { type: double } 
+         
+  orden_proveedor_detalle:
+      _attributes: { phpName: OrdenProveedorDetalle, idMethod: native }
+      id:                               ~
+      orden_proveedor_id:                ~
+      producto_id:                      ~ 
+      servicio_id:                      ~ 
+      codigo:                           { type: varchar(50) }
+      detalle:                          { type: varchar(150) }
+      valor_unitario:                   { type: double }
+      cantidad:                         { type: double }
+      valor_total:                      { type: double }
+      total_iva:                        { type: double }
+      observaciones:                    { type: varchar(450) }
+      valor_isr:                        { type: double }  
+      impuesto_gas:                     { type: double } 
+      valor_retiene_iva:                { type: double }   
+        
+  cuenta_proveedor:
+     _attributes: { phpName: CuentaProveedor, idMethod: native }
+     id:                               ~ 
+     empresa_id:                      ~
+     orden_proveedor_id:               ~ 
+     proveedor_id:                     ~   
+     fecha:                            { type: date }
+     detalle:                          { type: varchar(350) }  
+     valor_total:                      { type: double } 
+     fecha_pago:                       { type: date } 
+     valor_pagado:                     { type: double } 
+#     pagado:                           { type: boolean, default: false}  
+#     documento:                        { type: varchar(50) } 
+#     usuario_pago:                     { type: varchar(50) }
+     cuenta_contable:                  { type: varchar(50), default: '' }
+  
+     pagado:                           { type:  boolean, default: false, index: true, }   
+     updated_by:                       { type: varchar(32) }
+     updated_at:                       ~
+     gasto_id:               ~ 
+     contrasena_no:                    { type:  integer, default: 0, index: tue, }       
+     seleccionado:                     { type: boolean, default: false }
+
+     
+  contrasena_crea:
+     _attributes: { phpName: ContrasenaCrea, idMethod: native }
+     id:                               ~
+     codigo:                           { type: varchar(50) }
+     fecha:                            { type: date } 
+     estatus:                          { type: varchar(50) }
+     proveedor_id:                      ~
+     dias_credito:                     { type: integer }
+     fecha_pago:                            { type: date }
+     valor:                            { type: double }
+     empresa_id:                      ~
+     
+         
+     
+  orden_proveedor_pago:
+     _attributes: { phpName: OrdenProveedorPago, idMethod: native }
+     id:                               ~ 
+     codigo:                           { type: varchar(50) }
+     empresa_id:                      ~
+     proveedor_id:                     ~   
+     orden_proveedor_id:               ~   
+     tipo_pago:                        { type: varchar(50) }   
+     documento:                        { type: varchar(150) }
+     fecha:                            { type: date }
+     valor_total:                      { type: double } 
+     usuario:                          { type: varchar(50) }
+     fecha_creo:                       { type: timestamp }
+     cuenta_proveedor_id:              ~
+     banco_id:                         ~
+     created_by:                       { type: varchar(32) }
+     updated_by:                       { type: varchar(32) }
+     created_at:                       ~
+     cuenta_contable:                  { type: varchar(50), default: '' }
+     partida_no:                       { type: integer, default: 0 }  
+     cheque_id:                        ~
+     temporal:                         { type: boolean, default: 0 } 
+     
+         
+  correlativo_codigo:
+     _attributes: { phpName: CorrelativoCodigo, idMethod: native }
+     id:                              ~
+     numero_asginar:                  { type: integer }
+     prefijo:                         { type: varchar(50)}
+     tipo:                            { type: varchar(250)} 
+    
+ 
+  bitacora_archivo:  
+    _attributes: { phpName: BitacoraArchivo, idMethod: native }
+    id:                                ~
+    tipo:                              { type: varchar(60) } 
+    nombre:                            { type: varchar(260), required: true, primaryString: true , default: ''  } 
+    nombre_original:                   { type: varchar(260) }   
+    created_by:                        { type: varchar(32) }
+    updated_by:                        { type: varchar(32) }
+    created_at:                        ~
+    updated_at:                        ~ 
+    empresa_id:                        ~   
+    carpeta:                           { type: varchar(150) }
+    
+    
+  menu_seguridad:
+     _attributes: { phpName: MenuSeguridad, idMethod: native }
+     id:                                ~
+     descripcion:                       { type: varchar(100), primaryString: true, default: ''  }
+     credencial:                        { type: varchar(100)}
+     modulo:                            { type: varchar(100)}
+     icono:                             { type: varchar(150)}
+     accion:                            { type: varchar(100)}
+     superior:                          { type: integer }
+     orden:                             { type: integer }  
+     sub_menu:                          { type: boolean, default: 0 }  
+     
+  perfil_menu:
+     _attributes: { phpName: PerfilMenu, idMethod: native }
+     id:                                ~
+     perfil_id:                         ~
+     menu_seguridad_id:                 ~  
+     
+  usuario_perfil:
+     _attributes: { phpName: UsuarioPerfil, idMethod: native }
+     id:                                ~
+     perfil_id:                         ~
+     usuario_id:                        ~    
+     
+  perfil:
+     _attributes: { phpName: Perfil, idMethod: native }
+     id:                                ~
+     descripcion:                       { type: varchar(100), primaryString: true, default: '' }
+     observaciones:                     { type: longvarchar }
+     activo:                            { type: boolean, default: true }     
+     
+     
+  bitacora_elimino:  
+    _attributes: { phpName: BitacoraElimino, idMethod: native }
+    id:                                ~
+    tipo:                              { type: varchar(60) } 
+    codigo:                            { type: varchar(60) } 
+    fecha:                             { type: timestamp }
+    observaciones:                     { type: longvarchar }
+    datos:                             { type: longvarchar }
+    empresa_id:                        ~  
+    usuario:                           { type: varchar(50)}
+    created_by:                        { type: varchar(32) }
+    updated_by:                        { type: varchar(32) }
+    created_at:                        ~
+    updated_at:                        ~ 
+  
+        
+  parametro:   
+    _attributes: { phpName: Parametro, idMethod: native }
+    id:                                ~
+    logo:                              { type: varchar(150)}
+    puerto_correo:                     { type: varchar(50) }
+    smtp_correo:                       { type: varchar(50) }
+    usuario_correo:                    { type: varchar(100) } 
+    clave_correo:                      { type: varchar(100) } 
+    bienvenida:                        { type: longvarchar }
+     
+
+  medio_pago:   
+    _attributes: { phpName: MedioPago, idMethod: native }
+    id:                               ~ 
+    empresa_id:                       ~ 
+    codigo:                           { type: varchar(50) } 
+    nombre:                           { type: varchar(150) , required: true , primaryString: true }
+    activo:                           { type: boolean, default: true } 
+    cuenta_contable:                  { type: varchar(50) }
+    orden:                            { type: integer }
+    pos:                              { type: boolean, default: true }  
+    aplica_mov_banco:                 { type: boolean, default: false }
+    created_by:                       { type: varchar(32) }
+    updated_by:                       { type: varchar(32) }
+    created_at:                       ~
+    updated_at:                       ~ 
+    aplica_cuotas:                    { type: boolean, default: false }
+    numero_cuotas:                    { type: integer }
+    comision:                         { type: double }   
+    retiene_isr:                      { type: boolean, default: false }
+    pide_banco:                       { type: boolean, default: false } 
+    banco_id:                         ~ 
+    pago_proveedor:                   { type: boolean, default: false }
+  
+
+  tienda: 
+    _attributes: { phpName: Tienda, idMethod: native }
+    id:                               ~ 
+    empresa_id:                       ~ 
+    codigo:                           { type: varchar(50) } 
+    nombre:                           { type: varchar(150) , required: true , primaryString: true }
+    codigo_establecimiento:           { type: varchar(50) }  
+    direccion:                        { type: varchar(250) }     
+    departamento_id:                  ~
+    municipio_id:                     ~ 
+    observaciones:                    { type: longvarchar }  
+    correo:                           { type: varchar(150) }  
+    telefono:                         { type: varchar(150) }   
+    nombre_comercial:                 { type: varchar(250) }
+    activo:                           { type: boolean, default: true }    
+    cuenta_debe:                      { type: varchar(50) }
+    cuenta_haber:                     { type: varchar(50) }
+    created_by:                       { type: varchar(32) }
+    updated_by:                       { type: varchar(32) }
+    created_at:                        ~
+    updated_at:                        ~ 
+    tipo:                              { type: varchar(32) }
+    nit:                               { type: varchar(32) }
+    feel_usuario:                      { type: varchar(150) } 
+    feel_token:                        { type: varchar(150) }   
+    feel_llave:                        { type: varchar(150) } 
+    activa_buscador:                   { type: boolean, default: false }   
+    
+   
+  movimiento_banco:
+    _attributes: { phpName: MovimientoBanco, idMethod: native }
+    id:                               ~ 
+    empresa_id:                       ~       
+    tipo:                             { type: varchar(50) } 
+    #ingreso salida
+    identificador:                    { type: varchar(1) } 
+   # -  +    
+    tipo_movimiento:                  { type: varchar(150) }   
+   # deposito link de pago, cheque
+    banco_id:                         ~  
+   # documento
+    documento:                        { type: varchar(50) }   
+    fecha_documento:                  { type: date } 
+    valor:                            { type: double } 
+    usuario:                          { type: varchar(50) }
+    created_by:                       { type: varchar(32) }
+    updated_by:                       { type: varchar(32) }
+    created_at:                       ~
+    updated_at:                       ~ 
+    cuenta_contable:                  { type: varchar(50), default: '' }
+    partida_no:                       { type: integer, default: 0 }      
+    concepto:                         { type: varchar(150) }
+    banco_origen:                     { type: integer, foreignTable: banco, foreignReference: id, index: true, required: true }
+    estatus:                          { type: varchar(50) }
+    observaciones:                    { type: longvarchar } 
+    medio_pago_id:                    ~ 
+    tienda_id:                        ~ 
+    bitacora_archivo_id:              ~
+    confirmado_banco:                 { type: boolean, default: false }  
+    usuario_confirmo_banco:           { type: varchar(50) }
+    fecha_confirmo_banco:             { type: timestamp }
+    venta_resumida_linea_id:           ~ 
+    revisado:                         { type: boolean, default: false }  
+    tasa_cambio:                      { type: double, default: 1  }  
+     
+     
+     
+  partida:
+    _attributes: { phpName: Partida, idMethod: native }
+    id:                               ~   
+    fecha_contable:                   { type: date,index: true } 
+    usuario:                          { type: varchar(50) }
+    empresa_id:                       ~
+    codigo:                           { type: varchar(50) } 
+    tipo:                             { type: varchar(150) }
+    created_by:                       { type: varchar(32) }
+    updated_by:                       { type: varchar(32) }
+    created_at:                       ~
+    updated_at:                       ~ 
+    valor:                            { type: double }   
+    tienda_id:                        ~  
+    confirmada:                       { type: boolean, default: false,index: true }   
+    estatus:                          { type: varchar(50), default: '' }
+    numero:                           { type: integer  }
+    medio_pago_id:                      ~
+    tipo_partida:                     { type: varchar(150) }
+    tipo_numero:                      { type: varchar(20) } 
+    detalle:                          { type: varchar(150) }  
+    ano:                              { type: integer, default: false,index: true }   
+    mes:                              { type: integer, default: false,index: true }   
+    partida_agrupa_id:                ~
+   
+       
+  partida_detalle:  
+    _attributes: { phpName: PartidaDetalle, idMethod: native }
+    id:                               ~   
+    empresa_id:                       ~
+    partida_id:                       ~   
+    detalle:                          { type: varchar(50) }
+    cuenta_contable:                  { type: varchar(50) ,index: true  }
+    debe:                             { type: double } 
+    haber:                            { type: double }  
+    tipo:                             { type: integer, default: 0 }  
+    grupo:                            { type: varchar(50) }
+    adicional:                        { type: varchar(150), default: '' }
+    
+  partida_agrupa:
+     _attributes: { phpName: PartidaAgrupa, idMethod: native }
+     id:                               ~
+     codigo:                           { type: varchar(50) }
+     fecha_contable:                   { type: date,index: true } 
+     detalle:                          { type: varchar(50) }
+     empresa_id:                       ~
+     revisado:                         { type: boolean, default: false }
+     ano:                              { type: integer, default: false,index: true }   
+     mes:                              { type: integer, default: false,index: true }       
+     
+  partida_agrupa_linea:
+     _attributes: { phpName: PartidaAgrupaLinea, idMethod: native }
+     id:
+     detalle:                          { type: varchar(50) }
+     cuenta_contable:                  { type: varchar(50) ,index: true  }
+     debe:                             { type: double } 
+     haber:                            { type: double }  
+     empresa_id:                       ~
+     partida_agrupa_id:                ~
+     cantidad:                         { type: integer, default: 0 } 
+
+  cuenta_erp_contable:  
+    _attributes: { phpName: CuentaErpContable, idMethod: native }
+    id:                               ~   
+    tipo:                             { type: varchar(50) }
+    campo:                            { type: varchar(150) }
+    nombre:                           { type: varchar(150) }
+    cuenta_contable:                  { type: varchar(50) }
+    fecha_inicio:                     { type: date }
+    saldo_inicio:                     { type: double }
+    created_by:                       { type: varchar(32) }
+    updated_by:                       { type: varchar(32) }
+    created_at:                       ~
+    updated_at:                       ~ 
+    empresa_id:                       ~   
+   
+  tipo_aparato:
+    _attributes: { phpName: TipoAparato, idMethod: native }
+    id:                                ~
+    empresa_id:                        ~
+    codigo:                            { type: varchar(50)}
+    descripcion:                       { type: varchar(150), primaryString: true, default: '' }
+    activo:                            { type: boolean, default: true }
+    menu_invertido:                    { type: boolean, default: false }
+    muestra_menu:                      { type: boolean, default: true }
+    logo:                              { type: varchar(150) } 
+    cargo_peso_libra_producto:         { type: double }
+    imagen:                            { type: varchar(151) }
+    orden_mostrar:                     { type: integer, default: 1 } 
+    menu_muestra_producto:             { type: boolean, default: false }
+    tipo_menu:                         { type: integer, default: 1 }
+    menu_lateral:                      { type: boolean, default: false } 
+    receta:                            { type: boolean, default: false }
+    status:                            { type: integer, default: 0 } 
+    cuenta_contable:                  { type: varchar(50), default: '' }
+    venta:                            { type: boolean, default: false }
+    _uniques:
+       llave:                          [ descripcion,empresa_id ] 
+       
+  marca:
+    _attributes: { phpName: Marca, idMethod: native }
+    id:                                ~
+    empresa_id:                        ~
+    tipo_aparato_id:                   ~
+    codigo:	                       { type: varchar(32) }
+    descripcion:                       { type: varchar(260), required: true, primaryString: true, default: ''  } 
+    muestra_menu:                      { type: boolean, default: true }
+    logo:                              { type: varchar(150) } 
+    activo:                            { type: boolean, default: true }
+    imagen:                            { type: varchar(150) } 
+    orden_mostrar:                     { type: integer, default: 1 } 
+    receta:                            { type: boolean, default: false }
+    status:                            { type: integer, default: 0 } 
+    
+  modelo:
+    _attributes: { phpName: Modelo, idMethod: native }
+    id:                                ~
+    empresa_id:                        ~
+    marca_id:                          ~
+    codigo:	                       { type: varchar(32) }
+    descripcion:                       { type: varchar(260), required: true, primaryString: true, default: ''  } 
+    muestra_menu:                      { type: boolean, default: true }
+    logo:                              { type: varchar(150) } 
+    activo:                            { type: boolean, default: true }
+    imagen:                            { type: varchar(150) } 
+    orden_mostrar:                     { type: integer, default: 1 } 
+    aparato:                           { type: varchar(150) }   
+    status:                            { type: integer, default: 0 } 
+       
+  producto:
+    _attributes: { phpName: Producto, idMethod: native }
+    id:                                ~
+    nombre:                            { type: varchar(260), required: true, primaryString: true, default: ''  } 
+    codigo_sku:                        { type: varchar(32), required: true }
+    codigo_barras:                     { type: varchar(32) }
+    descripcion_corta:	               { type: longvarchar  }
+    descripcion:	               { type: longvarchar  }
+    activo:                            { type: boolean, default: true }
+    tipo_aparato_id:                   ~
+    modelo_id:                         ~      
+    marca_id:                          ~
+#    superior_id:                       { type: integer, default: 0 }
+    existencia:                        { type: integer, default: 0 }
+    precio_anterior:                   { type: double } 
+    ofertado:                          { type: boolean, default: false }
+    precio:                            { type: double }
+#    visita:                            { type: integer, default: 0 }
+#    campo_busca:                       { type: varchar(360)  }
+    orden:                             { type: integer , default:0}  
+    codigo_proveedor:                  { type: varchar(250) }
+    costo_proveedor:                   { type: double } 
+    cargo_peso_libra_producto:         { type: double }       
+    estatus:                           { type: integer }
+#    meta_titulo:                       { type: longvarchar  }
+#    meta_key:                          { type: longvarchar  }
+#    meta_descripcion:                  { type: longvarchar  }  
+    created_by:                        { type: varchar(32) }
+    updated_by:                        { type: varchar(32) }
+    created_at:                        ~
+    updated_at:                        ~       
+#    garantia_administrativo:           { type: double }
+#    garantia_transporte:               { type: double }
+    dia_garantia:                      { type: integer } 
+    alerta_minimo:                     { type: integer }  
+    tercero:                           { type: boolean, default: false }  
+#    campo_busca_completo:              { type: varchar(360)  }
+    imagen:                            { type: varchar(360)  }
+#    cuadro_color:                      { type: varchar(30)  }
+#    galeria_imagen:                    { type: integer, default: 0 }  
+    ofertado:                          { type: boolean, default: false }
+#    tags:                              { type: varchar(360)  }
+#    video:                             { type: varchar(200)  }  
+#    factura_servicio:                  { type: boolean, default: false }  
+#    visita_fb:                         { type: integer, default: 0 }
+#    campo_busca_carrito:               { type: varchar(360)  }
+#    link_descarga:                     { type: varchar(360)  }
+#    ancho:                             { type: double }
+#    largo:                             { type: varchar(60) }
+#    alto:                              { type: double }
+    promocional:                       { type: boolean, default: false }  
+    traslado:                          { type: boolean, default: false } 
+    top_venta:                         { type: boolean, default: false } 
+    salida:                            { type: boolean, default: false } 
+    opcion_combo:                      { type: boolean, default: false }  
+    bodega_interna:                    { type: boolean, default: false }  
+    afecto_inventario:                 { type: boolean, default: false }  
+    empresa_id:                         ~
+    receta_producto_id:                 ~ 
+    combo_producto_id:                  ~ 
+    status:                            { type: integer, default: 0 } 
+    proveedor_id:                      ~ 
+    unidad_medida:                     { type: varchar(60) }
+    unidad_medida_costo:               { type: varchar(60) }
+    costo_anterior:                   { type: double } 
+    _uniques:
+       llave:                          [ codigo_sku]        
+  
+  receta_producto:
+     _attributes: { phpName: RecetaProducto, idMethod: native }
+     id:                                ~   
+     nombre:                            { type: varchar(250) } 
+     activo:                            { type: boolean, default: false } 
+     vence:                             { type: boolean, default: false } 
+     fecha_fin:                         { type: date } 
+     afecto_inventario:                 { type: boolean, default: false } 
+     precio_variable:                   { type: boolean, default: false }
+     precio:                            { type: double }    
+     codigo_sku:                        { type: varchar(50) } 
+     imagen:                            { type: varchar(150) } 
+     codigo_barras:                     { type: varchar(50) } 
+     usuario_creo:                      { type: varchar(50) }  
+     fecha_creo:                        { type: timestamp }    
+     usuario_confirmo:                  { type: varchar(50) }   
+     fecha_confirmo:                    { type: timestamp }
+     comentario:                        { type: varchar(250) } 
+     estatus:                           { type: varchar(50), default: 'Pendiente' }
+     empresa_id:                        ~ 
+     descripcion:                        { type: varchar(250) } 
+     _uniques:
+       llave:                          [ codigo_sku]     
+   
+     
+  receta_producto_detalle:
+     _attributes: { phpName: RecetaProductoDetalle, idMethod: native }
+     id:                                ~    
+     receta_producto_id:                ~
+     marca_id:                          ~
+     producto_default:                  { type: integer }
+     orden:                             { type: integer }
+     ultimo:                            { type: boolean, default: false } 
+     obligatorio:                       { type: boolean, default: true } 
+     precio:                            { type: double }
+     seleccion:                         { type: integer }
+     empresa_id:                       ~ 
+     unidad_medida:                     { type: varchar(50) }  
+     cantidad_medida:                   { type: double }    
+     costo_unidad:                      { type: varchar(5) }
+     costo_producto:                    { type: double } 
+     costo_promedio:                    { type: double }
+     costo_unidad_pro:                  { type: double }  
+     
+     
+  combo_producto:
+     _attributes: { phpName: ComboProducto, idMethod: native }
+     id:                                ~   
+     nombre:                            { type: varchar(250) } 
+     activo:                            { type: boolean, default: false } 
+     precio:                            { type: double }
+     codigo_sku:                        { type: varchar(50) } 
+     imagen:                            { type: varchar(150) } 
+     codigo_barras:                     { type: varchar(50) } 
+     precio_variable:                   { type: boolean, default: false }
+     activo:                            { type: boolean, default: false } 
+     empresa_id:                       ~ 
+     usuario_creo:                      { type: varchar(50) }  
+     fecha_creo:                        { type: timestamp }    
+     usuario_confirmo:                  { type: varchar(50) }   
+     fecha_confirmo:                    { type: timestamp }  
+     comentario:                        { type: varchar(250) } 
+     estatus:                           { type: varchar(50), default: 'Pendiente' }
+     descripcion:                        { type: varchar(250) } 
+     
+  combo_producto_detalle:
+     _attributes: { phpName: ComboProductoDetalle, idMethod: native }
+     id:                                ~    
+     combo_producto_id:                 ~
+     marca_id:                          ~
+     producto_default:                  { type: integer }
+     orden:                             { type: integer }
+     ultimo:                            { type: boolean, default: false } 
+     obligatorio:                       { type: boolean, default: true } 
+     precio:                            { type: double }
+     seleccion:                         { type: integer }
+     empresa_id:                        ~    
+     unidad_medida:                     { type: varchar(50) }  
+     cantidad_medida:                   { type: double }    
+     costo_unidad:                      { type: varchar(5) }
+     costo_producto:                    { type: double } 
+     costo_promedio:                    { type: double }
+     costo_unidad_pro:                  { type: double }    
+ 
+  lista_combo_detalle:
+     _attributes: { phpName: ListaComboDetalle, idMethod: native }
+     id:                                 ~    
+     combo_producto_detalle_id:          ~
+     producto_id:                        ~    
+     empresa_id:                         ~ 
+     precio:                             { type: double }
+     
+  lista_receta_detalle:
+     _attributes: { phpName: ListaRecetaDetalle, idMethod: native }
+     id:                                ~    
+     receta_producto_detalle_id:        ~
+     producto_id:                       ~    
+     empresa_id:                        ~ 
+     precio:                             { type: double }
+      
+     
+  ingreso_producto_pro:
+     _attributes: { phpName: IngresoProductoPro, idMethod: native }
+     id:                               ~ 
+     codigo:                           { type: varchar(50) }
+     codigo_proveedor:                 { type: varchar(50) } 
+     proveedor_id:                     ~ 
+     tienda_id:                        ~ 
+     numero_documento:                 { type: varchar(50) } 
+     fecha_documento:                  { type: date } 
+     fecha_contabilizacion:            { type: date } 
+     observaciones:                    { type: longvarchar }   
+     tipo:                             { type: varchar(20) }
+     motivo:                           { type: varchar(50) }   
+     estatus:                          { type: varchar(20) }
+     usuario_id:                       ~ 
+     confirmado:                       { type: boolean, default: false } 
+     created_at:                       ~
+     updated_at:                       ~
+     created_by:                       { type: varchar(32) }
+     updated_by:                       { type: varchar(32) }
+     bodega_origen:                    { type: varchar(50) } 
+     serie_documento:                  { type: varchar(250) }
+     correlativo:                      { type: varchar(10) }
+     empresa_id:                        ~ 
+    
+  ingreso_producto_detalle_pro:
+     _attributes: { phpName: IngresoProductoDetallePro, idMethod: native }
+     id:                              ~  
+     ingreso_producto_pro_id:         ~ 
+     producto_id:                     ~ 
+     codigo:                          { type: varchar(42) }
+     detalle:                         { type: varchar(300) } 
+     valor:                           { type: double }  
+     cantidad:                        { type: integer }  
+     valor_total:                     { type: double } 
+     excento:                         { type: boolean, default: false }        
+     empresa_id:                        ~ 
+     
+  salida_producto:
+     _attributes: { phpName: SalidaProducto, idMethod: native }
+     id:                               ~ 
+     codigo:                           { type: varchar(50) }
+     tienda_id:                        ~ 
+     numero_documento:                 { type: varchar(50) } 
+     fecha_documento:                  { type: date } 
+     fecha_contabilizacion:            { type: date } 
+     observaciones:                    { type: longvarchar }   
+     tipo:                             { type: varchar(20) }
+     motivo:                           { type: varchar(50) }   
+     estatus:                          { type: varchar(20) }
+     usuario_id:                       ~ 
+     confirmado:                       { type: boolean, default: false } 
+     created_at:                       ~
+     updated_at:                       ~
+     created_by:                       { type: varchar(32) }
+     updated_by:                       { type: varchar(32) }
+     bodega_destino:                    { type: varchar(50) } 
+     empresa_id:                        ~ 
+ 
+    
+  salida_producto_detalle:
+     _attributes: { phpName: SalidaProductoDetalle, idMethod: native }
+     id:                              ~  
+     salida_producto_id:              ~ 
+     producto_id:                     ~ 
+     codigo:                          { type: varchar(42) }
+     detalle:                         { type: varchar(300) } 
+     valor:                           { type: double }  
+     cantidad:                        { type: integer }  
+     valor_total:                     { type: double } 
+     excento:                         { type: boolean, default: false }      
+     confirmado:                      { type: boolean, default: false }  
+     usuario_id:                      ~ 
+     empresa_id:                        ~ 
+      
+     
+  motivo_movimiento_producto:
+     _attributes: { phpName: MotivoMovimientoProducto, idMethod: native }
+     id:                                ~ 
+     codigo:	                       { type: varchar(32) }
+     nombre:                            { type: varchar(200), required: true, primaryString: true, default: '' }
+     descripcion:                       { type: longvarchar }
+     activo:                            { type: boolean, default: true } 
+     empresa_id:                      ~    
+     tipo:                             { type: varchar(32) }
+    
+  cliente:
+     _attributes: { phpName: Cliente, idMethod: native }
+     id:                                ~
+     empresa_id:                        ~
+     codigo:	                       { type: varchar(32) }
+     nombre:                            { type: varchar(260), required: true, primaryString: true, default: ''  } 
+     pequeno_contribuye:                { type: boolean, default: false }
+     regimen_isr:                       { type: boolean, default: false }
+     direccion:                         { type: varchar(160) }
+     telefono:                          { type: varchar(260) }
+     correo_electronico:                { type: varchar(160) }
+     observaciones:                     { type: longvarchar }	
+     nit:                               { type: varchar(20) }
+     dias_credito:                      { type: integer }
+     tipo_referencia:                   { type: varchar(120) }
+     activo:                            { type: boolean, default: true }
+     tiene_credito:                     { type: boolean, default: false }
+     avenida_calle:                     { type: varchar(10) }
+     zona:                              { type: varchar(10) }
+     departamento_id:                   ~
+     municipio_id:                      ~
+     activo:                            { type: boolean, default: true }
+     contacto:                          { type: varchar(160) }
+     correo_contacto:                   { type: varchar(160) }
+     imagen:                            { type: varchar(160) }
+     telefono_contacto:                 { type: varchar(60) }
+     tipificacion:                      { type: integer, default:0 }
+     fecha:                             { type: timestamp }
+     tipo_producto:                     { type: varchar(30) }
+     porcentaje_negociado:              { type: double, default:0 } 
+     limite_credito:                    { type: double, default:0 }  
+     tiene_credito:                     { type: boolean, default: true }
+     pais_id:                           ~
+    
+  cierre_caja:
+     _attributes: { phpName: CierreCaja, idMethod: native }
+     id:                             ~  
+     fecha_creo:                     { type: timestamp }
+     usuario:                        { type: varchar(50) }
+     fecha_calendario:               { type: date }
+     valor_total:                    { type: double }      
+     no_documentos:                  { type: integer } 
+     valor_caja:                     { type: double } 
+     estatus:                        { type: varchar(50) }
+     inicio:                         { type: timestamp }
+     fin:                            { type: timestamp }
+     empresa_id:                       ~ 
+     tienda_id:                       ~ 
+     cierre_dia_id:                  ~
+    
+  cierre_caja_valor:
+     _attributes: { phpName: CierreCajaValor, idMethod: native }
+     id:                             ~  
+     cierre_caja_id:                 ~  
+     medio_pago:                     { type: varchar(50) }
+     valor:                          { type: double }  
+     documento:                      { type: varchar(50) }
+     banco_id:                       ~ 
+    
+  usuario_corte_valor:
+     _attributes: { phpName: UsuarioCorteValor, idMethod: native }
+     id:                             ~      
+     usuario_id:                     ~
+     banco_id:                       ~
+     documento:                      { type: varchar(50) } 
+     medio_pago:                     { type: varchar(50) }
+     valor:                          { type: double }
+    
+  check_lista:
+     _attributes: { phpName: CheckLista, idMethod: native }
+     id:                              ~   
+     nombre:                          { type: varchar(50) } 
+     activo:                          { type: boolean, default: false }
+     orden:                           { type: integer } 
+    
+  cierre_check:
+     _attributes: { phpName: CierreCheck, idMethod: native }
+     id:                              ~
+     check_lista_id:                  ~
+     cierre_caja_id:                  ~
+     cierre_dia_id:                  ~
+    
+  cierre_dia:
+     _attributes: { phpName: Cierre, idMethod: native }
+     id:                             ~  
+     fecha_creo:                     { type: timestamp }
+     usuario:                        { type: varchar(50) }
+     valor_total:                    { type: double }      
+     no_cierre:                      { type: integer } 
+     empresa_id:                     ~ 
+     tienda_id:                      ~         
+   
+   
+  servicio:
+    _attributes: { phpName: Servicio, idMethod: native }
+    id:                                ~
+    codigo:	                       { type: varchar(32) }
+    nombre:                            { type: varchar(260), required: true, primaryString: true , default: '' } 
+    activo:                            { type: boolean, default: true }
+    created_by:                        { type: varchar(32) }
+    updated_by:                        { type: varchar(32) }
+    created_at:                        ~
+    updated_at:                        ~  	
+    observaciones:                     { type: longvarchar }   
+    empresa_id:                        ~
+    precio:                           { type: double, default:0 } 
+    cuenta_contable:                  { type: varchar(32) }
+    impuesto_hotelero:                { type: boolean, default: false }  
+    
+  nombre_banco:
+    _attributes: { phpName: NombreBanco, idMethod: native }
+    id:                                ~
+    nombre:                            { type: varchar(260), required: true, primaryString: true , default: '' } 
+    activo:                            { type: boolean, default: true }
+
+  campo_usuario: 
+    _attributes: { phpName: CampoUsuario, idMethod: native }
+    id:                                ~
+    empresa_id:                        ~
+    tipo_documento:                    { type: varchar(50) }
+    codigo:	                       { type: varchar(32) }
+    nombre:                            { type: varchar(260), required: true, primaryString: true , default: '' } 
+    tipo_campo:                        { type: varchar(50) }  
+    valores:                           { type: longvarchar }
+    requerido:                         { type: boolean, default: false }
+    activo:                            { type: boolean, default: true }
+    orden:                             { type: integer }
+    tienda_id:                        ~
+
+  valor_usuario:
+     _attributes: { phpName: ValorUsuario, idMethod: native }
+     id:                               ~
+     campo_usuario_id:                 ~
+     nombre_campo:                     { type: varchar(150) }  
+     tipo_documento:                   { type: varchar(50)  , default: '',index: true } 
+     no_documento:                     { type: integer,index: true  } 
+     valor:                            { type: varchar(50)  }
+     created_at:                       ~ 
+     updated_at:                       ~
+     created_by:                       { type: varchar(32) }
+     updated_by:                       { type: varchar(32) }         
+     empresa_id:                        ~
+
+
+  proyecto:
+    _attributes: { phpName: Proyecto, idMethod: native }
+    id:                                ~
+    codigo:	                       { type: varchar(32) }
+    nombre:                            { type: varchar(260), required: true, primaryString: true , default: '' } 
+    activo:                            { type: boolean, default: true }
+    created_by:                        { type: varchar(32) }
+    updated_by:                        { type: varchar(32) }
+    created_at:                        ~
+    updated_at:                        ~  	
+    observaciones:                     { type: longvarchar }   
+    empresa_id:                        ~
+    
+
+  gasto:
+    _attributes: { phpName: Gasto, idMethod: native }
+    id:                                ~ 
+    codigo:                            { type: varchar(50) }
+    usuario:                           { type: varchar(32) }
+    excento:                           { type: boolean, default: false }   
+    empresa_id:                        ~
+    proyecto_id:                       ~
+    proveedor_id:                      ~ 
+    orden_proveedor_id:                ~ 
+    fecha:                             { type: timestamp }
+    tienda_id:                         ~ 
+    estatus:                           { type: varchar(32) } 
+    dias_credito:                      { type: integer } 
+    tipo_documento:                    { type: varchar(32) }
+    documento:                         { type: varchar(150) } 
+    sub_total:                         { type: double }    
+    iva:                               { type: double } 
+    valor_total:                       { type: double }
+    partida_no:                        { type: integer, default: 0 }  
+    token:                             { type: varchar(50) }
+    observaciones:                     { type: longvarchar } 
+    created_by:                        { type: varchar(32) }
+    updated_by:                        { type: varchar(32) }
+    created_at:                        ~
+    updated_at:                        ~    
+    valor_pagado:                     { type: double, default 0 }
+    aplica_isr:                       { type: boolean, default: true } 
+    aplica_iva:                       { type: boolean, default: true }
+    valor_impuesto:                   { type: double } 
+    excento_isr:                      { type: boolean, default: false }  
+    valor_isr:                        { type: double }  
+    valor_retiene_iva:                { type: double }    
+    retiene_iva:                      { type: boolean, default: false }
+    valor_retenido_iva:               { type: double, default 0 }
+    confrontado_sat:                  { type: boolean, default: false }
+    no_sat:                           { type: integer, default: 0,index: true  }
+    valor_idp:                       { type: double }
+
+    
+  gasto_detalle:
+    _attributes: { phpName: GastoDetalle, idMethod: native }
+    id:                                ~
+    gasto_id:                          ~
+    cuenta_contable:                   { type: varchar(50) }
+    concepto:                          { type: varchar(350) }
+    cantidad:                          { type: double }    
+    sub_total:                         { type: double }    
+    iva:                               { type: double } 
+    valor_total:                       { type: double }
+ #    valor_isr:                         { type: double }  
+#    valor_retiene_iva:                 { type: double }       
+
+  gasto_pago:
+     _attributes: { phpName: GastoPago, idMethod: native }
+     id:                               ~ 
+     codigo:                           { type: varchar(50) }
+     empresa_id:                      ~
+     proveedor_id:                     ~   
+     gasto_id:               ~   
+     tipo_pago:                        { type: varchar(50) }   
+     documento:                        { type: varchar(150) }
+     fecha:                            { type: date }
+     valor_total:                      { type: double } 
+     usuario:                          { type: varchar(50) }
+     fecha_creo:                       { type: timestamp }
+     cuenta_proveedor_id:              ~
+     banco_id:                         ~
+     created_by:                       { type: varchar(32) }
+     updated_by:                       { type: varchar(32) }
+     created_at:                       ~
+     cuenta_contable:                  { type: varchar(50), default: '' }
+     partida_no:                       { type: integer, default: 0 } 
+     cheque_id:                        ~
+     temporal:                         { type: boolean, default: 0 } 
+ 
+
+
+    
+  parametro_cuenta:
+    _attributes: { phpName: ParametroCuenta, idMethod: native }
+    id:                                ~
+    tipo:                              { type: varchar(50) }  
+    empresa_id:                        ~
+    cuenta_default:                    { type: varchar(50) } 
+    created_by:                        { type: varchar(32) }
+    updated_by:                        { type: varchar(32) }
+    created_at:                        ~
+    updated_at:                        ~    
+ 
+ 
+  producto_existencia:
+    _attributes: { phpName: ProductoExistencia, idMethod: native }
+    id:                               ~  
+    empresa_id:                       ~ 
+    producto_id:                      ~ 
+    cantidad:                         { type: integer }
+    tienda_id:                        ~   
+    diferencia:                       { type: integer }   
+    transito:                         { type: integer }   
+    
+  producto_ubicacion:  
+    _attributes: { phpName: ProductoUbicacion, idMethod: native }
+    id:                               ~  
+    empresa_id:                      ~ 
+    producto_id:                      ~ 
+    cantidad:                         { type: integer }
+    tienda_id:                        ~   
+    ubicacion:                        { type: varchar(100) }   
+    transito:                         { type: integer }
+    
+    
+  producto_precio:
+    _attributes: { phpName: ProductoPrecio, idMethod: native }
+    id:                               ~  
+    empresa_id:                       ~  
+    producto_id:                      ~ 
+    valor:                            { type: integer }
+    lista_precio_id:                  ~    
+    
+  lista_precio:
+    _attributes: { phpName: ListaPrecio, idMethod: native }
+    id:                                ~
+    empresa_id:                        ~
+    codigo:	                       { type: varchar(32) }
+    nombre:                            { type: varchar(260), required: true, primaryString: true, default: ''  } 
+    activo:                            { type: boolean, default: true }     
+    
+  ingreso_producto:
+    _attributes: { phpName: IngresoProducto, idMethod: native }
+    id:                               ~  
+    usuario_id:                       ~    
+    fecha:                            { type: timestamp } 
+    tienda_id:                        ~
+    empresa_id:                       ~ 
+    fecha_documento:                  { type: varchar(32) } 
+    observaciones:                    { type: varchar(460)} 
+    numero_documento:                 { type: varchar(50) }     
+    numero_orden:                     { type: varchar(50) }  
+        
+        
+    
+  ingreso_producto_detalle:
+    _attributes: { phpName: IngresoProductoDetalle, idMethod: native }
+    id:                               ~  
+    producto_id:                      ~    
+    ingreso_producto_id:              ~
+    cantidad:                         { type: integer }   
+    empresa_id:                       ~     
+    ubicacion:                        { type: varchar(50) }
+     
+  producto_movimiento:
+    _attributes: { phpName: ProductoMovimiento, idMethod: native }
+    id:                               ~  
+    empresa_id:                       ~  
+    producto_id:                      ~ 
+    fecha:                            { type: timestamp }
+    cantidad:                         { type: integer }
+    tienda_id:                        ~   
+    identificador:                    { type: varchar(200) }
+    tipo:                             { type: varchar(132) }
+    motivo:                           { type: varchar(100) }  
+    inicio:                           { type: double }
+    fin:                              { type: double }   
+    valor_total:                      { type: double }
+    sub_total:                        { type: double } 
+    iva:                              { type: double } 
+    linea_no:                         { type: varchar(50) }
+    _uniques:
+       llave:                         [ linea_no ] 
+  
+  
+  precio_producto:
+    _attributes: { phpName: PrecioProducto, idMethod: native }
+    id:                               ~  
+    usuario_id:                       ~    
+    fecha:                            { type: timestamp } 
+    tienda_id:                        ~
+    empresa_id:                       ~ 
+    tipo_no:                          { type: varchar(50) }
+    
+  precio_producto_detalle:
+    _attributes: { phpName: PrecioProductoDetalle, idMethod: native }
+    id:                               ~  
+    producto_id:                      ~    
+    precio_producto_id:              ~
+    precio:                         { type: double }   
+    empresa_id:                       ~  
+    
+    
+  bitacora_cambio:
+    _attributes: { phpName: BitacoraCambio, idMethod: native }
+    id:                             ~  
+    tipo:                           { type: varchar(50) }
+    observaciones:                  { type: varchar(450) } 
+    fecha:                          { type: timestamp } 
+    usuario:                        { type: varchar(50) }
+    revisado:                       { type: boolean, default: true }
+    usuario_reviso:                 { type: varchar(50) }  
+    
+    
+  orden_cotizacion:
+     _attributes: { phpName: OrdenCotizacion, idMethod: native }
+     id:                               ~
+     codigo:                           { type: varchar(50) }
+     empresa_id:                       ~ 
+     cliente_id:                       ~  
+     nit:                              { type: varchar(50) }
+     nombre:                           { type: varchar(150) }
+     fecha_documento:                  { type: date } 
+     fecha_vencimiento:                { type: date }  
+     fecha:                            { type: timestamp }
+     dia_credito:                      { type: integer, default:0 }
+     excento:                          { type: boolean, default: false}  
+     usuario:                          { type: varchar(50) }
+     estatus:                          { type: varchar(50) }
+     comentario:                       { type: varchar(450) } 
+     sub_total:                        { type: double }    
+     iva:                              { type: double } 
+     valor_total:                      { type: double }    
+     cuenta_contable:                  { type: varchar(50), default: '' }
+     partida_no:                       { type: integer, default: 0 }  
+     tienda_id:                        ~ 
+     token:                            { type: varchar(50) }
+     telefono:                         { type: varchar(150) }
+     direccion:                        { type: varchar(450) }
+     correo:                           { type: varchar(150) }
+     usuario_confirmo:                 { type: varchar(50) }
+     fecha_confirmo:                   { type: timestamp }
+     combo_numero:                     { type: varchar(50) }  
+     recetario_id:                     ~   
+     solicitar_bodega:                 { type: boolean, default: 0 }   
+     cantidad_total_caja:              { type: integer }
+     peso_total:                       { type: varchar(150) }
+     vendedor_id:                      ~ 
+     pais_id:                           ~
+
+     
+         
+  orden_cotizacion_detalle:
+      _attributes: { phpName: OrdenCotizacionDetalle, idMethod: native }
+      id:                               ~
+      orden_cotizacion_id:                ~
+      producto_id:                      ~ 
+      servicio_id:                      ~ 
+      codigo:                           { type: varchar(50) }
+      detalle:                          { type: varchar(150) }
+      valor_unitario:                   { type: double }
+      cantidad:                         { type: integer }
+      valor_total:                      { type: double }
+      total_iva:                        { type: double }   
+      combo_numero:                     { type: varchar(50) } 
+      costo_unitario:                   { type: double } 
+      verificado:                       { type: boolean, default: false}
+      cantidad_caja:                    { type: integer }
+      peso:                             { type: varchar(150) }
+    
+    
+  moneda:
+     _attributes: { phpName: Moneda, idMethod: native }
+     id:                               ~ 
+     empresa_id:                       ~ 
+     codigo_iso:                       { type: varchar(50) } 
+     nombre:                           { type: varchar(450) }
+     activo:                           { type: boolean, default: false}
+     
+  banco_saldo:
+     _attributes: { phpName: BancoSaldo, idMethod: native }
+     id:                               ~ 
+     codigo:                           { type: varchar(50) }
+     banco_id:                         ~
+     moneda_id:                        ~
+     nombre:                           { type: varchar(150) }  
+     saldo:                            { type: double }
+     ultima_actualizacion:             { type: timestamp }   
+     ultimo_movimiento:                { type: varchar(10) }    
+     empresa_id:                       ~ 
+     
+  nota_credito:
+     _attributes: { phpName: NotaCredito, idMethod: native }
+     id:                               ~ 
+     numero:                          { type: integer, default: 0 }  
+     codigo:                           { type: varchar(50) }
+     fecha:                            { type: date }  
+     cliente_id:                       ~   
+     proveedor_id:                     ~ 
+     nombre:                           { type: varchar(250) }   
+     documento:                        { type: varchar(150) } 
+     tipo_documento:                   { type: varchar(50) }  
+     sub_total:                        { type: double }    
+     iva:                              { type: double } 
+     valor_total:                      { type: double } 
+     estatus:                          { type: varchar(150) }  
+     empresa_id:                       ~ 
+     medio_pago_id:                    ~ 
+     fecha_contabilizacion:            { type: date }  
+     dias_credito:                     { type: double }  
+     created_at:                       ~ 
+     updated_at:                       ~
+     created_by:                       { type: varchar(32) }
+     updated_by:                       { type: varchar(32) }         
+     usuario:                          { type: varchar(50) }  
+     partida_no:                       { type: integer, default: 0 }  
+     concepto:                         { type: varchar(450) }   
+     tipo_nota:                        { type: varchar(50) } 
+     face_firma:                       { type: varchar(150) } 
+     valor_pagado:                     { type: double } 
+     documento_canje:                        { type: varchar(50) } 
+  
+  nota_credito_detalle:
+     _attributes: { phpName: NotaCreditoDetalle, idMethod: native }
+     id:                               ~ 
+     nota_credito_id:                  ~ 
+     cantidad:                         { type: double }  
+     detalle:                          { type: varchar(150) }
+     sub_total:                        { type: double }    
+     iva:                              { type: double } 
+     valor_total:                      { type: double }    
+         
+  bitacora_documento:     
+     _attributes: { phpName: BitacoraDocumento, idMethod: native }
+     id:                               ~ 
+     tipo:                             { type: varchar(50),index: true }
+     identificador:                    { type: varchar(20),index: true }
+     usuario:                          { type: varchar(50) }
+     fecha:                            { type: date }  
+     hora:                             { type: varchar(8) }
+     accion:                           { type: varchar(50) }
+     comentario:                       { type: longvarchar }
+     ip:                               { type: varchar(20) }
+         
+  definicion_cuenta:
+     _attributes: { phpName: DefinicionCuenta, idMethod: native }
+     id:                              ~
+     grupo:                           { type: varchar(50),index: true } 
+     tipo:                            { type: varchar(50),index: true }   
+     cuenta_contable:                 { type: varchar(50) }
+     empresa_id:                       ~ 
+     detalle:                         { type: varchar(150) } 
+     
+     
+  documento_cheque:  
+     _attributes: { phpName: DocumentoCheque, idMethod: native }
+     id:                                ~
+     banco_id:                          ~
+     titulo:                            { type: varchar(50) } 
+     tipo_negociable:                   { type: varchar(32) }
+     formato:                           { type: longvarchar }
+     activo:                            { type: boolean, default: false }
+     margen_superior:                   { type: integer }
+     margen_izquierdo:                  { type: integer } 
+     ancho:                             { type: integer }
+     alto:                              { type: integer }    
+     empresa_id:                        ~ 
+     correlativo:                       { type: integer } 
+     
+  cheque:  
+     _attributes: { phpName: Cheque, idMethod: native }
+     id:                                ~
+     banco_id:                          ~   
+     documento_cheque_id:               ~
+     proveedor_id:                      ~
+     numero:                            { type: varchar(32) }
+     beneficiario:                      { type: varchar(150) } 
+     fecha_cheque:                      { type: date }
+     valor:                             { type: double }  
+     motivo:                            { type: varchar(450) }
+     estatus:                           { type: varchar(50) }
+     negociable:                        { type: boolean, default: true }
+     usuario:                           { type: varchar(50) }
+     fecha_creo:                        { type: timestamp }
+     orden_devolucion_id:               ~
+     solicitud_cheque_id:               ~
+     
+     
+  cuenta_banco:
+     _attributes: { phpName: CuentaBanco, idMethod: native }
+     id:                                ~
+     banco_id:                          ~   
+     movimiento_banco_id:               ~
+     valor:                             { type: double }
+     fecha:                             { type: date,index: true  }
+     documento:                         { type: varchar(50) }
+     observaciones:                     { type: varchar(450) }
+     usuario:                           { type: varchar(50) }
+     created_at:                        ~ 
+     updated_at:                        ~
+     estatus:                           { type: varchar(10),index: true  }
+     movimiento_banco_id:               ~
+     operacion_pago_id:                 ~ 
+     empresa_id:                 ~ 
+     
+     
+  venta_resumida:
+     _attributes: { phpName: VentaResumida, idMethod: native }
+     id:                                ~
+     medio_pago_id:                     ~
+     tienda_id:                         ~
+     fecha:                             { type: date,index: true  }
+     total:                             { type: double }  
+     comision:                          { type: double } 
+     iva:                               { type: double } 
+     retencion:                         { type: double }
+     documento:                         { type: varchar(50) }
+     observaciones:                     { type: varchar(450) }
+     usuario:                           { type: varchar(50) }
+     created_at:                        ~ 
+     partida_no:                        { type: integer, default: 0,index: true  }
+     empresa_id:                         ~ 
+     linea:                             { type: integer, default: 0 } 
+   
+
+     
+  venta_resumida_linea:
+     _attributes: { phpName: VentaResumidaLinea, idMethod: native }
+     id:                                ~
+     venta_resumida_id:                 ~
+     numero_cuotas:                     { type: integer } 
+     total_linea:                       { type: double }  
+     comision_linea:                    { type: double } 
+     iva_linea:                         { type: double } 
+     retencion_linea:                   { type: double }
+     medio_pago_id:                     ~
+     empresa_id:                        ~ 
+     banco_id:                          ~
+     
+     
+ 
+  orden_devolucion:
+     _attributes: { phpName: OrdenDevolucion, idMethod: native }
+     id:                                ~
+     fecha:                             { type: date,index: true  }
+     nombre:                            { type: varchar(150) }
+     referencia_factura:                { type: varchar(50) }
+     concepto:                          { type: varchar(450) }
+     archivo:                           { type: varchar(50) } 
+     valor:                             { type: double } 
+     retencion:                         { type: boolean, default: false }
+     partida_no:                        { type: integer }   
+     estatus:                           { type: varchar(50) }
+     cheque_no:                         { type: integer, default:0 }   
+     partida_no:                        { type: integer, default: 0 }
+     usuario_creo:                      { type: varchar(50) }
+     created_at:                        ~ 
+     usuario_confirmo:                  { type: varchar(50) }
+     updated_at:                        ~     
+     motivo_autorizo:                   { type: varchar(150) }
+     valor_otros:                       { type: double }
+     empresa_id:                        ~
+     token:                             { type: varchar(50) }
+     codigo:                            { type: varchar(50) }
+     fecha_confirmo:                    { type: timestamp }
+     porcentaje_retenie:                { type: integer, default:0 }
+     tipo:                              { type: varchar(50) }
+     proveedor_id:                      ~
+     pago_medio:                        { type: varchar(50) }
+     vendedor:                          { type: varchar(50) }
+     referencia_nota:                   { type: varchar(50) }
+     no_hollander:                      { type: varchar(50) }
+     no_stock:                          { type: varchar(50) }
+     descripcion:                       { type: varchar(450) }
+     solicitud_devolucion_id:           ~
+     archivo_2:                         { type: varchar(50) } 
+     tienda_id:                         ~
+     fecha_factura:                     { type: date  } 
+     motivo:                            { type: varchar(100) } 
+     detalle_motivo:                    { type: varchar(450) } 
+     detalle_repuesto:                  { type: varchar(250) }   
+     producto_id:                       ~
+     cantidad:                          { type: integer, default:0 }
+         
+  egresos_recibido:
+     _attributes: { phpName: EgresosRecibido, idMethod: native }
+     id:                                ~
+     medio_pago_id:                     ~
+     tienda_id:                         ~
+     fecha:                             { type: date,index: true  }
+     total:                             { type: double }  
+     partida_no:                        { type: integer, default: 0,index: true  }
+     empresa_id:                         ~ 
+     usuario_creo:                      { type: varchar(50) }
+     created_at:                        ~ 
+     observaciones:                     { type: longvarchar }
+
+  tasa_cambio:
+     _attributes: { phpName: TasaCambio, idMethod: native }
+     id:                                ~
+     fecha:                             { type: date,index: true  }
+     valor:                             { type: double }  
+ 
+  gasto_caja:
+     _attributes: { phpName: GastoCaja, idMethod: native }
+     id:                                ~
+     tienda_id:                         ~
+     empresa_id:                         ~
+     fecha:                             { type: date }
+     concepto:                          { type: varchar(450) }
+     usuario:                           { type: varchar(50) }
+     created_at:                        ~ 
+     estatus:                           { type: varchar(50) }
+     gasto_id:                           ~
+     valor:                             { type: double } 
+     observaciones:                     { type: longvarchar }
+     cuenta:                            { type: varchar(50) }
+     partida_no:                        { type: integer, default: 0,index: true  }
+     
+  
+  gasto_caja_detalle:
+     _attributes: { phpName: GastoCajaDetalle, idMethod: native }
+     id:                                ~
+     gasto_caja_id:                     ~
+     serie:	                        { type: varchar(20) }
+     factura:	                        { type: varchar(50) } 
+     fecha:	                        { type: varchar(10) } 
+     descripcion:	                { type: varchar(450) }  
+     proveedor_id:	                ~ 
+     cuenta:		                { type: varchar(50) }  
+     valor:                             { type: double }  
+     iva:                               { type: double } 
+     valor_isr:                         { type: double }  
+     valor_retiene_iva:                 { type: double }  
+     confrontado_sat:                   { type: boolean, default: false }
+     no_sat:                            { type: integer, default: 0,index: true  }
+     valor_idp:                         { type: double } 
+      
+      
+  saldo_banco:
+     _attributes: { phpName: SaldoBanco, idMethod: native }
+     id:                                ~
+     fecha:                             { type: date,index: true  }
+     saldo_libro:                       { type: double }  
+     banco_id:                          ~ 
+     usuario:                           { type: varchar(50) } 
+     created_at:                        ~ 
+     updated_at:                        ~ 
+     saldo_banco:                       { type: double }  
+     saldo_conciliado:                  { type: double }  
+     diferencia:                        { type: double }  
+     fecha_docu:                        { type: date  }
+     deposito_transito:                 { type: double }
+     nota_credito:                      { type: double }
+     cheques_circula:                   { type: double }
+     nota_transito:                     { type: double }
+     diferencial:                       { type: double } 
+     
+  vendedor:
+     _attributes: { phpName: Vendedor, idMethod: native }
+     id:                                ~
+     codigo:                            { type: varchar(50) }
+     nombre:                            { type: varchar(150) }
+     activo:                            { type: boolean, default: false}    
+     empresa_id:                         ~
+     porcentaje_comision:               { type: double }
+     tienda_comision:                   { type: varchar(150) }
+     encargado_tienda:                  { type: boolean, default: true} 
+     codigo_planilla:                   { type: varchar(50) }
+     observaciones:                     { type: longvarchar }
+     
+  orden_vendedor:
+     id:                                 ~  
+     observaciones:                    { type: varchar(450) }
+     estado:                           { type: varchar(50) }
+     fecha:                            { type: timestamp }
+     usuario:                          { type: varchar(50) }
+     empresa_id:                       ~
+     vendedor_id:                       ~
+     
+  vendedor_producto:
+     id:                                ~
+     vendedor_id:                       ~
+     producto_id:                       ~ 
+     cantidad:                          { type: integer } 
+     observaciones:                     { type: varchar(450) } 
+     fecha:                             { type: timestamp }  
+     usuario:                           { type: varchar(50) }
+     valor_unitario:                    { type: double }  
+     orden_vendedor_id:                 ~  
+     verificado:                        { type: boolean, default: false}  
+     
+  solicitud_devolucion:
+     _attributes: { phpName: SolicitudDevolucion, idMethod: native }
+     id:                                ~
+     codigo:                            { type: varchar(50) }
+     fecha:                             { type: date,index: true  }
+     factura:                           { type: varchar(50) } 
+     no_referencia:                     { type: varchar(50) }
+     vendedor:                          { type: varchar(100) }
+     descripcion:                       { type: varchar(450) }
+     nombre_cliente:                    { type: varchar(150) }
+     dpi:                               { type: varchar(50) }
+     telefono:                          { type: varchar(50) }
+     medio_pago:                        { type: varchar(50) } 
+     usuario:                           { type: varchar(50) }
+     created_at:                        ~ 
+     estatus:                           { type: varchar(50) }
+     empresa_id:                         ~
+     valor:                             { type: double } 
+     usuario_confirmo:                  { type: varchar(50) }
+     fecha_confirmo:                    { type: timestamp }
+     valor_retiene:                     { type: double } 
+     tienda_id:                         ~
+     motivo:                            { type: varchar(100) } 
+     detalle_motivo:                    { type: varchar(450) }      
+     
+     
+  solicitud_dev_detalle:
+     _attributes: { phpName: SolicitudDevDetalle, idMethod: native }
+     id:                                ~
+     solicitud_devolucion_id:           ~
+     hollander:                         { type: varchar(50) }
+     descripcion:                       { type: varchar(150) }
+     stock:                             { type: varchar(50) } 
+     tipo:                              { type: integer, default: 1 } 
+     tipo_respuesto:                    { type: varchar(50) }
+     
+     
+  solicitud_dev_motivo:
+     _attributes: { phpName: SolicitudDevMotivo, idMethod: native }
+     id:                                ~
+     solicitud_devolucion_id:           ~
+     motivo:                             { type: varchar(150) }
+     empresa_id:                         ~      
+       
+  solicitud_cheque:
+     _attributes: { phpName: SolicitudCheque, idMethod: native }
+     id:                                ~
+     codigo:                            { type: varchar(50) }
+     empresa_id:                        ~ 
+     tipo:                              { type: varchar(50) }
+     nombre:                            { type: varchar(150) }
+     referencia:                        { type: varchar(50) } 
+     motivo:                            { type: longvarchar } 
+     valor:                             { type: double } 
+     partida_no:                        { type: integer }  
+     estatus:                           { type: varchar(50) }  
+     fecha:                             { type: date,index: true  }
+     usuario:                           { type: varchar(50) }
+     usuario_confirmo:                  { type: varchar(50) }
+     fecha_confirmo:                    { type: timestamp } 
+     cheque_no:                         { type: integer, default:0 }  
+       
+  facturas:
+     _attributes: { phpName: Facturas, idMethod: native }
+     id:                                ~
+     tienda:                            { type: varchar(5) }
+     referencia:                        { type: varchar(10) } 
+     fecha:                             { type:  timestamp } 
+     tipo_documento:                    { type: varchar(10) }
+     firma:                             { type: varchar(50) } 
+     motivo:                            { type: longvarchar }
+     
+  libro_agrupado:
+     _attributes: { phpName: LibroAgrupado, idMethod: native }
+     id:                                ~
+     empresa_id:                        ~  
+     nombre:                            { type: varchar(100) } 
+     tipo:                              { type: varchar(50) } 
+     grupo:                             { type: varchar(50) } 
+     orden:                             { type: integer }
+     abs:                               { type: boolean, default: false}  
+     haber:                             { type: boolean, default: false}   
+     
+  libro_agrupado_detalle: 
+     _attributes: { phpName: LibroAgrupadoDetalle, idMethod: native }
+     id:                                 ~
+     empresa_id:                         ~ 
+     libro_agrupado_id:                  ~
+     cuenta_contable:                    { type: varchar(50) }
+     detalle:                            { type: varchar(50) }
+
+  carga_compras_sat: 
+     _attributes: { phpName: CargaComprasSat, idMethod: native }
+     id:                                 ~
+     fecha:                              { type: date,index: true  }
+     validado:                           { type: boolean, default: false}
+     tipo_dte:                           { type: varchar(10) }
+     serie:                              { type: varchar(20) }   
+     no_dte:                             { type: varchar(20) }   
+     emisor:                             { type: varchar(150) }
+     autorizacion:                       { type: varchar(50) }                 
+     nit_emisor:                         { type: varchar(20) } 
+     monto:                              { type: double }
+     tipo:                               { type: varchar(10) }
+     codigo:                             { type: varchar(15) } 
+     usuario:                            { type: varchar(50) }
+     updated_at:                         ~
+     manual:                            { type: boolean, default: false}
+     documento:                         { type: varchar(150) }
+     
+  lista_activos: 
+     _attributes: { phpName: ListaActivos, idMethod: native }
+     id:                                 ~ 
+     codigo:                             { type: varchar(50) }  
+     cuenta_contable:                    { type: varchar(20) } 
+     detalle:                            { type: varchar(250) }
+     fecha_adquision:                    { type: date } 
+     anio_util:                          { type: integer }  
+     valor_libro:                        { type: double }   
+     porcentaje:                         { type: integer }
+     cuenta_erp_contable_id:             ~   
+     usuario:                            { type: varchar(50) }
+     updated_at:                         ~
+     activo:                             { type: boolean, default: true }  
+     empresa_id:                                 ~ 
+     
+  region: 
+     _attributes: { phpName: Region, idMethod: native }
+     id:                                 ~ 
+     detalle:                            { type: varchar(250) }
+     activo:                             { type: boolean, default: true }  
+   
+  region_detalle:
+     _attributes: { phpName: RegionDetalle, idMethod: native }
+     id:                                 ~ 
+     departamento_id:                    ~    
+     region_id:                          ~ 
+     
+     
+  formulario_datos:
+     _attributes: { phpName: FormularioDatos, idMethod: native }
+     id:                                ~ 
+     establecimiento:                   { type: varchar(250) } 
+     tipo:                              { type: varchar(50) }    
+     propietario:                       { type: varchar(250) }   
+     telefono:                          { type: varchar(150) } 
+     email:                             { type: varchar(200) }  
+     region_id:                         ~  
+     departamento_id:                   ~ 
+     municipio_id:                      ~ 
+     direccion:                         { type: varchar(450) }   
+     nit:                               { type: varchar(250) }  
+     contacto:                          { type: varchar(250) } 
+     whtas_app:                         { type: varchar(250) }  
+     observaciones:                     { type: longvarchar  } 
+     fecha_visita:                      { type: date }   
+     usuario:                           { type: varchar(50) }
+     created_at:                        ~ 
+     updated_at:                        ~
+     created_by:                        { type: varchar(32) }
+     updated_by:                        { type: varchar(32) }
+     
+     
+  formulario_detalle:
+     _attributes: { phpName: FormularioDetalle, idMethod: native }
+     id:                                ~    
+     formulario_datos_id:               ~   
+     hollander:                         { type: varchar(50) } 
+     repuesto:                          { type: varchar(250) }
+     
+  temporal_compara:
+     _attributes: { phpName: TemporalCompara, idMethod: native }
+     id:                                ~
+     indicador:                         { type: integer }
+     valor:                             { type: varchar(50) } 
+
+  solicitud_deposito:
+      _attributes: { phpName: SolicitudDeposito, idMethod: native }
+      id:                                ~ 
+      codigo:                            { type: varchar(50) }   
+      banco_id:                          ~
+      tienda_id:                         ~
+      fecha_ingreso:                     { type: timestamp } 
+      fecha_deposito:                    { type: date } 
+      total:                             { type: double }  
+      boleta:                            { type: varchar(50) }    
+      vendedor:                          { type: varchar(50) }   
+      telefono:                          { type: varchar(20) }   
+      cliente:                           { type: varchar(150) }   
+      pieza:                             { type: varchar(50) }   
+      stock:                             { type: varchar(50) }   
+      documento_confirmacion:            { type: varchar(50) } 
+      usuario_confirmo:                  { type: varchar(50) } 
+      fecha_confirmo:                    { type: timestamp } 
+      estatus:                           { type: varchar(50) } 
+      created_at:                        ~ 
+      updated_at:                        ~
+      created_by:                        { type: varchar(32) }
+      updated_by:                        { type: varchar(32) }  
+      empresa_id:                        ~
+       
+          
+  prestamo:       
+      _attributes: { phpName: Prestamo, idMethod: native }
+      id:                                ~ 
+      codigo:                            { type: varchar(50) }   
+      nombre:                            { type: varchar(150) } 
+      observaciones:                     { type: longvarchar  }   
+      valor:                             { type: double }  
+      fecha_inicio:                     { type: date }  
+      moneda:                            { type: varchar(50) }
+      tasa_interes:                      { type: double }
+      empresa_id:                        ~
+      estatus:                           { type: varchar(50) } 
+   
+  prestamo_detalle:       
+      _attributes: { phpName: PrestamoDetalle, idMethod: native }
+      id:                                ~ 
+      prestamo_id:                       ~ 
+      comentario:                        { type: varchar(150) }   
+      fecha_inicio:                      { type: date }  
+      fecha_fin:                         { type: date }  
+      dias:                              { type: integer }
+      tasa_cambio:                       { type: double }
+      valor_quetzales:                   { type: double }
+      valor_dolares:                     { type: double }
+      created_at:                        ~ 
+      created_by:                        { type: varchar(50) }
+      tipo:                              { type: varchar(50) }
+      valor:                             { type: double }
+      banco_id:                          ~ 
+      movimiento_banco_id:               ~
+      partida_no:                        { type: integer } 
+      detalle_interes:                   { type: longvarchar  }
+      
+  ventas_vendedor:
+      _attributes: { phpName: VentasVendedor, idMethod: native }
+      id:                                ~
+      codigo_vendedor:                   { type: varchar(50) }
+      nombre_vendedor:                   { type: varchar(250) } 
+      facturas:                          { type: integer } 
+      total_facturas:                    { type: double }
+      detalle_facturas:                  { type: longvarchar  } 
+      notas:                             { type: integer }
+      total_notas:                       { type: double } 
+      detalle_notas:                     { type: longvarchar  }
+      periodo:                           { type: integer } 
+      mes:                               { type: integer } 
+      created_at:                        ~ 
+      updated_at:                        ~
+      created_by:                        { type: varchar(32) }
+      updated_by:                        { type: varchar(32) }  
+      empresa_id:                        ~
+      bono:                              { type: double }   
+      
+      
+  tienda_comision:
+      _attributes: { phpName: TiendaComision, idMethod: native }
+      id:                                ~     
+      nombre_tienda:                     { type: varchar(200) }  
+      minimo:                            { type: double }  
+      maximo:                            { type: double } 
+      tipo:                              { type: varchar(100) }
+      valor:                             { type: varchar(50) }
+      
+  inventario_powerlink:  
+      _attributes: { phpName: InventarioPowerlink, idMethod: native }
+      id:                                ~     
+      categorizing_store_number:         { type: varchar(5) }
+      dat:                               { type: longvarchar  } 
+      last_date_modified:                { type: date }  
+      
+  agenda:  
+      _attributes: { phpName: Agenda, idMethod: native }
+      id:                                ~
+      fecha:                             { type: date ,index: true }
+      hora_inicio:                       { type: varchar(32) ,index: true }
+      hora_fin:                          { type: varchar(32) }
+      estatus:                           { type: varchar(32) }
+      created_at:                        ~ 
+      updated_at:                        ~
+      created_by:                        { type: varchar(32) }
+      updated_by:                        { type: varchar(32) }  
+      cliente_id:                        ~
+      empresa_id:                        ~
+      observaciones:                     { type: longvarchar }
+      tienda_id:                         ~
+      doctor:                            { type: varchar(32) }
+      no_sesion:                         { type: varchar(10) }
+
+  recetario:  
+      _attributes: { phpName: Recetario, idMethod: native }
+      id:                                ~
+      fecha:                             { type: date ,index: true  }
+      cliente_id:                        ~
+      empresa_id:                        ~
+      observaciones:                     { type: longvarchar }
+      usuario:                           { type: varchar(50) } 
+
+  recetario_detalle:
+      _attributes: { phpName: RecetarioDetalle, idMethod: native }
+      id:                                ~
+      recetario_id:                      ~
+      tipo_detalle:                      { type: varchar(32) }  
+      servicio:                          { type: varchar(255) }
+      producto_id:                       ~
+      dosis:                             { type: varchar(32) }  
+      frecuencia:                        { type: varchar(32) }  
+      observaciones:                     { type: longvarchar }
+
+  usuario_report:
+    _attributes: { phpName: UsuarioReport, idMethod: native }
+    id:                                ~
+    empresa_id:                        ~
+    tipo_letra:                        { type: varchar(50) } 
+    papel:                             { type: varchar(50) }
+    orientacion:                       { type: varchar(50) }
+    logo_tamanio:                      { type: varchar(50) }
+    logo_posicion:                     { type: varchar(90) } 
+    letra_titulo_no:                   { type: integer }
+    letra_detalle_no:                  { type: integer } 
+    letra_titulo_bold:                 { type: boolean, default: true }
+    letra_detalle_bold:                { type: boolean, default: true }  
+    letra_titulo_color:                { type: varchar(10) }
+    letra_detalle_color:               { type: varchar(10) } 
+    una_linea:                         { type: boolean, default: false }
+    tipo_tabla:                        { type: varchar(50) }
+    border_color:                      { type: varchar(50) }  
+    fondo_color_encabezado:            { type: varchar(50) }
+    fondo_color_detalle:               { type: varchar(50) } 
+    marca_agua:                        { type: integer,default:0 }
+    fondo:                             { type: varchar(150) } 
+    logo:                              { type: varchar(150) }      
+      
+  inventario_vence:
+    _attributes: { phpName: InventarioVence, idMethod: native }
+    id:                                ~
+    empresa_id:                        ~
+    producto_id:                       ~ 
+    fecha_vence:                       { type: date }
+    despachado:                        { type: boolean, default: false } 
+    ingreso_producto_id:               ~ 
+    tienda_id:                         ~ 
+    operacion_no:                      { type: integer,default:0 }
+    
+  traslado_producto:
+    _attributes: { phpName: TrasladoProducto, idMethod: native }
+    id:                                ~
+    codigo:                            { type: varchar(50) }  
+    empresa_id:                        ~
+    producto_id:                       ~ 
+    bodega_origen:                     { type: integer }
+    bodega_destino:                    { type: integer }
+    comentario:                        { type: varchar(350) }  
+    cantidad:                          { type: integer }
+    estatus:                           { type: varchar(32), default:'Nuevo' }
+    usuario:                           { type: varchar(50) } 
+    fecha:                             { type: date }
+    usuario_confirmo:                  { type: varchar(50) } 
+    fecha_confirmo:                    { type: date }
+     
+  orden_ubicacion:
+    _attributes: { phpName: OrdenUbicacion, idMethod: native }
+    id:                                ~
+    tienda_id:                         ~
+    producto_id:                       ~ 
+    ubicacion_id:                      { type: varchar(50) }  
+    orden_cotizacion_id:               ~
+    procesado:                         { type: boolean, default: false } 
+    cantidad:                          { type: integer }
+    tienda_ubica:                      { type: integer }
+    vendedor_producto_id:              ~ 
+    orden_vendedor_id:                 ~ 
+    salida_producto_id:                 ~ 
+ 
+ 
+  cambio_vendedor:
+    _attributes: { phpName: CambioVendedor, idMethod: native }
+    id:                                ~
+    codigo_opera:                      { type: varchar(50) }    
+    vendedor_anterior:                 { type: varchar(250) }  
+    vendedor_actualizado:              { type: varchar(250) }  
+    usuario:                           { type: varchar(50) } 
+    fecha:                             { type: date }
+    
+  traslado_ubicacion:
+    _attributes: { phpName: TrasladoUbicacion, idMethod: native }
+    id:                                ~
+    empresa_id:                        ~
+    tienda_id:                         ~
+    observaciones:                     { type: varchar(450) } 
+    usuario:                           { type: varchar(50) } 
+    fecha:                             { type: date }
+    estado:                            { type: varchar(50) } 
+    
+  traslado_ubicacion_detalle:
+    _attributes: { phpName: TrasladoUbicacionDetalle, idMethod: native }
+    id:                                ~
+    traslado_ubicacion_id:             ~    
+    producto_id:                       ~ 
+    ubicacion_original:                { type: varchar(50) } 
+    cantidad:                          { type: integer } 
+    tienda_id:                         ~
+    nueva_ubicacion:                   { type: varchar(50) } 
+    
