@@ -53,6 +53,16 @@ abstract class BaseProductoFormFilter extends BaseFormFilterPropel
       'unidad_medida'             => new sfWidgetFormFilterInput(),
       'unidad_medida_costo'       => new sfWidgetFormFilterInput(),
       'costo_anterior'            => new sfWidgetFormFilterInput(),
+      'codigo_arancel'            => new sfWidgetFormFilterInput(),
+      'marca_producto'            => new sfWidgetFormFilterInput(),
+      'caracteristica'            => new sfWidgetFormFilterInput(),
+      'nombre_ingles'             => new sfWidgetFormFilterInput(),
+      'alto'                      => new sfWidgetFormFilterInput(),
+      'ancho'                     => new sfWidgetFormFilterInput(),
+      'largo'                     => new sfWidgetFormFilterInput(),
+      'peso'                      => new sfWidgetFormFilterInput(),
+      'costo_fabrica'             => new sfWidgetFormFilterInput(),
+      'costo_cif'                 => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -97,6 +107,16 @@ abstract class BaseProductoFormFilter extends BaseFormFilterPropel
       'unidad_medida'             => new sfValidatorPass(array('required' => false)),
       'unidad_medida_costo'       => new sfValidatorPass(array('required' => false)),
       'costo_anterior'            => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
+      'codigo_arancel'            => new sfValidatorPass(array('required' => false)),
+      'marca_producto'            => new sfValidatorPass(array('required' => false)),
+      'caracteristica'            => new sfValidatorPass(array('required' => false)),
+      'nombre_ingles'             => new sfValidatorPass(array('required' => false)),
+      'alto'                      => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
+      'ancho'                     => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
+      'largo'                     => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
+      'peso'                      => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
+      'costo_fabrica'             => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
+      'costo_cif'                 => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('producto_filters[%s]');
@@ -156,6 +176,16 @@ abstract class BaseProductoFormFilter extends BaseFormFilterPropel
       'unidad_medida'             => 'Text',
       'unidad_medida_costo'       => 'Text',
       'costo_anterior'            => 'Number',
+      'codigo_arancel'            => 'Text',
+      'marca_producto'            => 'Text',
+      'caracteristica'            => 'Text',
+      'nombre_ingles'             => 'Text',
+      'alto'                      => 'Number',
+      'ancho'                     => 'Number',
+      'largo'                     => 'Number',
+      'peso'                      => 'Number',
+      'costo_fabrica'             => 'Number',
+      'costo_cif'                 => 'Number',
     );
   }
 }

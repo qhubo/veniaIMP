@@ -74,7 +74,8 @@ class edita_productoActions extends sfActions {
 //                $this->getUser()->setFlash('exito', ' Informacion actualizada con exito  ');
 //                $imagen = $valores['imagen'];
 //                if ($imagen) {
-//                    $nombre = "IMAGEN" . sha1(rand(1, 10) . date('YmdHi'));
+//                    $
+//                     = "IMAGEN" . sha1(rand(1, 10) . date('YmdHi'));
 //                    $filename = $nombre . date("ymd") . $imagen->getExtension($imagen->getOriginalExtension());
 //                    $imagen->save($carpetaArchivos . 'producto/' . DIRECTORY_SEPARATOR . $filename);
 //
@@ -194,8 +195,10 @@ class edita_productoActions extends sfActions {
                 $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaproducto'));
             }
         }
+
+
         if ($valores) {
-            $nombre = $valores['nombrebuscar']; // => 4555
+            $nombre = $valores['producto']; // => 4555
             $tipo = $valores['tipo']; // => 4
             $marca = $valores['marca']; // =>
             $modelo = $valores['modelo']; // =>
@@ -209,6 +212,10 @@ class edita_productoActions extends sfActions {
 //            if ($estatus == 0) {
 //                $operaciones->filterByEstatus(0);
 //            }
+            if ($nombre <> "") {
+                $operaciones->where("(Producto.CodigoSku like '%" . $nombre . "%' or Producto.Nombre like '%" . $nombre . "%')");
+            }
+
             if ($estatus == 1) {
                 $operaciones->filterByEstatus(1);
             }
@@ -239,7 +246,7 @@ class edita_productoActions extends sfActions {
         $this->producto = ProductoQuery::create()->findOneById($id);
         $producto = ProductoQuery::create()->findOneById($id);
         $valores = null;
-        $valores['activo']=true;
+        $valores['activo'] = true;
         if ($producto) {
             $valores['codigo_sku'] = $producto->getCodigoSku();
             $valores['nombre'] = $producto->getNombre();
@@ -275,6 +282,16 @@ class edita_productoActions extends sfActions {
             $valores['salida'] = $producto->getSalida();
             $valores['afecto_inventario'] = $producto->getAfectoInventario();
             $valores['traslado'] = $producto->getTraslado();
+            $valores['costo_fabrica'] = $producto->getCostoFabrica();
+            $valores['costo_cif'] = $producto->getCostoCif();
+            $valores['peso'] = $producto->getPeso();
+            $valores['caracteristica'] = $producto->getCaracteristica();
+            $valores['marcaProducto'] = $producto->getMarcaProducto();
+            $valores['codigo_arancel'] = $producto->getCodigoArancel();
+            $valores['alto'] = $producto->getAlto();
+            $valores['ancho'] = $producto->getAncho();
+            $valores['largo'] = $producto->getLargo();
+            $valores['nombre_ingles']=$producto->getNombreIngles();
             sfContext::getInstance()->getUser()->setAttribute('tipo_id', $producto->getTipoAparatoId(), 'seguridad');
             sfContext::getInstance()->getUser()->setAttribute('marca_id', $producto->getMarcaId(), 'seguridad');
         }
@@ -340,6 +357,18 @@ class edita_productoActions extends sfActions {
                     $nuevo->setSalida($valores['salida']);
                     $nuevo->setAfectoInventario($valores['afecto_inventario']);
                     $nuevo->setTraslado($valores['traslado']);
+                    $nuevo->setNombreIngles($valores['nombre_ingles']);
+                    $nuevo->setCaracteristica($valores['caracteristica']);
+                    $nuevo->setMarcaProducto($valores['marcaProducto']);
+                    $nuevo->setCodigoArancel($valores['codigo_arancel']);
+                    $nuevo->setCodigoProveedor($valores['codigo_proveedor']);
+                    $nuevo->setCostoFabrica($valores['costo_fabrica']);
+                    $nuevo->setCostoCif($valores['costo_cif']);
+                    $nuevo->setPeso($valores['peso']);
+                    $nuevo->setAlto($valores['alto']);
+                    $nuevo->setAncho($valores['ancho']);
+                    $nuevo->setLargo($valores['largo']);
+                    
                     $nuevo->save();
                     $con->commit();
                 } catch (Exception $e) {

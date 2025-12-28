@@ -22,79 +22,65 @@
             <table class="table table-bordered  xdataTable table-condensed flip-content" >
                 <thead class="flip-content">
                     <tr class="active">
-                        <th  align="center"><font size="-1"><?php echo strtoupper ('codigo_sku') ?></font>  </th>
+                        <th  align="center"><font size="-1"><?php echo strtoupper('codigo_sku') ?></font>  </th>
                         <th  align="center"><font size="-1"><?php echo strtoupper('codigo_barras') ?></font></th>
-                        <th  align="center"><font size="-1"><?php echo strtoupper('codigo_grupo') ?> </font><?php //echo TipoAparatoQuery::tipo();     ?> </th>
-                        <th  align="center"><font size="-1"><?php echo strtoupper('grupo') ?></font><?php //echo TipoAparatoQuery::tipo();     ?> </th>
-                        <th  align="center"><font size="-1"><?php echo strtoupper('codigo_subgrupo') ?></font><?php //echo TipoAparatoQuery::marca();     ?></th>
-                        <th  align="center"><font size="-1"><?php echo strtoupper('subgrupo') ?> </font><?php //echo TipoAparatoQuery::modelo();     ?></th>
-                        <th  align="center"><font size="-1"><?php echo strtoupper('codigo_categoria') ?></font></th>
-                        <th  align="center"><font size="-1"><?php echo strtoupper('categoria') ?></font></th> 
-                        <th  align="center"><font size="-1"><?php echo strtoupper('nombre') ?></font></th> 
-                        <th  align="center"><font size="-1"><?php echo strtoupper('descripcion') ?></font></th> 
-                        
-                        <th  align="center"><font size="-1"><?php echo strtoupper('PERECEDERO') ?></font></th> 
-                        <th  align="center"><font size="-1"><?php echo strtoupper('precio') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('codigo_arancel') ?></font></th>
+                        <th  align="center"><font size="-1"><?php echo strtoupper('codigo_grupo') ?> </font><?php //echo TipoAparatoQuery::tipo();      ?> </th>
+                        <th  align="center"><font size="-1"><?php echo strtoupper('grupo') ?></font><?php //echo TipoAparatoQuery::tipo();      ?> </th>
+                        <th  align="center"><font size="-1"><?php echo strtoupper('codigo_subgrupo') ?></font><?php //echo TipoAparatoQuery::marca();      ?></th>
+                        <th  align="center"><font size="-1"><?php echo strtoupper('subgrupo') ?> </font><?php //echo TipoAparatoQuery::modelo();      ?></th>
                         <th  align="center"><font size="-1"> <?php echo strtoupper('codigo_proveedor') ?></font></th>
                         <th  align="center"><font size="-1"><?php echo strtoupper('proveedor') ?></font></th>
-<!--                        <th  align="center"><font size="-1"><?php echo strtoupper('unidad_costo') ?></font></th> -->
+                        <th  align="center"><font size="-1"><?php echo strtoupper('marca') ?></font></th>
+                        <th  align="center"><font size="-1"><?php echo strtoupper('caracteristicas') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('nombre') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('descripcion') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('nombre ingles') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('precio') ?></font></th> 
                         <th  align="center"><font size="-1"><?php echo strtoupper('costo') ?></font></th> 
-
-                   
-
+                        <th  align="center"><font size="-1"><?php echo strtoupper('existencia') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('alto') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('ancho') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('largo') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('peso') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('costo fabrica') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('costo cif') ?></font></th>                       
+                        <th  align="center"><font size="-1"></font></th>                   
                     </tr>
-                    
-                    <tr class="active">
-                        <th  align="center"><font size="-2"> CODIGO SKU </font></th>
-                        <th  align="center"><font size="-2">CODIGO BARRAS </font></th>
-                        <th  align="center"><font size="-2">COD GRUPO </font><?php //echo TipoAparatoQuery::tipo();     ?> </th>
-                        <th  align="center"><font size="-2">GRUPO </font><?php //echo TipoAparatoQuery::tipo();     ?> </th>
-                        <th  align="center"><font size="-2">COD SUBGRUPO </font><?php //echo TipoAparatoQuery::marca();     ?></th>
-                        <th  align="center"><font size="-2">SUBGRUPO </font><?php //echo TipoAparatoQuery::marca();     ?></th>
-                        <th  align="center"><font size="-2">COD CATEGORIA </font> <?php //echo TipoAparatoQuery::modelo();     ?></th>
-                        <th  align="center"><font size="-2">CATEGORIA </font> <?php //echo TipoAparatoQuery::modelo();     ?></th>
-                        <th  align="center"><font size="-2">NOMBRE </font></th>
-                        <th  align="center"><font size="-2">DESCRIPCION </font></th> 
-                        <th  align="center"><font size="-2">PERECEDERO </font> <?php //echo TipoAparatoQuery::modelo();     ?></th>
 
-                        <th  align="center"><font size="-2">PRECIO </font><?php //echo TipoAparatoQuery::modelo();     ?></th>
-                        <th  align="center"><font size="-2">COD PROVEEDOR </font> <?php //echo TipoAparatoQuery::modelo();     ?></th>
-                        <th  align="center"><font size="-2">PROVEEDOR </font><?php //echo TipoAparatoQuery::modelo();     ?></th>
-<!--                          <th  align="center"><font size="-2">UNIDAD COSTO </font> <?php //echo TipoAparatoQuery::modelo();     ?></th>-->
-
-                        <th  align="center"><font size="-2">COSTO </font> <?php //echo TipoAparatoQuery::modelo();     ?></th>
-   
-    <th  align="center"><font size="-2">CANTIDAD </font> <?php //echo TipoAparatoQuery::modelo();     ?></th>
-   
-            
-                    </tr>
                 </thead>
                 <tbody>
-                      <?php foreach ($datos as $registro)  { ?>
-                    <tr>
-                        <td><font size="-3"><?php echo $registro['CODIGO'] ?></font></td>
+                    <?php foreach ($datos as $registro) { ?>
+                        <tr>
+                            <td><font size="-3"><?php echo $registro['CODIGO_SKU'] ?></font></td>
                             <td><font size="-3"><?php echo $registro['CODIGOBARRAS'] ?></font></td>
+                            <td><font size="-3"><?php echo $registro['CODIGO_ARANCEL'] ?></font></td>
                             <td><font size="-3"><?php echo $registro['COD_GRUPO'] ?></font></td>
                             <td><font size="-3"><?php echo $registro['GRUPO'] ?></font></td>
                             <td><font size="-3"><?php echo $registro['COD_SUBGRUPO'] ?></font></td>
                             <td><font size="-3"><?php echo $registro['SUBGRUPO'] ?></font></td>
-                            <td><font size="-3"><?php echo $registro['COD_CATEGORIA'] ?></font></td>
-                            <td><font size="-3"><?php echo $registro['CATEGORIA'] ?></font></td>
+                            <td><font size="-3"><?php echo $registro['COD_PROVEEDOR'] ?></font></td>
+                            <td><font size="-3"><?php echo $registro['PROVEEDOR'] ?></font></td>                            
+                            <td><font size="-3"><?php echo $registro['MARCA'] ?></font></td>
+                            <td><font size="-3"><?php echo $registro['CARACTERISTICAS'] ?></font></td>
                             <td><font size="-3"><?php echo $registro['NOMBRE'] ?></font></td>
                             <td><font size="-3"><?php echo $registro['DESCRIPCION'] ?></font></td>
-                            <td><font size="-3"><?php echo $registro['PERECEDERO'] ?></font></td>
-                               <td  align="right"><font size="-3"><?php echo number_format($registro['PRECIO'], 2) ?></font></td>
+                            <td><font size="-3"><?php echo $registro['NOMBRE_INGLES'] ?></font></td>
+                            <td  align="right"><font size="-3"><?php echo number_format($registro['PRECIO'], 2) ?></font></td>
+                            <td><font size="-3"><?php echo $registro['COSTO'] ?></font></td>
+                            <td><font size="-3"><?php echo $registro['EXISTENCIA'] ?></font></td>
+                            <td><font size="-3"><?php echo $registro['ALTO'] ?></font></td>
+                            <td><font size="-3"><?php echo $registro['ANCHO'] ?></font></td>
+                            <td><font size="-3"><?php echo $registro['LARGO'] ?></font></td>
+                            <td><font size="-3"><?php echo $registro['PESO'] ?></font></td>
+                            <td><font size="-3"><?php echo $registro['COSTO_FABRICA'] ?></font></td>
+                            <td><font size="-3"><?php echo $registro['COSTO_CIF'] ?></font></td>
 
-                            <td><font size="-3"><?php echo $registro['COD_PROVEEDOR'] ?></font></td>
-                            <td><font size="-3"><?php echo $registro['PROVEEDOR'] ?></font></td>
-<!--                            <td><font size="-3"><?php echo $registro['UNIDAD_COSTO']?></font></td>-->
-   <td><font size="-3"><?php echo $registro['COSTO'] ?></font></td>
-   <td><font size="-3"><?php echo $registro['CANTIDAD'] ?></font></td>
-                    </tr>    
-                  <?php  } ?>
+                        </tr>    
+                    <?php } ?>
                 </tbody>
             </table>
-                   <hr>
+            <hr>
             <div class="row">
                 <div class="col-lg-1"></div>
                 <div class="col-lg-7 note note-info note-bordered text-right"><p> Confirmar el listado de productos nuevos</p> </div>

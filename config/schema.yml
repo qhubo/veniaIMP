@@ -708,6 +708,15 @@ propel:
     venta:                            { type: boolean, default: false }
     _uniques:
        llave:                          [ descripcion,empresa_id ] 
+
+  marca_producto:
+    _attributes: { phpName: MarcaProducto, idMethod: native }
+    id:                                ~
+    empresa_id:                        ~
+    codigo:                            { type: varchar(50)}
+    nombre:                       { type: varchar(150), primaryString: true, default: '' }
+    activo:                            { type: boolean, default: true }       
+       
        
   marca:
     _attributes: { phpName: Marca, idMethod: native }
@@ -803,7 +812,17 @@ propel:
     proveedor_id:                      ~ 
     unidad_medida:                     { type: varchar(60) }
     unidad_medida_costo:               { type: varchar(60) }
-    costo_anterior:                   { type: double } 
+    costo_anterior:                    { type: double } 
+    codigo_arancel:                    { type: varchar(50) }
+    marca_producto:                    { type: varchar(150) }
+    caracteristica:                    { type: varchar(150) }
+    nombre_ingles:                     { type: varchar(350) }
+    alto:                              { type: double }
+    ancho:                             { type: double }
+    largo:                             { type: double }
+    peso:                              { type: double }
+    costo_fabrica:                     { type: double }
+    costo_cif:                         { type: double }
     _uniques:
        llave:                          [ codigo_sku]        
   

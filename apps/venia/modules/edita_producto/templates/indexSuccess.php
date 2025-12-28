@@ -57,26 +57,7 @@
                 </span>
             </div>
 
-
-
-
-
-        </div>
-
-
-        <div class="row" style="padding-top:5px">
-            <div class="col-lg-1"> </div>        
-            <label class="col-lg-1 control-label right "><?php echo TipoAparatoQuery::modelo(); ?>  </label>
-            <div class="col-lg-5 <?php if ($form['modelo']->hasError()) echo "has-error" ?>">
-                <?php echo $form['modelo'] ?>           
-                <span class="help-block form-error"> 
-                    <?php echo $form['modelo']->renderError() ?>  
-                </span>
-            </div>
-            <div class="col-lg-1">
-
-
-            </div>
+  <div class="col-lg-1"> </div>
             <div class="col-lg-2">
 
                 <button class="btn btn-dark  btn-small btn-outline" type="submit">
@@ -103,19 +84,6 @@
             </div>
         </div>
 
-
-        <!--    <div class="kt-portlet__body">
-                           <div class="row">
-                            <div class="col-lg-10"></div>
-                                <div class="col-lg-2">				
-                                        <div class="kt-input-icon kt-input-icon--left">
-                                            <input type="text" class="form-control" placeholder="Buscar..." id="generalSearch">
-                                            <span class="kt-input-icon__icon kt-input-icon__icon--left">
-                                                <span><i class="la la-search"></i></span>
-                                            </span>
-                                        </div>
-                                </div>
-                            </div>-->
         <table class="table table-bordered  dataTable table-condensed flip-content" >
             <thead >
                 <tr class="active">
@@ -123,6 +91,7 @@
                     <th  align="center"><font size="-2"> Codigo Sku</font></th>
                     <th  align="center"><font size="-2"> Grupo</font></th>
                     <th  align="center"><font size="-2"> Nombre</font></th>
+                    <th  align="center"><font size="-2"> Caracteristica</font></th>
                     <th  align="center"><font size="-2"> Activo</font></th>
                     <th><font size="-2">Editar</font></th>
                     <th><font size="-2">Eliminar</font></th>
@@ -136,8 +105,11 @@
                             <td>  <img src="<?php echo $lista->getImagen() ?>" width="75px" ></td>
                             <td><?php echo $lista->getCodigoSku() ?></td>
                             <td><font size="-1"> <?php echo $lista->getTipoAparato(); ?></font> </td>
-                            <td> <font size="-1"> <?php echo $lista->getNombre(); ?></font>  </td>
-        
+                            <td> <font size="-1"> <?php echo $lista->getNombre(); ?></font> 
+                                <br>
+                                 <font size="-1"> <?php echo $lista->getNombreIngles(); ?></font> 
+                            </td>
+                            <td> <font size="-1"> <?php echo $lista->getCaracteristica(); ?></font> </td>
                             <td> <font size="-1"> <?php if ($lista->getActivo()) { ?><li class="fa fa-check  font-green-jungle"></li> <?php } ?> </font>  </td>
 
                     <td>

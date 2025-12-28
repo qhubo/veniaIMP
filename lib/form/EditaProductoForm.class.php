@@ -3,11 +3,9 @@
 class EditaProductoForm extends sfForm {
 
     public function configure() {
-                  $this->setWidget(
-        "archivo" , new sfWidgetFormInputFile(array(), array(
-      //      "class" => "file-upload", 
-           )));
-       
+
+          $this->setWidget( "archivo", new sfWidgetFormInputFile(array(), array('label'=>'label', 'accept' => 'image/png, image/jpeg', )));
+   
         $this->setValidator('archivo',  new sfValidatorFile(array('required' => false), array()) );
         
         
@@ -29,8 +27,7 @@ class EditaProductoForm extends sfForm {
                     ->orderByNombre("Desc")
                     ->find();
         } else {
-
-            $proveedorQuery = ProveedorQuery::create()
+         $proveedorQuery = ProveedorQuery::create()
                     ->filterById($proveedor_id)
                     ->orderByNombre("Desc")
                     ->find();
@@ -39,22 +36,40 @@ class EditaProductoForm extends sfForm {
             $lineaProve[$regis->getId()] = $regis->getNombre();
         }
 
-        $this->setWidget('proveedor', new sfWidgetFormChoice(array(
-            "choices" => $lineaProve,
-                ), array("class" => "form-control")));
-
+        $this->setWidget('proveedor', new sfWidgetFormChoice(array( "choices" => $lineaProve ), array("class" => "form-control")));
         $this->setValidator('proveedor', new sfValidatorString(array('required' => false)));
+ $lineaMarca[null] = '[ Seleccione  ]';
+$marcaQ = MarcaProductoQuery::create()->find();
+     foreach ($marcaQ as $regis) {
+            $lineaMarca[$regis->getNombre()] = $regis->getNombre();
+        }
+        
+        $this->setWidget('marcaProducto', new sfWidgetFormChoice(array( "choices" => $lineaMarca ), array("class" => "form-control")));
+        $this->setValidator('marcaProducto', new sfValidatorString(array('required' => false)));
 
-        $this->setWidget('link_descarga', new sfWidgetFormInputText(array(), array('class' => 'form-control',
-        )));
+        
+        
+        
+        $this->setWidget('link_descarga', new sfWidgetFormInputText(array(), array('class' => 'form-control',)));
         $this->setValidator('link_descarga', new sfValidatorString(array('required' => false)));
+        
+        $this->setWidget('caracteristica', new sfWidgetFormInputText(array(), array('class' => 'form-control',  )));
+        $this->setValidator('caracteristica', new sfValidatorString(array('required' => false)));
 
-
+  $this->setWidget('codigo_arancel', new sfWidgetFormInputText(array(), array('class' => 'form-control',)));
+        $this->setValidator('codigo_arancel', new sfValidatorString(array('required' => false)));
+        
 
         $this->setWidget('nombre', new sfWidgetFormInputText(array(), array('class' => 'form-control',
             "placeholder" => "Ingrese nombre producto",
         )));
         $this->setValidator('nombre', new sfValidatorString(array('required' => true)));
+        
+         $this->setWidget('nombre_ingles', new sfWidgetFormInputText(array(), array('class' => 'form-control',
+            "placeholder" => "Ingrese nombre ingles",
+        )));
+        $this->setValidator('nombre_ingles', new sfValidatorString(array('required' => false)));
+        
 
         $this->setWidget('descripcion', new sfWidgetFormTextarea(array(), array('class' => 'form-control EditorMce')));
         $this->setValidator('descripcion', new sfValidatorString(array('required' => false)));
@@ -100,9 +115,7 @@ class EditaProductoForm extends sfForm {
              "placeholder" => "* Código Automatico ",
         )));
         $this->setValidator('codigo_sku', new sfValidatorString(array('required' => false)));
-        $this->setWidget('codigo_barras', new sfWidgetFormInputText(array(), array('class' => 'form-control',
-           
-        )));
+        $this->setWidget('codigo_barras', new sfWidgetFormInputText(array(), array('class' => 'form-control',)));
         $this->setValidator('codigo_barras', new sfValidatorString(array('required' => false)));
         $this->setWidget('codigo_proveedor', new sfWidgetFormInputText(array(), array('class' => 'form-control',
                 //         "placeholder" => "Ingrese nombre producto",
@@ -119,12 +132,14 @@ class EditaProductoForm extends sfForm {
         )));
 
         $this->setValidator('existencia', new sfValidatorString(array('required' => false)));
-        $this->setWidget('costo', new sfWidgetFormInputText(array(), array('class' => 'form-control',
-            'type' => 'number', 'step' => 'any'
-                //         "placeholder" => "Ingrese nombre producto",
-        )));
-
+        $this->setWidget('costo', new sfWidgetFormInputText(array(), array('class' => 'form-control', 'type' => 'number', 'step' => 'any' )));
         $this->setValidator('costo', new sfValidatorString(array('required' => false)));
+        $this->setWidget('costo_fabrica', new sfWidgetFormInputText(array(), array('class' => 'form-control', 'type' => 'number', 'step' => 'any' )));
+        $this->setValidator('costo_fabrica', new sfValidatorString(array('required' => false)));
+        $this->setWidget('costo_cif', new sfWidgetFormInputText(array(), array('class' => 'form-control', 'type' => 'number', 'step' => 'any' )));
+        $this->setValidator('costo_cif', new sfValidatorString(array('required' => false)));
+
+        
         $this->setWidget('peso', new sfWidgetFormInputText(array(), array('class' => 'form-control',
             'type' => 'number', 'step' => 'any'
                 //         "placeholder" => "Ingrese nombre producto",

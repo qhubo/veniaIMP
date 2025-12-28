@@ -24,20 +24,28 @@
                     <tr class="active">
                         <th  align="center"><font size="-1"><?php echo strtoupper ('codigo_sku') ?></font>  </th>
                         <th  align="center"><font size="-1"><?php echo strtoupper('codigo_barras') ?></font></th>
+                        <th  align="center"><font size="-1"><?php echo strtoupper('codigo_arancel') ?></font></th>
                         <th  align="center"><font size="-1"><?php echo strtoupper('codigo_grupo') ?> </font><?php //echo TipoAparatoQuery::tipo();     ?> </th>
                         <th  align="center"><font size="-1"><?php echo strtoupper('grupo') ?></font><?php //echo TipoAparatoQuery::tipo();     ?> </th>
                         <th  align="center"><font size="-1"><?php echo strtoupper('codigo_subgrupo') ?></font><?php //echo TipoAparatoQuery::marca();     ?></th>
                         <th  align="center"><font size="-1"><?php echo strtoupper('subgrupo') ?> </font><?php //echo TipoAparatoQuery::modelo();     ?></th>
-                        <th  align="center"><font size="-1"><?php echo strtoupper('codigo_categoria') ?></font></th>
-                        <th  align="center"><font size="-1"><?php echo strtoupper('categoria') ?></font></th> 
-                        <th  align="center"><font size="-1"><?php echo strtoupper('nombre') ?></font></th> 
-                        <th  align="center"><font size="-1"><?php echo strtoupper('descripcion') ?></font></th> 
-                        <th  align="center"><font size="-1"><?php echo strtoupper('unidad') ?></font></th> 
-                        <th  align="center"><font size="-1"><?php echo strtoupper('precio') ?></font></th> 
                         <th  align="center"><font size="-1"> <?php echo strtoupper('codigo_proveedor') ?></font></th>
                         <th  align="center"><font size="-1"><?php echo strtoupper('proveedor') ?></font></th>
-                        <th  align="center"><font size="-1"><?php echo strtoupper('unidad_costo') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('marca') ?></font></th>
+                        <th  align="center"><font size="-1"><?php echo strtoupper('caracteristicas') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('nombre') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('descripcion') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('nombre ingles') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('precio') ?></font></th> 
                         <th  align="center"><font size="-1"><?php echo strtoupper('costo') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('existencia') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('alto') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('ancho') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('largo') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('peso') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('costo fabrica') ?></font></th> 
+                        <th  align="center"><font size="-1"><?php echo strtoupper('costo cif') ?></font></th> 
+                       
   <th  align="center"><font size="-1"></font></th> 
 
                    

@@ -22,6 +22,11 @@ class ProductoMovimientoQuery extends BaseProductoMovimientoQuery {
         if ($bodegaDestino) {
             $bodegaID = $bodegaDestino;
         }
+              if (!$bodegaID) {
+                        $BodegaQ = TiendaQuery::create()->findOne();
+                        $bodegaID=$BodegaQ->getId();
+                    }
+              
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
 
         date_default_timezone_set("America/Guatemala");
@@ -33,7 +38,9 @@ class ProductoMovimientoQuery extends BaseProductoMovimientoQuery {
         if (!$movimienoto) {
             $movimienoto = new ProductoMovimiento();
         }
+
         $producto = ProductoQuery::create()->findOneById($productoId);
+
         if ($producto) {
             $inicial = $producto->getExistenciaBodega($bodegaID);
             $nuevoValor = $inicial + $cantidad;
@@ -61,6 +68,7 @@ class ProductoMovimientoQuery extends BaseProductoMovimientoQuery {
             $movimienoto->save();
             return $movimienoto->getId();
         }
+        
     }
 
     static public function Salida($productoId, $cantidad, $motivo, $bodegaID, $prefijo, $fecha = null, $valores = null,$lineaNo =null) {

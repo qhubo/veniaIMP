@@ -56,6 +56,16 @@ abstract class BaseProductoForm extends BaseFormPropel
       'unidad_medida'             => new sfWidgetFormInputText(),
       'unidad_medida_costo'       => new sfWidgetFormInputText(),
       'costo_anterior'            => new sfWidgetFormInputText(),
+      'codigo_arancel'            => new sfWidgetFormInputText(),
+      'marca_producto'            => new sfWidgetFormInputText(),
+      'caracteristica'            => new sfWidgetFormInputText(),
+      'nombre_ingles'             => new sfWidgetFormInputText(),
+      'alto'                      => new sfWidgetFormInputText(),
+      'ancho'                     => new sfWidgetFormInputText(),
+      'largo'                     => new sfWidgetFormInputText(),
+      'peso'                      => new sfWidgetFormInputText(),
+      'costo_fabrica'             => new sfWidgetFormInputText(),
+      'costo_cif'                 => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -101,6 +111,16 @@ abstract class BaseProductoForm extends BaseFormPropel
       'unidad_medida'             => new sfValidatorString(array('max_length' => 60, 'required' => false)),
       'unidad_medida_costo'       => new sfValidatorString(array('max_length' => 60, 'required' => false)),
       'costo_anterior'            => new sfValidatorNumber(array('required' => false)),
+      'codigo_arancel'            => new sfValidatorString(array('max_length' => 50, 'required' => false)),
+      'marca_producto'            => new sfValidatorString(array('max_length' => 150, 'required' => false)),
+      'caracteristica'            => new sfValidatorString(array('max_length' => 150, 'required' => false)),
+      'nombre_ingles'             => new sfValidatorString(array('max_length' => 350, 'required' => false)),
+      'alto'                      => new sfValidatorNumber(array('required' => false)),
+      'ancho'                     => new sfValidatorNumber(array('required' => false)),
+      'largo'                     => new sfValidatorNumber(array('required' => false)),
+      'peso'                      => new sfValidatorNumber(array('required' => false)),
+      'costo_fabrica'             => new sfValidatorNumber(array('required' => false)),
+      'costo_cif'                 => new sfValidatorNumber(array('required' => false)),
     ));
 
     $this->validatorSchema->setPostValidator(

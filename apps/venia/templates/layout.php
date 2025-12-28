@@ -100,9 +100,6 @@ License: You must have a valid license purchased only from themeforest(the above
                                 <?php } ?>
                             </div>
                             <div class="kt-header__brand   kt-grid__item" id="kt_header_brand">
-                                <a href="<?php echo url_for('busqueda_producto/index') ?>" class="btn btn-sm" > 
-🔍 Buscador 
-        </a>
 
                                 <a href="#" data-toggle="modal" data-target="#kt_modal_t">
                                     <img height="65px" alt="Logo" src="<?php echo sfContext::getInstance()->getUser()->getAttribute("imagen", null, 'seguridad'); ?>" />
