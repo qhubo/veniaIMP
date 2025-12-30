@@ -53,7 +53,7 @@ class IngresoClienteForm extends sfForm {
         $this->setValidator('regimen_isr', new sfValidatorString(array('required' => false)));
         $this->setValidator('direccion', new sfValidatorString(array('required' => FALSE)));
         $this->setWidget('direccion', new sfWidgetFormInputText(array(), array('class' => 'form-control ', "placeholder" => "Dirección")));
-        $this->setWidget('telefono', new sfWidgetFormInputText(array("type"=>'number'), array('class' => 'form-control ', "placeholder" => "0000-0000")));
+        $this->setWidget('telefono', new sfWidgetFormInputText(array(), array('class' => 'form-control ', "placeholder" => "0000-0000")));
         $this->setWidget('nit', new sfWidgetFormInputText(array(), array('class' => 'form-control ', "placeholder" => "Identificación Tributaria")));
            $this->setWidget('correo_electronico', new sfWidgetFormInputText(array(), array('class' => 'form-control ', 'type' => "email", "placeholder" => "correo@correo.com")));
         $this->setValidator('correo_electronico', new sfValidatorString(array('required' => FALSE)));

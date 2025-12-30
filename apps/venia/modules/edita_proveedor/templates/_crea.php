@@ -1,9 +1,9 @@
 
 
 
-<div class="row">
+<div class="row" style="padding-top:5px;">
     <div  class="col-lg-2">
-        Nit     
+        RUC/ Nit     
     </div>
     <div class="col-lg-2  <?php if ($form['nit']->hasError()) echo "has-error" ?>">
         <?php echo $form['nit'] ?>          
@@ -39,18 +39,14 @@
         <span class="help-block form-error"> 
             <?php echo $form['activo']->renderError() ?>       
         </span>
-
     </div>    
-
-
-
 
 </div>
 
 
 
 
-<div class="row">
+<div class="row" style="padding-top:5px;">
     <div  class="col-lg-2">
         Nombre   *
     </div>
@@ -64,7 +60,7 @@
 
 
 
-<div class="row">
+<div class="row" style="padding-top:5px;">
     <div  class="col-lg-2">
         Razón Social     
     </div>
@@ -79,12 +75,27 @@
 
 
 
-
-
-<div class="row">
+<div class="row" style="padding-top:5px;">
 
     <div  class="col-lg-2">
-        Departamento     
+        Pais     
+    </div>
+    <div class="col-lg-3   <?php if ($form['pais']->hasError()) echo "has-error" ?>">
+        <?php echo $form['pais'] ?>          
+        <span class="help-block form-error"> 
+            <?php echo $form['pais']->renderError() ?>       
+        </span>
+    </div>
+
+  
+</div> 
+
+
+
+<div class="row" style="padding-top:5px;">
+
+    <div  class="col-lg-2">
+        Provincia     
     </div>
     <div class="col-lg-3   <?php if ($form['departamento']->hasError()) echo "has-error" ?>">
         <?php echo $form['departamento'] ?>          
@@ -94,7 +105,7 @@
     </div>
 
     <div  class="col-lg-2">
-        Municipio     
+        Corregimiento     
     </div>
     <div class="col-lg-4   <?php if ($form['municipio']->hasError()) echo "has-error" ?>">
         <?php echo $form['municipio'] ?>          
@@ -104,7 +115,7 @@
     </div>
 </div> 
 
-<div class="row">
+<div class="row" style="padding-top:5px;">
     <div  class="col-lg-2">
         Dirección     
     </div>
@@ -118,7 +129,7 @@
 
 
 
-<div class="row">
+<div class="row" style="padding-top:5px;">
     <div  class="col-lg-2">
         Teléfonos     
     </div>
@@ -139,7 +150,7 @@
         </span>
     </div>
 </div>
-<div class="row">
+<div class="row" style="padding-top:5px;">
     <div  class="col-lg-2">
         Tipo Proveedor     
     </div>
@@ -164,7 +175,7 @@
 </div>
 
 
-<div class="row">
+<div class="row" style="padding-top:5px;">
 
     <div  class="col-lg-2">
         Sitio Web     
@@ -177,7 +188,7 @@
     </div>  
 </div>
 
-<div class="row">
+<div class="row" style="padding-top:5px;">
     <div  class="col-lg-2">
         Contacto     
     </div>
@@ -203,7 +214,7 @@
 
 
 
-<div class="row">
+<div class="row" style="padding-top:5px;">
     <div  class="col-lg-2">
         Teléfono Contacto
     </div>
@@ -229,7 +240,7 @@
 
 
 
-<div class="row">
+<!--<div class="row">
 
     <div  class="col-lg-1">
         Retiene Iva   
@@ -271,8 +282,8 @@
         </span>
 
     </div>  
-</div>  
-<div class="row">
+</div>  -->
+<!--<div class="row">
     <div  class="col-lg-2">
         Cuenta Contable
     </div>
@@ -285,4 +296,4 @@
         </span>
 
     </div>  
-</div>  
+</div>  -->

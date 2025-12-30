@@ -305,7 +305,7 @@ propel:
     retine_isr:                        { type: boolean, default: false }  
     exento_isr:                        { type: boolean, default: false } 
     cuenta_contable:                   { type: varchar(20) }
-     
+    pais_id:                           ~
      
    
   tipo_servicio:
@@ -1288,7 +1288,7 @@ propel:
     id:                               ~  
     empresa_id:                       ~  
     producto_id:                      ~ 
-    valor:                            { type: integer }
+    valor:                            { type: double }
     lista_precio_id:                  ~    
     
   lista_precio:

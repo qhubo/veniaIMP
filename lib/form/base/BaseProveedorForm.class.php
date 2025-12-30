@@ -57,6 +57,7 @@ abstract class BaseProveedorForm extends BaseFormPropel
       'retine_isr'           => new sfWidgetFormInputCheckbox(),
       'exento_isr'           => new sfWidgetFormInputCheckbox(),
       'cuenta_contable'      => new sfWidgetFormInputText(),
+      'pais_id'              => new sfWidgetFormPropelChoice(array('model' => 'Pais', 'add_empty' => true)),
     ));
 
     $this->setValidators(array(
@@ -103,6 +104,7 @@ abstract class BaseProveedorForm extends BaseFormPropel
       'retine_isr'           => new sfValidatorBoolean(array('required' => false)),
       'exento_isr'           => new sfValidatorBoolean(array('required' => false)),
       'cuenta_contable'      => new sfValidatorString(array('max_length' => 20, 'required' => false)),
+      'pais_id'              => new sfValidatorPropelChoice(array('model' => 'Pais', 'column' => 'id', 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('proveedor[%s]');

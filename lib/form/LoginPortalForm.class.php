@@ -102,6 +102,8 @@ class LoginPortalForm extends sfForm {
                     
                     
                     sfContext::getInstance()->getUser()->setAttribute("tienda", $valido->getTiendaId(), 'seguridad');
+                    sfContext::getInstance()->getUser()->setAttribute("usuario", $valido->getTiendaId(), 'bodega');
+                    sfContext::getInstance()->getUser()->setAttribute("usuario", $valido->getTiendaId(), 'bodegaSele');
                    sfContext::getInstance()->getUser()->setAttribute("nombreTienda", "N/A", 'seguridad');
                    if ($valido->getTiendaId()) {
                  //      echo $valido->getTienda()->getNombre();

@@ -92,11 +92,11 @@
         <thead>
             <tr>
                 <th style="font-size:25px;height:15px; font-weight: bold;width:115px; text-align: center;">Código </th>
-                <th  style="font-size:25px;height:20px; font-weight: bold;width:340px;text-align: center;">Nombre</th>
+                <th  style="font-size:25px;height:20px; font-weight: bold;width:390px;text-align: center;">Nombre</th>
                 <th  style="font-size:25px;height:20px; font-weight: bold;width:55px;text-align: center;">Cantidad</th>
                 <th  style="font-size:25px;height:20px; font-weight: bold;width:50px;text-align: center;">Costo</th>
-                <th  style="font-size:25px;height:20px; font-weight: bold;width:80px;text-align: center;">Ubicacion</th>
-                <th  style=" font-size:25px; height:20px; font-weight: bold;width:95px;text-align: center;">Costo Total</th>
+<!--                <th  style="font-size:25px;height:20px; font-weight: bold;width:80px;text-align: center;">Ubicacion</th>-->
+                <th  style=" font-size:25px; height:20px; font-weight: bold;width:125px;text-align: center;">Costo Total</th>
             </tr>
         </thead>
         <tbody>
@@ -107,16 +107,16 @@
    
             <tr>
                 <td style="height:15px; font-size:27px; width:120px"><?php echo $regi->getProducto()->getCodigoSku(); ?></td>
-                <td style="width:350px; font-size:27px;width:335px "><?php echo $regi->getProducto()->getNombre(); ?></td>
+                <td style="width:350px; font-size:27px;width:390px "><?php echo $regi->getProducto()->getNombre(); ?></td>
                 <td style="width:55px;text-align:right;font-size:27px; width:50px"><?php echo $regi->getCantidad(); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td style="width:50px;text-align:right;font-size:27px; "><?php echo  Parametro::formato($regi->getProducto()->getCostoProveedor(),false); ?>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td style="width:90px;text-align:right;font-size:27px; "><?php //echo $regi->getTienda()->getCodigo(); ?>&nbsp;<?php echo $regi->getUbicacion(); ?></td>
-                <td style="width:90px;text-align:right;font-size:27px; "><?php echo Parametro::formato(($regi->getCantidad()*$regi->getProducto()->getCostoProveedor()),false); ?></td>
+<!--                <td style="width:90px;text-align:right;font-size:27px; "><?php //echo $regi->getTienda()->getCodigo(); ?>&nbsp;<?php echo $regi->getUbicacion(); ?></td>-->
+                <td style="width:125px;text-align:right;font-size:27px; "><?php echo Parametro::formato(($regi->getCantidad()*$regi->getProducto()->getCostoProveedor()),false); ?></td>
 
             </tr>
             <?php } ?>
             <tr>
-                <td colspan="5"  style="width:530px;font-weight:bold; font-size: 48px; text-align: right;"> TOTAL </td>
+                <td colspan="6"  style="width:530px;font-weight:bold; font-size: 48px; text-align: right;"> TOTAL </td>
                 <td style="width:180px;text-align:right; font-size: 48px; text-align: right;"><?php echo Parametro::formato ($total); ?></td>
 
             </tr>

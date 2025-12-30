@@ -17,6 +17,21 @@
  */
 class Producto extends BaseProducto {
 
+    
+      public function getPrecioLista($PrecioId) {
+        $valor = 0;
+        $query="select  valor from producto_precio where producto_id=".$this->getId()." and lista_precio_id=".$PrecioId;
+        $con = Propel::getConnection();
+        $stmt = $con->prepare($query);
+        $resource = $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if ($result) {
+            $valor= $result[0]['valor'];
+        }
+        return $valor;
+    }
+    
+    
     static public function Traslado($productoID,$cantidad,$bodegaOrigen, $bodegaDestino,$codigo) {
         ProductoMovimientoQuery::Salida($productoID, $cantidad, 'TRASLADO SALIDA', $bodegaOrigen, $codigo, null, null);
         ProductoExistenciaQuery::Resta($productoID, $cantidad, $bodegaOrigen);

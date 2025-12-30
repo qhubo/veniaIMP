@@ -163,6 +163,7 @@ class edita_proveedorActions extends sfActions {
             $departamento = $valores['departamento']; // => 4
             $municipio = $valores['municipio']; // => 4
             $estado = $valores['estado'];
+            $pais = $valores['pais'];
             $operaciones = new ProveedorQuery();
             if ($departamento) {
                 $operaciones->filterByDepartamentoId($departamento);
@@ -176,9 +177,11 @@ class edita_proveedorActions extends sfActions {
             if ($estado == "NOACTIVO") {
                 $operaciones->filterByActivo(false);
             }
-
+  if ($pais) {
+                $operaciones->filterByPaisId($pais);
+            }
             $busca = " ( Proveedor.Nombre  like  '%" . $nombre . "%'  "
-                    . "  or Proveedor.Nit like  '%" . $nombre . "%' )  ";
+                    . "  or Proveedor.Nit like  '%" . $nombre . "%' or Proveedor.Codigo like  '%" . $nombre . "%' )  ";
             $operaciones->where($busca);
             $this->Proveedores = $operaciones->find();
         }
@@ -200,6 +203,7 @@ class edita_proveedorActions extends sfActions {
         if ($proveedor) {
             $color = 'font-green';
             $leyenda = 'Actualizar proveedor  ' . $proveedor->getCodigo();
+             $defaults['pais'] = $proveedor->getPaisId(); //> 
             $defaults['cuenta_contable']=$proveedor->getCuentaContable();
             $defaults['codigo'] = $proveedor->getCodigo(); // 
             $defaults['nit'] = $proveedor->getNit(); // 
@@ -208,6 +212,7 @@ class edita_proveedorActions extends sfActions {
             $defaults['razon_social'] = $proveedor->getRazonSocial(); //> 
             $defaults['departamento'] = $proveedor->getDepartamentoId(); //> 
             sfContext::getInstance()->getUser()->setAttribute("departamento", $proveedor->getDepartamentoId(), 'seleccion');
+                sfContext::getInstance()->getUser()->setAttribute("departamento", $proveedor->getDepartamentoId(), 'seleccion');
             $defaults['direccion'] = $proveedor->getDireccion(); //> 
             $defaults['avenida_calle'] = $proveedor->getAvenidaCalle(); //> 
             $defaults['zona'] = $proveedor->getZona(); //> 
@@ -266,6 +271,7 @@ class edita_proveedorActions extends sfActions {
                 $nueva->setNombre($valores['nombre']);
                 $nueva->setRazonSocial($valores['razon_social']);
                 $nueva->setRegimenIsr($valores['tipo_regimen']);
+                $nueva->setPaisId($valores['pais']);
 
                 $nueva->setDepartamentoId(null);
                 $nueva->setMunicipioId(null);

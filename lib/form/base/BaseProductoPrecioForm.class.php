@@ -25,7 +25,7 @@ abstract class BaseProductoPrecioForm extends BaseFormPropel
       'id'              => new sfValidatorChoice(array('choices' => array($this->getObject()->getId()), 'empty_value' => $this->getObject()->getId(), 'required' => false)),
       'empresa_id'      => new sfValidatorPropelChoice(array('model' => 'Empresa', 'column' => 'id', 'required' => false)),
       'producto_id'     => new sfValidatorPropelChoice(array('model' => 'Producto', 'column' => 'id', 'required' => false)),
-      'valor'           => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
+      'valor'           => new sfValidatorNumber(array('required' => false)),
       'lista_precio_id' => new sfValidatorPropelChoice(array('model' => 'ListaPrecio', 'column' => 'id', 'required' => false)),
     ));
 

@@ -48,6 +48,13 @@
                     <td  width="95px" style="font-size:25px;color:#063173">Telefono</td>
                     <td  width="105px" style="font-size:25px;"><?php echo $cliente->getTelefono(); ?> </td>
                 </tr>
+                  <tr>
+                    <td  width="90px" style="font-size:30px;"><strong>Contacto</strong> </td>
+                    <td  width="300px" style=" font-size:30px;color:#063173"><?php echo html_entity_decode($cliente->getContacto()); ?>
+                    </td>
+                    <td  width="95px" style="font-size:25px;color:#063173">Tipo Cliente</td>
+                    <td  width="105px" style="font-size:25px;"><?php echo $cliente->getTipoCliente(); ?> </td>
+                </tr>
                 <tr>
                     <td  width="90px" style="font-size:30px;"><strong>Correo</strong> </td>
                     <td  width="300px" style=" font-size:30px;color:#063173"><?php echo html_entity_decode($cliente->getCorreoElectronico()); ?>

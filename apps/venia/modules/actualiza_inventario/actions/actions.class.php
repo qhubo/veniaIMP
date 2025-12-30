@@ -60,8 +60,7 @@ class actualiza_inventarioActions extends sfActions {
         die();
     }
 
-    
-    
+       
    public function executeHistorial(sfWebRequest $request) {
         date_default_timezone_set("America/Guatemala");
         $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datoconsultaBanco', null, 'consulta'));
@@ -353,6 +352,7 @@ class actualiza_inventarioActions extends sfActions {
     }
 
     public function executeMuestra(sfWebRequest $request) {
+              date_default_timezone_set("America/Guatemala");
             error_reporting(-1);
         $id = $request->getParameter('id');
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
@@ -366,10 +366,8 @@ class actualiza_inventarioActions extends sfActions {
         if ($request->isMethod('post')) {
             $this->forma->bind($request->getParameter("registro"), $request->getFiles("registro"));
             if ($this->forma->isValid()) {
-//                               $valores = $this->forma->getValues();
-//                               echo "<pre>";
-//                               print_R($valores);
-//                               die();
+                               $valores = $this->forma->getValues();
+                              
                 
                                     $fechaInicio = $valores['fechaDocumento'];
                 $fechaInicio = explode('/', $fechaInicio);
@@ -401,10 +399,10 @@ class actualiza_inventarioActions extends sfActions {
                                 $fechaInicio = $valores['fechaInicio_' . $productoQuery->getId()];
                                 $fechaInicio = explode('/', $fechaInicio);
                                 $fecha = $fechaInicio[2] . '-' . $fechaInicio[1] . '-' . $fechaInicio[0];
-
                                 $this->cargaVence($productoQuery->getId(), $fecha, $valor, $ingresoIn->getId(), $ingresoIn->getTiendaId());
                             }
 
+                           
 //                        $existenciaActual = $productoQuery->getExistencia();
 //                        $nuevaExistencia = $valor+$existenciaActual;
                             //     ProductoMovimientoQuery::Ingreso($clave, $valor);
@@ -428,13 +426,16 @@ class actualiza_inventarioActions extends sfActions {
                             $nuevaExistencia = $ListaProductos->getValorTotal();
                             $productoQuery->setExistencia($nuevaExistencia);
                             $productoQuery->save();
-                            $detalle = new IngresoProductoDetalle();
-                          
+                            $detalle = new IngresoProductoDetalle();                          
                             $detalle->setProductoId($clave);
                             $detalle->setCantidad($valor);
                             $detalle->setIngresoProductoId($ingresoIn->getId());
                             $detalle->save();
                             $productoId[] = $clave;
+                            
+//                             echo "<pre>";
+//                               print_R($detalle);
+//                               die();
                         }
                     }
                 }
@@ -474,7 +475,8 @@ class actualiza_inventarioActions extends sfActions {
         }
 
         $this->bodegaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'bodegaSele');
-
+//echo $this->bodegaId;
+//die();
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
 
         $datos = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaproducto'));
@@ -561,6 +563,7 @@ class actualiza_inventarioActions extends sfActions {
         $this->totalB = count($this->productos);
 
         $this->bodega = TiendaQuery::create()->findOneById($this->bodegaId);
+        
     }
 
 }

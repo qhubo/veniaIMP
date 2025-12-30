@@ -181,9 +181,17 @@ class actualiza_inventario_ubicaActions extends sfActions {
         $encabezados[] = array("Nombre" => strtoupper("Precio"), "width" => 15, "align" => "left", "format" => "#,##0.00");
        sfContext::getInstance()->getUser()->HojaImprimeEncabezadoHorizontal($encabezados, $columna, $fila, $hoja);
         $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaproducto'));
-//        print_r($encabezados);
-//        
-//        die();
+    $productos = ProductoQuery::create()->orderByNombre()->find();
+        foreach ($productos as $registro) {
+            $fila++;
+            $datos = null;
+            $datos[] = array("tipo" => 3, "valor" => $registro->getCodigoSku());  // ENTERO
+            $datos[] = array("tipo" => 3, "valor" => $registro->getNombre());  // ENTERO
+                 $datos[] = array("tipo" => 2, "valor" => $registro->getPrecio());  // ENTERO
+            $columnafinal = sfContext::getInstance()->getUser()->HojaImprimeListaHorizontal($datos, $columna, $fila, $hoja);
+        }
+        $fila++;
+
         header("Content-Type: text/html;charset=utf-8");
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="' . $filename . '.xls"');

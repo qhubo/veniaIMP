@@ -13,8 +13,7 @@
             </h3>
         </div>
         <div class="kt-portlet__head-toolbar">
-            <a href="<?php echo url_for("carga/index?tipo=precio") ?>" class="btn btn-secondary btn-hover-brand" data-toggle="modal" data-target="#ajaxmodal"> <li class="fa fa-cloud-download"></li> Importar archivo   </a>
-        </div>
+          </div>
     </div>
     <div class="kt-portlet__body">
 
@@ -40,50 +39,47 @@
         <div class="row" style="padding-top:3px">
             <div class="col-lg-1"> </div>        
             <label class="col-lg-2 control-label right "><?php echo TipoAparatoQuery::tipo(); ?>  </label>
-            <div class="col-lg-4 <?php if ($form['tipo']->hasError()) echo "has-error" ?>">
+            <div class="col-lg-3 <?php if ($form['tipo']->hasError()) echo "has-error" ?>">
                 <?php echo $form['tipo'] ?>           
                 <span class="help-block form-error"> 
                     <?php echo $form['tipo']->renderError() ?>  
                 </span>
             </div>
             <?php if ($muestrabusqueda) { ?>
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <font color="#9eacb4" size="2px">   No Productos Total&nbsp;&nbsp;<strong> <?php echo $total ?> </strong> </font>
                 </div>
             <?php } ?>
+            <div class="col-lg-1"></div> 
+            <div class="col-lg-2">
+                      <a href="<?php echo url_for("carga/index?tipo=precio") ?>" class="btn btn-success btn-block btn-sm" data-toggle="modal" data-target="#ajaxmodal"> <li class="fa fa-cloud-download"></li> Importar archivo   </a>
+               </div>
         </div>
         <div class="row" style="padding-top:3px">
             <div class="col-lg-1"> </div>        
             <label class="col-lg-2 control-label right "><?php echo TipoAparatoQuery::marca(); ?>  </label>
-            <div class="col-lg-4 <?php if ($form['marca']->hasError()) echo "has-error" ?>">
+            <div class="col-lg-3 <?php if ($form['marca']->hasError()) echo "has-error" ?>">
                 <?php echo $form['marca'] ?>           
                 <span class="help-block form-error"> 
                     <?php echo $form['marca']->renderError() ?>  
                 </span>
             </div>
-            <?php if ($muestrabusqueda) { ?>
+ 
                 <div class="col-lg-3">
+                               <?php if ($muestrabusqueda) { ?>
                     <font color="#9eacb4" size="2px">   No Productos Busqueda&nbsp;&nbsp;<strong> <?php echo $totalB ?></strong> </font>
-                </div>
             <?php } ?>
-        </div>
-        <div class="row" style="padding-top:3px">
-            <div class="col-lg-1"> </div>        
-            <label class="col-lg-2 control-label right "><?php echo TipoAparatoQuery::modelo(); ?>  </label>
-            <div class="col-lg-4 <?php if ($form['modelo']->hasError()) echo "has-error" ?>">
-                <?php echo $form['modelo'] ?>           
-                <span class="help-block form-error"> 
-                    <?php echo $form['modelo']->renderError() ?>  
-                </span>
-            </div>
-            <div class="col-lg-1"></div>
-            <div class="col-lg-2">
+                </div>
+     
+            
+                  <div class="col-lg-2">
                 <button class="btn btn-warning " type="submit">
                     <i class="fa fa-search "></i>
                     Buscar
                 </button>
             </div>
         </div>
+   
         <?php echo '</form>'; ?>
     </div>
 </div>

@@ -18,6 +18,9 @@
                             <?php } ?>
                             <th  align="center"> Precio</th>
                          <th  align="center"> Costo</th>
+                         <?php foreach($listaPrecio as $dtPrecio) { ?>
+                         <th  align="center"><?php echo $dtPrecio->getNombre(); ?> </th>
+                         <?php } ?>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,9 +40,14 @@
                                         <td  align="right"><span class="font-blue "> 
                                                 <?php echo $cant = $lista->getExistenciaBodega($bode->getId()) ?> </span></td>
                                     <?php } ?>
-                                    <td  align="right"><?php echo number_format($lista->getPrecio(), 2); ?> </td>
- <td  align="right"><?php echo number_format($lista->getCostoProveedor(), 2); ?> </td>
+                                    <td  align="right"><?php echo Parametro::formato($lista->getPrecio(), false); ?> </td>
+ <td  align="right"><?php echo Parametro::formato($lista->getCostoProveedor(), false); ?> </td>
+       <?php foreach($listaPrecio as $dtPrecio) { ?>
+ <td  align="right">
 
+     
+     <?php echo Parametro::formato($lista->getPrecioLista($dtPrecio->getId()), false); ?> </td>
+                         <?php } ?>
                                 </tr>
                             <?php } ?>
                         <?php } ?>

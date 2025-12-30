@@ -11,17 +11,14 @@
                 <i class="flaticon2-sort-down kt-font-info"></i>
             </span>
             <h3 class="kt-portlet__head-title kt-font-success"> Resultado
-                <?php if ($muestrabusqueda) { ?>  <small>&nbsp; puedes descargar el ARCHIVO MODELO segun la busqueda realizada, para importar una carga &nbsp;&nbsp;</small>                        <?php } ?>
+               <small>&nbsp; puedes descargar el ARCHIVO MODELO segun la busqueda realizada, para importar una carga &nbsp;&nbsp;</small>                      
 
             </h3>
         </div>
-        <?php if ($muestrabusqueda) { ?>
-            <?php if (count($productos) > 0) { ?>
+        
                 <div class="kt-portlet__head-toolbar">
-                    <a href="<?php echo url_for($modulo . '/reporte') ?>" class="btn btn-dark" > <li class="fa fa-cloud-upload"></li> Archivo Modelo Carga  </a>
                 </div>
-            <?php } ?>
-        <?php } ?>
+         
     </div>
     <div class="kt-portlet__body">
         <div class="table-scrollable">
@@ -207,7 +204,7 @@
 
                         
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-6" style="font-weigth:bold; font-size: 20px;">
                         Confirmar Ingreso <strong>Tienda</strong>    <?php echo $bodega->getNombre(); ?>     
                     </div>
                     <div class="col-lg-2">Items  <input type="hidden"   value="<?php echo $estadob ?>"  name="estado" id="estado" >  </div>

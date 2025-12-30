@@ -1,6 +1,5 @@
 <?php $modulo = $sf_params->get('module'); ?>
 <?php //include_partial('soporte/avisos')   ?>
-
 <script src='/assets/global/plugins/jquery.min.js'></script>
 <?php $muestrabusqueda = sfContext::getInstance()->getUser()->getAttribute('muestrabusqueda', null, 'busqueda'); ?>
 <?php $linea = unserialize(sfContext::getInstance()->getUser()->getAttribute('carga', null, 'busqueda')); ?>
@@ -16,9 +15,11 @@
                 Ingresos de Inventarios <small>   puedes filtrar tu busqueda  <strong> Unicamente se actualizaran los productos afecto inventario </strong>    </small>
             </h3>
         </div>
-        <div class="kt-portlet__head-toolbar">
-            <a href="<?php echo url_for("carga/index?tipo=existencia") ?>" class="btn btn-secondary btn-hover-brand" data-toggle="modal" data-target="#ajaxmodal"> <li class="fa fa-cloud-download"></li> Importar archivo   </a>
-        </div>
+        
+                <div class="kt-portlet__head-toolbar">
+                    <a href="<?php echo url_for($modulo . '/reporte') ?>" class="btn btn-dark" > <li class="fa fa-cloud-upload"></li> Archivo Modelo Carga  </a>
+                </div>
+            
     </div>
     <div class="kt-portlet__body">
 
@@ -35,7 +36,7 @@
                         </a>
                     </li>
                 </ul>
-                <div class="row">
+      <div class="row" style="padding-top:5px">
             <div class="col-lg-1"> </div>        
             <label class="col-lg-1 control-label right ">TIENDA  </label>
          <div class="col-lg-4 <?php if ($form['tienda']->hasError()) echo "has-error" ?>">
@@ -44,11 +45,15 @@
                     <?php echo $form['tienda']->renderError() ?>  
                 </span>
             </div>
+              <div class="col-lg-2"> </div>   
+               <div class="col-lg-2">
+                        <a href="<?php echo url_for("carga/index?tipo=existencia") ?>" class="btn btn-success btn-sm btn-block btn-hover-brand" data-toggle="modal" data-target="#ajaxmodal"> <li class="fa fa-cloud-download"></li> Importar archivo   </a>
+               </div>
         
         </div>
         
      
-        <div class="row">
+        <div class="row" style="padding-top:5px">
             <div class="col-lg-1"> </div>        
             <label class="col-lg-1 control-label right "><?php echo TipoAparatoQuery::tipo(); ?>  </label>
             <div class="col-lg-4 <?php if ($form['tipo']->hasError()) echo "has-error" ?>">
@@ -57,13 +62,16 @@
                     <?php echo $form['tipo']->renderError() ?>  
                 </span>
             </div>
-            <?php if ($muestrabusqueda) { ?>
-                <div class="col-lg-4">
+       
+                <div class="col-lg-3">
+                         <?php if ($muestrabusqueda) { ?>
                     <font color="#9eacb4" size="2px">   No Productos Total&nbsp;&nbsp;<strong> <?php echo $total ?> </strong> </font>
+                <?php } ?>
                 </div>
-            <?php } ?>
+            
+            
         </div>
-        <div class="row">
+     <div class="row" style="padding-top:5px">
             <div class="col-lg-1"> </div>        
             <label class="col-lg-1 control-label right "><?php echo TipoAparatoQuery::marca(); ?>  </label>
             <div class="col-lg-4 <?php if ($form['marca']->hasError()) echo "has-error" ?>">
@@ -73,33 +81,22 @@
                 </span>
             </div>
 
-            <?php if ($muestrabusqueda) { ?>
+           
                 <div class="col-lg-3">
+                     <?php if ($muestrabusqueda) { ?>
                     <font color="#9eacb4" size="2px">   No Productos Busqueda&nbsp;&nbsp;<strong> <?php echo $totalB ?></strong> </font>
+                 <?php } ?>            
                 </div>
-            <?php } ?>
-        </div>
-        <div class="row">
-            <div class="col-lg-1"> </div>        
-            <label class="col-lg-1 control-label right "><?php echo TipoAparatoQuery::modelo(); ?>  </label>
-            <div class="col-lg-4 <?php if ($form['modelo']->hasError()) echo "has-error" ?>">
-                <?php echo $form['modelo'] ?>           
-                <span class="help-block form-error"> 
-                    <?php echo $form['modelo']->renderError() ?>  
-                </span>
-            </div>
-            <div class="col-lg-1">
-
-
-            </div>
             <div class="col-lg-2">
 
-                <button class="btn btn-warning " type="submit">
+                <button class="btn btn-warning btn-black btn-sm " type="submit">
                     <i class="fa fa-search "></i>
                     Buscar
                 </button>
             </div>
+         
         </div>
+    
     </div>
 </div>
 

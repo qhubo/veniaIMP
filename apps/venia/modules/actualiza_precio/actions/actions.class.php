@@ -108,7 +108,7 @@ class actualiza_precioActions extends sfActions {
                         $cantidad = 0;
                     }
                     $datos['Codigo'] = $codigo;
-                    $datos['Cantidad'] = $cantidad;
+                    $datos['Cantidad'] = round($cantidad,2);
                     $datos['valido'] = $valido;
                     $datos['productoId'] = $productoid;
                     $datos['precio'] = $existencia;
@@ -243,6 +243,7 @@ class actualiza_precioActions extends sfActions {
                 sfContext::getInstance()->getUser()->setAttribute('carga', null, 'busqueda');
                 foreach ($valores as $clave => $valor) {
                     if ($valor > 0) {
+                       // $valor =round($valor,2);
                         $clave = str_replace("numero_", "", $clave);
                         $productoQuery = ProductoQuery::create()->findOneById($clave);
                         $proceso="CambioPrecio";

@@ -4,7 +4,7 @@
 <div class="row">
 
     <div  class="col-lg-2">
-        Nit     
+    RUC/  Nit     
     </div>
     <div class="col-lg-2  <?php if ($form['nit']->hasError()) echo "has-error" ?>">
         <?php echo $form['nit'] ?>          

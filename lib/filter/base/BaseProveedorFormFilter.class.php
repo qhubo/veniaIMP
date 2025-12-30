@@ -54,6 +54,7 @@ abstract class BaseProveedorFormFilter extends BaseFormFilterPropel
       'retine_isr'           => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
       'exento_isr'           => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
       'cuenta_contable'      => new sfWidgetFormFilterInput(),
+      'pais_id'              => new sfWidgetFormPropelChoice(array('model' => 'Pais', 'add_empty' => true)),
     ));
 
     $this->setValidators(array(
@@ -99,6 +100,7 @@ abstract class BaseProveedorFormFilter extends BaseFormFilterPropel
       'retine_isr'           => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
       'exento_isr'           => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
       'cuenta_contable'      => new sfValidatorPass(array('required' => false)),
+      'pais_id'              => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Pais', 'column' => 'id')),
     ));
 
     $this->widgetSchema->setNameFormat('proveedor_filters[%s]');
@@ -159,6 +161,7 @@ abstract class BaseProveedorFormFilter extends BaseFormFilterPropel
       'retine_isr'           => 'Boolean',
       'exento_isr'           => 'Boolean',
       'cuenta_contable'      => 'Text',
+      'pais_id'              => 'ForeignKey',
     );
   }
 }

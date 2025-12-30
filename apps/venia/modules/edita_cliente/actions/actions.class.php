@@ -19,9 +19,10 @@ class edita_clienteActions extends sfActions {
         $referencia = $cliente->getCodigo();
         $observaciones = $cliente->getNombre(); //  $ordenCompra->getSerie()." ".$ordenCompra->getNoDocumento()."";
         $nombre2 = ' ';
+        $tipocliente = $cliente->getTipoCliente();
         
         $operaciones = OperacionQuery::create()->filterByClienteId($id)->find();
-        $html = $this->getPartial('edita_cliente/encabezado', array(
+        $html = $this->getPartial('edita_cliente/encabezado', array('tipocliente'=>$tipocliente,
             'cliente'=>$cliente,'operaciones'=>$operaciones,
             'nombre2' => $nombre2, 'logo' => $logo, 'titulo' => $titulo, 'observaciones' => $observaciones, 'referencia' => $referencia));
         //  $html .= $this->getPartial('edita_cliente/reporte', array('orden' => $cliente, 'lista' => $lista));
@@ -151,10 +152,12 @@ class edita_clienteActions extends sfActions {
             }
         }
 
+        
         if ($valores) {
             $nombre = $valores['nombrebuscar']; // => 4555
             $departamento = $valores['departamento']; // => 4
             $municipio = $valores['municipio']; // => 4
+            $pais =$valores['pais'];
 
             $operaciones = new ClienteQuery();
             if ($departamento) {
@@ -162,6 +165,9 @@ class edita_clienteActions extends sfActions {
             }
             if ($municipio) {
                 $operaciones->filterByMunicipioId($municipio);
+            }
+            if ($pais) {
+                  $operaciones->filterByPaisId($pais);
             }
             $busca = " ( Cliente.Nombre  like  '%" . $nombre . "%'  "
                     . "  or Cliente.Nit like  '%" . $nombre . "%'   or Cliente.Codigo like  '%" . $nombre . "%' )  ";
@@ -203,6 +209,7 @@ class edita_clienteActions extends sfActions {
             $defaults['nit'] = $proveedor->getNit(); // 
             $defaults['activo'] = $proveedor->getActivo(); //> on
             $defaults['nombre'] = $proveedor->getNombre(); //> AAaaa          
+            $defaults['pais'] = $proveedor->getPaisId(); //> 
             $defaults['departamento'] = $proveedor->getDepartamentoId(); //> 
             sfContext::getInstance()->getUser()->setAttribute("departamento", $proveedor->getDepartamentoId(), 'seleccion');
             $defaults['direccion'] = $proveedor->getDireccion(); //> 

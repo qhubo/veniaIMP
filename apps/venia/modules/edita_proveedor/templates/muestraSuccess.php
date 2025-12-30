@@ -64,6 +64,79 @@
 
 
 <script>
+$(document).ready(function () {
+
+    $("#consulta_departamento").on("change", function () {
+
+        let $municipio = $("#consulta_municipio");
+        $municipio.empty().prop("disabled", true);
+
+        $.getJSON(
+            '<?php echo url_for("soporte/dptoMunicipio") ?>?id=' + $(this).val(),
+            function (data) {
+
+                $.each(data, function (k, v) {
+
+                    if (k === "") {
+                        // opción [Seleccione Municipio]
+                        $municipio.append(
+                            '<option value="" selected disabled>' + v + '</option>'
+                        );
+                    } else {
+                        $municipio.append(
+                            '<option value="' + k + '">' + v + '</option>'
+                        );
+                    }
+                });
+
+                // activar select luego de cargar
+                $municipio.prop("disabled", false);
+            }
+        );
+    });
+
+});
+</script>
+
+
+<script>
+$(document).ready(function () {
+
+    $("#consulta_pais").on("change", function () {
+
+        let $municipio = $("#consulta_departamento");
+        $municipio.empty().prop("disabled", true);
+
+        $.getJSON(
+            '<?php echo url_for("soporte/dptoPais") ?>?id=' + $(this).val(),
+            function (data) {
+
+                $.each(data, function (k, v) {
+
+                    if (k === "") {
+                        // opción [Seleccione Municipio]
+                        $municipio.append(
+                            '<option value="" selected disabled>' + v + '</option>'
+                        );
+                    } else {
+                        $municipio.append(
+                            '<option value="' + k + '">' + v + '</option>'
+                        );
+                    }
+                });
+
+                // activar select después de cargar
+                $municipio.prop("disabled", false);
+            }
+        );
+    });
+
+});
+</script>
+
+
+
+<script>
 jQuery(document).ready(function($){
     $(document).ready(function() {
         $('.mi-selector').select2();

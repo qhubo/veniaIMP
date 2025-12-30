@@ -6,7 +6,7 @@
                             <div  class="col-lg-2">
                           Código Establecimiento   
                         </div>
-                        <div class="col-lg-2  <?php if ($form['codigo_establecimiento']->hasError()) echo "has-error" ?>">
+                        <div class="col-lg-1  <?php if ($form['codigo_establecimiento']->hasError()) echo "has-error" ?>">
                             <?php echo $form['codigo_establecimiento'] ?>          
                             <span class="help-block form-error"> 
                                 <?php echo $form['codigo_establecimiento']->renderError() ?>       
@@ -44,18 +44,7 @@
                         </div>  
                         
                         
-                                <div  class="col-lg-1">
-                            Activo   Buscador  
-                        </div>
-
-                        <div class="col-lg-1   <?php if ($form['activa_buscador']->hasError()) echo "has-error" ?>">
-                            <?php echo $form['activa_buscador'] ?>      
-                            <div  for="consulta_activa_buscador"><span></span></div>
-                            <span class="help-block form-error"> 
-                                <?php echo $form['activa_buscador']->renderError() ?>       
-                            </span>
-
-                        </div>  
+                    
                         
                         
                         

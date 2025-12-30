@@ -404,7 +404,7 @@ $NOMBRE='';
                 ->orderByNombre()
                 ->find();
         $listado = array();
-        $listado[null] = '[Seleccione Municipio]';
+        $listado[null] = '[Seleccione ]';
         foreach ($Municipio as $valor) {
             $listado[$valor->getId()] = $valor->getNombre();
         }

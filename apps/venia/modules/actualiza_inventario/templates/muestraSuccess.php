@@ -12,6 +12,10 @@
             </h3>
         </div>
         <div class="kt-portlet__head-toolbar">
+            
+                        <a target="_blank" href="<?php echo url_for($modulo.'/reportePdf?id=' . $cabecera->getId()) ?>" class="btn  btn-small btn-warning " target = "_blank">
+                   <li class="fa fa-print"></li> Reporte      
+                       </a>
             <a href="<?php echo url_for($modulo . '/index') ?>" class="btn btn-secondary btn-dark" > <i class="flaticon-reply"></i> Retornar </a>
 
         </div>

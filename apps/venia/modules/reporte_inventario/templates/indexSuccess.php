@@ -45,7 +45,7 @@
             </div>
 
 
-        <div class="row">
+<!--        <div class="row">
             <div class="col-lg-1"> </div>        
             <label class="col-lg-1 control-label right "><?php echo TipoAparatoQuery::modelo(); ?>  </label>
             <div class="col-lg-4 <?php if ($form['modelo']->hasError()) echo "has-error" ?>">
@@ -54,7 +54,7 @@
                     <?php echo $form['modelo']->renderError() ?>  
                 </span>
             </div>
-        </div>
+        </div>-->
 
 
 
@@ -72,17 +72,14 @@
 
             </div>
             <div class="col-lg-1">
-                <button class="btn green btn-outline" type="submit">
-                    <i class="fa fa-search "></i>
-                    <span>Buscar</span>
+                <button class="btn btn-sm btn-success btn-outline" type="submit">
+                    <i class="fa fa-search "></i>Buscar
                 </button>
             </div>
                    <div class="col-lg-2">
                           <a class="btn  btn grey-cascade  btn-block "  target="_blank"  href="<?php echo url_for($modulo . '/reporte') ?>" ><i class="fa fa-list"></i>&nbsp;&nbsp;Reporte&nbsp;&nbsp;  <i class="fa fa-print"></i></a>
                 </div>
-                        <div class="col-lg-2">
-                          <a class="btn  btn grey-cascade  btn-block "  target="_blank"  href="<?php echo url_for($modulo . '/reporteUbicacion') ?>" ><i class="fa fa-list"></i>&nbsp;&nbsp;Reporte Ubicaciones  <i class="fa fa-print"></i></a>
-                </div>
+            
         </div>
 
 <?php echo '</form>'; ?>
@@ -96,11 +93,11 @@
                         </a>
                     </li>
           
-                        <li class="nav-item">
+<!--                        <li class="nav-item">
                             <a class="nav-link " data-toggle="tab" href="#kt_portlet_base_demo_2_2_tab_content" role="tab" aria-selected="false">
                                 <i class="fa fa-bar-chart" aria-hidden="true"></i>Con Vencimiento
                             </a>
-                        </li>
+                        </li>-->
              
 
                 </ul>
@@ -111,11 +108,11 @@
 
             <div class="tab-content">
                 <div class="tab-pane active" id="kt_portlet_base_demo_2_3_tab_content" role="tabpanel">
-                        <?php include_partial($modulo . '/listado', array( 'modulo' => $modulo, 'productos'=>$productos, 'bodegas' => $bodegas)) ?>
+                        <?php include_partial($modulo . '/listado', array( 'listaPrecio' =>$listaPrecio, 'modulo' => $modulo, 'productos'=>$productos, 'bodegas' => $bodegas)) ?>
      
                 </div>
                 <div class="tab-pane   " id="kt_portlet_base_demo_2_2_tab_content" role="tabpanel">
-                        <?php include_partial($modulo . '/listadoVence', array( 'modulo' => $modulo, 'productosVence'=>$productosVence, 'bodegas' => $bodegas)) ?>
+                        <?php //include_partial($modulo . '/listadoVence', array( 'modulo' => $modulo, 'productosVence'=>$productosVence, 'bodegas' => $bodegas)) ?>
        
                 </div>
 

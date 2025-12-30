@@ -163,7 +163,11 @@ class inicioActions extends sfActions {
     public function executeSeleccionTienda(sfWebRequest $request) {
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
         $id = $request->getParameter("id");
+  
         sfContext::getInstance()->getUser()->setAttribute("tienda", $id, 'seguridad');
+               sfContext::getInstance()->getUser()->setAttribute("tienda", $id, 'seguridad');
+                    sfContext::getInstance()->getUser()->setAttribute("usuario", $id, 'bodega');
+                    sfContext::getInstance()->getUser()->setAttribute("usuario",$id, 'bodegaSele');
 // sfContext::getInstance()->getUser()->setAttribute("usuario", $id, 'empresa');
         $USuarioQuery = UsuarioQuery::create()->findOneById($usuarioId);
         $USuarioQuery->setTiendaId($id);
@@ -190,6 +194,8 @@ class inicioActions extends sfActions {
                 ->endUse()
                 ->findOne();
         sfContext::getInstance()->getUser()->setAttribute("tienda", $tiendausuario->getTiendaId(), 'seguridad');
+                  sfContext::getInstance()->getUser()->setAttribute("usuario", $tiendausuario->getTiendaId(), 'bodega');
+                    sfContext::getInstance()->getUser()->setAttribute("usuario",$tiendausuario->getTiendaId(), 'bodegaSele');
         $USuarioQuery->setTiendaId($tiendausuario->getTiendaId());
         $USuarioQuery->save();
         sfContext::getInstance()->getUser()->setAttribute("imagen", "uploads/images/" . $empresaQ->getLogo(), 'seguridad');

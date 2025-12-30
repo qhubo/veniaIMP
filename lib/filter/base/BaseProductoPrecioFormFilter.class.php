@@ -21,7 +21,7 @@ abstract class BaseProductoPrecioFormFilter extends BaseFormFilterPropel
     $this->setValidators(array(
       'empresa_id'      => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Empresa', 'column' => 'id')),
       'producto_id'     => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Producto', 'column' => 'id')),
-      'valor'           => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'valor'           => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'lista_precio_id' => new sfValidatorPropelChoice(array('required' => false, 'model' => 'ListaPrecio', 'column' => 'id')),
     ));
 
