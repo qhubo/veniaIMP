@@ -37,17 +37,13 @@
         <tr>
 <!--            <td><?php echo $can; ?> </td>-->
             <td>
-             <a class="btn btn-block  btn-xs " data-toggle="modal" href="#staticE<?php echo $registro->getId() ?>">
+             <a class="btn btn-block  btn-xs " style="font-size: 11px !important;" data-toggle="modal" href="#staticE<?php echo $registro->getId() ?>">
                <?php if ($registro->getProductoId()) { echo  $registro->getProducto()->getCodigoSku(); } ?>
                 <?php if ($registro->getServicioId()) { echo  $registro->getServicio()->getCodigo(); } ?>
               </a>
                
             </td>    
-            <td <?php  if ($lista->getVerificado()) {  ?> style="background-color:#ebedf2"  <?php } ?> ><?php echo $registro->getDetalle(); ?>
-             <?php  if ($lista->getVerificado()) {  ?>
-            <i class="flaticon2-check-mark"></i>
-             <?php } ?>
-            </td>    
+            <td><?php echo $registro->getDetalle(); ?> </td>    
                     <td style="text-align:right; padding-right: 8px; font-weight: bold; font-size: 14px;">
                         <?php if ($registro->getId()==$edit) { ?>
                 <input    class="form-control " value="<?php echo $val ?>" type="number" step="any" id="consulta_valor_<?php echo $lista->getId() ?>"  
@@ -73,7 +69,7 @@
             
             
             </td>    
-            <td>   <a href="<?php echo url_for($modulo . '/eliminaLinea?id='.$pid) ?>" class="btn btn-sm  btn-danger" > <i class="fa fa-trash"></i>  </a></td>
+            <td>   <a href="<?php echo url_for($modulo . '/eliminaLinea?id='.$pid) ?>" class="btn btn-sm  btn-danger" > -  </a></td>
        
         </tr>
         <?php } ?>

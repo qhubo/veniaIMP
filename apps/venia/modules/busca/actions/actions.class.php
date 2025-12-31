@@ -250,16 +250,16 @@ class buscaActions extends sfActions {
 
 
                 $url = '/index.php/orden_cotizacion/producto?id=' . $regid;
-                $url = '/index.php/ubicacion/vista?id=' . $regid;
+              //  $url = '/index.php/ubicacion/vista?id=' . $regid;
                 if ($_SERVER['SERVER_NAME'] == "veniaerp") {
                     $url = '/venia_dev.php/orden_cotizacion/producto?id=' . $regid;
-                    $url = '/venia_dev.php/ubicacion/vista?id=' . $regid;
+                 //   $url = '/venia_dev.php/ubicacion/vista?id=' . $regid;
                 }
 //                $row[] = ' <button class="open-producto btn" data-url="' . $url . '">' . '<img src="' . $rutaimage . '" height="45px" >' . '</button>';
-                $row[] = '<button class="open-producto btn btn-small btn-block" data-url="' . $url . '"><font size="-1">' . $codigo . '<font></button>';
-                $row[] = '<button class="open-producto btn btn-small btn-block " data-url="' . $url . '"><font size="-1">' . $nombre . '<font></button>';
+                $row[] = '<a href="' . $url . '"><font size="-1">' . $codigo . '<font></a>';
+                $row[] = '<a href="' . $url . '"><font size="-1">' . $nombre . '<font></a>';
 //            $row[] = '<a href="' . $url . '"><font size="-1"><i class="  flaticon2-next"></i><i class="  flaticon2-next"></i><font></a>';
-                $row[] = '<button class="open-producto btn btn-small  btn-block" data-url="' . $url . '"><font size="-1">' . $exit . '<font></button>';
+                $row[] = '<a href="' . $url . '"><font size="-1">' . $exit . '<font></a>';
 
                 $output["aaData"][] = $row;
             }

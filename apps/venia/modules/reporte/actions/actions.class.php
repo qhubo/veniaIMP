@@ -129,9 +129,9 @@ class reporteActions extends sfActions {
 //        $html = str_replace("%FECHA%",  "Guatemala ".$cheque->getFechaCreo('d/m/Y'), $html);
 //        $html = str_replace("%CORRELATIVO%", $cheque->getNumero(), $html);
 //        $html = str_replace("%BENEFICIARIO%", $cheque->getBeneficiario(), $html);
-//        $html = str_replace("%VALOR%", Parametro::formato($cheque->getValor()), $html);
+//       
 //        
-//        $html = str_replace("%VALOR_LETRAS%", $numberToLetterConverter->to_word($totalImprime, $miMoneda = null), $html);
+
 //        $html = str_replace("%MOTIVO%", "<font size='-2'>" . strtoupper($cheque->getMotivo()) . "<font>", $html);
 //        if ($cheque->getNegociable()) {
 //            $html = str_replace("%NEGOCIABLE%", "<font size='-2'></font> ", $html);
@@ -197,48 +197,51 @@ class reporteActions extends sfActions {
     }
 
     public function executeOrdenCotizacion(sfWebRequest $request) {
-                date_default_timezone_set("America/Guatemala");
+        date_default_timezone_set("America/Guatemala");
         error_reporting(-1);
         $token = $request->getParameter('token');
         $ordenCompra = OrdenCotizacionQuery::create()->findOneByToken($token);
         $lista = OrdenCotizacionDetalleQuery::create()
+                ->filterByProductoId(null, Criteria::NOT_EQUAL)
                 ->filterByCantidad(0,Criteria::GREATER_THAN )
-
-                ->filterByOrdenCotizacionId($ordenCompra->getId())
+               ->filterByOrdenCotizacionId($ordenCompra->getId())
                 ->find();
 
         $logo = $ordenCompra->getEmpresa()->getLogo();
-               $EMPRESAnit= EmpresaQuery::create()->findOneByTelefono($ordenCompra->getTienda()->getNit());
-               if ($EMPRESAnit) {
-                           $logo = $EMPRESAnit->getLogo();
-               }
+        $valor = $ordenCompra->getValorTotal();
+        $valor = Parametro::formato($valor, false);
+        $valor = str_replace(",", "", $valor);
+        $totalImprime = str_replace(".", ",", $valor);
         
-        $titulo = 'COTIZACIÓN';
-        if (strtoupper($ordenCompra->getEstatus()) == "AUTORIZADO") {
-            $titulo = 'VENTA';
+        
+        $numberToLetterConverter = new NumberToLetterConverter();
+        $totalImprime = $numberToLetterConverter->to_word($totalImprime, $miMoneda = null);
+        $valoresImprime = explode("CON", $totalImprime);
+        if (count($valoresImprime) > 1) {
+            $totalImprime = str_replace("CON", " DOLARES  CON ", $totalImprime) . " CENTAVOS ";
+        } else {
+            $totalImprime .= " EXACTOS ";
         }
-        if (strtoupper($ordenCompra->getEstatus()) == "CONFIRMADA") {
-            $titulo = 'VENTA';
-        }
-
-        $referencia = $ordenCompra->getCodigo();
-        $observaciones = " "; //  $ordenCompra->getSerie()." ".$ordenCompra->getNoDocumento()."";
-        $nombre2 = ' ';
-        $html = $this->getPartial('reporte/encabezado', array('nombre2' => $nombre2, 'logo' => $logo, 'titulo' => $titulo, 'observaciones' => $observaciones, 'referencia' => $referencia));
-
-        $html .= $this->getPartial('reporte/ordenCotizacion', array('orden' => $ordenCompra, 'lista' => $lista));
-        $img_file = "images/enProceso.png";
-        if (strtoupper($ordenCompra->getEstatus()) == "AUTORIZADO")
-        {
-            $img_file = "images/autorizado.png";
-        }
+        $totalImprime = "**" . $totalImprime . "**";
+        
+     
+        $html = $this->getPartial('reporte/ordenCotizacion',
+                array('logo' => $logo, 'orden' => $ordenCompra, 'lista' => $lista,
+                    'totalImprime'=>$totalImprime ));
+        $img_file ="uploads/images/".$logo;
+//        $img_file = "images/enProceso.png";
+//        
+//        if (strtoupper($ordenCompra->getEstatus()) == "AUTORIZADO")
+//        {
+//            $img_file = "images/autorizado.png";
+//        }
 //        echo $html;
 //        die();
         $pdf = new sfTCPDF("P", "mm", "Letter");
         $this->id = $request->getParameter("id");
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Venia Link');
-        $pdf->SetTitle($titulo . " " . $referencia);
+        $pdf->SetTitle("Pedido ".$ordenCompra->getCodigo());
         $pdf->SetSubject('Documento Orden Compra');
         $pdf->SetKeywords('Documento,Orden,Cuenta'); // set default header data
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED); // set margins
@@ -257,9 +260,11 @@ class reporteActions extends sfActions {
         $pdf->setPrintFooter(false);
         $pdf->SetFont('dejavusans', '', 9);
         $pdf->AddPage();
-        // $pdf->Image($img_file, 140, 5, 50, '', '', '', '300', false, 0);
+         $pdf->Image($img_file, 18, -8,40); //, 50, '', '', '', '300', false, 0);
+
+         
         $pdf->writeHTML($html);
-        $pdf->Output('cotizacion ' . $ordenCompra->getCodigo() . '.pdf', 'I');
+        $pdf->Output('Pedido ' . $ordenCompra->getCodigo() . '.pdf', 'I');
         die();
         echo $html;
         die();

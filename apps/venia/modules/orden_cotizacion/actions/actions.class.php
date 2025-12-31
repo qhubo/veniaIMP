@@ -605,7 +605,7 @@ class orden_cotizacionActions extends sfActions {
             $ordenQ = OrdenCotizacionQuery::create()->findOneById($OrdenID);
             if ($ordenQ) {
                 $ordenQ->setClienteId($id);
-                $ordenQ->setNombre($provpe->getNombre());
+                $ordenQ->setNombre($provpe->getNombreFacturar());
                 $ordenQ->setNit($provpe->getNit());
                 $ordenQ->setDiaCredito($provpe->getDiasCredito());
                 $ordenQ->setTelefono($provpe->getTelefono());

@@ -1,126 +1,217 @@
-<table  width="740px">
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            color: #000;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .sin-borde td {
+            border: none;
+            padding: 3px;
+        }
+
+        .borde td, .borde th {
+            border: 1px solid #000;
+            padding: 5px;
+        }
+
+        .titulo {
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        .negrita {
+            font-weight: bold;
+        }
+
+        .centrado {
+            text-align: center;
+        }
+
+        .derecha {
+            text-align: right;
+        }
+
+        .logo {
+            width: 120px;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .espacio {
+            height: 10px;
+        }
+    </style>
+
+<!-- ================= ENCABEZADO ================= -->
+<table class="sin-borde">
     <tr>
-        <td  width="10px"> </td>
-        <td>
-            <table cellpadding="2" >
-                <tr >
-                    <th   align="left" width="100px">&nbsp;Nit </th>
-                    <td  style="border: 0.2px solid #5E80B4;"width="345px">        <?php echo $orden->getNit() ?>  </td>
-                    <td width="10px">&nbsp;</td>
-                    <th  align="left" width="100px">&nbsp; </th>
-                    <td  style="" width="170px">        <?php //echo $orden->getDiaCredito() ?>   </td>
+        <td width="20%" style="text-align:center;">
+  
+        </td>
+        <td width="65%" style="text-align:center;">
+            <span class="titulo" style="display:block"><?php echo $orden->getEmpresa()->getNombre(); ?></span><br>
+            <span style="display:block">RUC: <?php echo $orden->getEmpresa()->getTelefono(); ?></span><br>
+            <span style="display:block">Teléfono: <?php echo $orden->getEmpresa()->getContactoTelefono(); ?></span><br>
+            <span style="display:block"><?php echo $orden->getEmpresa()->getDireccion(); ?></span>
+        </td>
+        <td width="15%" class="borde">
+            <table width="100%">
+                <tr>
+                    <td class="negrita">PEDIDO No.</td>
                 </tr>
                 <tr>
-                    <th  lign="left"  width="100px">&nbsp;Nombre </th>
-                    <td  style="border: 0.2px solid #5E80B4;"width="345px">        <?php echo $orden->getNombre() ?> </td>
-                    <td width="10px">&nbsp;</td>
-                    <th  align="left" width="100px">&nbsp;Cliente </th>
-                    <td   style="border: 0.2px solid #5E80B4;" width="170px">    <?php if ($orden->getClienteId()) { ?>   <?php echo $orden->getCliente()->getCodigo(); ?>    <?php } ?> </td>
-                </tr> 
-
-                <tr>
-                    <th  align="left"  width="100px">&nbsp;Observaciones </th>
-                    <td style="border: 0.2px solid #5E80B4;font-size:25px;"width="345px">        <?php echo $orden->getComentario() ?>  </td>
-                    <td width="10px">&nbsp;</td>
-                    <th align="left" width="100px">&nbsp;Usuario </th>
-                    <td style="border: 0.2px solid #5E80B4;" width="170px">    <?php echo $orden->getUsuario(); ?> </td>
+                    <td class="centrado titulo"><?php echo $orden->getCodigo(); ?></td>
                 </tr>
             </table>
-
-            <br>
-            <br>
-<!--            <table cellpadding="2"  >
-                <tr>
-
-
-                    <th style="border: 0.2px solid #5E80B4;"  align="center" width="110px" >Fecha  Documento</th>
-                    <th style="border: 0.2px solid #5E80B4;"  align="center" width="110px">Fecha  Vencimiento</th>
-                    <th style="border: 0.2px solid #5E80B4;" align="center" width="100px">Sub Total</th>
-                    <th  style="border: 0.2px solid #5E80B4;" align="center" width="85px">Iva</th>
-                    <th  style="border: 0.2px solid #5E80B4;" align="center" width="120px">Total</th>
-
-                </tr>
-                <tr>
-
-                    <td style="border: 0.2px solid #5E80B4;" align="center"><?php echo $orden->getFechaDocumento('d/m/Y') ?></td>
-                    <td style="border: 0.2px solid #5E80B4;" align="center"><?php echo $orden->getFechaVencimiento('d/m/Y') ?></td>
-                    <td style="border: 0.2px solid #5E80B4;" align="right"><?php echo number_format($orden->getSubTotal(), 2); ?> </td>
-                    <td style="border: 0.2px solid #5E80B4;" align="right" ><?php echo number_format($orden->getIva(), 2); ?> </td>
-                    <td style="border: 0.2px solid #5E80B4;" align="right"><h3><?php echo number_format($orden->getValorTotal(), 2); ?></h3> </td>
-                </tr>
-            </table>-->
-<!--            <br>
-            <br>-->
-            <table   >
-<!--                <br><br>-->
-                <tr >
-                    <th  align="center" width="25px" style="height: 20px; font-size:30px; border-left: 0.2px solid #5E80B4;border-top: 0.2px solid #5E80B4; text-align: center; font-weight: bold;"># </th>
-                    <th  align="center" width="130px" style="font-size:30px;border-left: 0.2px solid #5E80B4;border-top: 0.2px solid #5E80B4; text-align: center;  font-weight: bold;">Codigo </th>
-                    <th  align="center" width="300px"  style="font-size:30px; border-left: 0.2px solid #5E80B4;border-top: 0.2px solid #5E80B4;text-align: center; font-weight: bold;">Descripción </th>
-                    <th  align="center" width="100px"  style="font-size:30px;border-left: 0.2px solid #5E80B4;border-top: 0.2px solid #5E80B4; text-align: center; font-weight: bold;">Valor Unitario </th>
-                    <th  align="center" width="70px"  style="font-size:30px;border-left: 0.2px solid #5E80B4;border-top: 0.2px solid #5E80B4; text-align: center; font-weight: bold;">Cantidad </th>
-                    <th  align="center" width="95px"  style="border-right: 0.2px solid #5E80B4;font-size:30px; border-left: 0.2px solid #5E80B4;border-top: 0.2px solid #5E80B4; text-align: center; font-weight: bold;">Valor Total </th>
-                </tr>
-
-                <?php $can = 0; ?>
-                  <?php $total=0; ?>
-                <?php foreach ($lista as $registro) { ?>
-                  <?php $total=$total+$registro->getValorTotal(); ?>
-                    <?php $can++; ?>
-                    <tr>
-                        <td width="25px" style="height: 15px;  font-size:25px;border-left: 0.2px solid #5E80B4;  ">&nbsp;<?php echo $can; ?> </td>
-                        <td width="130px" style="font-size:25px;border-left: 0.2px solid #5E80B4;"> <?php
-                            if ($registro->getProductoId()) {
-                                echo $registro->getProducto()->getCodigoSku();
-                            }
-                            ?> <?php
-                        if ($registro->getServicioId()) {
-                            echo $registro->getServicio()->getCodigo();
-                        }
-                        ?></td>    
-                        <td width="300px" style="font-size:35px;border-left: 0.2px solid #5E80B4;">&nbsp;&nbsp;<?php echo $registro->getDetalle(); ?></td> 
-                        <td width="100px" style="text-align: right;font-size:35px;border-left: 0.2px solid #5E80B4;" ><?php echo number_format((float) ($registro->getValorUnitario()), 2, '.', ''); ?>&nbsp;&nbsp;</td>
-                        <td width="70px"  style="text-align: right;font-size:35px;border-left: 0.2px solid #5E80B4;" ><?php echo $registro->getCantidad(); ?>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
-                        <td width="95px" style="text-align: right;font-size:35px;border-left: 0.2px solid #5E80B4;border-right: 0.2px solid #5E80B4;" ><?php echo number_format((float) ($registro->getValorTotal()), 2, '.', ''); ?>&nbsp;&nbsp;</td>
-                    </tr>
-                    
-                    <tr>
-                        <td colspan="3" style="border-left: 0.2px solid #5E80B4;">
-                            <?php  $ubicaciones = ProductoUbicacionQuery::create()->filterByCantidad(0, criteria::GREATER_THAN)->filterByProductoId($registro->getProductoId())->find(); ?>
-                            
-                            <table style="width: 100%">
-                                <?php foreach($ubicaciones as $regi) { ?>
-                                <tr>
-                                    <td style="width:  250px;"></td>
-                                    <td style="width:  100px;font-size:30px;"><?php echo $regi->getTienda()->getCodigo(); ?>&nbsp;&nbsp;<?php echo $regi->getUbicacion(); ?></td>
-                                    <td style="width:  50px; font-size:30px; text-align: right;"><?php echo $regi->getCantidad(); ?>&nbsp;&nbsp;</td>                             
-                                </tr>
-                                <?php } ?>
-                                
-                            </table>
-                            
-                            
-                        </td>
-                        <td colspan="3" style="border-left: 0.2px solid #5E80B4; border-right: 0.2px solid #5E80B4;"></td>
-                    </tr>
-                    
-<?php } ?>
-                <tr>
-                    <td style="border-top: 0.2px solid #5E80B4;"></td>
-                    <td style="border-top: 0.2px solid #5E80B4;"></td>
-                    <td style="border-top: 0.2px solid #5E80B4;"></td>
-                 
-                    <td colspan="2" style="border-top: 0.2px solid #5E80B4; font-weight: bold;font-size:35px;">VALOR TOTAL</td>
-                    <td style="border-top: 0.2px solid #5E80B4;   font-weight: bold;font-size:35px;"> <?php echo Parametro::formato($total); ?></td>
-                </tr>
-
-            </table>
-
-  <?Php $tipoDocumento = "Cotizacion"; ?>
- <?php include_partial('soporte/valorCampoReporte', array('tipoDocumento' => $tipoDocumento, 'idDoc' => $orden->getId())) ?> 
-   
-
-
-        </td>     
+        </td>
     </tr>
+</table>
+<div class="espacio" style="text-align: right; font-size: 28px;"> Fecha Impresión <?php echo date('d/m/Y'); ?> <hr></div>
+
+
+
+<!-- ================= SEGUNDO ENCABEZADO ================= -->
+<table >
+    <tr>
+        <td class="negrita" style="width:120px; height: 18px;">Fecha</td>
+        <td style="width:350px;"><?php echo $orden->getFecha('d/m/Y'); ?></td>
+          <td class="negrita" style="width:120px;">Código Cliente</td>
+        <td><?php echo $orden->getCliente()->getCodigo(); ?></td>
+     
+    </tr>
+    <tr>
+         <td class="negrita" style="width:120px; height: 18px;">Cliente</td>
+        <td style="width:350px;"><?php echo $orden->getCliente()->getNombre(); ?>.</td>
+    </tr>
+    <tr>
+        <td class="negrita" style="width:120px; height: 18px;" >Dirección </td>
+        <td colspan="3" style="width:350px;"><?php echo $orden->getCliente()->getDireccion(); ?></td>
+    </tr>
+    <tr>
+        <td class="negrita" style="width:120px;  ">Acuerdo de Pago</td>
+        <td  style="width:350px;">Crédito 30 días</td>
+        <td class="negrita" style="width:120px;">Vendedor</td>
+        <td><?php if ($orden->getVendedorId()) { echo $orden->getVendedor()->getNombre(); } ?></td>
+    </tr>
+    <tr>
+        <td class="negrita" style="width:120px;">País</td>
+        <td style="width:350px;"><?php echo $orden->getCliente()->getPais(); ?></td>
+        <td class="negrita" style="width:120px;">Teléfono</td>
+        <td><?php echo $orden->getCliente()->getTelefono(); ?></td>
+    </tr>
+</table>
+
+<div class="espacio"></div>
+
+<!-- ================= DETALLE ================= -->
+<table>
+    <thead>
+        <tr class="centrado" style="background-color:#F2F2F2">
+            <th style="width:30px;font-size: 30px; border-top: 1px solid #000; border-left: 1px solid #000;">No</th>
+            <th  style="width:90px;font-size: 30px; border-top: 1px solid #000;">Código</th>
+            <th  style="width:230px;font-size: 30px; border-top: 1px solid #000;">Descripción</th>
+            <th  style="width:90px;font-size: 30px; border-top: 1px solid #000;">Marca</th>
+            <th  style="width:100px;font-size: 30px; border-top: 1px solid #000;">Características</th>
+            <th  style="width:60px;font-size: 30px; border-top: 1px solid #000;">Cantidad</th>
+            <th  style="width:75px;font-size: 30px; border-top: 1px solid #000;">Precio</th>
+            <th  style="width:75px;font-size: 30px; border-top: 1px solid #000; border-right: 1px solid #000;">Total</th>
+        </tr>
+    </thead>
+    <tbody>
+ <?php $can=0; ?>
+ <?php $totalPeso=0; ?>
+ <?php $totalMetros=0; ?>
+ <?php $totalUnidades=0; ?>       
+ <?php foreach($lista as $regist) { ?>
+     <?php $can++; ?>
+<?php $pro=$regist->getProducto(); ?>
+ <?php $totalPeso=$totalPeso+$regist->getProducto()->getPeso(); ?>
+ <?php $totalMetros=$totalMetros+ ( ($pro->getAlto() *$pro->getAncho()*$pro->getLargo()) * $regist->getCantidad()) ; ?>
+ <?php $totalUnidades=$totalUnidades+$regist->getCantidad(); ?>       
+        <tr>
+            <td style="width:30px; font-size: 30px; border-top: 1px solid #000; border-left: 1px solid #000;" class="centrado"><?php echo $can; ?></td>
+            <td style="width:90px;font-size: 30px; border-top: 1px solid #000;" ><?php echo $regist->getCodigo(); ?></td>
+            <td style="width:230px;font-size: 30px; border-top: 1px solid #000;"><?php echo $regist->getDetalle(); ?></td>
+            <td class="centrado" style="width:90px;font-size: 30px; border-top: 1px solid #000;"><?php echo $regist->getProducto()->getMarcaProducto(); ?></td>
+            <td style="width:100px;font-size: 30px; border-top: 1px solid #000;"><?php echo $regist->getProducto()->getCaracteristica(); ?></td>
+            <td style="width:60px;font-size: 30px; border-top: 1px solid #000;" class="centrado"><?php echo $regist->getCantidad(); ?></td>
+            <td style="width:75px;font-size: 30px; border-top: 1px solid #000;" class="derecha"><?php echo $regist->getValorUnitario(); ?></td>
+            <td style="width:75px;font-size: 30px; border-top: 1px solid #000; border-right: 1px solid #000;" class="derecha"><?php echo $regist->getValorTotal(); ?></td>
+        </tr>
+   <?php } ?>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="7" class="derecha negrita" style=" border-top: 1px solid #000;"></td>
+            <td class="derecha negrita" style=" border-top: 1px solid #000;"></td>
+        </tr>
+    </tfoot>
+</table>
+
+
+
+<table class="sin-borde" >
+    <tr>
+        <td style="width: 470px;">
+            
+            <table>
+                <tr>
+                    <td class="negrita" style="width:130px;"> Metros Cúbicos</td>
+                    <td style="text-align: right;width:100px;"><?php echo round($totalMetros,2); ?></td>
+                </tr>
+                  <tr>
+                    <td class="negrita"> Kilogramos</td>
+                    <td style="text-align: right;"><?php echo round($totalPeso,2); ?></td>
+               
+                </tr>
+                 <tr>
+                    <td class="negrita"> Unidades</td>
+                    <td style="text-align: right;"><?php echo round($totalUnidades,2); ?></td>
+                </tr>
+            </table>
+            <BR>
+                 <BR>
+            <?php echo $totalImprime; ?>
+            
+        </td>
+        <td style="width: 400px;">
+              <table>
+                <tr>
+                    <td class="negrita" style="height: 18px;"> Subtotal</td>
+                    <td style="text-align: right;"><?php echo Parametro::formato($orden->getValorTotal()); ?></td>
+                    <td style="text-align: right;"></td>
+                </tr>
+                   <tr>
+                    <td class="negrita" style="height: 18px;"> (+) Impuesto</td>
+                    <td style="text-align: right;">$ 0.00</td>
+                    <td style="text-align: right;"></td>
+                </tr>
+                   <tr>
+                    <td class="negrita" style="height: 18px;"> (+) Recarga</td>
+                    <td style="text-align: right;">$ 0.00</td>
+                    <td style="text-align: right;"></td>
+                </tr>
+                   <tr>
+                    <td class="negrita" style="height: 18px;"> (-) Descuento</td>
+                    <td style="text-align: right;">$ 0.00</td>
+                    <td style="text-align: right;"></td>
+                </tr>
+                   <tr>
+                       <td class="negrita" style="font-size:38px; height: 18px; border-top: 1px solid #000;"> TOTAL</td>
+                    <td style="font-size:38px;text-align: right; border-top: 1px solid #000;"><?php echo Parametro::formato($orden->getValorTotal()); ?></td>
+                    <td style="text-align: right;"></td>
+                </tr>
+            </table>
+            
+        </td>
+
+    </tr>
+    
 </table>

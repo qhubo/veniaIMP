@@ -11,13 +11,13 @@
                 <i class="flaticon-coins kt-font-success"></i>
             </span>
             <h3 class="kt-portlet__head-title kt-font-warning">
-                CREA VENTA <small> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>  </strong></span>
+                CREA PEDIDO <small> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>  </strong></span>
                     Procede a grabar la información solicitada</small>
             </h3>
         </div>
         <div class="kt-portlet__head-toolbar">
             <?php if ($orden) { ?>  <font size="+2"> <strong> <?php echo $orden->getCodigo(); ?>  </strong> </font> <?php } ?>
-            <a href="<?php echo url_for('bodega_confirmo/index') ?>" class="btn btn-secondary btn-success" > <i class="flaticon-list-3"></i> Listado </a>
+<!--            <a href="<?php echo url_for('bodega_confirmo/index') ?>" class="btn btn-secondary btn-success" > <i class="flaticon-list-3"></i> Listado </a>-->
 
         </div>
     </div>
@@ -30,19 +30,34 @@
             </div>
 
             <div class="row">
-                <div   class=" <?php if ($pendientes > 1) { ?>   scroller  <?php } ?> col-lg-8 "  <?php if ($pendientes > 1) { ?> style="padding-top:5PX; height:150px; overflow-y: scroll; width: auto;" data-always-visible="1" data-rail-visible="0" data-initialized="1" <?php } ?> >
+                <div   class=" col-lg-8 "  >
+                    <table class="table bordered">
+                        <tr>
+                            <td style="text-align:right; font-weight: bold; font-size: 18px;">Pedidos en Proceso</td>
+                            <td style="text-align: center; font-size: 18px;"><?php echo count($pendientes); ?> </td>
+                            <td>
+                                   <a href="<?php echo url_for('pedido_pendiente/index') ?>" class="btn btn-secondary btn-success" > <i class="flaticon-list-3"></i> Listado </a>
 
+                                
+                            </td>
+                        </tr>
+                    </table>
 
-                    <?php include_partial($modulo . '/inicia', array('pantalla' => 0, 'modulo' => $modulo, 'pendientes' => $pendientes)) ?>
+                    <?php //include_partial($modulo . '/inicia', array('pantalla' => 0, 'modulo' => $modulo, 'pendientes' => $pendientes)) ?>
 
                 </div> 
                 <div class="col-lg-2">
-                    <span class=" kt-font-brand"><h5> NUEVA OPERACIÓN</h5> </span>
+                    <span class=" kt-font-brand"><h5> NUEVO PEDIDO</h5> </span>
                 </div>
 
                 <div class="col-lg-2">                     
                     <a href="<?php echo url_for($modulo . '/nueva') ?>" class="btn btn-block btn-small btn-success btn-secondary" >  <i class="flaticon2-plus"></i> Nuevo </a>
-                    <br>&nbsp;
+                  
+                         <?php if ($id) { ?>
+                            <a class="btn btn-block btn-outline-success "   href="<?php echo url_for('busca/indexCliente?id=1') ?>"  data-toggle="modal" data-target="#ajaxmodalv">
+                                <li class="fa fa-search"></li> Cliente
+                            </a>
+                        <?php } ?>
                 </div>
             </div>
 

@@ -40,6 +40,7 @@ abstract class BaseClienteFormFilter extends BaseFormFilterPropel
       'porcentaje_negociado' => new sfWidgetFormFilterInput(),
       'limite_credito'       => new sfWidgetFormFilterInput(),
       'pais_id'              => new sfWidgetFormPropelChoice(array('model' => 'Pais', 'add_empty' => true)),
+      'nombre_facturar'      => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -71,6 +72,7 @@ abstract class BaseClienteFormFilter extends BaseFormFilterPropel
       'porcentaje_negociado' => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'limite_credito'       => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'pais_id'              => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Pais', 'column' => 'id')),
+      'nombre_facturar'      => new sfValidatorPass(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('cliente_filters[%s]');
@@ -117,6 +119,7 @@ abstract class BaseClienteFormFilter extends BaseFormFilterPropel
       'porcentaje_negociado' => 'Number',
       'limite_credito'       => 'Number',
       'pais_id'              => 'ForeignKey',
+      'nombre_facturar'      => 'Text',
     );
   }
 }

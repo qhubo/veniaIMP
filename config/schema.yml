@@ -1046,6 +1046,8 @@ propel:
      limite_credito:                    { type: double, default:0 }  
      tiene_credito:                     { type: boolean, default: true }
      pais_id:                           ~
+     nombre_facturar:                   { type: varchar(260)  } 
+    
     
   cierre_caja:
      _attributes: { phpName: CierreCaja, idMethod: native }

@@ -211,6 +211,7 @@ class edita_clienteActions extends sfActions {
             $defaults['nombre'] = $proveedor->getNombre(); //> AAaaa          
             $defaults['pais'] = $proveedor->getPaisId(); //> 
             $defaults['departamento'] = $proveedor->getDepartamentoId(); //> 
+            $defaults['nombre_factura']=$proveedor->getNombreFacturar();
             sfContext::getInstance()->getUser()->setAttribute("departamento", $proveedor->getDepartamentoId(), 'seleccion');
             $defaults['direccion'] = $proveedor->getDireccion(); //> 
             $defaults['avenida_calle'] = $proveedor->getAvenidaCalle(); //> 
@@ -250,6 +251,7 @@ class edita_clienteActions extends sfActions {
                 $nueva->setNombre($valores['nombre']);
                 $nueva->setTieneCredito($valores['tiene_credito']);
                 $nueva->setLimiteCredito($valores['limite_credito']);
+                $nueva->setNombreFacturar($valores['nombre_factura']);
 
                 $nueva->setDepartamentoId(null);
                 $nueva->setMunicipioId(null);

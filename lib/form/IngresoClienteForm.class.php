@@ -82,7 +82,9 @@ class IngresoClienteForm extends sfForm {
         $this->setWidget('activo', new sfWidgetFormInputCheckbox()); // new sfWidgetFormInputText(array(), array('class' => 'form-control','data-provide'=>'datepicker')));// cje
         $this->setValidator('activo', new sfValidatorString(array('required' => false)));
 
-
+   $this->setWidget('nombre_factura', new sfWidgetFormInputText(array(), array('class' => 'form-control ' , "placeholder" => "Nombre Facturar")));
+         $this->setValidator('nombre_factura', new sfValidatorString(array('required' => true)));
+   
 
         $opcionesT[null] = 'SIN CALIFICACION';
 //        $opcionesT[1] = 'NO TIENE RANGO';

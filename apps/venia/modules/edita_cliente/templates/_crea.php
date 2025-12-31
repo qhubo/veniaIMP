@@ -1,7 +1,7 @@
 
 
 
-<div class="row">
+<div class="row" style="padding-top: 3px;">
 
     <div  class="col-lg-2">
     RUC/  Nit     
@@ -51,7 +51,7 @@
 
 
 
-<div class="row">
+<div class="row" style="padding-top: 3px;">
     <div  class="col-lg-2">
         Nombre   *
     </div>
@@ -62,11 +62,21 @@
         </span>
     </div>
 </div>
+<div class="row" style="padding-top: 3px;">
+    <div  class="col-lg-2">
+        Nombre  Facturar  *
+    </div>
+    <div class="col-lg-9   <?php if ($form['nombre_factura']->hasError()) echo "has-error" ?>">
+        <?php echo $form['nombre_factura'] ?>          
+        <span class="help-block form-error"> 
+            <?php echo $form['nombre_factura']->renderError() ?>       
+        </span>
+    </div>
+</div>
 
 
 
-
-<div class="row">
+<div class="row" style="padding-top: 3px;">
 
     <div  class="col-lg-2">
         País     
@@ -87,10 +97,10 @@
 
 
 
-<div class="row">
+<div class="row" style="padding-top: 3px;">
 
     <div  class="col-lg-2">
-        Departamento     
+        Provincia     
     </div>
     <div class="col-lg-3   <?php if ($form['departamento']->hasError()) echo "has-error" ?>">
         <?php echo $form['departamento'] ?>          
@@ -100,7 +110,7 @@
     </div>
 
     <div  class="col-lg-2">
-        Municipio     
+        Corregimiento     
     </div>
     <div class="col-lg-4   <?php if ($form['municipio']->hasError()) echo "has-error" ?>">
         <?php echo $form['municipio'] ?>          
@@ -110,7 +120,7 @@
     </div>
 </div> 
 
-<div class="row">
+<div class="row" style="padding-top: 3px;">
     <div  class="col-lg-2">
         Dirección     
     </div>
@@ -124,7 +134,7 @@
 
 
 
-<div class="row">
+<div class="row" style="padding-top: 3px;">
     <div  class="col-lg-2">
         Teléfonos     
     </div>
@@ -146,7 +156,7 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row" style="padding-top: 3px;">
 
 
     <div  class="col-lg-2">
@@ -171,8 +181,7 @@
 
 
 
-
-<div class="row">
+<div class="row" style="padding-top: 3px;">
     <div  class="col-lg-2">
         Conctacto    
     </div>

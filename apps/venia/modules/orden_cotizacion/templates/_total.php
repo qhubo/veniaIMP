@@ -27,11 +27,11 @@
       <div class="col-lg-2">
 
     </div>
-    <div class="col-lg-3" style="text-align: right"><font color="white"><br>  Confirmar venta </font></div>
+    <div class="col-lg-3" style="text-align: right"><font color="white"><br>  Confirma Guardar Pedido </font></div>
     <div class="col-lg-1">
 <!--        <a href="<?php echo url_for($modulo . '/confirmar?id='.$orden->getId()."&token=". sha1($orden->getCodigo())) ?>" class="btn btn-secondary btn-dark" > <i class="flaticon-lock"></i> Procesar </a>-->
 <!--          <a data-toggle="modal" href="#staticCONFIRMA" class="btn btn-secondary btn-dark" > <i class="flaticon-lock"></i> Procesar </a>-->
-          <a href="<?php echo url_for($modulo . '/posponer?id='.$orden->getId()."&token=". sha1($orden->getCodigo())) ?>" class="btn btn-small btn-success btn-block" > <i class="flaticon-black"></i><br> Enviar </a>
+          <a href="<?php echo url_for($modulo . '/posponer?id='.$orden->getId()."&token=". sha1($orden->getCodigo())) ?>" class="btn btn-small btn-success btn-block" > <i class="flaticon-black"></i><br> Guardar </a>
     </div>
      <div class="col-lg-1">
          <a target="_blank" href="<?php echo url_for('reporte/ordenCotizacion?token='.$orden->getToken()) ?>" class="btn btn-secondary btn-warning" > <i class="flaticon2-print"></i><br> Reporte </a>

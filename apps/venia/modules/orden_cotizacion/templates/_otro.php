@@ -20,7 +20,7 @@
             <tr>
                 <td>
                      <a href="<?php echo url_for($modulo . '/combo?id=' . $registro->getId()) ?>"  > 
-                    <font size="-1"><?php echo $registro->getCodigoSku(); ?> </font>
+                    <?php echo $registro->getCodigoSku(); ?> 
                      </a>
                      </td>
                 <td>

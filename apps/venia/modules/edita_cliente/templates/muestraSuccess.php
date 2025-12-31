@@ -39,7 +39,7 @@
                 <?php if ($id) { ?>
                 <li class="nav-item">
                     <a class="nav-link <?php if ($tab == 2) { ?> active <?php } ?>  " data-toggle="tab" href="#kt_portlet_base_demo_3_3_tab_content" role="tab" aria-selected="false">
-                        <i class="fa fa-bar-chart" aria-hidden="true"></i>Expediente
+                        <i class="fa fa-bar-chart" aria-hidden="true"></i>Datos
                     </a>
                 </li>
                 <?php } ?>

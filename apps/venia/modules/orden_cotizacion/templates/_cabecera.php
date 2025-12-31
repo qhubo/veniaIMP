@@ -7,7 +7,7 @@
 
 <div class="row"  style="background-color:#F9FBFE; padding: 10px">
 
-    <div class="col-lg-2" ><div style="text-align:right">Fecha</div> </div>
+    <div class="col-lg-1" ><div style="text-align:right">Fecha</div> </div>
 
     <div class="col-lg-2 <?php if ($form['fecha_documento']->hasError()) echo "has-error" ?>">
         <?php if ($orden) { ?>      
@@ -20,13 +20,7 @@
         </span>
     </div>
 
-    <div class="col-lg-" > 
-        <?php if ($orden) { ?>
-            <?php if ($orden->getRecetarioId()) { ?>
-                <h3>Receta <?php echo $orden->getRecetarioId(); ?></h3>   
-            <?php } ?>
-        <?php } ?>
-    </div>
+
 <!--    <div class="col-lg-2 <?php if ($form['fecha_contabilizacion']->hasError()) echo "has-error" ?>">
         <?php if ($orden) { ?>   <?php echo $form['fecha_contabilizacion'] ?>  <?php } ?>          
         <span class="help-block form-error"> 
@@ -34,11 +28,13 @@
         </span>
     </div>-->
     <?php if ($cliente) { ?>
-        <div class="col-lg-2"><strong> Código Cliente</strong> 
-       <?php echo $cliente->getCodigo(); ?> </div>
+        <div class="col-lg-3"><strong>  Cliente</strong> 
+       <?php echo $cliente->getCodigo(); ?> <br>
+    
+       <?php echo $cliente->getNombre(); ?> </div>
     <?php } ?>
             <div class="col-lg-1">
-        <?php if ($id) { ?>
+        <?php if ($cliente) { ?>
             <div class="row">
                 <div class="col-lg-10">
                     <div  id="btlista<?php echo $i ?>"  <?php echo $estiloUno ?> >
@@ -52,11 +48,7 @@
         <?php } ?>
     </div>
       <div class="col-lg-2">
-         <?php if ($id) { ?>
-                            <a class="btn btn-outline-success "   href="<?php echo url_for('busca/indexCliente?id=1') ?>"  data-toggle="modal" data-target="#ajaxmodalv">
-                                <li class="fa fa-search"></li> Cliente
-                            </a>
-                        <?php } ?>
+    
       </div>
     <div class="col-lg-3">
         <?php echo $form['vendedor_id'] ?> 
