@@ -63,7 +63,7 @@
 
         <div class="row">
             <div class="col-lg-6"> </div>
-            <div class="col-lg-4" > TOTAL VENTAS  <span style="font-weight:bold; font-size: 16px;"> &nbsp;&nbsp;&nbsp;&nbsp;<?php   echo Parametro::formato($total,false) ?></span> </div>
+            <div class="col-lg-4" >  <span style="font-weight:bold; font-size: 16px;"> &nbsp;&nbsp;&nbsp;&nbsp;<?php   //echo Parametro::formato($total,false) ?></span> </div>
             <div class="col-lg-2">				
                 <div class="kt-input-icon kt-input-icon--left">
                     <input type="text" class="form-control" placeholder="Buscar..." id="generalSearch">
