@@ -97,7 +97,7 @@
                     <th  align="center"> Nit</th>
                     <th  align="center"> Estado</th>
                     <th  align="center"> Valor</th>    
-                    <th width="25px">Fel</th>
+                    <th width="25px">Factura</th>
                     <th align="center" width="20px">Vendedor</th>
                     <th  align="center"> Observaciones /Guia</th>   
                     <th  align="center"> Ruta Cobro</th>      
@@ -111,7 +111,7 @@
                 <?php foreach ($operaciones as $lista) { ?>
                     <?php $id = $lista->getId(); ?>
                     <?php $val = explode('-', $lista->getFaceFirma()) ?>
-                    <?php $numero = $val[0]; ?>
+                    <?php $numero ="Fact"; // $val[0]; ?>
                     <tr>
                         <td>
                             <a class="btn btn-warning" href="<?php echo url_for('reporte_venta/muestra?id=' . $id) ?>" data-toggle="modal" data-target="#ajaxmodal<?php echo $id ?>">  <?php echo $lista->getCodigo() ?> </a>

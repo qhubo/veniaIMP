@@ -7,7 +7,7 @@
             </span>
             <h3 class="kt-portlet__head-title kt-font-info">Listado de Pedidos
                 <small>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    Ult. Actualización <?php echo date('d/m/Y H:i:s'); ?> 
+           
                 </small>
             </h3>
         </div>
@@ -22,7 +22,7 @@
         <ul class="nav nav-tabs nav-tabs-line nav-tabs-line-danger nav-tabs-line-2x nav-tabs-line-left" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link  active  " data-toggle="tab" href="#kt_portlet_base_demo_2_1_tab_content" role="tab" aria-selected="false">
-                            <i class="fa fa-calendar-check-o" aria-hidden="true"></i>Confirmadas Bodega  </a>
+                            <i class="fa fa-calendar-check-o" aria-hidden="true"></i>Pedidos en Proceso </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link"  href="<?php echo url_for('bodega_confirmo/muestra') ?>" role="tab" aria-selected="false">
@@ -39,9 +39,7 @@
             <tr>
                 <th>Orden</th>
                 <th>Usuario</th>                    
-                <th>Nit</th>
-                  <th>CodCliente</th>
-
+                <th>RUC / Nit</th>
                 <th>Cliente</th>
                 <th>Observaciones</th>
                 <th>Productos</th>
@@ -50,16 +48,20 @@
                 <th>Editar</th>
             </tr>
             <?php foreach ($detalles as $reg) { ?>
-                <?php
-                $pendientes = OrdenCotizacionDetalleQuery::create()
-                        ->filterByVerificado(false)
-                        ->filterByOrdenCotizacionId($reg->getOrdenCotizacionId())
-                        ->count();
+           
+            <?php $orden=$reg->getOrdenCotizacion(); ?>
+              <?php
+            //    $pendientes = OrdenCotizacionDetalleQuery::create()
+            //            ->filterByVerificado(false)
+            //            ->filterByOrdenCotizacionId($reg->getOrdenCotizacionId())
+            //            ->count();
                 ?>
                 <?php //if ($pendientes == 0) { ?>
                     <tr>
                         <td>
-                            <?php echo $reg->getOrdenCotizacion()->getCodigo(); ?>
+                               <a target="_blank" href="<?php echo url_for('reporte/ordenCotizacion?token='.$orden->getToken()) ?>" class="btn btn-sm btn-warning" > 
+      <i class="flaticon2-printer"></i><?php echo $reg->getOrdenCotizacion()->getCodigo(); ?>
+                               </a>
 
                         </td>
                         <td><?php echo $reg->getOrdenCotizacion()->getUsuario(); ?>
@@ -69,27 +71,36 @@
                         
                         </td>
                         <td><?php echo $reg->getOrdenCotizacion()->getNit(); ?></td>
-                        <td> <?php if ($reg->getOrdenCotizacion()->getClienteId()) { echo $reg->getOrdenCotizacion()->getCliente()->getCodigoCli(); } ?> </td>
-                        <td><?php echo $reg->getOrdenCotizacion()->getNombre(); ?></td>
+                        <td> <?php if ($reg->getOrdenCotizacion()->getClienteId()) { echo $reg->getOrdenCotizacion()->getCliente()->getCodigoCli(); } ?> 
+                            <BR>
+              <?php echo $reg->getOrdenCotizacion()->getNombre(); ?></td>
 
-                        <td>
+                        <td style="width:300px;">
                    
                             <textarea rows="3"  class="form-control" name="observaciones<?php echo $reg->getId(); ?>" id="observaciones<?php echo $reg->getId(); ?>"><?php echo $reg->getOrdenCotizacion()->getComentario(); ?></textarea></td>
                         <td style="text-align: right; font-size: +2">
-
+     <a class="btn btn-block  btn-sm " data-toggle="modal" href="#staticPP<?php echo $reg->getId() ?>">
                             <?php echo $reg->getCantidadTotal(); ?>
+             </a>
 
                         </td>
                         <td style="text-align: right; font-size: +2">
-                            <a class="btn btn-block  btn-sm " data-toggle="modal" href="#staticPP<?php echo $reg->getId() ?>">
+                       
 
                                 <?php echo Parametro::formato($reg->getOrdenCotizacion()->getValorTotal()); ?>
-                            </a>
+                        
                         </td>             
 
 
-                        <td><a class="btn  btn-sm btn-info" data-toggle="modal" href="#static<?php echo $reg->getId() ?>"><i class="flaticon2-check-mark"></i>CONFIRMAR</a></td>                     
-                        <td> <a href="<?php echo url_for('orden_cotizacion/nueva?codigo=' . $reg->getOrdenCotizacion()->getCodigo()) ?>" class="btn btn-sm btn-warning btn-secondary" > Editar >> </a></td>
+                        <td>
+            <?php //if ($pendientes ==0)  { ?>    
+                            <a class="btn btn-block btn-sm btn-info" data-toggle="modal" href="#static<?php echo $reg->getId() ?>"><i class="flaticon2-check-mark"></i>CONFIRMAR</a>
+            <?php // } else { ?>
+            <a class="btn btn-sm btn-danger btn-block" data-toggle="modal" href="#staticB<?php echo $reg->getOrdenCotizacionId() ?>">  Rechazar</a>
+                        
+            <?Php // } ?>
+                        </td>                     
+                        <td> <a href="<?php echo url_for('orden_cotizacion/nueva?codigo=' . $reg->getOrdenCotizacion()->getCodigo()) ?>" class="btn btn-sm btn-dark btn-secondary" > Editar  </a></td>
                     </tr>
                 <?php // } ?>
             <?php } ?>
@@ -100,6 +111,36 @@
 </div>
 <script src='/assets/global/plugins/jquery.min.js'></script>
 <?php foreach ($detalles as $lista) { ?>
+
+
+
+        <div id="staticB<?php echo $lista->getOrdenCotizacionId() ?>" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirmación de Proceso</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p> <strong> Confirma Rechazar </strong> 
+                            <span class="caption-subject font-green bold uppercase"> 
+                                <?php echo $lista->getOrdenCotizacion()->getCodigo() ?>
+                            </span> ?
+                        </p>
+                    </div>
+                    <?php $token = md5($lista->getOrdenCotizacion()->getCodigo()); ?>
+                    <div class="modal-footer">
+                        <a class="btn  btn-danger " href="<?php echo url_for($modulo . '/eliminaOR?token=' . $token . '&id=' . $lista->getOrdenCotizacionId()) ?>" >
+                            <i class="fa fa-trash-o "></i> Confirmar </a> 
+                        <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancelar </button>
+
+                    </div>
+
+                </div>
+            </div>
+        </div> 
+
     <script type="text/javascript">
         $(document).ready(function () {
             $("#observaciones<?php echo $lista->getId(); ?>").on('change', function () {
@@ -129,7 +170,7 @@
                     </p>
 
                     <p> Confirma Procesar Documento
-                        <strong>Cotización</strong>
+                        <strong>Pedido</strong>
                         <span class="caption-subject font-green bold uppercase"> 
                             <?php echo $lista->getOrdenCotizacion()->getCodigo() ?>
                         </span> ?
@@ -137,7 +178,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <a class="btn  btn-success " href="<?php echo url_for('bodega_confirmo/confirmar?id=' . $lista->getOrdenCotizacion()->getId() . "&token=" . sha1($lista->getOrdenCotizacion()->getCodigo())) ?>" >
+                    <a class="btn  btn-success " href="<?php echo url_for('pedido_pendiente/confirmar?id=' . $lista->getOrdenCotizacion()->getId() . "&token=" . sha1($lista->getOrdenCotizacion()->getCodigo())) ?>" >
                         <i class="flaticon2-lock "></i> Confirmar </a> 
                     <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancelar </button>
 

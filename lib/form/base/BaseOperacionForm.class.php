@@ -62,6 +62,8 @@ abstract class BaseOperacionForm extends BaseFormPropel
       'permite_facturar'          => new sfWidgetFormInputCheckbox(),
       'observa_facturar'          => new sfWidgetFormInputText(),
       'pais_id'                   => new sfWidgetFormPropelChoice(array('model' => 'Pais', 'add_empty' => true)),
+      'empacado'                  => new sfWidgetFormInputCheckbox(),
+      'transporte'                => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -113,6 +115,8 @@ abstract class BaseOperacionForm extends BaseFormPropel
       'permite_facturar'          => new sfValidatorBoolean(array('required' => false)),
       'observa_facturar'          => new sfValidatorString(array('max_length' => 250, 'required' => false)),
       'pais_id'                   => new sfValidatorPropelChoice(array('model' => 'Pais', 'column' => 'id', 'required' => false)),
+      'empacado'                  => new sfValidatorBoolean(array('required' => false)),
+      'transporte'                => new sfValidatorString(array('max_length' => 350, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('operacion[%s]');

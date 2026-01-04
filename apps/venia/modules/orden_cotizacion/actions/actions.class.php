@@ -605,6 +605,7 @@ class orden_cotizacionActions extends sfActions {
             $ordenQ = OrdenCotizacionQuery::create()->findOneById($OrdenID);
             if ($ordenQ) {
                 $ordenQ->setClienteId($id);
+                $ordenQ->setPaisId($provpe->getPaisId());
                 $ordenQ->setNombre($provpe->getNombreFacturar());
                 $ordenQ->setNit($provpe->getNit());
                 $ordenQ->setDiaCredito($provpe->getDiasCredito());
@@ -676,7 +677,16 @@ class orden_cotizacionActions extends sfActions {
         $operacion->setFechaVencimiento($fecha_vencimiento);
         $operacion->save();
         sfContext::getInstance()->getUser()->setAttribute('CotizacionId', $operacion->getId(), 'seguridad');
-        $this->getUser()->setFlash('exito', 'Orden creada con exito ' . $operacion->getCodigo());
+  
+       
+       $listaPendi= sfContext::getInstance()->getUser()->getAttribute('CotizacionIPendie', null, 'seguridad');
+         if ($listaPendi) {
+            sfContext::getInstance()->getUser()->setAttribute('CotizacionIPendie', null, 'seguridad');
+            $this->getUser()->setFlash('error', 'No hay existencia para los producto(s) ' . $listaPendi);
+        } else {
+                  $this->getUser()->setFlash('exito', 'Orden creada con exito ' . $operacion->getCodigo());
+        }
+        
         $this->redirect('orden_cotizacion/index');
     }
 
@@ -857,6 +867,7 @@ class orden_cotizacionActions extends sfActions {
         $ordenDetalle = OrdenCotizacionDetalleQuery::create()
                 ->filterByOrdenCotizacionId($id, Criteria::NOT_EQUAL)
                 ->useOrdenCotizacionQuery()
+              ->filterBySolicitarBodega(true)
                 ->filterByTiendaId($tIENDAid)
                 ->filterByUsuario($usuarioQ->getUsuario())
                 ->filterByEstatus($posibles, Criteria::IN)
@@ -864,7 +875,12 @@ class orden_cotizacionActions extends sfActions {
                 ->groupByOrdenCotizacionId()
                 ->find();
         $this->pendientes = $ordenDetalle;
+        
+//        echo "<pre>";
+//        print_r($this->pendientes);
+//        die();
     }
+    
 
     public function executePosponer(sfWebRequest $request) {
         date_default_timezone_set("America/Guatemala");

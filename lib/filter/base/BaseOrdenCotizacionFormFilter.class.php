@@ -75,7 +75,7 @@ abstract class BaseOrdenCotizacionFormFilter extends BaseFormFilterPropel
       'combo_numero'        => new sfValidatorPass(array('required' => false)),
       'recetario_id'        => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Recetario', 'column' => 'id')),
       'solicitar_bodega'    => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
-      'cantidad_total_caja' => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'cantidad_total_caja' => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'peso_total'          => new sfValidatorPass(array('required' => false)),
       'vendedor_id'         => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Vendedor', 'column' => 'id')),
       'pais_id'             => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Pais', 'column' => 'id')),

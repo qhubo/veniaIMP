@@ -28,6 +28,8 @@ abstract class BaseOperacionDetalleForm extends BaseFormPropel
       'total_iva'      => new sfWidgetFormInputText(),
       'costo_unitario' => new sfWidgetFormInputText(),
       'linea_no'       => new sfWidgetFormInputText(),
+      'cantidad_caja'  => new sfWidgetFormInputText(),
+      'peso'           => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -45,6 +47,8 @@ abstract class BaseOperacionDetalleForm extends BaseFormPropel
       'total_iva'      => new sfValidatorNumber(array('required' => false)),
       'costo_unitario' => new sfValidatorNumber(array('required' => false)),
       'linea_no'       => new sfValidatorString(array('max_length' => 50, 'required' => false)),
+      'cantidad_caja'  => new sfValidatorNumber(array('required' => false)),
+      'peso'           => new sfValidatorString(array('max_length' => 150, 'required' => false)),
     ));
 
     $this->validatorSchema->setPostValidator(

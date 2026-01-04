@@ -221,7 +221,7 @@ class reporte_ventaActions extends sfActions {
                 $operacionQ->setObservaciones($observaciones);
                 $operacionQ->save();
                 $resultado['Status'] = true;
-                if ($operacionQ->getFaceEstado() == 'FIRMADO') {
+                if ($operacionQ->getFaceEstado() == 'FIRMADOXXXX') {
                     $aplicaNota = false;
                     if ($operacionQ->getFecha('dmY') <> date('dmY')) {
                         $aplicaNota = true;
@@ -327,7 +327,7 @@ class reporte_ventaActions extends sfActions {
                 }
 
 
-                if ($resultado['Status']) {
+       //         if ($resultado['Status']) {
                     $operacionQ->setAnuloUsuario($usuarioQue->getUsuario());
                     $operacionQ->setAnulado(true);
                     $operacionQ->setFechaAnulo(date('Y-m-d H:i:s'));
@@ -347,7 +347,7 @@ class reporte_ventaActions extends sfActions {
                         $de->getProductoId();
                         $clave = $de->getProductoId();
                         $valor = $de->getCantidad();
-                        ProductoMovimientoQuery::Ingreso($clave, $valor, $operacionQ->getCodigoFactura(), "Anula Factura", date('Y-m-d H:i:s'), $operacionQ->getTiendaId());
+                        ProductoMovimientoQuery::Ingreso($clave, $valor, $operacionQ->getCodigoFactura()."-".$de->getId(), "Anula Factura", date('Y-m-d H:i:s'), $operacionQ->getTiendaId());
                         ProductoExistenciaQuery::Actualiza($clave, $valor, $operacionQ->getTiendaId());
                     }
                    }
@@ -363,12 +363,12 @@ class reporte_ventaActions extends sfActions {
                     }
 
                     $this->getUser()->setFlash('exito', 'Documento firmado ANULADO  exitosamente');
-                } else {
-                    $error = serialize($resultado);
-                    $operacionQ->setObservaciones($error);
-                    $operacionQ->save();
-                    $this->getUser()->setFlash('error', 'Intentar nuevamente ' . $error);
-                }
+//                } else {
+//                    $error = serialize($resultado);
+//                    $operacionQ->setObservaciones($error);
+//                    $operacionQ->save();
+//                    $this->getUser()->setFlash('error', 'Intentar nuevamente ' . $error);
+//                }
             } else {
                 $this->getUser()->setFlash('error', 'Debe ingresar el motivo de anulacion');
             }
@@ -450,6 +450,7 @@ class reporte_ventaActions extends sfActions {
         $empresq = EmpresaQuery::create()->findOne();
         $listab = TiendaQuery::TiendaActivas(); // ctivas();
         $operaciones = OperacionQuery::create();
+        $operaciones->filterByEstatus('Procesada', Criteria::NOT_EQUAL);
         $operaciones->where("Operacion.Fecha >= '" . $fechaInicio . " 00:00:00" . "'");
         $operaciones->where("Operacion.Fecha <= '" . $fechaFin . " 23:59:00" . "'");
         if ($valores['estatus_op']) {

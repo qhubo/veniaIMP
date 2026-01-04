@@ -164,7 +164,7 @@ class lista_cobroActions extends sfActions {
         }
         $this->operaciones = OperacionQuery::create()
                 ->filterByPagado(false)
-                ->filterByEstatus('Procesada')
+                ->filterByEstatus('Facturado')
                 ->orderByFecha("Desc")
                 ->find();
 

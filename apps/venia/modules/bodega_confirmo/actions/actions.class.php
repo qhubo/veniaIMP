@@ -51,9 +51,8 @@ class bodega_confirmoActions extends sfActions {
               
        if ($TIPO_USUARIO=='ADMINISTRADOR') {
         $this->detalles = OrdenCotizacionDetalleQuery::create()
-                ->filterByVerificado(true)
                 ->useOrdenCotizacionQuery()
-                ->filterBySolicitarBodega(true)
+                ->filterByEstatus('Confirmada')
                 ->endUse()
                 ->groupByOrdenCotizacionId()
                 ->withColumn('sum(OrdenCotizacionDetalle.Cantidad)', 'CantidadTotal')
@@ -61,10 +60,9 @@ class bodega_confirmoActions extends sfActions {
            
        } else {
         $this->detalles = OrdenCotizacionDetalleQuery::create()
-                ->filterByVerificado(true)
                 ->useOrdenCotizacionQuery()
+                ->filterByEstatus('Confirmada')
                 ->filterByUsuario($usuarioQ->getUsuario())
-                ->filterBySolicitarBodega(true)
                 ->endUse()
                 ->groupByOrdenCotizacionId()
                 ->withColumn('sum(OrdenCotizacionDetalle.Cantidad)', 'CantidadTotal')
@@ -72,46 +70,7 @@ class bodega_confirmoActions extends sfActions {
        }
     }
 
-    public function executeConfirmar(sfWebRequest $request) {
-        date_default_timezone_set("America/Guatemala");
-        $id = $request->getParameter('id');
-        $token = $request->getParameter('token');
-        $ordenQ = OrdenCotizacionQuery::create()->findOneById($id);
-        $productos = OrdenCotizacionDetalleQuery::create()
-                ->filterByOrdenCotizacionId($id)
-                ->find();
-        foreach ($productos as $detalle) {
-            if ($detalle->getProductoId()) {
-                $existencia = $detalle->getProducto()->getExistencia();
-                $cantidaSOlicita = $detalle->getCantidad();
-                if ($cantidaSOlicita > $existencia) {
-                    $this->getUser()->setFlash('error', 'No hay existencia de ' . $cantidaSOlicita . ' para el producto seleccionado ' . $detalle->getDetalle());
-                    $this->redirect('bodega_confirmo/index?id=');
-                }
-
-                if ($existencia <= 0) {
-                    $this->getUser()->setFlash('error', 'No hay existencia para el producto seleccionado ' . $detalle->getDetalle());
-                    $this->redirect('bodega_confirmo/index?id=');
-                }
-            }
-        }
-        sfContext::getInstance()->getUser()->setAttribute('CotizacionId', null, 'seguridad');
-        if ($ordenQ) {
-            $tokenGuardado = sha1($ordenQ->getCodigo());
-            if ($token == $tokenGuardado) {
-                $ordenQ->setSolicitarBodega(false);
-                $ordenQ->setEstatus("Confirmada");
-                //$ordenQ->setFecha(date('Y-m-d H:i:s'));
-                $ordenQ->setToken(sha1($ordenQ->getCodigo()));
-                $ordenQ->save();
-                $idv = OrdenCotizacionPeer::ProcesaAutoUbicacion($ordenQ);
-                $this->getUser()->setFlash('exito', 'Registro actualizado   con exito ');
-                $this->redirect('bodega_confirmo/index?id=' . $idv);
-            }
-        }
-        $this->redirect('bodega_confirmo/index');
-    }
-
+  
     public function datos($valores) {
         $fechaInicio = $valores['fechaInicio'];
         $fechaInicio = explode('/', $fechaInicio);

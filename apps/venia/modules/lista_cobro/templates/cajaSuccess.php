@@ -13,7 +13,7 @@
             </h3>
         </div>
         <div class="kt-portlet__head-toolbar">
-            <a href="<?php echo url_for('orden_cotizacion/index') ?>" class="btn btn-success btn-secondary" > <i class="flaticon2-plus"></i> NUEVO VENTA</a>
+<!--            <a href="<?php echo url_for('orden_cotizacion/index') ?>" class="btn btn-success btn-secondary" > <i class="flaticon2-plus"></i> NUEVO VENTA</a>-->
 
             <a href="<?php echo url_for($modulo . '/index') ?>" class="btn btn-secondary btn-dark" > <i class="flaticon-reply"></i> Retornar </a>
         </div>
@@ -209,9 +209,9 @@
                             </div>
 
                             <div class="modal-footer">
-                              <a class="btn  btn-warning " href="<?php echo url_for($modulo . '/confirmarCuenta?id='.$operacion->getId()."&fel=NO") ?>" >
+<!--                              <a class="btn  btn-warning " href="<?php echo url_for($modulo . '/confirmarCuenta?id='.$operacion->getId()."&fel=NO") ?>" >
                                     <i class="flaticon2-lock "></i> Confirmar sin FEL </a> 
-                                
+                                -->
                                 <a class="btn  btn-success " href="<?php echo url_for($modulo . '/confirmarCuenta?id='.$operacion->getId()."&fel=SI") ?>" >
                                     <i class="flaticon2-lock "></i> Confirmar </a> 
                                 <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancelar </button>

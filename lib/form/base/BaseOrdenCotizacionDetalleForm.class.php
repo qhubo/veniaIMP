@@ -29,6 +29,7 @@ abstract class BaseOrdenCotizacionDetalleForm extends BaseFormPropel
       'verificado'          => new sfWidgetFormInputCheckbox(),
       'cantidad_caja'       => new sfWidgetFormInputText(),
       'peso'                => new sfWidgetFormInputText(),
+      'existencia_actual'   => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -45,8 +46,9 @@ abstract class BaseOrdenCotizacionDetalleForm extends BaseFormPropel
       'combo_numero'        => new sfValidatorString(array('max_length' => 50, 'required' => false)),
       'costo_unitario'      => new sfValidatorNumber(array('required' => false)),
       'verificado'          => new sfValidatorBoolean(array('required' => false)),
-      'cantidad_caja'       => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
+      'cantidad_caja'       => new sfValidatorNumber(array('required' => false)),
       'peso'                => new sfValidatorString(array('max_length' => 150, 'required' => false)),
+      'existencia_actual'   => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('orden_cotizacion_detalle[%s]');

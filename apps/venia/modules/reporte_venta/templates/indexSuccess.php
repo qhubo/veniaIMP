@@ -94,24 +94,24 @@
                 <?php foreach ($operaciones as $lista) { ?>
                     <?php $total = $lista->getValorTotal() + $total; ?>
                     <?php $val = explode('-', $lista->getFaceFirma()) ?>
-                    <?php $numero = $val[0]; ?>
+                    <?php $numero ='FACTURA'; // $val[0]; ?>
                     <?php $reenviar = false; ?>
                     <?php if ($lista->getFaceEstado() <> "") { ?>
                         <?php if ($lista->getFaceEstado() == "CONTIGENCIA") { ?>
-                            <?php $reenviar = true; ?>
+                            <?php //$reenviar = true; ?>
                         <?php } ?>
                         <?php if ($lista->getFaceError() <> "") { ?>
-                            <?php $reenviar = true; ?>
+                            <?php //$reenviar = true; ?>
                         <?php } ?>
                         <?php if ($numero == "") { ?>
                             <?php if (strtoupper(TRIM($lista->getEstatus())) != "ANULADO") { ?> 
-                                <?php $reenviar = true; ?>
+                                <?php //$reenviar = true; ?>
                             <?php } ?>
                         <?php } ?>
                     <?php } ?>    
                     <?php if ($lista->getFaceEstado() == "") { ?>
                         <?php if (strtoupper(TRIM($lista->getEstatus())) != "ANULADO") { ?> 
-                            <?php $reenviar = true; ?>
+                            <?php //$reenviar = true; ?>
                         <?php } ?>
                     <?php } ?>  
 
@@ -144,7 +144,7 @@
 
 
                                 
-                          <?php  if ($TIPO_USUARIO=='ADMINISTRADOR') { ?>
+                          <?php  if ($TIPO_USUARIO=='ADMINISTRADORRRRRRR') { ?>
                                 <a class="btn btn-sm  btn-block"   href="#" data-toggle="modal" data-target="#ajaxmo<?php echo $lista->getId() ?>">
                                       <?php if ($lista->getVendedorId()) { ?>
                                     <?php echo $lista->getVendedor()->getNombre(); ?>
@@ -163,7 +163,7 @@
                         <td style="text-align:right">  <?php echo Parametro::formato($lista->getValorTotal()) ?>    </td>
 
                         <td>
-                            <a target="_blank" href="<?php echo url_for('pdf/factura?tok=' . $lista->getCodigo()) ?>" class="btn btn-block btn-small btn-info " target = "_blank">
+                            <a target="_blank" href="<?php echo url_for('pdf/factura?tok=' . $lista->getCodigo()) ?>" class="btn btn-block btn-sm btn-info " target = "_blank">
                                 <?php if ($lista->getFaceEstado() == "FIRMADONOTA") { ?> <?php echo "NOTA "; ?> <?php } ?>   <?php echo $numero; ?>
                             </a>  
                             <?php if ($reenviar) { ?>

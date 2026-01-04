@@ -36,7 +36,7 @@
                             <td style="text-align:right; font-weight: bold; font-size: 18px;">Pedidos en Proceso</td>
                             <td style="text-align: center; font-size: 18px;"><?php echo count($pendientes); ?> </td>
                             <td>
-                                   <a href="<?php echo url_for('pedido_pendiente/index') ?>" class="btn btn-secondary btn-success" > <i class="flaticon-list-3"></i> Listado </a>
+                                   <a href="<?php echo url_for('pedido_pendiente/index') ?>" class="btn btn-dark " > <i class="flaticon-list-3"></i> Listado </a>
 
                                 
                             </td>
@@ -124,11 +124,11 @@
                                         Servicios
                                     </a>
                                 </li>
-                                <li class="nav-item">
+<!--                                <li class="nav-item">
                                     <a class="nav-link   <?php if ($tablista == 3) { ?> active <?php } ?>" data-toggle="tab" href="#kt_portlet_base_demo_2_6_tab_content" role="tab" aria-selected="false">
                                         Combos
                                     </a>
-                                </li>
+                                </li>-->
                             </ul>
                         </div>
                     </div>

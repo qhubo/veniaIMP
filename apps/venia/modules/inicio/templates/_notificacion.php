@@ -9,7 +9,6 @@
      <div id="feedback-bg-info3"></div>
 </div>
 
-<script src="https://code.jquery.com/jquery-latest.js"></script>
 
 <script>
 $(document).ready(function() {

@@ -59,6 +59,8 @@ abstract class BaseOperacionFormFilter extends BaseFormFilterPropel
       'permite_facturar'          => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
       'observa_facturar'          => new sfWidgetFormFilterInput(),
       'pais_id'                   => new sfWidgetFormPropelChoice(array('model' => 'Pais', 'add_empty' => true)),
+      'empacado'                  => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
+      'transporte'                => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -109,6 +111,8 @@ abstract class BaseOperacionFormFilter extends BaseFormFilterPropel
       'permite_facturar'          => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
       'observa_facturar'          => new sfValidatorPass(array('required' => false)),
       'pais_id'                   => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Pais', 'column' => 'id')),
+      'empacado'                  => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
+      'transporte'                => new sfValidatorPass(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('operacion_filters[%s]');
@@ -174,6 +178,8 @@ abstract class BaseOperacionFormFilter extends BaseFormFilterPropel
       'permite_facturar'          => 'Boolean',
       'observa_facturar'          => 'Text',
       'pais_id'                   => 'ForeignKey',
+      'empacado'                  => 'Boolean',
+      'transporte'                => 'Text',
     );
   }
 }

@@ -2,10 +2,10 @@
 
 /**
  * Data object containing the SQL and PHP code to migrate the database
- * up to version 1766814181.
- * Generated on 2025-12-27 06:43:01 
+ * up to version 1767295668.
+ * Generated on 2026-01-01 20:27:48 
  */
-class PropelMigration_1766814181
+class PropelMigration_1767295668
 {
 
     public function preUp($manager)
@@ -42,9 +42,11 @@ class PropelMigration_1766814181
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `cliente` DROP `tipo_cliente`;
+ALTER TABLE `operacion_detalle` CHANGE `cantidad_caja` `cantidad_caja` DOUBLE;
 
-ALTER TABLE `cliente` DROP `transporte`;
+ALTER TABLE `orden_cotizacion` CHANGE `cantidad_total_caja` `cantidad_total_caja` DOUBLE;
+
+ALTER TABLE `orden_cotizacion_detalle` CHANGE `cantidad_caja` `cantidad_caja` DOUBLE;
 
 ALTER TABLE `partida` CHANGE `ano` `ano` INTEGER DEFAULT false;
 
@@ -53,18 +55,6 @@ ALTER TABLE `partida` CHANGE `mes` `mes` INTEGER DEFAULT false;
 ALTER TABLE `partida_agrupa` CHANGE `ano` `ano` INTEGER DEFAULT false;
 
 ALTER TABLE `partida_agrupa` CHANGE `mes` `mes` INTEGER DEFAULT false;
-
-ALTER TABLE `producto`
-    ADD `codigo_arancel` VARCHAR(50) AFTER `costo_anterior`,
-    ADD `marca_producto` VARCHAR(50) AFTER `codigo_arancel`,
-    ADD `caracteristica` VARCHAR(150) AFTER `marca_producto`,
-    ADD `nombre_ingles` VARCHAR(350) AFTER `caracteristica`,
-    ADD `alto` DOUBLE AFTER `nombre_ingles`,
-    ADD `ancho` DOUBLE AFTER `alto`,
-    ADD `largo` DOUBLE AFTER `ancho`,
-    ADD `peso` DOUBLE AFTER `largo`,
-    ADD `costo_fabrica` DOUBLE AFTER `peso`,
-    ADD `costo_cif` DOUBLE AFTER `costo_fabrica`;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
@@ -86,9 +76,11 @@ SET FOREIGN_KEY_CHECKS = 1;
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `cliente`
-    ADD `tipo_cliente` VARCHAR(30) AFTER `pais_id`,
-    ADD `transporte` VARCHAR(160) AFTER `tipo_cliente`;
+ALTER TABLE `operacion_detalle` CHANGE `cantidad_caja` `cantidad_caja` INTEGER;
+
+ALTER TABLE `orden_cotizacion` CHANGE `cantidad_total_caja` `cantidad_total_caja` INTEGER;
+
+ALTER TABLE `orden_cotizacion_detalle` CHANGE `cantidad_caja` `cantidad_caja` INTEGER;
 
 ALTER TABLE `partida` CHANGE `ano` `ano` INTEGER DEFAULT 0;
 
@@ -97,26 +89,6 @@ ALTER TABLE `partida` CHANGE `mes` `mes` INTEGER DEFAULT 0;
 ALTER TABLE `partida_agrupa` CHANGE `ano` `ano` INTEGER DEFAULT 0;
 
 ALTER TABLE `partida_agrupa` CHANGE `mes` `mes` INTEGER DEFAULT 0;
-
-ALTER TABLE `producto` DROP `codigo_arancel`;
-
-ALTER TABLE `producto` DROP `marca_producto`;
-
-ALTER TABLE `producto` DROP `caracteristica`;
-
-ALTER TABLE `producto` DROP `nombre_ingles`;
-
-ALTER TABLE `producto` DROP `alto`;
-
-ALTER TABLE `producto` DROP `ancho`;
-
-ALTER TABLE `producto` DROP `largo`;
-
-ALTER TABLE `producto` DROP `peso`;
-
-ALTER TABLE `producto` DROP `costo_fabrica`;
-
-ALTER TABLE `producto` DROP `costo_cif`;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

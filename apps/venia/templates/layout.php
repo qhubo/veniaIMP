@@ -102,7 +102,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             <div class="kt-header__brand   kt-grid__item" id="kt_header_brand">
 
                                 <a href="#" data-toggle="modal" data-target="#kt_modal_t">
-                                    <img height="65px" alt="Logo" src="<?php echo sfContext::getInstance()->getUser()->getAttribute("imagen", null, 'seguridad'); ?>" />
+                                    <img height="120px" alt="Logo" src="<?php echo sfContext::getInstance()->getUser()->getAttribute("imagen", null, 'seguridad'); ?>" />
                                 </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
                                 <?php if (($modulo <> 'carga_producto')) { ?>

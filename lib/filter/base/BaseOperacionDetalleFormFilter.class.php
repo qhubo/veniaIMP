@@ -25,6 +25,8 @@ abstract class BaseOperacionDetalleFormFilter extends BaseFormFilterPropel
       'total_iva'      => new sfWidgetFormFilterInput(),
       'costo_unitario' => new sfWidgetFormFilterInput(),
       'linea_no'       => new sfWidgetFormFilterInput(),
+      'cantidad_caja'  => new sfWidgetFormFilterInput(),
+      'peso'           => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -41,6 +43,8 @@ abstract class BaseOperacionDetalleFormFilter extends BaseFormFilterPropel
       'total_iva'      => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'costo_unitario' => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'linea_no'       => new sfValidatorPass(array('required' => false)),
+      'cantidad_caja'  => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
+      'peso'           => new sfValidatorPass(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('operacion_detalle_filters[%s]');
@@ -72,6 +76,8 @@ abstract class BaseOperacionDetalleFormFilter extends BaseFormFilterPropel
       'total_iva'      => 'Number',
       'costo_unitario' => 'Number',
       'linea_no'       => 'Text',
+      'cantidad_caja'  => 'Number',
+      'peso'           => 'Text',
     );
   }
 }

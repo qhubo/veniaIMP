@@ -90,7 +90,7 @@
 
     </div>
 </div>
-<div class="row">
+<!--<div class="row">
     <div class="col-lg-3">Factura Fel </div> 
     <div class="col-lg-6   <?php if ($form['factura_electronica']->hasError()) echo "has-error" ?>">
 
@@ -102,7 +102,7 @@
 
 
     </div>
-</div>
+</div>-->
 
 
 <div class="row">

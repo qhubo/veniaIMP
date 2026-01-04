@@ -176,7 +176,9 @@ propel:
     permite_facturar:                 { type: boolean, default: false }
     observa_facturar:                 { type: varchar(250) }
     pais_id:                           ~
-
+    empacado:                         { type: boolean, default: false }
+    transporte:                       { type: varchar(350) }
+ 
 
   operacion_detalle:
     _attributes: { phpName: OperacionDetalle, idMethod: native }
@@ -194,6 +196,8 @@ propel:
     total_iva:                        { type: double }  
     costo_unitario:                   { type: double } 
     linea_no:                         { type: varchar(50) }
+    cantidad_caja:                    { type: double }
+    peso:                             { type: varchar(150) }
     _uniques:
        llave:                         [ linea_no ]     
     
@@ -1405,7 +1409,7 @@ propel:
      combo_numero:                     { type: varchar(50) }  
      recetario_id:                     ~   
      solicitar_bodega:                 { type: boolean, default: 0 }   
-     cantidad_total_caja:              { type: integer }
+     cantidad_total_caja:              { type: double }
      peso_total:                       { type: varchar(150) }
      vendedor_id:                      ~ 
      pais_id:                           ~
@@ -1427,8 +1431,9 @@ propel:
       combo_numero:                     { type: varchar(50) } 
       costo_unitario:                   { type: double } 
       verificado:                       { type: boolean, default: false}
-      cantidad_caja:                    { type: integer }
+      cantidad_caja:                    { type: double }
       peso:                             { type: varchar(150) }
+      existencia_actual:                { type: integer }
     
     
   moneda:

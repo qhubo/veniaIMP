@@ -79,7 +79,7 @@ abstract class BaseOrdenCotizacionForm extends BaseFormPropel
       'combo_numero'        => new sfValidatorString(array('max_length' => 50, 'required' => false)),
       'recetario_id'        => new sfValidatorPropelChoice(array('model' => 'Recetario', 'column' => 'id', 'required' => false)),
       'solicitar_bodega'    => new sfValidatorBoolean(array('required' => false)),
-      'cantidad_total_caja' => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
+      'cantidad_total_caja' => new sfValidatorNumber(array('required' => false)),
       'peso_total'          => new sfValidatorString(array('max_length' => 150, 'required' => false)),
       'vendedor_id'         => new sfValidatorPropelChoice(array('model' => 'Vendedor', 'column' => 'id', 'required' => false)),
       'pais_id'             => new sfValidatorPropelChoice(array('model' => 'Pais', 'column' => 'id', 'required' => false)),

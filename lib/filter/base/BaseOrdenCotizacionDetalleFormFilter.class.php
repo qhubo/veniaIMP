@@ -26,6 +26,7 @@ abstract class BaseOrdenCotizacionDetalleFormFilter extends BaseFormFilterPropel
       'verificado'          => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
       'cantidad_caja'       => new sfWidgetFormFilterInput(),
       'peso'                => new sfWidgetFormFilterInput(),
+      'existencia_actual'   => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -41,8 +42,9 @@ abstract class BaseOrdenCotizacionDetalleFormFilter extends BaseFormFilterPropel
       'combo_numero'        => new sfValidatorPass(array('required' => false)),
       'costo_unitario'      => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'verificado'          => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
-      'cantidad_caja'       => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'cantidad_caja'       => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'peso'                => new sfValidatorPass(array('required' => false)),
+      'existencia_actual'   => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('orden_cotizacion_detalle_filters[%s]');
@@ -75,6 +77,7 @@ abstract class BaseOrdenCotizacionDetalleFormFilter extends BaseFormFilterPropel
       'verificado'          => 'Boolean',
       'cantidad_caja'       => 'Number',
       'peso'                => 'Text',
+      'existencia_actual'   => 'Number',
     );
   }
 }

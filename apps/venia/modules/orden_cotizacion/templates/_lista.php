@@ -34,17 +34,17 @@
             <?php $total = $lista->getValorUnitario() * $can; ?>
         <?php $grantotal= $total+$grantotal; ?>
         
-        <tr>
+        <tr   
 <!--            <td><?php echo $can; ?> </td>-->
             <td>
-             <a class="btn btn-block  btn-xs " style="font-size: 11px !important;" data-toggle="modal" href="#staticE<?php echo $registro->getId() ?>">
+             <a class="btn btn-block  btn-xs " style=" font-size: 11px !important;" data-toggle="modal" href="#staticE<?php echo $registro->getId() ?>">
                <?php if ($registro->getProductoId()) { echo  $registro->getProducto()->getCodigoSku(); } ?>
                 <?php if ($registro->getServicioId()) { echo  $registro->getServicio()->getCodigo(); } ?>
               </a>
                
             </td>    
-            <td><?php echo $registro->getDetalle(); ?> </td>    
-                    <td style="text-align:right; padding-right: 8px; font-weight: bold; font-size: 14px;">
+            <td <?php if ($registro->getExistenciaActual()>0) { ?> style="background-color:#F59B89" <?php  } ?>><?php echo $registro->getDetalle(); ?> </td>    
+                    <td style=" text-align:right; padding-right: 8px; font-weight: bold; font-size: 14px;">
                         <?php if ($registro->getId()==$edit) { ?>
                 <input    class="form-control " value="<?php echo $val ?>" type="number" step="any" id="consulta_valor_<?php echo $lista->getId() ?>"  
             name="consulta[valor_<?php echo $lista->getId() ?>]" value="            <?php  echo $registro->getValorUnitario(); ?>" >
@@ -54,14 +54,15 @@
                         <?php  } ?>
             </td>
             <td style="text-align:right; padding-right: 8px; font-weight: bold; font-size: 14px;">
+                <?php //echo $registro->getExistenciaActual(); ?>
+           
+        <?php if ($registro->getExistenciaActual()>0) { ?>
+                <span style="width:100%; background-color: #F24522; padding: 2px;  text-align: center"><font size='-2'>Solicitado&nbsp;&nbsp;</font><?php echo $registro->getCantidad(); ?></span>
+            <?php $can = $registro->getExistenciaActual(); ?>
+        <?php } ?>
+             <input min="1"   class="form-control xlarge" value="<?php echo $can ?>" type="number" id="consulta_numero_<?php echo $pid ?>"  
+               max="<?php echo $Max; ?>"         name="consulta[numero_<?php echo $pid ?>]" onkeypress='validate<?php echo $pid ?>(event)' >
                 
-                <?php if ($lista->getComboNumero()=="") { ?>
-                <input min="1"   class="form-control xlarge" value="<?php echo $can ?>" type="number" id="consulta_numero_<?php echo $pid ?>"  
-                  min="1" max="<?php echo $Max; ?>"         name="consulta[numero_<?php echo $pid ?>]" onkeypress='validate<?php echo $pid ?>(event)' >
-                <?php } else { ?>
-                <?php echo $registro->getCantidad(); ?>
-                
-                <?php } ?> <?php //echo $Max; ?>
             </td>    
                
             <td><?php //echo $registro->getValorTotal(); ?>

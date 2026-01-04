@@ -17,6 +17,19 @@
  */
 class Operacion extends BaseOperacion {
 
+        public function getTotalProductos() {
+         $LISTA = OperacionDetalleQuery::create()
+             ->filterByOperacionId($this->getId())
+             ->filterByProductoId(null, Criteria::NOT_EQUAL)
+             ->withColumn('sum(OperacionDetalle.Cantidad)', 'CantidadTotal')
+             ->findOne();
+         if ($LISTA) {
+             $retorna = $LISTA->getCantidadTotal();
+         }
+         return $retorna;
+          }
+          
+    
 
       public function getRecibo() {
         $listablack[]='CONTRA ENTREGA';
@@ -131,13 +144,13 @@ class Operacion extends BaseOperacion {
 //echo        $OPERACION->getTienda()->getCodigo();
 //die();
         //**  INICIO TEST
-        if ($OPERACION->getTienda()->getCodigo() == 'TEST') {
+       // if ($OPERACION->getTienda()->getCodigo() == 'TEST') {
             $ERROR = '';
             $CONTIGENCIA = '';
             $FECHA = date('Y-m-d');
-            $SERIE = 'PRUEBAS';
-            $UUID = substr(sha1($SERIE . date('Ymdis')), 0, 20);
-            $NUMERO = rand(999, 9999);
+            $SERIE = '';
+            $UUID = sha1($OPERACION->getCodigo()); // substr(sha1($SERIE . date('Ymdis')), 0, 20);
+            $NUMERO = $OPERACION->getCodigo(); //rand(999, 9999);
 
             $returna['ERROR'] = $ERROR; // = '';
             $returna['CONTIGENCIA'] = $CONTIGENCIA; // = '';
@@ -160,7 +173,7 @@ class Operacion extends BaseOperacion {
             $OPERACION->setFaceReferencia('');
             $OPERACION->save();
             return $returna;
-        }
+    //    }
 // * FOM TEST
 
         $NIT = $OPERACION->getNit();

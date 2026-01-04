@@ -268,6 +268,7 @@ class pdfActions extends sfActions {
         $fecha = str_replace(":", "", $fecha);
         $nit = $valoresDefault['EMISOR']['NITEmisor'];
         $nombrePdf = $tipoDocum . "_" . $serie . "_" . $Numero . ".pdf";
+        $nombrePdf ="FACTURA ".$operacion->getCodigo();
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Pdf Factura , NOTA');
         $pdf->SetTitle($nombrePdf);

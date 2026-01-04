@@ -48,6 +48,7 @@ class OrdenCotizacionPeer extends BaseOrdenCotizacionPeer {
         $operacion->setObservaciones($cotizacion->getComentario());
         $operacion->setRecetarioId($cotizacion->getRecetarioId());
         $operacion->setPesoTotal($cotizacion->getPesoTotal());
+        $operacion->setPaisId($cotizacion->getPaisId());
         $operacion->setCantidadTotalCaja($cotizacion->getCantidadTotalCaja());
         if ($cotizacion->getClienteId()) {
             $operacion->setClienteId($cotizacion->getClienteId());

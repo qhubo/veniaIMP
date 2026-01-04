@@ -85,7 +85,7 @@
                                         <i class="fa flaticon-signs"></i> Caja </a>    
                                 </td>
                                 <td>
-                                    <div style="display: block">  <?php echo $lista->getObservaciones(); ?> </div>
+                                    <div style="display: block">  <?php //echo $lista->getObservaciones(); ?> </div>
     <?php if ($lista->getClienteId()) { ?>
                                     
                                         <a data-toggle="modal" href="#staticCONFIRMA<?php echo $lista->getId(); ?>" class="btn btn-sm btn-secondary btn-dark" > <i class="flaticon-bell"></i>Cuenta por cobrar</a>
@@ -169,8 +169,8 @@
                 </div>
 
                 <div class="modal-footer">
-                      <a class="btn  btn-warning " href="<?php echo url_for($modulo . '/confirmarCuenta?id='.$lista->getId()."&fel=NO") ?>" >
-                                    <i class="flaticon2-lock "></i> Confirmar sin FEL </a> 
+<!--                      <a class="btn  btn-warning " href="<?php echo url_for($modulo . '/confirmarCuenta?id='.$lista->getId()."&fel=NO") ?>" >
+                                    <i class="flaticon2-lock "></i> Confirmar sin FEL </a> -->
                     
                     <a class="btn  btn-success " href="<?php echo url_for($modulo . '/confirmarCuenta?id=' . $lista->getId() . "&fel=SI") ?>" >
                         <i class="flaticon2-lock "></i> Confirmar </a> 
@@ -190,7 +190,7 @@
             <div class="modal-content">
                  <?php include_partial('soporte/avisos') ?>
                   <?php $val = explode('-', $operacion->getFaceFirma()) ?>
-                                <?php $numero = $val[0]; ?>
+                                <?php $numero ="FACTIRA"; // $val[0]; ?>
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel6">Factura <?php echo $operacion->getCodigo(); ?>   </h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
