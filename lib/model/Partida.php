@@ -644,6 +644,7 @@ class Partida extends BasePartida {
                 $this->setEmpresaId($empresaId);
             }
         }
+        
         if ($this->getCodigo() == "") {
             if ($this->getConfirmada()) {
                 if (!$this->getNumero()) {
