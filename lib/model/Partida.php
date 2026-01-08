@@ -645,6 +645,7 @@ class Partida extends BasePartida {
             }
         }
         
+        
         if ($this->getCodigo() == "") {
             if ($this->getConfirmada()) {
                 if (!$this->getNumero()) {
