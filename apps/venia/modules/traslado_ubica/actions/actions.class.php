@@ -304,7 +304,7 @@ class traslado_ubicaActions extends sfActions {
         date_default_timezone_set("America/Guatemala");
         $acceso = MenuSeguridad::Acceso('actualiza_inventario');
         if (!$acceso) {
-            $this->redirect('inicio/index');
+          //  $this->redirect('inicio/index');
         }
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
         $usuarioq = UsuarioQuery::create()->findOneById($usuarioId);
