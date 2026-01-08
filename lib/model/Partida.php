@@ -639,6 +639,7 @@ class Partida extends BasePartida {
     public function save(PropelPDO $con = null) {
         $empresaId = UsuarioQuery::getEmpresaSeleccionada('Partida');
         if ($this->isNew()) {
+            $this->setConfirmada(true);
             if ($empresaId) {
                 $this->setEmpresaId($empresaId);
             }
