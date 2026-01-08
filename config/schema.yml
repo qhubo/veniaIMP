@@ -107,6 +107,11 @@ propel:
     nombre_banco_id:                   ~ 
     pago_cheque:                      { type: boolean, default: false }  
     dolares:                          { type: boolean, default: false }  
+    direccion:                        { type: longvarchar }
+    pais_id:                          ~ 
+    destinatario:                     { type: varchar(150) } 
+    intermediario:                    { type: varchar(150) } 
+      
     
   banco_termporal:
     _attributes: { phpName: BancoTemporal, idMethod: native }
@@ -2162,3 +2167,10 @@ propel:
     tienda_id:                         ~
     nueva_ubicacion:                   { type: varchar(50) } 
     
+  tipo_transporte:
+    _attributes: { phpName: TipoTransporte, idMethod: native }
+    id:                                ~
+    empresa_id:                        ~
+    codigo:	                       { type: varchar(32) }
+    nombre:                            { type: varchar(260), required: true, primaryString: true, default: ''  } 
+    activo:                            { type: boolean, default: true }   

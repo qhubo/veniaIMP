@@ -20,7 +20,7 @@
                 <tr class="active">
                     <th  align="center"><span class="kt-font-success">Código </span></th>
                     <th  align="center"><span class="kt-font-success">  Nombre</span></th>
-                    <th  align="center"><span class="kt-font-success"> Cuenta ERP</span></th>
+                    <th  align="center"><span class="kt-font-success"> Pais</span></th>
                     <th  align="center"><span class="kt-font-success"> Activo </span></th>
                     <th  align="center"><span class="kt-font-success"> Editar </span></th>
                        <th  align="center"><span class="kt-font-success"> Eliminar </span></th>
@@ -32,7 +32,7 @@
                     <tr>
                         <td><?php echo $data->getCodigo(); ?></td>
                         <td><?php echo $data->getNombre() ?></td>
-                        <td><?php echo $data->getCuentaContable();   ?></td>
+                        <td><?php echo $data->getPais();   ?></td>
                         <td> <?php if ($data->getActivo()) { ?><li class="fa fa-check"></li> <?php } ?> </td>
                 <td>    
                     <a class="btn btn-info btn-sm btn-block flaticon-edit-1"  href="<?php echo url_for($modulo . '/muestra?id=' . $data->getId()) ?>" ><li class="fa fa-picture-o"></li>Editar &nbsp;</a> 

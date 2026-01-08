@@ -26,6 +26,10 @@ abstract class BaseBancoForm extends BaseFormPropel
       'nombre_banco_id' => new sfWidgetFormPropelChoice(array('model' => 'NombreBanco', 'add_empty' => true)),
       'pago_cheque'     => new sfWidgetFormInputCheckbox(),
       'dolares'         => new sfWidgetFormInputCheckbox(),
+      'direccion'       => new sfWidgetFormTextarea(),
+      'pais_id'         => new sfWidgetFormPropelChoice(array('model' => 'Pais', 'add_empty' => true)),
+      'destinatario'    => new sfWidgetFormInputText(),
+      'intermediario'   => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -41,6 +45,10 @@ abstract class BaseBancoForm extends BaseFormPropel
       'nombre_banco_id' => new sfValidatorPropelChoice(array('model' => 'NombreBanco', 'column' => 'id', 'required' => false)),
       'pago_cheque'     => new sfValidatorBoolean(array('required' => false)),
       'dolares'         => new sfValidatorBoolean(array('required' => false)),
+      'direccion'       => new sfValidatorString(array('required' => false)),
+      'pais_id'         => new sfValidatorPropelChoice(array('model' => 'Pais', 'column' => 'id', 'required' => false)),
+      'destinatario'    => new sfValidatorString(array('max_length' => 150, 'required' => false)),
+      'intermediario'   => new sfValidatorString(array('max_length' => 150, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('banco[%s]');

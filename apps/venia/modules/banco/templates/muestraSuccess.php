@@ -30,11 +30,11 @@
         </div>
               <div class="row">
             <div class="col-lg-1"> </div>
-            <div class="col-lg-2">Entidad Banco </div>
-         <div class="col-lg-5 <?php if ($form['banco']->hasError()) echo "has-error" ?>">
-                <?php echo $form['banco'] ?>           
+            <div class="col-lg-2">País</div>
+         <div class="col-lg-5 <?php if ($form['pais_id']->hasError()) echo "has-error" ?>">
+                <?php echo $form['pais_id'] ?>           
                 <span class="help-block form-error"> 
-                    <?php echo $form['banco']->renderError() ?>  
+                    <?php echo $form['pais_id']->renderError() ?>  
                 </span>
             </div>
         </div>
@@ -51,7 +51,7 @@
         
              <div class="row">
             <div class="col-lg-1"> </div>
-            <div class="col-lg-2">Típo </div>
+            <div class="col-lg-2">Típo Cuenta </div>
          <div class="col-lg-5 <?php if ($form['tipo']->hasError()) echo "has-error" ?>">
                 <?php echo $form['tipo'] ?>           
                 <span class="help-block form-error"> 
@@ -81,29 +81,48 @@
             </div>
         </div>
         
-                               <div class="row">
+                        <div class="row">
             <div class="col-lg-1"> </div>
-            <div class="col-lg-2">Cuenta Contable</div>
-         <div class="col-lg-5 <?php if ($form['cuenta_contable']->hasError()) echo "has-error" ?>">
-                <?php echo $form['cuenta_contable'] ?>           
+            <div class="col-lg-2">Dirección</div>
+         <div class="col-lg-5 <?php if ($form['direccion']->hasError()) echo "has-error" ?>">
+                <?php echo $form['direccion'] ?>           
                 <span class="help-block form-error"> 
-                    <?php echo $form['cuenta_contable']->renderError() ?>  
+                    <?php echo $form['direccion']->renderError() ?>  
                 </span>
             </div>
         </div>
+        
+        
+                                <div class="row">
+            <div class="col-lg-1"> </div>
+            <div class="col-lg-2">Swift Destinatario</div>
+         <div class="col-lg-5 <?php if ($form['destinario']->hasError()) echo "has-error" ?>">
+                <?php echo $form['destinario'] ?>           
+                <span class="help-block form-error"> 
+                    <?php echo $form['destinario']->renderError() ?>  
+                </span>
+            </div>
+                                </div>
+                        <div class="row">
+            <div class="col-lg-1"> </div>
+            <div class="col-lg-2">Swift Intermedio</div>
+         <div class="col-lg-5 <?php if ($form['intermediario']->hasError()) echo "has-error" ?>">
+                <?php echo $form['intermediario'] ?>           
+                <span class="help-block form-error"> 
+                    <?php echo $form['intermediario']->renderError() ?>  
+                </span>
+            </div>
+        </div>
+        
+        
+       >
         
     
         
         <div class="row">
             <div class="col-lg-3"> </div>
             
-                      <label class="col-lg-1 control-label font-blue-steel right ">Dolares</label>
-            <div class="col-lg-1 <?php if ($form['dolares']->hasError()) echo "has-error" ?>">
-                <?php echo $form['dolares'] ?>           
-                <span class="help-block form-error"> 
-                    <?php echo $form['dolares']->renderError() ?>  
-                </span>
-            </div>
+      
                       
                       
                  <label class="col-lg-1 control-label font-blue-steel right ">Pago Cheque</label>
@@ -121,6 +140,7 @@
                     <?php echo $form['activo']->renderError() ?>  
                 </span>
             </div>
+            <div class="col-lg-2"></div>
             <div class="col-lg-2">
                 <button class="btn btn-primary " type="submit">
                     <i class="fa fa-save "></i>

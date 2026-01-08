@@ -54,10 +54,14 @@ class bancoActions extends sfActions {
             $default['cuenta'] = $registro->getCuenta();
             $default['activo'] = $registro->getActivo();
             $default['dolares'] = $registro->getDolares();
-            $default['banco'] = $registro->getNombreBancoId();
+           // $default['banco'] = $registro->getNombreBancoId();
             $default['cuenta_contable'] = $registro->getCuentaContable();
             $default['observaciones'] = $registro->getObservaciones();
             $default['pago_cheque']=$registro->getPagoCheque();
+            $default['direccion']=$registro->getDireccion();
+            $default['pais_id']=$registro->getPaisId();
+            $default['destinario']=$registro->getDestinatario();
+            $default['intermediario']=$registro->getIntermediario();
             
         }
         $this->registro = $registro;
@@ -79,7 +83,11 @@ class bancoActions extends sfActions {
                 $nuevo->setActivo($valores['activo']);
                 $nuevo->setPagoCheque($valores['pago_cheque']);
                 $nuevo->setCuentaContable($valores['cuenta_contable']);
-                $nuevo->setNombreBancoId($valores['banco']);
+                $nuevo->setDireccion($valores['direccion']);
+                $nuevo->setPaisId($valores['pais_id']);
+                $nuevo->setDestinatario($valores['destinario']);
+                $nuevo->setIntermediario($valores['intermediario']);
+              //  $nuevo->setNombreBancoId($valores['banco']);
                 $nuevo->setObservaciones($valores['observaciones']);
                  $nuevo->setDolares($valores['dolares']);
                 $nuevo->save();

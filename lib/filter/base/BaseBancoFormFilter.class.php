@@ -23,6 +23,10 @@ abstract class BaseBancoFormFilter extends BaseFormFilterPropel
       'nombre_banco_id' => new sfWidgetFormPropelChoice(array('model' => 'NombreBanco', 'add_empty' => true)),
       'pago_cheque'     => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
       'dolares'         => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
+      'direccion'       => new sfWidgetFormFilterInput(),
+      'pais_id'         => new sfWidgetFormPropelChoice(array('model' => 'Pais', 'add_empty' => true)),
+      'destinatario'    => new sfWidgetFormFilterInput(),
+      'intermediario'   => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -37,6 +41,10 @@ abstract class BaseBancoFormFilter extends BaseFormFilterPropel
       'nombre_banco_id' => new sfValidatorPropelChoice(array('required' => false, 'model' => 'NombreBanco', 'column' => 'id')),
       'pago_cheque'     => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
       'dolares'         => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
+      'direccion'       => new sfValidatorPass(array('required' => false)),
+      'pais_id'         => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Pais', 'column' => 'id')),
+      'destinatario'    => new sfValidatorPass(array('required' => false)),
+      'intermediario'   => new sfValidatorPass(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('banco_filters[%s]');
@@ -66,6 +74,10 @@ abstract class BaseBancoFormFilter extends BaseFormFilterPropel
       'nombre_banco_id' => 'ForeignKey',
       'pago_cheque'     => 'Boolean',
       'dolares'         => 'Boolean',
+      'direccion'       => 'Text',
+      'pais_id'         => 'ForeignKey',
+      'destinatario'    => 'Text',
+      'intermediario'   => 'Text',
     );
   }
 }
