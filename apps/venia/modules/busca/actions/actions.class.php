@@ -3,7 +3,7 @@
 class buscaActions extends sfActions {
 
 
-        public function executeTabJsProductoUbica(sfWebRequest $r) {
+     public function executeTabJsProductoUbica(sfWebRequest $r) {
         $bodegaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'bodega');
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("empresa", null, 'seguridad');
         $movi = $r->getParameter('movi');
@@ -400,6 +400,7 @@ class buscaActions extends sfActions {
     }
 
     public function executeTabJsProductoBusca(sfWebRequest $r) {
+      
         $ini = 0;
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("empresa", null, 'seguridad');
 
@@ -431,7 +432,7 @@ class buscaActions extends sfActions {
 //    $query = new ProductoQuery();
         if ($r->getParameter('sSearch') != "") {
             $sqlexp = "select vi.id,imagen, codigo_sku,nombre  from producto vi  where  (vi.nombre like  '%" . $busqueda . "%'
-                or vi.codigo_sku like '%" . $busqueda . "%') and  vi.empresa_id=" . $empresaId . " limit " . $ini . ", 5";
+                or vi.codigo_sku like '%" . $busqueda . "%') and  vi.empresa_id=" . $empresaId . " limit " . $ini . ", 120";
         } else {
             $sqlexp = "select  id, '' as nombre, nit,  codigo   from proveedor  where id= -9";
         }
