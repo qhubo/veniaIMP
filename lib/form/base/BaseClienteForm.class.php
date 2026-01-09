@@ -44,6 +44,7 @@ abstract class BaseClienteForm extends BaseFormPropel
       'limite_credito'       => new sfWidgetFormInputText(),
       'pais_id'              => new sfWidgetFormPropelChoice(array('model' => 'Pais', 'add_empty' => true)),
       'nombre_facturar'      => new sfWidgetFormInputText(),
+      'vendedor_id'          => new sfWidgetFormPropelChoice(array('model' => 'Vendedor', 'add_empty' => true)),
     ));
 
     $this->setValidators(array(
@@ -77,6 +78,7 @@ abstract class BaseClienteForm extends BaseFormPropel
       'limite_credito'       => new sfValidatorNumber(array('required' => false)),
       'pais_id'              => new sfValidatorPropelChoice(array('model' => 'Pais', 'column' => 'id', 'required' => false)),
       'nombre_facturar'      => new sfValidatorString(array('max_length' => 260, 'required' => false)),
+      'vendedor_id'          => new sfValidatorPropelChoice(array('model' => 'Vendedor', 'column' => 'id', 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('cliente[%s]');

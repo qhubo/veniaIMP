@@ -2,10 +2,10 @@
 
 /**
  * Data object containing the SQL and PHP code to migrate the database
- * up to version 1767295668.
- * Generated on 2026-01-01 20:27:48 
+ * up to version 1767923969.
+ * Generated on 2026-01-09 02:59:29 
  */
-class PropelMigration_1767295668
+class PropelMigration_1767923969
 {
 
     public function preUp($manager)
@@ -42,11 +42,14 @@ class PropelMigration_1767295668
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `operacion_detalle` CHANGE `cantidad_caja` `cantidad_caja` DOUBLE;
+ALTER TABLE `cliente`
+    ADD `vendedor_id` INTEGER AFTER `nombre_facturar`;
 
-ALTER TABLE `orden_cotizacion` CHANGE `cantidad_total_caja` `cantidad_total_caja` DOUBLE;
+CREATE INDEX `cliente_FI_5` ON `cliente` (`vendedor_id`);
 
-ALTER TABLE `orden_cotizacion_detalle` CHANGE `cantidad_caja` `cantidad_caja` DOUBLE;
+ALTER TABLE `cliente` ADD CONSTRAINT `cliente_FK_5`
+    FOREIGN KEY (`vendedor_id`)
+    REFERENCES `vendedor` (`id`);
 
 ALTER TABLE `partida` CHANGE `ano` `ano` INTEGER DEFAULT false;
 
@@ -76,11 +79,11 @@ SET FOREIGN_KEY_CHECKS = 1;
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `operacion_detalle` CHANGE `cantidad_caja` `cantidad_caja` INTEGER;
+ALTER TABLE `cliente` DROP FOREIGN KEY `cliente_FK_5`;
 
-ALTER TABLE `orden_cotizacion` CHANGE `cantidad_total_caja` `cantidad_total_caja` INTEGER;
+DROP INDEX `cliente_FI_5` ON `cliente`;
 
-ALTER TABLE `orden_cotizacion_detalle` CHANGE `cantidad_caja` `cantidad_caja` INTEGER;
+ALTER TABLE `cliente` DROP `vendedor_id`;
 
 ALTER TABLE `partida` CHANGE `ano` `ano` INTEGER DEFAULT 0;
 

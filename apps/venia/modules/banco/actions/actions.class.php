@@ -62,6 +62,7 @@ class bancoActions extends sfActions {
             $default['pais_id']=$registro->getPaisId();
             $default['destinario']=$registro->getDestinatario();
             $default['intermediario']=$registro->getIntermediario();
+            $default['nombre_entidad']=$registro->getNombreEntidad();
             
         }
         $this->registro = $registro;
@@ -85,6 +86,7 @@ class bancoActions extends sfActions {
                 $nuevo->setCuentaContable($valores['cuenta_contable']);
                 $nuevo->setDireccion($valores['direccion']);
                 $nuevo->setPaisId($valores['pais_id']);
+                $nuevo->setNombreEntidad($valores['nombre_entidad']);
                 $nuevo->setDestinatario($valores['destinario']);
                 $nuevo->setIntermediario($valores['intermediario']);
               //  $nuevo->setNombreBancoId($valores['banco']);

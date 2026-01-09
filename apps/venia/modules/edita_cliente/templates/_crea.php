@@ -31,17 +31,27 @@
 
 
     <div  class="col-lg-1">
-        Activo     
+       Vendedor   
     </div>
+        <div class="col-lg-2  <?php if ($form['vendedor_id']->hasError()) echo "has-error" ?>">
+        <?php echo $form['vendedor_id'] ?>          
+        <span class="help-block form-error"> 
+            <?php echo $form['vendedor_id']->renderError() ?>       
+        </span>
+    </div>
+    
 
     <div class="col-lg-1   <?php if ($form['activo']->hasError()) echo "has-error" ?>">
+        Activo
         <?php echo $form['activo'] ?>      
         <div  for="consulta_activo"><span></span></div>
         <span class="help-block form-error"> 
             <?php echo $form['activo']->renderError() ?>       
         </span>
-
     </div>    
+    
+    
+
 
 
 

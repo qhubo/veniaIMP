@@ -111,6 +111,7 @@ propel:
     pais_id:                          ~ 
     destinatario:                     { type: varchar(150) } 
     intermediario:                    { type: varchar(150) } 
+    nombre_entidad:                   { type: varchar(150) } 
       
     
   banco_termporal:
@@ -1056,7 +1057,7 @@ propel:
      tiene_credito:                     { type: boolean, default: true }
      pais_id:                           ~
      nombre_facturar:                   { type: varchar(260)  } 
-    
+     vendedor_id:                           ~    
     
   cierre_caja:
      _attributes: { phpName: CierreCaja, idMethod: native }

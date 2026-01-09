@@ -45,6 +45,16 @@ class IngresoClienteForm extends sfForm {
         $this->setWidget('municipio', new sfWidgetFormChoice(array( "choices" => $lisv), array("class" => " form-control")));
         $this->setValidator('municipio', new sfValidatorString(array('required' => false)));
 
+        $vendedores = VendedorQuery::create()
+                ->orderByNombre()
+                ->find();
+        $listaV[null]='Seleccione';
+        foreach($vendedores as $data) {
+            $listaV[$data->getId()]=$data->getNombre();
+        }
+        $this->setWidget('vendedor_id', new sfWidgetFormChoice(array( "choices" => $listaV), array("class" => " form-control")));
+        $this->setValidator('vendedor_id', new sfValidatorString(array('required' => false)));
+
         
         $this->setWidget('nombre', new sfWidgetFormInputText(array(), array('class' => 'form-control ' , "placeholder" => "Nombre")));
         $this->setWidget('pequeno_contribuye', new sfWidgetFormInputCheckbox()); // new sfWidgetFormInputText(array(), array('class' => 'form-control','data-provide'=>'datepicker')));// cje

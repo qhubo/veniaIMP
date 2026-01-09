@@ -216,6 +216,7 @@ class edita_clienteActions extends sfActions {
             $defaults['direccion'] = $proveedor->getDireccion(); //> 
             $defaults['avenida_calle'] = $proveedor->getAvenidaCalle(); //> 
             $defaults['zona'] = $proveedor->getZona(); //> 
+            $defaults['vendedor_id'] = $proveedor->getVendedorId(); //> 
             $defaults['telefono'] = $proveedor->getTelefono(); //> 
             $defaults['correo_electronico'] = $proveedor->getCorreoElectronico(); //> 
             $defaults['limite_credito'] = $proveedor->getLimiteCredito(); //> 
@@ -226,12 +227,6 @@ class edita_clienteActions extends sfActions {
             $defaults['municipio'] = $proveedor->getMunicipioId(); //> 
             $defaults['contacto'] = $proveedor->getContacto();
         }
-
-
-
-
-
-
 
         $this->leyenda = $leyenda;
         $this->color = $color;
@@ -252,7 +247,10 @@ class edita_clienteActions extends sfActions {
                 $nueva->setTieneCredito($valores['tiene_credito']);
                 $nueva->setLimiteCredito($valores['limite_credito']);
                 $nueva->setNombreFacturar($valores['nombre_factura']);
-
+                $nueva->setVendedorId(null);
+                if ($valores['vendedor_id']) {
+                 $nueva->setVendedorId($valores['vendedor_id']);
+                }
                 $nueva->setDepartamentoId(null);
                 $nueva->setMunicipioId(null);
                 if ($valores['departamento']) {

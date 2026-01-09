@@ -71,6 +71,17 @@ class vendedorActions extends sfActions
             if ($this->form->isValid()) {
                 $valores = $this->form->getValues();
                 $nuevo = new Vendedor();
+                if ($valores['codigo']) {
+                    $cantidad  = VendedorQuery::create()
+                            ->filterByCodigo($valores['codigo'])
+                            ->filterById($Id, Criteria::NOT_EQUAL)
+                            ->count();
+                    if ($cantidad>0) {
+                   $this->getUser()->setFlash('error', 'Codigo de vendedor ya existe '.$valores['codigo']);
+                $this->redirect($modulo . '/muestra?id=' . $Id);
+                    }
+                }
+                
                 if ($registro) {
                     $nuevo = $registro;
                 }

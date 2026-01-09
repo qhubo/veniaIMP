@@ -26,7 +26,7 @@ class CreaVendedorForm extends sfForm {
         
         
         $this->setWidget('codigo', new sfWidgetFormInputText(array(), array('class' => 'form-control', 
-            'max_length' => 150, "placeholder" => "Codigo Powerlink",)));
+            'max_length' => 150, "placeholder" => "Codigo ",)));
         $this->setValidator('codigo', new sfValidatorString(array('required' => true)));
         
       $this->setWidget('activo', new sfWidgetFormInputCheckbox(array(), array('class' => 'checkbox')));

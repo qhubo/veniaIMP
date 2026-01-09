@@ -25,7 +25,8 @@ class CreaBancoForm extends sfForm {
          $this->setWidget('intermediario', new sfWidgetFormInputText(array(), array('class' => 'form-control', 'max_length' => 250,)));
         $this->setValidator('intermediario', new sfValidatorString(array('required' => false)));
 
-        
+        $this->setWidget('nombre_entidad', new sfWidgetFormInputText(array(), array('class' => 'form-control', 'max_length' => 150, "placeholder" => "Nombre Entidad",)));
+        $this->setValidator('nombre_entidad', new sfValidatorString(array('required' => false)));        
         $this->setWidget('nombre', new sfWidgetFormInputText(array(), array('class' => 'form-control', 'max_length' => 150, "placeholder" => "Nombre",)));
         $this->setValidator('nombre', new sfValidatorString(array('required' => true)));
         $this->setWidget('observaciones', new sfWidgetFormTextarea(array(), array('class' => 'form-control noEditorMce')));

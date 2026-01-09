@@ -27,6 +27,7 @@ abstract class BaseBancoFormFilter extends BaseFormFilterPropel
       'pais_id'         => new sfWidgetFormPropelChoice(array('model' => 'Pais', 'add_empty' => true)),
       'destinatario'    => new sfWidgetFormFilterInput(),
       'intermediario'   => new sfWidgetFormFilterInput(),
+      'nombre_entidad'  => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -45,6 +46,7 @@ abstract class BaseBancoFormFilter extends BaseFormFilterPropel
       'pais_id'         => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Pais', 'column' => 'id')),
       'destinatario'    => new sfValidatorPass(array('required' => false)),
       'intermediario'   => new sfValidatorPass(array('required' => false)),
+      'nombre_entidad'  => new sfValidatorPass(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('banco_filters[%s]');
@@ -78,6 +80,7 @@ abstract class BaseBancoFormFilter extends BaseFormFilterPropel
       'pais_id'         => 'ForeignKey',
       'destinatario'    => 'Text',
       'intermediario'   => 'Text',
+      'nombre_entidad'  => 'Text',
     );
   }
 }

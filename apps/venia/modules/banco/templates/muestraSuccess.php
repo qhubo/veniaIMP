@@ -49,6 +49,17 @@
             </div>
         </div>
         
+              <div class="row">
+            <div class="col-lg-1"> </div>
+            <div class="col-lg-2">Nombre Entidad</div>
+         <div class="col-lg-5 <?php if ($form['nombre_entidad']->hasError()) echo "has-error" ?>">
+                <?php echo $form['nombre_entidad'] ?>           
+                <span class="help-block form-error"> 
+                    <?php echo $form['nombre_entidad']->renderError() ?>  
+                </span>
+            </div>
+              </div>
+        
              <div class="row">
             <div class="col-lg-1"> </div>
             <div class="col-lg-2">Típo Cuenta </div>

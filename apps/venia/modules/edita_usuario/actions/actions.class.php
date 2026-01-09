@@ -205,7 +205,10 @@ class edita_usuarioActions extends sfActions {
                 $nuevo->setTipoUsuario($valores['tipo']);
                 $nuevo->setNivelUsuario($valores['nivel']);
                 $nuevo->setClave($valores['clave']);
-                 $nuevo->setVendedorId($valores['vendedor_id']);
+                $nuevo->setVendedorId(null);
+                if ($valores['vendedor_id']) {
+                    $nuevo->setVendedorId($valores['vendedor_id']);
+                 }
                 $nuevo->setTiendaId(null);
                 $nuevo->setEmpresaId(null);
                 if ($valores['bodega']) {

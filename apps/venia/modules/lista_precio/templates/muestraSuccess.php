@@ -11,8 +11,8 @@
                 <i class="flaticon-layers kt-font-brand"></i>
             </span>
             <h3 class="kt-portlet__head-title kt-font-brand">
-                <?php if ($registro) { ?>  Editar  Vendedor <?php echo $registro->getCodigo(); ?> <?php } else { ?>
-                   Nuevo  Vendedor
+                <?php if ($registro) { ?>  Editar  Tipo Lista Precio <?php echo $registro->getCodigo(); ?> <?php } else { ?>
+                   Nuevo  Tipo Lista Precio
                 <?php } ?>
                 <small>  &nbsp;&nbsp;&nbsp;&nbsp; Completa la información solicitada</small>
             </h3>

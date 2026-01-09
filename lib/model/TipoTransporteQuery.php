@@ -19,4 +19,12 @@
  */
 class TipoTransporteQuery extends BaseTipoTransporteQuery
 {
+    
+        public function __construct($dbName = 'propel', $modelName = 'TipoTransporte', $modelAlias = null) {
+        parent::__construct($dbName, $modelName, $modelAlias);
+        $empresa_id = UsuarioQuery::getEmpresaSeleccionada('TipoTransporte');
+            if ($empresa_id) {
+                $this->filterByEmpresaId($empresa_id);
+            }
+    }
 }

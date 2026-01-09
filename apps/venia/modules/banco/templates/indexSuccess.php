@@ -20,6 +20,7 @@
                 <tr class="active">
                     <th  align="center"><span class="kt-font-success">Código </span></th>
                     <th  align="center"><span class="kt-font-success">  Nombre</span></th>
+                           <th  align="center"><span class="kt-font-success">  Nombre Entidad</span></th>
                     <th  align="center"><span class="kt-font-success"> Pais</span></th>
                     <th  align="center"><span class="kt-font-success"> Activo </span></th>
                     <th  align="center"><span class="kt-font-success"> Editar </span></th>
@@ -32,6 +33,7 @@
                     <tr>
                         <td><?php echo $data->getCodigo(); ?></td>
                         <td><?php echo $data->getNombre() ?></td>
+                        <td><?php echo $data->getNombreEntidad() ?></td>
                         <td><?php echo $data->getPais();   ?></td>
                         <td> <?php if ($data->getActivo()) { ?><li class="fa fa-check"></li> <?php } ?> </td>
                 <td>    
