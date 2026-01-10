@@ -11,7 +11,7 @@
                 <i class="flaticon2-tag  kt-font-info"></i>
             </span>
             <h3 class="kt-portlet__head-title kt-font-success">
-                SALIDA DE INVENTARIO <small>   Filtra por rango de fechas  <strong>  </strong>    </small>
+                INGRESO DE INVENTARIO <small>   Filtra por rango de fechas  <strong>  </strong>    </small>
             </h3>
         </div>
         <div class="kt-portlet__head-toolbar">

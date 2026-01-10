@@ -14,7 +14,7 @@ class reporte_inventarioActions extends sfActions {
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
         error_reporting(-1);
 //        $bodegas = TiendaQuery::create()->orderByNombre()->find();
-        $bodegas = ProductoExistenciaQuery::create()->groupByTiendaId()->filterByEmpresaId($empresaId)->filterByCantidad(0, Criteria::GREATER_THAN)->find();
+        $bodegas = ProductoExistenciaQuery::create()->useTiendaQuery()->endUse()->groupByTiendaId()->filterByEmpresaId($empresaId)->filterByCantidad(0, Criteria::GREATER_THAN)->find();
         $text = '';
         $file = fopen("uploads/reporteInventarioUbicacion" . $text . ".csv", "w");
         $file = "uploads/reporteInventario" . $text . ".csv";
@@ -76,7 +76,7 @@ class reporte_inventarioActions extends sfActions {
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
         error_reporting(-1);
 //        $bodegas = TiendaQuery::create()->orderByNombre()->find();
-        $bodegas = ProductoExistenciaQuery::create()->groupByTiendaId()->filterByEmpresaId($empresaId)->filterByCantidad(0, Criteria::GREATER_THAN)->find();
+        $bodegas = ProductoExistenciaQuery::create()->useTiendaQuery()->endUse()->groupByTiendaId()->filterByEmpresaId($empresaId)->filterByCantidad(0, Criteria::GREATER_THAN)->find();
         $text = '';
         $file = fopen("uploads/reporteInventario" . $text . ".csv", "w");
         $file = "reporteInventario" . $text . ".csv";
@@ -139,7 +139,7 @@ class reporte_inventarioActions extends sfActions {
     public function executeReportex(sfWebRequest $request) {
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
         // $bodegas = TiendaQuery::create()->orderByNombre()->find();
-        $bodegas = ProductoExistenciaQuery::create()->groupByTiendaId()->filterByEmpresaId($empresaId)->filterByCantidad(0, Criteria::GREATER_THAN)->find();
+        $bodegas = ProductoExistenciaQuery::create()->useTiendaQuery()->endUse()->groupByTiendaId()->filterByEmpresaId($empresaId)->filterByCantidad(0, Criteria::GREATER_THAN)->find();
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
         $EmpresaQuery = EmpresaQuery::create()->findOneById($empresaId);
         $nombreempresa = "Modelo";
@@ -306,7 +306,7 @@ class reporte_inventarioActions extends sfActions {
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
 
         //$this->bodegas = TiendaQuery::create()->orderByNombre()->find();
-        $this->bodegas = ProductoExistenciaQuery::create()->groupByTiendaId()->filterByEmpresaId($empresaId)->filterByCantidad(0, Criteria::GREATER_THAN)->find();
+        $this->bodegas = ProductoExistenciaQuery::create()->useTiendaQuery()->endUse()->groupByTiendaId()->filterByEmpresaId($empresaId)->filterByCantidad(0, Criteria::GREATER_THAN)->find();
 
         $this->form = new consultaProductoInventarioForm($default);
         // $this->total = ProductoQuery::create()->filterByComboProductoId(null)->count();
