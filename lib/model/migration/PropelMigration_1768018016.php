@@ -2,10 +2,10 @@
 
 /**
  * Data object containing the SQL and PHP code to migrate the database
- * up to version 1767923969.
- * Generated on 2026-01-09 02:59:29 
+ * up to version 1768018016.
+ * Generated on 2026-01-10 05:06:56 
  */
-class PropelMigration_1767923969
+class PropelMigration_1768018016
 {
 
     public function preUp($manager)
@@ -43,13 +43,7 @@ class PropelMigration_1767923969
 SET FOREIGN_KEY_CHECKS = 0;
 
 ALTER TABLE `cliente`
-    ADD `vendedor_id` INTEGER AFTER `nombre_facturar`;
-
-CREATE INDEX `cliente_FI_5` ON `cliente` (`vendedor_id`);
-
-ALTER TABLE `cliente` ADD CONSTRAINT `cliente_FK_5`
-    FOREIGN KEY (`vendedor_id`)
-    REFERENCES `vendedor` (`id`);
+    ADD `archivo` VARCHAR(130) AFTER `vendedor_id`;
 
 ALTER TABLE `partida` CHANGE `ano` `ano` INTEGER DEFAULT false;
 
@@ -79,11 +73,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `cliente` DROP FOREIGN KEY `cliente_FK_5`;
-
-DROP INDEX `cliente_FI_5` ON `cliente`;
-
-ALTER TABLE `cliente` DROP `vendedor_id`;
+ALTER TABLE `cliente` DROP `archivo`;
 
 ALTER TABLE `partida` CHANGE `ano` `ano` INTEGER DEFAULT 0;
 

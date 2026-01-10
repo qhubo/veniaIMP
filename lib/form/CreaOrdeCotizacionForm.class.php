@@ -4,15 +4,20 @@ class CreaOrdenCotizacionForm extends sfForm {
 
     public function configure() {
 
+$listaTran = TipoTransporteQuery::create()
+        ->orderByNombre()
+        ->find();
+$listaTra[null]='Seleccione';
+foreach($listaTran as $regos) {
+    $listaTra[$regos->getId()]=$regos->getNombre();
+}
+        
 
-//        $this->setWidget('serie', new sfWidgetFormInputText(array(), array('class' => 'form-control', 'max_length' => 10,
-//            "placeholder" => "serie",)));
-//        $this->setValidator('serie', new sfValidatorString(array('required' => false)));
-//
-//        $this->setWidget('no_documento', new sfWidgetFormInputText(array(), array('class' => 'form-control', 'max_length' => 150,
-//            "placeholder" => "No Documento",)));
-//        $this->setValidator('no_documento', new sfValidatorString(array('required' => true)));
+        $this->setWidget('transporte', new sfWidgetFormChoice(array("choices" => $listaTra,), array("class" => "form-control")));
+        $this->setValidator('transporte', new sfValidatorString(array('required' => true)));
 
+        
+        
 
         $this->setWidget('fecha_documento', new sfWidgetFormInputText(array(), array('class' => 'form-control', 'data-provide' => 'datepicker',
                     'readonly' => true,
@@ -86,7 +91,10 @@ class CreaOrdenCotizacionForm extends sfForm {
          if ($pefilq) {
             $tipoUsua= $pefilq->getDescripcion(); 
          }
-         
+         if ($usuarioQ->getVendedorId()) {
+        $tipoV[$usuarioQ->getVendedorId()] =$usuarioQ->getVendedor()->getNombre();
+        
+         }
         
         if (strtoupper($tipoUsua) == 'ADMINISTRADOR' ) {
             foreach ($vendedores as $regis) {

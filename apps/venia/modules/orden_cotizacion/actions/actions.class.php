@@ -27,150 +27,6 @@ class orden_cotizacionActions extends sfActions {
         }
         $this->redirect('orden_cotizacion/index');
     }
-
-    public function executeReceta(sfWebRequest $request) {
-        $id = $request->getParameter('id');
-
-        $receta = RecetarioQuery::create()->findOneById($id);
-        if (!$receta) {
-            $this->redirect('recetario/lista');
-        }
-        $recetaDetalle = RecetarioDetalleQuery::create()
-                ->filterByProductoId(null, Criteria::NOT_EQUAL)
-                ->filterByRecetarioId($receta->getId())
-                ->find();
-
-        date_default_timezone_set("America/Guatemala");
-        $fecha_actual = date("Y-m-d");
-        $fecha_vencimiento = date("Y-m-d", strtotime($fecha_actual . "+ 30 day"));
-        $posibles[] = 'Proceso';
-        $posibles[] = 'Pendiente';
-        $codigo = $request->getParameter('codigo');
-        $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
-        $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
-        $empresaId = sfContext::getInstance()->getUser()->getAttribute("empresa", null, 'seguridad');
-        $EmpresaQ = EmpresaQuery::create()->findOneById($empresaId);
-        $operacion = OrdenCotizacionQuery::create()
-                ->filterByUsuario($usuarioQ->getUsuario())
-                ->filterByEstatus($posibles, Criteria::IN)
-                ->findOne();
-        if ($operacion) {
-            $operacionDetalle = OrdenCotizacionDetalleQuery::create()->filterByOrdenCotizacionId($operacion->getId())->count();
-            if ($operacionDetalle > 0) {
-                $operacion = null;
-            }
-        }
-        if ($codigo) {
-            $operacion = OrdenCotizacionQuery::create()->findOneByCodigo($codigo);
-        }
-        if (!$operacion) {
-            $operacion = new OrdenCotizacion();
-            $operacion->setTiendaId(sfContext::getInstance()->getUser()->getAttribute("tienda", null, 'seguridad'));
-            $operacion->setUsuario($usuarioQ->getUsuario());
-            $operacion->setEstatus('Proceso');
-            $operacion->save();
-        }
-        $tokenGuardado = sha1($operacion->getCodigo());
-        $operacion->setToken($tokenGuardado);
-        $operacion->setUsuario($usuarioQ->getUsuario());
-
-        // receta
-        $operacion->setFecha(date('Y-m-d H:i:s'));
-        $operacion->setFechaDocumento(date('Y-m-d H:i:s'));
-        $operacion->setFechaVencimiento($fecha_vencimiento);
-        $operacion->setClienteId($receta->getClienteId());
-        $operacion->setNit($receta->getCliente()->getNit());
-        $operacion->setNombre($receta->getCliente()->getNombre());
-        $operacion->setTiendaId($usuarioQ->getTiendaId());
-        $operacion->setTelefono($receta->getCliente()->getTelefono());
-        $operacion->setDireccion($receta->getCliente()->getDireccion());
-        $operacion->setCorreo($receta->getCliente()->getCorreoElectronico());
-        $operacion->setRecetarioId($receta->getId());
-        $operacion->setComentario("receta  #" . $receta->getId() . "  Prescrita " . $receta->getUsuario());
-        $operacion->save();
-
-        foreach ($recetaDetalle as $reg) {
-            $producto = $reg->getProducto();
-            if ($producto->getComboProductoId()) {
-
-                $can = OrdenCotizacionDetalleQuery::create()->filterByOrdenCotizacionId($operacion->getId())->count();
-                $comboProductoDetalle = ComboProductoDetalleQuery::create()->filterByComboProductoId($producto->getComboProductoId())->find();
-                foreach ($comboProductoDetalle as $combo) {
-                    $comboId = $combo->getComboProducto()->getId() . "_" . $can;
-                    $id = $combo->getProductoDefault();
-                    $producto = ProductoQuery::create()->findOneById($id);
-                    if ($producto) {
-                        $contador++;
-                        $precio = 0;
-                        if ($contador == 1) {
-                            $precio = $combo->getComboProducto()->getPrecio();
-                        }
-
-                        $valoresIva = ParametroQuery::ObtenerIva(($precio * $combo->getCantidadMedida()), false);
-                        $valor = $valoresIva['VALOR_SIN_IVA'];
-                        $TOTALIVA = $valoresIva['IVA'];
-                        $ordenQD = new OrdenCotizacionDetalle();
-                        $ordenQD->setCantidad($combo->getCantidadMedida());
-                        $ordenQD->setProductoId($producto->getId());
-                        $ordenQD->setDetalle("Combo " . $combo->getComboProducto()->getNombre() . " " . $producto->getNombre());
-                        $ordenQD->setCodigo($producto->getCodigoSku());
-                        $ordenQD->setComboNumero($comboId);
-                        $ordenQD->setValorTotal($precio * $combo->getCantidadMedida());
-                        $ordenQD->setValorUnitario($precio);
-                        $ordenQD->setTotalIva($TOTALIVA);
-                        $ordenQD->setOrdenCotizacionId($operacion->getId());
-                        $ordenQD->save();
-                        $lista = OrdenCotizacionDetalleQuery::create()
-                                ->withColumn('sum(OrdenCotizacionDetalle.ValorTotal)', 'TotalGeneral')
-                                ->filterByOrdenCotizacionId($operacion->getId())
-                                ->findOne();
-                        $suma = $lista->getTotalGeneral();
-                        $valores = ParametroQuery::ObtenerIva($suma, false);
-                        $iva = $valores['IVA'];
-                        $valorSInIVa = $valores['VALOR_SIN_IVA'];
-                        $operacion->setSubTotal($valorSInIVa);
-                        $operacion->setValorTotal($suma);
-                        $operacion->setIva($iva);
-                        $operacion->save();
-                    }
-                }
-            }
-            if (!$producto->getComboProductoId()) {
-                $valoresIva = ParametroQuery::ObtenerIva($producto->getPrecio(), false);
-                $valor = $valoresIva['VALOR_SIN_IVA'];
-                $TOTALIVA = $valoresIva['IVA'];
-                $ordenQD = new OrdenCotizacionDetalle();
-                $ordenQD->setCantidad(1);
-                $ordenQD->setProductoId($producto->getId());
-                $ordenQD->setDetalle($producto->getNombre());
-                $ordenQD->setCodigo($producto->getCodigoSku());
-                $ordenQD->setCantidad(1);
-                $ordenQD->setValorTotal($producto->getPrecio());
-                $ordenQD->setValorUnitario($producto->getPrecio());
-                $ordenQD->setTotalIva($TOTALIVA);
-                $ordenQD->setOrdenCotizacionId($operacion->getId());
-                $ordenQD->save();
-                $lista = OrdenCotizacionDetalleQuery::create()
-                        ->withColumn('sum(OrdenCotizacionDetalle.ValorTotal)', 'TotalGeneral')
-                        ->filterByOrdenCotizacionId($operacion->getId())
-                        ->findOne();
-                $suma = $lista->getTotalGeneral();
-
-                $valores = ParametroQuery::ObtenerIva($suma, false);
-                $iva = $valores['IVA'];
-                $valorSInIVa = $valores['VALOR_SIN_IVA'];
-                $operacion->setSubTotal($valorSInIVa);
-                $operacion->setValorTotal($suma);
-                $operacion->setIva($iva);
-                $operacion->save();
-            }
-        }
-        //    die('x');
-        sfContext::getInstance()->getUser()->setAttribute('CotizacionId', $operacion->getId(), 'seguridad');
-        $this->getUser()->setFlash('exito', 'Orden creada con exito ' . $operacion->getCodigo());
-        $this->redirect('orden_cotizacion/index');
-    }
-
     public function executeCombo(sfWebRequest $request) {
         date_default_timezone_set("America/Guatemala");
         $OrdenID = sfContext::getInstance()->getUser()->getAttribute('CotizacionId', null, 'seguridad');
@@ -242,7 +98,6 @@ class orden_cotizacionActions extends sfActions {
         }
         $this->redirect('orden_cotizacion/index?id=');
     }
-
     public function executeMuestra(sfWebRequest $request) {
         date_default_timezone_set("America/Guatemala");
         $token = $request->getParameter('token');
@@ -600,10 +455,11 @@ class orden_cotizacionActions extends sfActions {
             $this->getUser()->setFlash('error', 'Imposible realizar proceso cliente posee factura pendiente de pago ' . $provpe->getFacturaPendiente());
             $this->redirect('orden_cotizacion/index?pro=');
         }
-
         if ($provpe) {
             $ordenQ = OrdenCotizacionQuery::create()->findOneById($OrdenID);
             if ($ordenQ) {
+                
+             
                 $ordenQ->setClienteId($id);
                 $ordenQ->setPaisId($provpe->getPaisId());
                 $ordenQ->setNombre($provpe->getNombreFacturar());
@@ -613,6 +469,13 @@ class orden_cotizacionActions extends sfActions {
                 $ordenQ->setCorreo($provpe->getCorreoElectronico());
                 $ordenQ->setDireccion($provpe->getDireccion());
                 $ordenQ->save();
+                $ClienteQ = ClienteQuery::create()->findOneById($id);
+                if ($ClienteQ) {
+                  if ($ClienteQ->getVendedorId()) {
+                    $ordenQ->setVendedorId($ClienteQ->getVendedorId());
+                     $ordenQ->save();
+                    }
+                }
 //                echo "<pre>";
 //                print_r($provpe);
 //                die();
@@ -735,6 +598,7 @@ class orden_cotizacionActions extends sfActions {
             $default['telefono'] = $orden->getTelefono();
             $default['correo'] = $orden->getCorreo();
             $default['vendedor_id'] = $orden->getVendedorId();
+            $default['transporte']=$orden->getTransporte();
 
             //$default['serie'] = $orden->getSerie();
             $default['tienda_id'] = $usuarioQ->getTiendaId();
@@ -818,6 +682,10 @@ class orden_cotizacionActions extends sfActions {
                 }
                 if ($orden->getTiendaId() == 19) {
                     $orden->setFecha($fecha_documento);
+                }
+                $orden->setTransporte('');
+                if ($valores['transporte']){
+                $orden->setTransporte($valores['transporte']);
                 }
                 $orden->setFechaDocumento($fecha_documento);
                 $orden->setFechaVencimiento($fecha_contabilizacion);

@@ -202,6 +202,7 @@ class edita_clienteActions extends sfActions {
         //        die();
         $this->proveedor = $proveedor;
         $this->texto = '';
+         $this->ruta ='';
         if ($proveedor) {
             $color = 'font-green';
             $leyenda = 'Actualizar proveedor  ' . $proveedor->getCodigo();
@@ -226,6 +227,7 @@ class edita_clienteActions extends sfActions {
             $defaults['tiene_credito'] = $proveedor->getTieneCredito(); //> 
             $defaults['municipio'] = $proveedor->getMunicipioId(); //> 
             $defaults['contacto'] = $proveedor->getContacto();
+            $this->ruta = $proveedor->getArchivo();
         }
 
         $this->leyenda = $leyenda;
@@ -236,6 +238,9 @@ class edita_clienteActions extends sfActions {
             $this->form->bind($request->getParameter("consulta"), $request->getFiles("consulta"));
             if ($this->form->isValid()) {
                 $valores = $this->form->getValues();
+//                echo "<pre>";
+//                print_r($valores);
+//                die();
                 $nueva = new Cliente();
                 if ($proveedor) {
                     $nueva = $proveedor;
@@ -287,8 +292,7 @@ class edita_clienteActions extends sfActions {
                     $nombre = str_replace(".", "", $nombre);
                     $filename = $nombre . date("ymdh") . $archivo->getExtension($archivo->getOriginalExtension());
                     $archivo->save(sfConfig::get("sf_upload_dir") . DIRECTORY_SEPARATOR . 'proveedor' . DIRECTORY_SEPARATOR . $filename);
-                    $archivo->save($carpetaArchivos . 'proveedor' . DIRECTORY_SEPARATOR . $filename);
-                    $nueva->setImagen($filename);
+                    $nueva->setArchivo($filename);
                     $nueva->save();
                 }
 

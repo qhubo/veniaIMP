@@ -60,6 +60,7 @@ class OrdenCotizacionQuery extends BaseOrdenCotizacionQuery {
         $operacion->setRecetarioId($cotizacion->getRecetarioId());
         $operacion->setPesoTotal($cotizacion->getPesoTotal());
         $operacion->setCantidadTotalCaja($cotizacion->getCantidadTotalCaja());
+        $operacion->setTransporte($cotizacion->getTransporte());
 
         if ($cotizacion->getClienteId()) {
             $operacion->setClienteId($cotizacion->getClienteId());

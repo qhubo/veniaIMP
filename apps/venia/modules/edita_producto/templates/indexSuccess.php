@@ -89,9 +89,10 @@
                 <tr class="active">
                     <th align="center" width="35px"></th>
                     <th  align="center"><font size="-2"> Codigo Sku</font></th>
-                    <th  align="center"><font size="-2"> Grupo</font></th>
                     <th  align="center"><font size="-2"> Nombre</font></th>
-                    <th  align="center"><font size="-2"> Caracteristica</font></th>
+                    <th  align="center"><font size="-2"> Marca</font></th>
+                    <th  align="center"><font size="-2"> Existencia</font></th>
+                    <th  align="center"><font size="-2"> Precio</font></th>
                     <th  align="center"><font size="-2"> Activo</font></th>
                     <th><font size="-2">Editar</font></th>
                     <th><font size="-2">Eliminar</font></th>
@@ -104,12 +105,13 @@
                         <tr>
                             <td>  <img src="<?php echo $lista->getImagen() ?>" width="75px" ></td>
                             <td><?php echo $lista->getCodigoSku() ?></td>
-                            <td><font size="-1"> <?php echo $lista->getTipoAparato(); ?></font> </td>
                             <td> <font size="-1"> <?php echo $lista->getNombre(); ?></font> 
                                 <br>
                                  <font size="-1"> <?php echo $lista->getNombreIngles(); ?></font> 
                             </td>
-                            <td> <font size="-1"> <?php echo $lista->getCaracteristica(); ?></font> </td>
+                            <td> <font size="-1"> <?php echo $lista->getMarcaProducto(); ?></font> </td>
+                            <td style="text-align: right;"> <font size="-1"> <?php echo $lista->getExistencia(); ?></font> </td>
+                            <td style="text-align: right;"> <font size="-1"> <?php echo Parametro::formato($lista->getPrecio(),false); ?></font> </td>
                             <td> <font size="-1"> <?php if ($lista->getActivo()) { ?><li class="fa fa-check  font-green-jungle"></li> <?php } ?> </font>  </td>
 
                     <td>

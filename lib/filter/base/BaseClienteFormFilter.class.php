@@ -41,6 +41,8 @@ abstract class BaseClienteFormFilter extends BaseFormFilterPropel
       'limite_credito'       => new sfWidgetFormFilterInput(),
       'pais_id'              => new sfWidgetFormPropelChoice(array('model' => 'Pais', 'add_empty' => true)),
       'nombre_facturar'      => new sfWidgetFormFilterInput(),
+      'vendedor_id'          => new sfWidgetFormPropelChoice(array('model' => 'Vendedor', 'add_empty' => true)),
+      'archivo'              => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -73,6 +75,8 @@ abstract class BaseClienteFormFilter extends BaseFormFilterPropel
       'limite_credito'       => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'pais_id'              => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Pais', 'column' => 'id')),
       'nombre_facturar'      => new sfValidatorPass(array('required' => false)),
+      'vendedor_id'          => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Vendedor', 'column' => 'id')),
+      'archivo'              => new sfValidatorPass(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('cliente_filters[%s]');
@@ -120,6 +124,8 @@ abstract class BaseClienteFormFilter extends BaseFormFilterPropel
       'limite_credito'       => 'Number',
       'pais_id'              => 'ForeignKey',
       'nombre_facturar'      => 'Text',
+      'vendedor_id'          => 'ForeignKey',
+      'archivo'              => 'Text',
     );
   }
 }

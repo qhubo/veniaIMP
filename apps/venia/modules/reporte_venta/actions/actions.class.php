@@ -217,6 +217,8 @@ class reporte_ventaActions extends sfActions {
             if ($this->form->isValid()) {
                 $valores = $this->form->getValues();
                 $observaciones = $valores['observaciones'];
+//                echo $operacionQ->getCodigo();
+//                die();
 
                 $operacionQ->setObservaciones($observaciones);
                 $operacionQ->save();
@@ -347,7 +349,7 @@ class reporte_ventaActions extends sfActions {
                         $de->getProductoId();
                         $clave = $de->getProductoId();
                         $valor = $de->getCantidad();
-                        ProductoMovimientoQuery::Ingreso($clave, $valor, $operacionQ->getCodigoFactura()."-".$de->getId(), "Anula Factura", date('Y-m-d H:i:s'), $operacionQ->getTiendaId());
+                        ProductoMovimientoQuery::Ingreso($clave, $valor, $operacionQ->getCodigo()."-".$de->getId(), "Anula Factura", date('Y-m-d H:i:s'), $operacionQ->getTiendaId());
                         ProductoExistenciaQuery::Actualiza($clave, $valor, $operacionQ->getTiendaId());
                     }
                    }

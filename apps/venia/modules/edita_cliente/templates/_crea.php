@@ -203,3 +203,17 @@
     </div>
 
 </div>
+
+<div class="row" style="padding-top: 3px;">
+    <div  class="col-lg-2">
+        Arhivo PDF    
+    </div>
+    <div class="col-lg-4   <?php if ($form['archivo']->hasError()) echo "has-error" ?>">
+        <?php echo $form['archivo'] ?>          
+        <span class="help-block form-error"> 
+            <?php echo $form['archivo']->renderError() ?>       
+        </span>
+    </div>
+   
+
+</div>

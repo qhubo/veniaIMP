@@ -35,6 +35,7 @@ class OrdenCotizacionPeer extends BaseOrdenCotizacionPeer {
         $operacion->setFecha($cotizacion->getFecha('Y-m-d'));
         $operacion->setTipo("Cotizacion");
         $operacion->setEstatus('Procesada');
+        $operacion->setTransporte($cotizacion->getTransporte());
         $operacion->setObservaciones($cotizacion->getComentario());
         $operacion->setNombre($cotizacion->getNombre());
         $operacion->setUsuario(sfContext::getInstance()->getUser()->getAttribute('usuarioNombre', null, 'seguridad'));

@@ -48,7 +48,7 @@
          <div class="tab-content">
             <div class="tab-pane <?php if ($tab == 1) { ?> active <?php } ?> " id="kt_portlet_base_demo_2_3_tab_content" role="tabpanel">
     
-                <?php include_partial($modulo.'/crea', array('id' => $id, 'modulo' => $modulo, 'proveedor' => $proveedor, 'form' => $form)) ?>
+                <?php include_partial($modulo.'/crea', array('ruta'=>$ruta,'id' => $id, 'modulo' => $modulo, 'proveedor' => $proveedor, 'form' => $form)) ?>
     
             </div>
                       <div class="tab-pane <?php if ($tab == 3) { ?> active <?php } ?> " id="kt_portlet_base_demo_3_3_tab_content" role="tabpanel">
@@ -66,6 +66,22 @@
                     </button>
                 </div>
             </div>
+         <?php if ($ruta) { ?>
+        <div class="row" style="padding-top:10px;">
+    <div class="col-lg-10">
+        
+        <div style="width:100%; height:600px;">
+    <embed 
+        src="<?php echo "/uploads/proveedor/".$ruta; ?> " 
+        type="application/pdf"
+        width="100%" 
+        height="100%">
+</div>
+</div>        
+       
+    </div>
+    <?php } ?>
+        
             <?php echo '</form>' ?>
         </div>
     </div>

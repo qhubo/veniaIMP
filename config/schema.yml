@@ -1058,6 +1058,7 @@ propel:
      pais_id:                           ~
      nombre_facturar:                   { type: varchar(260)  } 
      vendedor_id:                           ~    
+     archivo:                           { type: varchar(130) }
     
   cierre_caja:
      _attributes: { phpName: CierreCaja, idMethod: native }
@@ -1418,8 +1419,8 @@ propel:
      cantidad_total_caja:              { type: double }
      peso_total:                       { type: varchar(150) }
      vendedor_id:                      ~ 
-     pais_id:                           ~
-
+     pais_id:                          ~
+     transporte:                       { type: varchar(200) }
      
          
   orden_cotizacion_detalle:
