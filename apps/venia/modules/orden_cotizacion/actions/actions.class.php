@@ -9,6 +9,8 @@
  */
 class orden_cotizacionActions extends sfActions {
 
+     
+    
     public function executeEliminaOR(sfWebRequest $request) {
         error_reporting(-1);
         $id = $request->getParameter('id');

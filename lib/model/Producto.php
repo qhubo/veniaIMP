@@ -69,6 +69,10 @@ class Producto extends BaseProducto {
         return $exitencia;
     }
 
+    public function getCMB() {
+        $retorna = $this->getAlto()* $this->getAncho()*$this->getLargo();
+        return $retorna;
+    }
     
     
     public function getExistenciaBodega($bodegaId) {

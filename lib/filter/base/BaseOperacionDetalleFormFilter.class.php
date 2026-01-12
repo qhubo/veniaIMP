@@ -27,6 +27,8 @@ abstract class BaseOperacionDetalleFormFilter extends BaseFormFilterPropel
       'linea_no'       => new sfWidgetFormFilterInput(),
       'cantidad_caja'  => new sfWidgetFormFilterInput(),
       'peso'           => new sfWidgetFormFilterInput(),
+      'bulto_inicio'   => new sfWidgetFormFilterInput(),
+      'bulto_fin'      => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -45,6 +47,8 @@ abstract class BaseOperacionDetalleFormFilter extends BaseFormFilterPropel
       'linea_no'       => new sfValidatorPass(array('required' => false)),
       'cantidad_caja'  => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'peso'           => new sfValidatorPass(array('required' => false)),
+      'bulto_inicio'   => new sfValidatorPass(array('required' => false)),
+      'bulto_fin'      => new sfValidatorPass(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('operacion_detalle_filters[%s]');
@@ -78,6 +82,8 @@ abstract class BaseOperacionDetalleFormFilter extends BaseFormFilterPropel
       'linea_no'       => 'Text',
       'cantidad_caja'  => 'Number',
       'peso'           => 'Text',
+      'bulto_inicio'   => 'Text',
+      'bulto_fin'      => 'Text',
     );
   }
 }

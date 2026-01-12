@@ -176,6 +176,9 @@
                                     <strong>ANULADO</strong>              
                                 <?Php } ?>
                             <?php } ?>
+                                    
+                        <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $lista->getId()) ?>" class="btn btn-sm btn-warning btn-block" > <i class="flaticon2-print"></i> Pedido </a>
+                 
 
                         </td>
 

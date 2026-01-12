@@ -30,6 +30,8 @@ abstract class BaseOperacionDetalleForm extends BaseFormPropel
       'linea_no'       => new sfWidgetFormInputText(),
       'cantidad_caja'  => new sfWidgetFormInputText(),
       'peso'           => new sfWidgetFormInputText(),
+      'bulto_inicio'   => new sfWidgetFormInputText(),
+      'bulto_fin'      => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -49,6 +51,8 @@ abstract class BaseOperacionDetalleForm extends BaseFormPropel
       'linea_no'       => new sfValidatorString(array('max_length' => 50, 'required' => false)),
       'cantidad_caja'  => new sfValidatorNumber(array('required' => false)),
       'peso'           => new sfValidatorString(array('max_length' => 150, 'required' => false)),
+      'bulto_inicio'   => new sfValidatorString(array('max_length' => 10, 'required' => false)),
+      'bulto_fin'      => new sfValidatorString(array('max_length' => 10, 'required' => false)),
     ));
 
     $this->validatorSchema->setPostValidator(

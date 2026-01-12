@@ -204,6 +204,8 @@ propel:
     linea_no:                         { type: varchar(50) }
     cantidad_caja:                    { type: double }
     peso:                             { type: varchar(150) }
+    bulto_inicio:                     { type: varchar(10) }
+    bulto_fin:                        { type: varchar(10) }
     _uniques:
        llave:                         [ linea_no ]     
     

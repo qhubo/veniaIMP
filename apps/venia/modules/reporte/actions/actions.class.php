@@ -10,6 +10,49 @@
  */
 class reporteActions extends sfActions {
 
+    public function executeEmpaque(sfWebRequest $request) {
+
+        date_default_timezone_set("America/Guatemala");
+        error_reporting(-1);
+        $id = $request->getParameter('id');
+        $operacion = OperacionQuery::create()->findOneById($id);
+        $detalle = OperacionDetalleQuery::create()->filterByProductoId(null, Criteria::NOT_EQUAL)->filterByOperacionId($id)->find();
+        $html = '';
+
+        $logo = $operacion->getEmpresa()->getLogo();
+        $html = $this->getPartial('reporte/empaque', array('operacion' => $operacion, 'detalle' => $detalle, 'logo' => $logo));
+  $img_file = "uploads/images/" . $logo;
+
+        $pdf = new sfTCPDF("P", "mm", "Letter");
+        $this->id = $request->getParameter("id");
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetAuthor('Venia Link');
+        $pdf->SetTitle(" Lista Empaque ".$operacion->getCodigo());
+        $pdf->SetSubject('Lista Empaque');
+        $pdf->SetKeywords('Concilia,Banco,Cuenta'); // set default header data
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED); // set margins
+        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+        $pdf->SetMargins(3, 5, 5, true);
+        $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+        $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->SetHeaderMargin(0.1);
+        $pdf->SetFooterMargin(0);
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+        $pdf->SetFont('dejavusans', '', 9);
+        $pdf->AddPage();
+        $pdf->writeHTML($html);
+            $pdf->Image($img_file, 18, -8, 40); //, 50, '', '', '', '300', false, 0);
+
+
+        $pdf->Output('Lista Empaque ' . $operacion->getCodigo() . '.pdf', 'I');
+    }
+
     public function executeConciliaBanco(sfWebRequest $request) {
         $BancoId = $request->getParameter('bancoId');
         date_default_timezone_set("America/Guatemala");
@@ -131,7 +174,6 @@ class reporteActions extends sfActions {
 //        $html = str_replace("%BENEFICIARIO%", $cheque->getBeneficiario(), $html);
 //       
 //        
-
 //        $html = str_replace("%MOTIVO%", "<font size='-2'>" . strtoupper($cheque->getMotivo()) . "<font>", $html);
 //        if ($cheque->getNegociable()) {
 //            $html = str_replace("%NEGOCIABLE%", "<font size='-2'></font> ", $html);
@@ -203,8 +245,8 @@ class reporteActions extends sfActions {
         $ordenCompra = OrdenCotizacionQuery::create()->findOneByToken($token);
         $lista = OrdenCotizacionDetalleQuery::create()
                 ->filterByProductoId(null, Criteria::NOT_EQUAL)
-                ->filterByCantidad(0,Criteria::GREATER_THAN )
-               ->filterByOrdenCotizacionId($ordenCompra->getId())
+                ->filterByCantidad(0, Criteria::GREATER_THAN)
+                ->filterByOrdenCotizacionId($ordenCompra->getId())
                 ->find();
 
         $logo = $ordenCompra->getEmpresa()->getLogo();
@@ -212,8 +254,8 @@ class reporteActions extends sfActions {
         $valor = Parametro::formato($valor, false);
         $valor = str_replace(",", "", $valor);
         $totalImprime = str_replace(".", ",", $valor);
-        
-        
+
+
         $numberToLetterConverter = new NumberToLetterConverter();
         $totalImprime = $numberToLetterConverter->to_word($totalImprime, $miMoneda = null);
         $valoresImprime = explode("CON", $totalImprime);
@@ -223,12 +265,12 @@ class reporteActions extends sfActions {
             $totalImprime .= " EXACTOS ";
         }
         $totalImprime = "**" . $totalImprime . "**";
-        
-     
+
+
         $html = $this->getPartial('reporte/ordenCotizacion',
                 array('logo' => $logo, 'orden' => $ordenCompra, 'lista' => $lista,
-                    'totalImprime'=>$totalImprime ));
-        $img_file ="uploads/images/".$logo;
+                    'totalImprime' => $totalImprime));
+        $img_file = "uploads/images/" . $logo;
 //        $img_file = "images/enProceso.png";
 //        
 //        if (strtoupper($ordenCompra->getEstatus()) == "AUTORIZADO")
@@ -241,7 +283,7 @@ class reporteActions extends sfActions {
         $this->id = $request->getParameter("id");
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Venia Link');
-        $pdf->SetTitle("Pedido ".$ordenCompra->getCodigo());
+        $pdf->SetTitle("Pedido " . $ordenCompra->getCodigo());
         $pdf->SetSubject('Documento Orden Compra');
         $pdf->SetKeywords('Documento,Orden,Cuenta'); // set default header data
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED); // set margins
@@ -260,9 +302,9 @@ class reporteActions extends sfActions {
         $pdf->setPrintFooter(false);
         $pdf->SetFont('dejavusans', '', 9);
         $pdf->AddPage();
-         $pdf->Image($img_file, 18, -8,40); //, 50, '', '', '', '300', false, 0);
+        $pdf->Image($img_file, 18, -8, 40); //, 50, '', '', '', '300', false, 0);
 
-         
+
         $pdf->writeHTML($html);
         $pdf->Output('Pedido ' . $ordenCompra->getCodigo() . '.pdf', 'I');
         die();
@@ -271,7 +313,7 @@ class reporteActions extends sfActions {
     }
 
     public function executeOrdenCompra(sfWebRequest $request) {
-                date_default_timezone_set("America/Guatemala");
+        date_default_timezone_set("America/Guatemala");
         error_reporting(-1);
         $token = $request->getParameter('token');
         $ordenCompra = OrdenProveedorQuery::create()->findOneByToken($token);
