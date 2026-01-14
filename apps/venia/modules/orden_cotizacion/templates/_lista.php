@@ -34,7 +34,7 @@
             <?php $total = $lista->getValorUnitario() * $can; ?>
         <?php $grantotal= $total+$grantotal; ?>
         
-        <tr   
+        <tr>   
 <!--            <td><?php echo $can; ?> </td>-->
             <td>
              <a class="btn btn-block  btn-xs " style=" font-size: 11px !important;" data-toggle="modal" href="#staticE<?php echo $registro->getId() ?>">

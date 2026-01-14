@@ -2,10 +2,10 @@
 
 /**
  * Data object containing the SQL and PHP code to migrate the database
- * up to version 1768018016.
- * Generated on 2026-01-10 05:06:56 
+ * up to version 1768362482.
+ * Generated on 2026-01-14 04:48:02 
  */
-class PropelMigration_1768018016
+class PropelMigration_1768362482
 {
 
     public function preUp($manager)
@@ -42,9 +42,6 @@ class PropelMigration_1768018016
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `cliente`
-    ADD `archivo` VARCHAR(130) AFTER `vendedor_id`;
-
 ALTER TABLE `partida` CHANGE `ano` `ano` INTEGER DEFAULT false;
 
 ALTER TABLE `partida` CHANGE `mes` `mes` INTEGER DEFAULT false;
@@ -52,6 +49,12 @@ ALTER TABLE `partida` CHANGE `mes` `mes` INTEGER DEFAULT false;
 ALTER TABLE `partida_agrupa` CHANGE `ano` `ano` INTEGER DEFAULT false;
 
 ALTER TABLE `partida_agrupa` CHANGE `mes` `mes` INTEGER DEFAULT false;
+
+ALTER TABLE `producto`
+    ADD `origen` VARCHAR(50) AFTER `costo_cif`;
+
+ALTER TABLE `producto_movimiento`
+    ADD `costo` DOUBLE AFTER `linea_no`;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
@@ -73,8 +76,6 @@ SET FOREIGN_KEY_CHECKS = 1;
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `cliente` DROP `archivo`;
-
 ALTER TABLE `partida` CHANGE `ano` `ano` INTEGER DEFAULT 0;
 
 ALTER TABLE `partida` CHANGE `mes` `mes` INTEGER DEFAULT 0;
@@ -82,6 +83,10 @@ ALTER TABLE `partida` CHANGE `mes` `mes` INTEGER DEFAULT 0;
 ALTER TABLE `partida_agrupa` CHANGE `ano` `ano` INTEGER DEFAULT 0;
 
 ALTER TABLE `partida_agrupa` CHANGE `mes` `mes` INTEGER DEFAULT 0;
+
+ALTER TABLE `producto` DROP `origen`;
+
+ALTER TABLE `producto_movimiento` DROP `costo`;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

@@ -54,24 +54,44 @@
 
 </style>
 
+<table style="width:100%" class="encabezado">
+    <tr>
+        <td  style="width:25%"> </td>
+        <td  style="width:50%; text-align: center; font-size: 30px;">
+            <strong><?php echo $operacion->getEmpresa()->getNombre(); ?></strong><br>
+           <strong>RUC</strong> <?php echo $operacion->getEmpresa()->getTelefono(); ?><br>
+            <?php echo $operacion->getEmpresa()->getDireccion(); ?>
+        
+        </td>
+        <td  style="width:25% "> No Pedido  <?php echo $operacion->getCodigo(); ?> </td>        
+    </tr>
+</table>
+
+    <br>
+
 <!-- ENCABEZADO -->
 <table style="width:100%" class="encabezado">
     <tr>
-        <td  style="width:50%">  
-            <br><br><br><br><br>
+        <td  style="width:70%">  
+        
             <div class="header-left">
-                <strong><?php echo $operacion->getEmpresa()->getNombre(); ?></strong><br>
+               
                 <strong>FECHA:</strong> <?php echo $operacion->getFecha('d/m/Y'); ?><br>
                 <strong>NOMBRE:</strong> <?php echo $operacion->getNombre(); ?><br>
-                <strong>OBSERVACIONES:</strong> <?php echo $operacion->getObservaciones(); ?>
+                <strong>DIRECCION:</strong> <?php echo $operacion->getCliente()->getDireccion(); ?><BR>
+                <strong>ACUERDO DE PAGO:</strong> Credito 60 Dias <BR>
+                <strong>CÓDIDGO DEL CLIENTE:</strong> <?php echo $operacion->getCliente()->getCodigo(); ?><br>
+                <strong>RUC:</strong> <?php echo $operacion->getNit(); ?><br>
+           
             </div>
         </td>
-        <td  style="width:50%">  
+        <td  style="width:30%">  
             <div class="header-right">
-                <strong>No.</strong> <?php echo $operacion->getCodigo(); ?><br><br>
-                <br><br><br>
-                <strong>CÓDIGO DEL CLIENTE:</strong> <?php echo $operacion->getCliente()->getCodigo(); ?><br>
-                <strong>PEDIDO:</strong> <?php echo $operacion->getCodigo(); ?>
+                <strong>No PEDIDO.</strong> <?php echo $operacion->getCodigo(); ?><br>
+                <strong>VENDEDOR:</strong> <?php  if ($operacion->getVendedorId()) { echo  $operacion->getVendedor()->getNombre(); } ?> <br>
+                <strong>No PEDIDO.</strong> <?php echo $operacion->getCodigo(); ?><br>
+                <strong>PAIS.</strong> <?php echo $operacion->getCliente()->getPais(); ?><br>
+                <strong>TELEFONO.</strong> <?php echo $operacion->getCliente()->getTelefono(); ?><br>
             </div>
         </td>
     </tr>

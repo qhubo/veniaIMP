@@ -16,7 +16,22 @@
  * @package    propel.generator.lib.model
  */
 class Operacion extends BaseOperacion {
-
+       public function getTotalRecargo() {
+         $LISTA = OperacionDetalleQuery::create()
+             ->filterByOperacionId($this->getId())
+             ->filterByServicioId(null, Criteria::NOT_EQUAL)
+             ->withColumn('sum(OperacionDetalle.ValorTotal)', 'CantidadTotal')
+             ->findOne();
+         if ($LISTA) {
+             $retorna = $LISTA->getCantidadTotal();
+         }
+         return $retorna;
+          }
+          
+          
+          
+    
+    
         public function getTotalProductos() {
          $LISTA = OperacionDetalleQuery::create()
              ->filterByOperacionId($this->getId())

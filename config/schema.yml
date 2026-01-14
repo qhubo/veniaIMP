@@ -835,6 +835,7 @@ propel:
     peso:                              { type: double }
     costo_fabrica:                     { type: double }
     costo_cif:                         { type: double }
+    origen:                            { type: varchar(50) }
     _uniques:
        llave:                          [ codigo_sku]        
   
@@ -1354,6 +1355,7 @@ propel:
     sub_total:                        { type: double } 
     iva:                              { type: double } 
     linea_no:                         { type: varchar(50) }
+    costo:                            { type: double }
     _uniques:
        llave:                         [ linea_no ] 
   

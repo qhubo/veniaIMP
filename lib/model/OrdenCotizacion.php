@@ -16,6 +16,20 @@
  * @package    propel.generator.lib.model
  */
 class OrdenCotizacion extends BaseOrdenCotizacion {
+    
+    
+       public function getTotalRecargo() {
+         $LISTA = OrdenCotizacionDetalleQuery::create()
+             ->filterByOrdenCotizacionId($this->getId())
+             ->filterByServicioId(null, Criteria::NOT_EQUAL)
+             ->withColumn('sum(OrdenCotizacionDetalle.ValorTotal)', 'CantidadTotal')
+             ->findOne();
+         if ($LISTA) {
+             $retorna = $LISTA->getCantidadTotal();
+         }
+         return $retorna;
+          }
+          
 
     public function getUUID() {
         $return = '';
