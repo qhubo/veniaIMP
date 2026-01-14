@@ -59,7 +59,11 @@ $marcaQ = MarcaProductoQuery::create()->find();
   $this->setWidget('codigo_arancel', new sfWidgetFormInputText(array(), array('class' => 'form-control',)));
         $this->setValidator('codigo_arancel', new sfValidatorString(array('required' => false)));
         
-
+$this->setWidget('origen', new sfWidgetFormInputText(array(), array('class' => 'form-control',)));
+        $this->setValidator('origen', new sfValidatorString(array('required' => false)));
+        
+        
+        
         $this->setWidget('nombre', new sfWidgetFormInputText(array(), array('class' => 'form-control',
             "placeholder" => "Ingrese nombre producto",
         )));

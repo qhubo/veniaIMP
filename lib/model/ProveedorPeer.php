@@ -54,6 +54,7 @@ class ProveedorPeer extends BaseProveedorPeer {
         $colpeso = null;
         $colcostofabrica = null;
         $colcostocif = null;
+        $colORIGEN=null;
 
         $datos = null;
         $NUMERO = 0;
@@ -76,6 +77,7 @@ class ProveedorPeer extends BaseProveedorPeer {
             $Precio = 0;
             $Costo = 0;
             $EXISTENCIA = 0;
+            $ORIGEN="";
             $alto = 0;
             $ancho = 0;
             $largo = 0;
@@ -90,7 +92,7 @@ class ProveedorPeer extends BaseProveedorPeer {
             /// encabezado
             //   echo  'codigo_sku');
             if ($contador == $lineaInicial) {
-                for ($i = 0; $i <= 25; $i++) {
+                for ($i = 0; $i <= 26; $i++) {
                     $letra = CorrelativoCodigoQuery::numeroletra($i); //sfContext::getInstance()->getUser()->numeroletra($i);
                     $campo = trim(strtoupper(($registro[$letra])));
                     $campo = ($campo);
@@ -168,6 +170,9 @@ class ProveedorPeer extends BaseProveedorPeer {
                             break;
                         case trim(strtoupper(('costocif'))):
                             $colcostocif = $letra;
+                            break;
+                              case trim(strtoupper(('ORIGEN'))):
+                            $colORIGEN = $letra;
                             break;
                     }
                 }
@@ -256,7 +261,14 @@ class ProveedorPeer extends BaseProveedorPeer {
                 } else {
                     $valido = false;
                     $pendientes[] = 'nombre ingles';
-                }      
+                }    
+                
+                   if (array_key_exists($colORIGEN, $registro)) {
+                    $ORIGEN= ($registro[$colORIGEN]);
+                } else {
+                    $valido = false;
+                    $pendientes[] = 'origen';
+                }    
                 
                 if (array_key_exists($colPrecio, $registro)) {
                     $precio = strtoupper($registro[$colPrecio]);
@@ -358,6 +370,7 @@ class ProveedorPeer extends BaseProveedorPeer {
                 $lista['COD_PROVEEDOR'] = $COD_PROVEEDOR;
                 $lista['PROVEEDOR'] = $PROVEEDOR;
                 $lista['MARCA'] = $Marca;
+                 $lista['ORIGEN'] = $ORIGEN;
                 $lista['CARACTERISTICAS'] = $CARACTERISTICAS;
                 $lista['NOMBRE'] = $NOMBRE;
                 $lista['DESCRIPCION'] = $DESCRIPCION;

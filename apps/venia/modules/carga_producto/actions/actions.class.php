@@ -243,6 +243,7 @@ class carga_productoActions extends sfActions {
         $encabezados[] = array("Nombre" => 'codigo_sku', "width" => 20, "align" => "center", "format" => "@");
         $encabezados[] = array("Nombre" => 'codigo_barras', "width" => 35, "align" => "left", "format" => "@");
         $encabezados[] = array("Nombre" => 'codigo_arancel', "width" => 35, "align" => "left", "format" => "@");
+        $encabezados[] = array("Nombre" => 'origen', "width" => 35, "align" => "left", "format" => "@");
         $encabezados[] = array("Nombre" => 'codigo_grupo', "width" => 30, "align" => "left", "format" => "@");
         $encabezados[] = array("Nombre" => 'grupo', "width" => 30, "align" => "left", "format" => "@");
         $encabezados[] = array("Nombre" => 'codigo_subgrupo', "width" => 30, "align" => "left", "format" => "@");
@@ -440,6 +441,7 @@ class carga_productoActions extends sfActions {
                     $nuevo->setCodigoBarras($valores['CODIGOBARRAS']);
                     $nuevo->setCodigoArancel($valores['CODIGO_ARANCEL']);
                     $nuevo->setTipoAparatoId($valores['TIPOID']); // => 3
+                    $nuevo->setOrigen($valores['ORIGEN']);
                     if ($valores['MARCAID']) {
                         $nuevo->setMarcaId($valores['MARCAID']); // => 3
                     }

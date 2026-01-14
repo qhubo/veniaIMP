@@ -250,6 +250,7 @@ class edita_productoActions extends sfActions {
         if ($producto) {
             $valores['codigo_sku'] = $producto->getCodigoSku();
             $valores['nombre'] = $producto->getNombre();
+            $valores['origen'] = $producto->getOrigen(); //
             $valores['descripcion'] = $producto->getDescripcion(); // > aa
             //     $valores['descripcion_corta'] = $producto->getDescripcionCorta(); //
             $valores['tipo'] = $producto->getTipoAparatoId(); // 4
@@ -310,6 +311,7 @@ class edita_productoActions extends sfActions {
                     if (!$nuevo) {
                         $nuevo = new Producto();
                     }
+                    $nuevo->setOrigen($valores['origen']);
                     $nuevo->setMarcaId(null);
                     $nuevo->setModeloId(null);
                     if ($valores['codigo_sku']) {

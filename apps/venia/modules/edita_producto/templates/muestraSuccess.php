@@ -103,17 +103,26 @@
           <div class="row" style="padding-bottom:5px;">
             <div class="col-lg-1"> </div>        
             <label class="col-lg-1 control-label">Código Barras</label>
-            <div class="col-lg-3 <?php if ($form['codigo_barras']->hasError()) echo "has-error" ?>">
+            <div class="col-lg-2 <?php if ($form['codigo_barras']->hasError()) echo "has-error" ?>">
                 <?php echo $form['codigo_barras'] ?>           
                 <span class="help-block form-error"> 
                     <?php echo $form['codigo_barras']->renderError() ?>  
                 </span>
             </div>
        <label class="col-lg-1 control-label">Código Arancel</label>
-            <div class="col-lg-3 <?php if ($form['codigo_arancel']->hasError()) echo "has-error" ?>">
+            <div class="col-lg-2 <?php if ($form['codigo_arancel']->hasError()) echo "has-error" ?>">
                 <?php echo $form['codigo_arancel'] ?>           
                 <span class="help-block form-error"> 
                     <?php echo $form['codigo_arancel']->renderError() ?>  
+                </span>
+            </div>            
+     
+        
+           <label class="col-lg-1 control-label">Origen</label>
+            <div class="col-lg-2 <?php if ($form['origen']->hasError()) echo "has-error" ?>">
+                <?php echo $form['origen'] ?>           
+                <span class="help-block form-error"> 
+                    <?php echo $form['origen']->renderError() ?>  
                 </span>
             </div>            
         </div>

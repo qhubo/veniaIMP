@@ -4,13 +4,80 @@
  * pdf actions.
  *
  * @package    plan
- 
+
  * @author     Via
  * @version    SVN: $Id: actions.class.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
  */
 class pdfActions extends sfActions {
 
     public function executeFactura(sfWebRequest $request) {
+        error_reporting(-1);
+        date_default_timezone_set("America/Guatemala");
+        $tok = $request->getParameter('tok');
+        $descarga = $request->getParameter('descarga');
+        $ordenCompra = OperacionQuery::create()->findOneByCodigo($tok);
+
+        $lista = OperacionDetalleQuery::create()
+                ->filterByProductoId(null, Criteria::NOT_EQUAL)
+                ->filterByCantidad(0, Criteria::GREATER_THAN)
+                ->filterByOperacionId($ordenCompra->getId())
+                ->find();
+        $logo = $ordenCompra->getEmpresa()->getLogo();
+        $valor = $ordenCompra->getValorTotal();
+        $valor = Parametro::formato($valor, false);
+        $valor = str_replace(",", "", $valor);
+        $totalImprime = str_replace(".", ",", $valor);
+
+
+        $numberToLetterConverter = new NumberToLetterConverter();
+        $totalImprime = $numberToLetterConverter->to_word($totalImprime, $miMoneda = null);
+        $valoresImprime = explode("CON", $totalImprime);
+        if (count($valoresImprime) > 1) {
+            $totalImprime = str_replace("CON", " DOLARES  CON ", $totalImprime) . " CENTAVOS ";
+        } else {
+            $totalImprime .= " EXACTOS ";
+        }
+        $totalImprime = "**" . $totalImprime . "**";
+
+
+        $html = $this->getPartial('pdf/factura',
+                array('logo' => $logo, 'orden' => $ordenCompra, 'lista' => $lista,
+                    'totalImprime' => $totalImprime));
+        $img_file = "uploads/images/" . $logo;
+        $pdf = new sfTCPDF("P", "mm", "Letter");
+        $this->id = $request->getParameter("id");
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetAuthor('Venia Link');
+        $pdf->SetTitle("FACTURA  " . $ordenCompra->getCodigo());
+        $pdf->SetSubject('Documento Orden Compra');
+        $pdf->SetKeywords('Documento,Orden,Cuenta'); // set default header data
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED); // set margins
+        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+        $pdf->SetMargins(3, 5, 0, true);
+        $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+        $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->SetHeaderMargin(0.1);
+        $pdf->SetFooterMargin(0);
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+        $pdf->SetFont('dejavusans', '', 9);
+        $pdf->AddPage();
+        $pdf->Image($img_file, 18, -8, 40); //, 50, '', '', '', '300', false, 0);
+
+
+        $pdf->writeHTML($html);
+        $pdf->Output('Pedido ' . $ordenCompra->getCodigo() . '.pdf', 'I');
+        die();
+        echo $html;
+        die();
+    }
+
+    public function executeFacturaOld(sfWebRequest $request) {
         error_reporting(-1);
 
         date_default_timezone_set("America/Guatemala");
@@ -67,12 +134,12 @@ class pdfActions extends sfActions {
         $x = $return['x'];
         $valoresDefault = UsuarioReport::PValoresDefault($operacion, $nombreE);
         $valoresDefault['TIPO_PAGO'] = 'CONTADO';
-        
-        $estauts = strtoupper(trim(str_replace(" ","", trim($operacion->getEstatus()))));
-        if ($estauts=="CUENTACOBRAR") {
-              $valoresDefault['TIPO_PAGO'] = 'CREDITO';
+
+        $estauts = strtoupper(trim(str_replace(" ", "", trim($operacion->getEstatus()))));
+        if ($estauts == "CUENTACOBRAR") {
+            $valoresDefault['TIPO_PAGO'] = 'CREDITO';
         }
-                
+
         $MEDIOpAGO = OperacionPagoQuery::create()->findOneByOperacionId($operacion->getId());
         if ($MEDIOpAGO) {
             $tipo = $MEDIOpAGO->getTipo();
@@ -87,7 +154,7 @@ class pdfActions extends sfActions {
             $valoresDefault['VENDEDOR'] = $operacion->getVendedor()->getNombre();
         }
 
- 
+
         $valoresDefault['CLIENTE'] = '';
         if ($operacion->getCliente()) {
             if ($operacion->getCliente()->getCodigo() != "CONTRAENTREGA") {
@@ -166,79 +233,12 @@ class pdfActions extends sfActions {
             'urlImage' => $urlImage, 'valoresDefault' => $valoresDefault,
             'maxAncho' => $maxAncho, 'maxAlto' => $maxAlto
         ));
-//       } else {
-//                   $html = $this->getPartial('pdf/encabezado', array(
-//            'ancho' => $maxAncho, 'tamanoPapel' => $tamanoPapel,
-//            'pos' => $pos, "wlogo" => $tamanoLogo, "PosicionLogo" => $PosicionLogo, 'UNA_LINEA' => $UNA_LINEA,
-//            'Titulo_no' => $Titulo_no, 'Titulo_Color' => $Titulo_Color, 'Titulo_Bold' => $Titulo_Bold,
-//            'linea_no' => $linea_no, 'linea_Color' => $linea_Color, 'linea_Bold' => $linea_Bold,
-//            'urlImage' => $urlImage, 'valoresDefault' => $valoresDefault,
-//            'maxAncho' => $maxAncho, 'maxAlto' => $maxAlto
-//        ));
-//       }
-// if ($nombreE=="IMPORTADORAINFINIT") {
+
         $tipoBorder = "";
-        $html .= $this->getPartial('pdf/infinity', array(
-            'fondoEncabezado' => $fondoEncabezado, 'fondoDetalle' => $fondoDetalle,
-            'colorBorder' => $colorBorder, 'Titulo_no' => $Titulo_no, 'Titulo_Color' => $Titulo_Color, 'Titulo_Bold' => $Titulo_Bold,
-            'linea_no' => $linea_no, 'linea_Color' => $linea_Color, 'UNA_LINEA' => $UNA_LINEA,
-            'linea_Bold' => $linea_Bold, 'valoresDefault' => $valoresDefault, 'ancho' => $maxAncho,
-            'setear' => $setear
+        $detalle = OperacionDetalleQuery::create()->filterByOperacionId($operacion->getId())->find();
+        $html .= $this->getPartial('pdf/detalle', array('detalle' => $detalle,
+            'operacion' => $operacion
         ));
-
-        //     }
-
-        if ($tipoBorder == 'Todos-Bordes') {
-            // $html .="aaaaaaaaaaaaaaaa<hr>";
-            $html .= $this->getPartial('pdf/todos_bordes', array(
-                'fondoEncabezado' => $fondoEncabezado, 'fondoDetalle' => $fondoDetalle,
-                'colorBorder' => $colorBorder, 'Titulo_no' => $Titulo_no, 'Titulo_Color' => $Titulo_Color, 'Titulo_Bold' => $Titulo_Bold,
-                'linea_no' => $linea_no, 'linea_Color' => $linea_Color, 'UNA_LINEA' => $UNA_LINEA,
-                'linea_Bold' => $linea_Bold, 'valoresDefault' => $valoresDefault, 'ancho' => $maxAncho,
-                'setear' => $setear
-            ));
-        }
-        if ($tipoBorder == 'Border-Exterior') {
-            $html .= $this->getPartial('pdf/border_exterior', array(
-                'fondoEncabezado' => $fondoEncabezado, 'fondoDetalle' => $fondoDetalle,
-                'colorBorder' => $colorBorder, 'Titulo_no' => $Titulo_no, 'Titulo_Color' => $Titulo_Color, 'Titulo_Bold' => $Titulo_Bold,
-                'linea_no' => $linea_no, 'UNA_LINEA' => $UNA_LINEA, 'linea_Color' => $linea_Color,
-                'linea_Bold' => $linea_Bold, 'valoresDefault' => $valoresDefault,
-                'setear' => $setear
-            ));
-        }
-        if ($tipoBorder == 'Border-Linea2') {
-            $html .= $this->getPartial('pdf/border_linea2', array(
-                'fondoEncabezado' => $fondoEncabezado, 'fondoDetalle' => $fondoDetalle,
-                'colorBorder' => $colorBorder, 'Titulo_no' => $Titulo_no, 'UNA_LINEA' => $UNA_LINEA, 'Titulo_Color' => $Titulo_Color, 'Titulo_Bold' => $Titulo_Bold,
-                'linea_no' => $linea_no, 'linea_Color' => $linea_Color, 'linea_Bold' => $linea_Bold, 'valoresDefault' => $valoresDefault, 'setear' => $setear
-            ));
-        }
-        if ($tipoBorder == 'Border-Linea') {
-            $html .= $this->getPartial('pdf/border_linea', array(
-                'fondoEncabezado' => $fondoEncabezado, 'fondoDetalle' => $fondoDetalle,
-                'colorBorder' => $colorBorder, 'Titulo_no' => $Titulo_no, 'UNA_LINEA' => $UNA_LINEA, 'Titulo_Color' => $Titulo_Color, 'Titulo_Bold' => $Titulo_Bold,
-                'linea_no' => $linea_no, 'linea_Color' => $linea_Color, 'linea_Bold' => $linea_Bold, 'valoresDefault' => $valoresDefault, 'setear' => $setear
-            ));
-        }
-        if ($tipoBorder == 'Border-Encabezado') {
-            $html .= $this->getPartial('pdf/border_encabezado', array(
-                'fondoEncabezado' => $fondoEncabezado, 'fondoDetalle' => $fondoDetalle,
-                'colorBorder' => $colorBorder, 'Titulo_no' => $Titulo_no, 'UNA_LINEA' => $UNA_LINEA, 'Titulo_Color' => $Titulo_Color, 'Titulo_Bold' => $Titulo_Bold,
-                'linea_no' => $linea_no, 'linea_Color' => $linea_Color, 'linea_Bold' => $linea_Bold, 'valoresDefault' => $valoresDefault,
-                'setear' => $setear
-            ));
-        }
-        if ($tipoBorder == 'Sin-Borders') {
-            $html .= $this->getPartial('pdf/sin_borders', array(
-                'fondoEncabezado' => $fondoEncabezado, 'fondoDetalle' => $fondoDetalle,
-                'colorBorder' => $colorBorder, 'Titulo_no' => $Titulo_no, 'Titulo_Color' => $Titulo_Color, 'UNA_LINEA' => $UNA_LINEA,
-                'Titulo_Bold' => $Titulo_Bold, 'linea_no' => $linea_no, 'linea_Color' => $linea_Color,
-                'linea_Bold' => $linea_Bold, 'valoresDefault' => $valoresDefault,
-                'setear' => $setear
-            ));
-        }
-
 
         $html .= $this->getPartial('pdf/pie', array(
             'ancho' => $maxAncho, 'tamanoPapel' => $tamanoPapel,
@@ -268,7 +268,7 @@ class pdfActions extends sfActions {
         $fecha = str_replace(":", "", $fecha);
         $nit = $valoresDefault['EMISOR']['NITEmisor'];
         $nombrePdf = $tipoDocum . "_" . $serie . "_" . $Numero . ".pdf";
-        $nombrePdf ="FACTURA ".$operacion->getCodigo();
+        $nombrePdf = "FACTURA " . $operacion->getCodigo();
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Pdf Factura , NOTA');
         $pdf->SetTitle($nombrePdf);
@@ -380,10 +380,10 @@ class pdfActions extends sfActions {
                 $ocultalogo = true;
             }
         }
-        if ($operacion->getTienda()->getCodigo()=="PL") {
-                  $ocultalogo=true;
+        if ($operacion->getTienda()->getCodigo() == "PL") {
+            $ocultalogo = true;
         }
-  
+
         if (!$ocultalogo) {
             //            echo $x;
             //            echo "<br>";

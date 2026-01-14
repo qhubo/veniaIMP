@@ -44,7 +44,8 @@
                         <th  align="center"><font size="-1"><?php echo strtoupper('largo') ?></font></th> 
                         <th  align="center"><font size="-1"><?php echo strtoupper('peso') ?></font></th> 
                         <th  align="center"><font size="-1"><?php echo strtoupper('costo fabrica') ?></font></th> 
-                        <th  align="center"><font size="-1"><?php echo strtoupper('costo cif') ?></font></th>                       
+                        <th  align="center"><font size="-1"><?php echo strtoupper('costo cif') ?></font></th>   
+                                 <th  align="center"><font size="-1"><?php echo strtoupper('origen') ?></font></th>   
                         <th  align="center"><font size="-1"></font></th>                   
                     </tr>
 
@@ -75,7 +76,7 @@
                             <td><font size="-3"><?php echo $registro['PESO'] ?></font></td>
                             <td><font size="-3"><?php echo $registro['COSTO_FABRICA'] ?></font></td>
                             <td><font size="-3"><?php echo $registro['COSTO_CIF'] ?></font></td>
-
+            <td><font size="-3"><?php echo $registro['ORIGEN'] ?></font></td>
                         </tr>    
                     <?php } ?>
                 </tbody>
