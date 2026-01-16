@@ -1,4 +1,8 @@
-        <?php $modulo = $sf_params->get('module'); ?> 
+
+  <?php $modulo = $sf_params->get('module'); ?> 
+<?php $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad'); ?>
+<?php $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId); ?>
+<?php $TIPO_USUARIO =strtoupper($usuarioQ->getTipoUsuario()); ?>
 <div class="kt-portlet kt-portlet--responsive-mobile">
     <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
@@ -132,10 +136,18 @@
                             <td><?php echo $reg->getTipo(); ?></td>
                             <td align="right" ><?php if (($reg->getTipo()=="INGRESO")  or ($reg->getTipo()=="TRANSITO INGRESO") or ($reg->getTipo()=="TRASLADO INGRESO") ) {   echo $reg->getCantidad(); } ?></td> 
                             <td align="right" ><?php if (($reg->getTipo() !="INGRESO")   && ($reg->getTipo()!="TRANSITO INGRESO")  && ($reg->getTipo()!="TRASLADO INGRESO") ) {  echo $reg->getCantidad(); } ?></td> 
-
-
-                            <td align="right" ><?php echo $reg->getFin(); ?></td> 
-                            <td align="right" ><?php echo Parametro::formato($reg->getVenta()); ?></td> 
+                            <td align="right" ><?php echo $reg->getFin(); ?></td>                             
+                          
+                            <td align="right" >
+                                   <?php if ($TIPO_USUARIO == 'ADMINISTRADOR') { ?>
+                                <a class="btn  btn-small btn-block "   href="<?php echo url_for('reporte_kardex/costo?id=' . $reg->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $reg->getId() ?>">
+                              <?php echo Parametro::formato($reg->getVenta()); ?>
+                            </a>
+                                   <?php } else { ?>
+                              <?php echo Parametro::formato($reg->getVenta()); ?>
+                                
+                                   <?php } ?>
+                               </td> 
 
                         </tr>
                     <?php } ?>
@@ -144,3 +156,24 @@
         </div>
     </div>
 </div>
+
+<script src='/assets/global/plugins/jquery.min.js'></script>
+<script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
+<?php foreach ($movimiento as $reg) { ?>
+    <?php $lista = $reg; ?>
+
+    <div class="modal fade" id="ajaxmodal<?php echo $reg->getId() ?>" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
+         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width: 750px">
+            <div class="modal-content" style=" width: 750px">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="ti-close"></span></button>
+                    <h4 class="modal-title" id="myModalLabel6">Detalle de Operación</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<?php } ?>
+

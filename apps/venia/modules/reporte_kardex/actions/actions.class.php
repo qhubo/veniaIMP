@@ -10,6 +10,94 @@
  */
 class reporte_kardexActions extends sfActions {
 
+    public function executeActualizaCosto(sfWebRequest $request) {
+        error_reporting(-1);
+        $producto = ProductoMovimientoQuery::create()
+                ->filterByCosto(null)
+                ->setLimit(3000)
+                ->find();
+        $ca = 0;
+        foreach ($producto as $registro) {
+            $costo = 0;
+            $ca++;
+            if ($ca == 1) {
+                $inicio = $registro->getId();
+            }
+            $producto = ProductoQuery::create()->findOneById($registro->getProductoId());
+            if ($producto) {
+                if ($producto->getCostoProveedor() > 0) {
+                    $costo = $producto->getCostoProveedor();
+                }
+            }
+            $registro->setCosto($costo);
+            $registro->save();
+            $fin = $registro->getId();
+        }
+        echo "<font size ='+2'><br>";
+        echo "actualizados " . $ca;
+        echo "<br>";
+        echo "actualizados " . $ca;
+        echo "<br>";
+        echo "actualizados " . $ca;
+        echo "<br>";
+        echo "actualizados " . $ca;
+        echo "<br>";
+        echo "actualizados " . $ca;
+        echo "<br>";
+        echo "actualizados " . $ca;
+        echo "<br>";
+        echo "actualizados " . $ca;
+        echo "<br>";
+        echo "actualizados " . $ca;
+        echo "<hr>";
+        echo "INICIO  " . $inicio . "  FIN " . $fin;
+        echo "</font>";
+    }
+
+    public function executeCosto(sfWebRequest $request) {
+        $id = $request->getParameter('id');
+        $registro = ProductoMovimientoQuery::create()->findOneById($id);
+        $producto = $registro->getProducto();
+        $this->registro = ProductoMovimientoQuery::create()->findOneById($id);
+    }
+
+    public function executeAjusta(sfWebRequest $request) {
+        $id = $request->getParameter('id');
+        $actua = $request->getParameter('actua');
+        $productoMovimiento = ProductoMovimientoQuery::create()
+             //   ->filterByTiendaId(21)
+                ->filterByProductoId($id)
+                ->orderById('Asc')
+                ->filterByCantidad(0, Criteria::GREATER_THAN)
+                ->find();
+        $can = 0;
+        foreach ($productoMovimiento as $reg) {
+            if ($can == 0) {
+                echo $reg->getProducto()->getCodigoSku();
+                echo "<hr>";
+                $inicio = $productoMovimiento[$can]->getFin();
+            }
+            if ($can > 0) {
+                $cantidad = $reg->getCantidad();
+                if (($reg->getTipo() == "INGRESO") or ($reg->getTipo() == "TRANSITO INGRESO")) {
+                    $fin = $inicio + $cantidad;
+                } else {
+                    $fin = $inicio - $cantidad;
+                }
+                echo $reg->getIdentificador() . " <font color='red'>" . $reg->getId() . "</font> " . $reg->getFecha() . " " . $inicio . " " . $reg->getTipo() . " <font color='blue'> " . $cantidad . "  </font> " . $fin . "";
+                echo "<br>";
+                if ($actua) {
+                    $reg->setInicio($inicio);
+                    $reg->setFin($fin);
+                    $reg->save();
+                }
+                $inicio = $fin;
+            }
+            $can++;
+        }
+        die();
+    }
+
     /**
      * Executes index action
      *
@@ -25,7 +113,7 @@ class reporte_kardexActions extends sfActions {
             $valores['tipo'] = null;
             $valores['tipo'] = null;
             $valores['motivo'] = null;
-            $valores['transito']='CON TRANSITO';
+            $valores['transito'] = 'CON TRANSITO';
             $valores['nombrebuscar'] = null;
             sfContext::getInstance()->getUser()->setAttribute('valores', serialize($valores), 'consultaKa');
         }
@@ -49,9 +137,9 @@ class reporte_kardexActions extends sfActions {
         $fechaFin = $fechaFin[2] . '-' . $fechaFin[1] . '-' . $fechaFin[0];
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
         $operaciones = new ProductoMovimientoQuery();
-      //  $operaciones->filterByCantidad(0, Criteria::NOT_EQUAL);
+        //  $operaciones->filterByCantidad(0, Criteria::NOT_EQUAL);
         $operaciones->useProductoQuery();
-        $operaciones->where("Producto.ComboProductoId is null" );
+        $operaciones->where("Producto.ComboProductoId is null");
         $operaciones->where("Producto.EmpresaId = " . $empresaId);
         $operaciones->where("ProductoMovimiento.Fecha >= '" . $fechaInicio . " 00:00:00" . "'");
         $operaciones->where("ProductoMovimiento.Fecha <= '" . $fechaFin . " 23:59:00" . "'");
@@ -63,17 +151,16 @@ class reporte_kardexActions extends sfActions {
             $operaciones->filterByTiendaId($valores['bodega']);
             // => 
         }
-        if ($valores['transito']=="SIN TRANSITO") {
+        if ($valores['transito'] == "SIN TRANSITO") {
             $operaciones->filterByTipo('TRANSITO', Criteria::NOT_EQUAL);
+        }
+        if ($valores['transito'] == "CON TRANSITO") {
             
         }
-           if ($valores['transito']=="CON TRANSITO") {
-            
+        if ($valores['transito'] == "TRANSITO") {
+            $operaciones->filterByTipo('TRANSITO', Criteria::EQUAL);
         }
-           if ($valores['transito']=="TRANSITO") {
-            $operaciones->filterByTipo('TRANSITO', Criteria::EQUAL);            
-        }
-        
+
         if ($valores['motivo']) {
             $operaciones->filterByMotivo($valores['motivo']);
             // => 
@@ -88,7 +175,7 @@ class reporte_kardexActions extends sfActions {
     }
 
     public function executeReporte(sfWebRequest $request) {
-           error_reporting(-1);
+        error_reporting(-1);
         $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaKa'));
 
         $bodegas = TiendaQuery::create()->orderByNombre()->find();
@@ -130,9 +217,9 @@ class reporte_kardexActions extends sfActions {
         $columna = 0;
         $encabezados = null;
         $encabezados[] = array("Nombre" => strtoupper("Codigo"), "width" => 20, "align" => "left", "format" => "#,##0");
-        $encabezados[] = array("Nombre" => strtoupper("Operación"), "width" => 45, "align" => "left", "format" => "#,##0");  
-        $encabezados[] = array("Nombre" => strtoupper("Referencia"), "width" => 45, "align" => "left", "format" => "#,##0");     
-        $encabezados[] = array("Nombre" => strtoupper("Descripción"), "width" => 45, "align" => "left", "format" => "#,##0");           
+        $encabezados[] = array("Nombre" => strtoupper("Operación"), "width" => 45, "align" => "left", "format" => "#,##0");
+        $encabezados[] = array("Nombre" => strtoupper("Referencia"), "width" => 45, "align" => "left", "format" => "#,##0");
+        $encabezados[] = array("Nombre" => strtoupper("Descripción"), "width" => 45, "align" => "left", "format" => "#,##0");
         $encabezados[] = array("Nombre" => strtoupper("Fecha"), "width" => 22, "align" => "center", "format" => "@");
         $encabezados[] = array("Nombre" => strtoupper("Bodega"), "width" => 45, "align" => "left", "format" => "#,##0");
         $encabezados[] = array("Nombre" => strtoupper("Motivo"), "width" => 35, "align" => "left", "format" => "#,##0.00");
@@ -142,7 +229,7 @@ class reporte_kardexActions extends sfActions {
         $encabezados[] = array("Nombre" => strtoupper("Entrada"), "width" => 15, "align" => "rigth", "format" => "#,##0");
         $encabezados[] = array("Nombre" => strtoupper("Salida"), "width" => 15, "align" => "rigth", "format" => "#,##0");
         $encabezados[] = array("Nombre" => strtoupper("Final"), "width" => 15, "align" => "rigth", "format" => "#,##0");
-        $encabezados[] = array("Nombre" => strtoupper("Venta"), "width" => 15, "align" => "rigth", "format" => "#,##0.00");  
+        $encabezados[] = array("Nombre" => strtoupper("Venta"), "width" => 15, "align" => "rigth", "format" => "#,##0.00");
         sfContext::getInstance()->getUser()->HojaImprimeEncabezadoHorizontal($encabezados, $columna, $fila, $hoja);
         $fechaInicio = $valores['fechaInicio'];
         $fechaFin = $valores['fechaFin'];
@@ -152,7 +239,7 @@ class reporte_kardexActions extends sfActions {
         $fechaFin = $fechaFin[2] . '-' . $fechaFin[1] . '-' . $fechaFin[0];
 
         $operaciones = new ProductoMovimientoQuery();
-     //     $operaciones->filterByCantidad(0, Criteria::NOT_EQUAL);
+        //     $operaciones->filterByCantidad(0, Criteria::NOT_EQUAL);
         $operaciones->useProductoQuery();
         $operaciones->where("Producto.EmpresaId = " . $empresaId);
         $operaciones->where("ProductoMovimiento.Fecha >= '" . $fechaInicio . " 00:00:00" . "'");
@@ -162,7 +249,7 @@ class reporte_kardexActions extends sfActions {
             // => 
         }
         if ($valores['bodega']) {
-            $operaciones->filterByBodegaId($valores['bodega']);
+            $operaciones->filterByTiendaId($valores['bodega']);
             // => 
         }
         if ($valores['motivo']) {
@@ -174,13 +261,13 @@ class reporte_kardexActions extends sfActions {
             $operaciones->where(" ( Producto.CodigoSku like  '%" . $nombre . "%' or Producto.Nombre like  '%" . $nombre . "%')");
         }
 
-       $operaciones->orderByProductoId('Desc');
+        $operaciones->orderByProductoId('Desc');
         $operaciones->orderById('Desc');
         $movimiento = $operaciones->find();
         foreach ($movimiento as $reg) {
             $fila++;
             $datos = null;
-            $datos[] = array("tipo" => 3, "valor" => "'".$reg->getProducto()->getCodigoSku());
+            $datos[] = array("tipo" => 3, "valor" => "'" . $reg->getProducto()->getCodigoSku());
             $datos[] = array("tipo" => 3, "valor" => $reg->getTipoDocumento());
             $datos[] = array("tipo" => 3, "valor" => $reg->getDocumento());
             $datos[] = array("tipo" => 3, "valor" => $reg->getNombreDocumento());
@@ -190,12 +277,12 @@ class reporte_kardexActions extends sfActions {
             $datos[] = array("tipo" => 3, "valor" => $reg->getProducto()->getNombre());
             $datos[] = array("tipo" => 3, "valor" => round($reg->getInicio(), 0));
             $datos[] = array("tipo" => 3, "valor" => $reg->getTipo());
-          if (($reg->getTipo()=="INGRESO")  or ($reg->getTipo()=="TRANSITO INGRESO") ) { 
-               $datos[] = array("tipo" => 2, "valor" => round($reg->getCantidad(), 0));
-               $datos[] = array("tipo" => 2, "valor" => 0, 0);
+            if (($reg->getTipo() == "INGRESO") or ($reg->getTipo() == "TRANSITO INGRESO")) {
+                $datos[] = array("tipo" => 2, "valor" => round($reg->getCantidad(), 0));
+                $datos[] = array("tipo" => 2, "valor" => 0, 0);
             } else {
-               $datos[] = array("tipo" => 2, "valor" => 0, 0);
-               $datos[] = array("tipo" => 2, "valor" => round($reg->getCantidad(), 0));
+                $datos[] = array("tipo" => 2, "valor" => 0, 0);
+                $datos[] = array("tipo" => 2, "valor" => round($reg->getCantidad(), 0));
             }
             $datos[] = array("tipo" => 2, "valor" => round($reg->getFin(), 0));
             $datos[] = array("tipo" => 2, "valor" => round($reg->getVenta(), 2));

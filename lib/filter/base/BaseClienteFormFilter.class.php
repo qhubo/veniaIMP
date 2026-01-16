@@ -43,6 +43,7 @@ abstract class BaseClienteFormFilter extends BaseFormFilterPropel
       'nombre_facturar'      => new sfWidgetFormFilterInput(),
       'vendedor_id'          => new sfWidgetFormPropelChoice(array('model' => 'Vendedor', 'add_empty' => true)),
       'archivo'              => new sfWidgetFormFilterInput(),
+      'tipo_cliente'         => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -77,6 +78,7 @@ abstract class BaseClienteFormFilter extends BaseFormFilterPropel
       'nombre_facturar'      => new sfValidatorPass(array('required' => false)),
       'vendedor_id'          => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Vendedor', 'column' => 'id')),
       'archivo'              => new sfValidatorPass(array('required' => false)),
+      'tipo_cliente'         => new sfValidatorPass(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('cliente_filters[%s]');
@@ -126,6 +128,7 @@ abstract class BaseClienteFormFilter extends BaseFormFilterPropel
       'nombre_facturar'      => 'Text',
       'vendedor_id'          => 'ForeignKey',
       'archivo'              => 'Text',
+      'tipo_cliente'         => 'Text',
     );
   }
 }

@@ -56,6 +56,7 @@ class ProductoMovimientoQuery extends BaseProductoMovimientoQuery {
             $movimienoto->setFin($nuevoValor);
             $movimienoto->setTipo('INGRESO');
             $movimienoto->setEmpresaId($empresaId);
+            $movimienoto->setCosto($producto->getCostoProveedor());
             $movimienoto->setFecha(date('Y-m-d H:i:s'));
             if ($fecha) {
                 $movimienoto->setFecha($fecha);
@@ -101,6 +102,7 @@ class ProductoMovimientoQuery extends BaseProductoMovimientoQuery {
         $movimienoto->setInicio($inicial);
         $movimienoto->setEmpresaId($empresaId);
         $movimienoto->setFin($nuevoValor);
+        $movimienoto->setCosto($producto->getCostoProveedor());
         if ($fecha) {
             $movimienoto->setFecha($fecha);
             //    echo $fecha;
@@ -165,6 +167,7 @@ class ProductoMovimientoQuery extends BaseProductoMovimientoQuery {
         $movimienoto->setInicio($inicial);
         $movimienoto->setEmpresaId($empresaId);
         $movimienoto->setFin($nuevoValor);
+        $movimienoto->setCosto($producto->getCostoProveedor());
         if ($fecha) {
             $movimienoto->setFecha($fecha);
         }

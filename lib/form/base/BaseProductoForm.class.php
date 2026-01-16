@@ -66,6 +66,7 @@ abstract class BaseProductoForm extends BaseFormPropel
       'peso'                      => new sfWidgetFormInputText(),
       'costo_fabrica'             => new sfWidgetFormInputText(),
       'costo_cif'                 => new sfWidgetFormInputText(),
+      'origen'                    => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -121,6 +122,7 @@ abstract class BaseProductoForm extends BaseFormPropel
       'peso'                      => new sfValidatorNumber(array('required' => false)),
       'costo_fabrica'             => new sfValidatorNumber(array('required' => false)),
       'costo_cif'                 => new sfValidatorNumber(array('required' => false)),
+      'origen'                    => new sfValidatorString(array('max_length' => 50, 'required' => false)),
     ));
 
     $this->validatorSchema->setPostValidator(

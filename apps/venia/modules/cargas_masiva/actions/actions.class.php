@@ -10,11 +10,107 @@
  */
 class cargas_masivaActions extends sfActions {
 
-    /**
-     * Executes index action
-     *
-     * @param sfRequest $request A request object
-     */
+    public function executeCliente(sfWebRequest $request) {
+        $filename = 'Clientes.xls';
+        $inputFileName = sfConfig::get("sf_upload_dir") . DIRECTORY_SEPARATOR . $filename;
+        $objReader = new PHPExcel_Reader_Excel5();
+        $objPHPExcel = $objReader->load($inputFileName);
+        $sheetData = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
+        $contador = 0;
+        foreach ($sheetData as $registro) {
+            $contador++;
+            if ($contador > 1) {
+                $CODIGO_CLIENTE = $registro['A'];
+                $RUC = $registro['B'];
+                $NOMBRE_FACTURAR = $registro['C'];
+                $NOMBRE = $registro['D'];
+                $TELEFONO = $registro['E'];
+                $DIRECCION = $registro['F'];
+                $PAIS = $registro['G'];
+                $PROVINCIA = $registro['H'];
+                $CORREGIMIENTO = $registro['I'];
+                $CORREO = $registro['J'];
+                $VENDEDOR = $registro['K'];
+                $PRECIO = $registro['L'];
+                $TIPO_CLIENTE = $registro['M'];
+         
+                $FECHA_DE_INGRESO = $registro['N'];
+                $valorFecha = explode("/", $FECHA_DE_INGRESO);
+                $FECHA = $valorFecha[2] . "-" . $valorFecha[1] . "-" . $valorFecha[0];
+                $FUENTE = $registro['O'];
+                $LIMITE_CREDITO = $registro['P'];
+                $OBSERVACION_INTERNAS = $registro['Q'];
+                if ($NOMBRE <> "") {
+                    $cliente = ClienteQuery::create()->findOneByCodigo($CODIGO_CLIENTE);
+                    if (!$cliente) {
+                        $cliente = new Cliente();
+                        $cliente->setCodigo($CODIGO_CLIENTE);
+                    }
+                    $cliente->setNit($RUC);
+                    $cliente->setNombre($NOMBRE);
+                    $cliente->setNombreFacturar($NOMBRE_FACTURAR);
+                    $cliente->setDireccion($DIRECCION);
+                    $cliente->setTelefono($TELEFONO);
+                    $cliente->setCorreoContacto($CORREO);
+                    $cliente->setCorreoElectronico($CORREO);
+                    $cliente->setActivo(true);
+                    $cliente->setLimiteCredito($LIMITE_CREDITO);
+                    $PAISQ = PaisQuery::create()->findOneByNombre($PAIS);
+                    $cliente->setPaisId($PAISQ->getId());
+                    $deparq = DepartamentoQuery::create()
+                            ->filterByPaisId($PAISQ->getId())
+                            ->filterByNombre($PROVINCIA)
+                            ->findOne();
+                    if (!$deparq) {
+                        $deparq = new Departamento();
+                        $deparq->setPaisId($PAISQ->getId());
+                        $deparq->setNombre($PROVINCIA);
+                        $deparq->setActivo(true);
+                        $deparq->save();
+                    }
+                    $cliente->setDepartamentoId($deparq->getId());
+                    $munici = MunicipioQuery::create()
+                            ->filterByDescripcion($CORREGIMIENTO)
+                            ->filterByDepartamentoId($deparq->getId())
+                            ->findOne();
+                    if (!$munici) {
+                        $munici = new Municipio();
+                        $munici->setDescripcion($CORREGIMIENTO);
+                        $munici->setDepartamentoId($deparq->getId());
+                        $munici->save();
+                    }
+                    $cliente->setMunicipioId($munici->getId());
+                    $vendedorQ = VendedorQuery::create()->findOneByNombre($VENDEDOR);
+                    if (!$vendedorQ) {
+                        $vendedorQ = new Vendedor();
+                        $vendedorQ->setNombre($VENDEDOR);
+                        $vendedorQ->save();
+                    }
+                    $cliente->setVendedorId($vendedorQ->getId());
+                    $cliente->setObservaciones($OBSERVACION_INTERNAS);
+                    $cliente->setTipoProducto($PRECIO);
+                    $cliente->setTipoReferencia($FUENTE);
+                    $cliente->setTipoCliente($TIPO_CLIENTE);
+                    $cliente->save();
+                    $con = Propel::getConnection();
+                    $con->beginTransaction();
+                    try {
+                        if ($FECHA_DE_INGRESO) {
+                            $cliente->setFecha($FECHA);
+                            $cliente->save();
+                        }
+                        $con->commit();
+                    } catch (Exception $e) {
+                        $con->rollback();
+                        echo $e->getMessage() . " " . $CODIGO_CLIENTE . " " . $NOMBRE . " ==> " . $FECHA_DE_INGRESO . " --> " . $FECHA . " <br>";
+                    }
+                }
+            }
+        }
+        echo "actualizado " . $contador;
+        die();
+    }
+
     public function executeDeptos(sfWebRequest $request) {
         error_reporting(-1);
         $inputFileName = sfConfig::get("sf_upload_dir") . DIRECTORY_SEPARATOR . "Departamentos.xls";
@@ -51,7 +147,7 @@ class cargas_masivaActions extends sfActions {
                 $MUNQue = MunicipioQuery::create()
                         ->filterByDepartamentoId($Depque->getId())
                         ->filterByDescripcion($mun)
-                       ->findOne();
+                        ->findOne();
                 if (!$MUNQue) {
                     $MUNQue = new Municipio();
                     $MUNQue->setAbreviatura(substr($mun, 0, 30));
@@ -60,9 +156,9 @@ class cargas_masivaActions extends sfActions {
                     $MUNQue->setDescripcion($mun);
                     $MUNQue->save();
                 }
-           }
+            }
         }
-        echo "Actualizados ".$cont;
+        echo "Actualizados " . $cont;
         die();
     }
 

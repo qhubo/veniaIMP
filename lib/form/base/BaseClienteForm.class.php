@@ -46,6 +46,7 @@ abstract class BaseClienteForm extends BaseFormPropel
       'nombre_facturar'      => new sfWidgetFormInputText(),
       'vendedor_id'          => new sfWidgetFormPropelChoice(array('model' => 'Vendedor', 'add_empty' => true)),
       'archivo'              => new sfWidgetFormInputText(),
+      'tipo_cliente'         => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -81,6 +82,7 @@ abstract class BaseClienteForm extends BaseFormPropel
       'nombre_facturar'      => new sfValidatorString(array('max_length' => 260, 'required' => false)),
       'vendedor_id'          => new sfValidatorPropelChoice(array('model' => 'Vendedor', 'column' => 'id', 'required' => false)),
       'archivo'              => new sfValidatorString(array('max_length' => 130, 'required' => false)),
+      'tipo_cliente'         => new sfValidatorString(array('max_length' => 120, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('cliente[%s]');

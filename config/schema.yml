@@ -1062,6 +1062,7 @@ propel:
      nombre_facturar:                   { type: varchar(260)  } 
      vendedor_id:                           ~    
      archivo:                           { type: varchar(130) }
+     tipo_cliente:                      { type: varchar(120) }
     
   cierre_caja:
      _attributes: { phpName: CierreCaja, idMethod: native }

@@ -132,7 +132,7 @@ class edita_clienteActions extends sfActions {
     }
 
     public function executeIndex(sfWebRequest $request) {
-
+  date_default_timezone_set("America/Guatemala");
         $datos = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaProveedo'));
         $valores = null;
         $default = null;
@@ -177,6 +177,7 @@ class edita_clienteActions extends sfActions {
     }
 
     public function executeMuestra(sfWebRequest $request) {
+          date_default_timezone_set("America/Guatemala");
         $id = $request->getParameter('id');
 
         $this->tab = 1;
@@ -227,6 +228,11 @@ class edita_clienteActions extends sfActions {
             $defaults['tiene_credito'] = $proveedor->getTieneCredito(); //> 
             $defaults['municipio'] = $proveedor->getMunicipioId(); //> 
             $defaults['contacto'] = $proveedor->getContacto();
+            $defaults['observaciones']=$proveedor->getObservaciones();
+            $defaults['precio']=$proveedor->getTipoProducto();
+            $defaults['fuente']=$proveedor->getTipoReferencia();
+            $defaults['tipo_cliente']=$proveedor->getTipoCliente();
+
             $this->ruta = $proveedor->getArchivo();
         }
 
@@ -242,6 +248,9 @@ class edita_clienteActions extends sfActions {
 //                print_r($valores);
 //                die();
                 $nueva = new Cliente();
+                if (!$proveedor) {
+                    $nueva->setFecha(date('Y-m-d'));
+                }
                 if ($proveedor) {
                     $nueva = $proveedor;
                     $this->CamposObligatorios($id);
@@ -279,12 +288,12 @@ class edita_clienteActions extends sfActions {
                 $nueva->setTelefono($valores['telefono']);
                 $nueva->setCorreoElectronico($valores['correo_electronico']);
                 $nueva->setContacto($valores['contacto']);
-
-
                 $nueva->setActivo($valores['activo']);
-
                 $nueva->setDireccion($valores['direccion']);
-
+                $nueva->setObservaciones($valores['observaciones']);
+                $nueva->setTipoProducto($valores['precio']);
+                $nueva->setTipoReferencia($valores['fuente']);
+                $nueva->setTipoCliente($valores['tipo_cliente']);
                 if ($valores["archivo"]) {
                     $archivo = $valores["archivo"];
                     $nombre = $archivo->getOriginalName();

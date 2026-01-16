@@ -29,6 +29,7 @@ abstract class BaseProductoMovimientoForm extends BaseFormPropel
       'sub_total'     => new sfWidgetFormInputText(),
       'iva'           => new sfWidgetFormInputText(),
       'linea_no'      => new sfWidgetFormInputText(),
+      'costo'         => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -47,6 +48,7 @@ abstract class BaseProductoMovimientoForm extends BaseFormPropel
       'sub_total'     => new sfValidatorNumber(array('required' => false)),
       'iva'           => new sfValidatorNumber(array('required' => false)),
       'linea_no'      => new sfValidatorString(array('max_length' => 50, 'required' => false)),
+      'costo'         => new sfValidatorNumber(array('required' => false)),
     ));
 
     $this->validatorSchema->setPostValidator(

@@ -38,58 +38,6 @@ class cargaActions extends sfActions {
     
     
     
-    
-    public function executeCliente(sfWebRequest $request) {
-        $filename='listaCliente2.xls';
-        $inputFileName = sfConfig::get("sf_upload_dir") . DIRECTORY_SEPARATOR. $filename;
-        $objReader = new PHPExcel_Reader_Excel5();
-        $objPHPExcel = $objReader->load($inputFileName);
-        $sheetData = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
-        $contador = 0;
-        
-        foreach ($sheetData as $registro) {
-           $contador++;
-           if ($contador >1) {
-               $nit=$registro['A'];
-               $codigo=$registro['B'];
-               $Nombre=$registro['C'];
-               $direccion=$registro['D'];
-               $telefono=$registro['E'];
-               $correo=$registro['F'];
-               $limite=$registro['G'];
-               $departmento = $registro['H'];
-               $muni = $registro['I'];
-               $vendeor = $registro['J'];  
-               if ($Nombre <> "") {
-               $cliente = ClienteQuery::create()->findOneByCodigo($codigo);
-               if (!$cliente) {
-                   $cliente = new Cliente();
-               }
-               $cliente->setNit($nit);
-               $cliente->setCodigo($codigo);
-               $cliente->setNombre($Nombre);
-               $cliente->setDireccion($direccion);
-               $cliente->setTelefono($telefono);
-               $cliente->setCorreoContacto($correo);
-               $cliente->setCorreoElectronico($correo);
-               $cliente->setLimiteCredito($limite);
-               $cliente->setActivo(true);
-               $deparq = DepartamentoQuery::create()->findOneByNombre($departmento);
-               if ($deparq) {
-                   $cliente->setDepartamentoId($deparq->getId());
-               }
-               $munici = MunicipioQuery::create()->findOneByDescripcion($muni);
-               if ($munici) {
-                   $cliente->setMunicipioId($munici->getId());
-               }
-               $cliente->setContacto($vendeor);
-               $cliente->save();               
-           }
-           }
-        }
-        echo "actualizado ".$contador;
-        die();
-    }
 
     public function executeIndex(sfWebRequest $request) {
         ///     echo "aaa";

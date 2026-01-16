@@ -18,23 +18,23 @@
 class Cliente extends BaseCliente {
 
     
-    public function getTipoCliente () {
-     //   $campo
-        $datoQ = ValorUsuarioQuery::create()
-                
-                 ->filterByTipoDocumento('Cliente')
-                 ->filterByNoDocumento($this->getId())
-                ->useCampoUsuarioQuery()
-                ->filterByNombre('TIPO_CLIENTE')
-                ->endUse()
-                ->findOne();
-        $valor ='';
-        if ($datoQ) {
-            $valor=$datoQ->getValor();
-        }
-        
-       return $valor;
-    }
+//    public function getTipoCliente () {
+//     //   $campo
+//        $datoQ = ValorUsuarioQuery::create()
+//                
+//                 ->filterByTipoDocumento('Cliente')
+//                 ->filterByNoDocumento($this->getId())
+//                ->useCampoUsuarioQuery()
+//                ->filterByNombre('TIPO_CLIENTE')
+//                ->endUse()
+//                ->findOne();
+//        $valor ='';
+//        if ($datoQ) {
+//            $valor=$datoQ->getValor();
+//        }
+//        
+//       return $valor;
+//    }
     
     public function getCodigoCli() {
         $rerun = $this->getCodigo();

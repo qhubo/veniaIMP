@@ -63,6 +63,7 @@ abstract class BaseProductoFormFilter extends BaseFormFilterPropel
       'peso'                      => new sfWidgetFormFilterInput(),
       'costo_fabrica'             => new sfWidgetFormFilterInput(),
       'costo_cif'                 => new sfWidgetFormFilterInput(),
+      'origen'                    => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -117,6 +118,7 @@ abstract class BaseProductoFormFilter extends BaseFormFilterPropel
       'peso'                      => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'costo_fabrica'             => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'costo_cif'                 => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
+      'origen'                    => new sfValidatorPass(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('producto_filters[%s]');
@@ -186,6 +188,7 @@ abstract class BaseProductoFormFilter extends BaseFormFilterPropel
       'peso'                      => 'Number',
       'costo_fabrica'             => 'Number',
       'costo_cif'                 => 'Number',
+      'origen'                    => 'Text',
     );
   }
 }

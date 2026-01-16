@@ -4,7 +4,7 @@
 <div class="row" style="padding-top: 3px;">
 
     <div  class="col-lg-2">
-    RUC/  Nit     
+        RUC/  Nit     
     </div>
     <div class="col-lg-2  <?php if ($form['nit']->hasError()) echo "has-error" ?>">
         <?php echo $form['nit'] ?>          
@@ -31,15 +31,15 @@
 
 
     <div  class="col-lg-1">
-       Vendedor   
+        Vendedor   
     </div>
-        <div class="col-lg-2  <?php if ($form['vendedor_id']->hasError()) echo "has-error" ?>">
+    <div class="col-lg-2  <?php if ($form['vendedor_id']->hasError()) echo "has-error" ?>">
         <?php echo $form['vendedor_id'] ?>          
         <span class="help-block form-error"> 
             <?php echo $form['vendedor_id']->renderError() ?>       
         </span>
     </div>
-    
+
 
     <div class="col-lg-1   <?php if ($form['activo']->hasError()) echo "has-error" ?>">
         Activo
@@ -49,8 +49,8 @@
             <?php echo $form['activo']->renderError() ?>       
         </span>
     </div>    
-    
-    
+
+
 
 
 
@@ -85,20 +85,40 @@
 </div>
 
 
+<div class="row" style="padding-top: 3px;">
+    <div  class="col-lg-2"> Tipo Precio </div>
+    <div class="col-lg-2   <?php if ($form['precio']->hasError()) echo "has-error" ?>">
+        <?php echo $form['precio'] ?>          
+        <span class="help-block form-error"> 
+            <?php echo $form['precio']->renderError() ?>       
+        </span>
+    </div>
+    <div  class="col-lg-1"> Tipo Cliente </div>
+    <div class="col-lg-2   <?php if ($form['tipo_cliente']->hasError()) echo "has-error" ?>">
+        <?php echo $form['tipo_cliente'] ?>          
+        <span class="help-block form-error"> 
+            <?php echo $form['tipo_cliente']->renderError() ?>       
+        </span>
+    </div>
+    <div  class="col-lg-1"> Fuente </div>
+    <div class="col-lg-2   <?php if ($form['fuente']->hasError()) echo "has-error" ?>">
+        <?php echo $form['fuente'] ?>          
+        <span class="help-block form-error"> 
+            <?php echo $form['fuente']->renderError() ?>       
+        </span>
+    </div>
+    
+</div> 
+
 
 <div class="row" style="padding-top: 3px;">
-
-    <div  class="col-lg-2">
-        País     
-    </div>
+    <div  class="col-lg-2"> País </div>
     <div class="col-lg-3   <?php if ($form['pais']->hasError()) echo "has-error" ?>">
         <?php echo $form['pais'] ?>          
         <span class="help-block form-error"> 
             <?php echo $form['pais']->renderError() ?>       
         </span>
     </div>
-
-
 </div> 
 
 
@@ -206,14 +226,28 @@
 
 <div class="row" style="padding-top: 3px;">
     <div  class="col-lg-2">
-        Arhivo PDF    
+        Dirección     
     </div>
-    <div class="col-lg-4   <?php if ($form['archivo']->hasError()) echo "has-error" ?>">
-        <?php echo $form['archivo'] ?>          
+    <div class="col-lg-9  <?php if ($form['direccion']->hasError()) echo "has-error" ?>">
+        <?php echo $form['direccion'] ?>          
         <span class="help-block form-error"> 
-            <?php echo $form['archivo']->renderError() ?>       
+            <?php echo $form['direccion']->renderError() ?>       
         </span>
     </div>
-   
+</div>
+
+
+
+<div class="row" style="padding-top: 3px;">
+    <div  class="col-lg-2">
+      Observaciones  
+    </div>
+    <div class="col-lg-6   <?php if ($form['observaciones']->hasError()) echo "has-error" ?>">
+        <?php echo $form['observaciones'] ?>          
+        <span class="help-block form-error"> 
+            <?php echo $form['observaciones']->renderError() ?>       
+        </span>
+    </div>
+
 
 </div>
