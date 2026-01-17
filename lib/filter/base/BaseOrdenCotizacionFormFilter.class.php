@@ -45,6 +45,7 @@ abstract class BaseOrdenCotizacionFormFilter extends BaseFormFilterPropel
       'vendedor_id'         => new sfWidgetFormPropelChoice(array('model' => 'Vendedor', 'add_empty' => true)),
       'pais_id'             => new sfWidgetFormPropelChoice(array('model' => 'Pais', 'add_empty' => true)),
       'transporte'          => new sfWidgetFormFilterInput(),
+      'empacado'            => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
     ));
 
     $this->setValidators(array(
@@ -81,6 +82,7 @@ abstract class BaseOrdenCotizacionFormFilter extends BaseFormFilterPropel
       'vendedor_id'         => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Vendedor', 'column' => 'id')),
       'pais_id'             => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Pais', 'column' => 'id')),
       'transporte'          => new sfValidatorPass(array('required' => false)),
+      'empacado'            => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
     ));
 
     $this->widgetSchema->setNameFormat('orden_cotizacion_filters[%s]');
@@ -132,6 +134,7 @@ abstract class BaseOrdenCotizacionFormFilter extends BaseFormFilterPropel
       'vendedor_id'         => 'ForeignKey',
       'pais_id'             => 'ForeignKey',
       'transporte'          => 'Text',
+      'empacado'            => 'Boolean',
     );
   }
 }

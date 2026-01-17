@@ -27,6 +27,9 @@ abstract class BaseOrdenCotizacionDetalleFormFilter extends BaseFormFilterPropel
       'cantidad_caja'       => new sfWidgetFormFilterInput(),
       'peso'                => new sfWidgetFormFilterInput(),
       'existencia_actual'   => new sfWidgetFormFilterInput(),
+      'bulto_inicio'        => new sfWidgetFormFilterInput(),
+      'bulto_fin'           => new sfWidgetFormFilterInput(),
+      'bulto_superior'      => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -45,6 +48,9 @@ abstract class BaseOrdenCotizacionDetalleFormFilter extends BaseFormFilterPropel
       'cantidad_caja'       => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'peso'                => new sfValidatorPass(array('required' => false)),
       'existencia_actual'   => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'bulto_inicio'        => new sfValidatorPass(array('required' => false)),
+      'bulto_fin'           => new sfValidatorPass(array('required' => false)),
+      'bulto_superior'      => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('orden_cotizacion_detalle_filters[%s]');
@@ -78,6 +84,9 @@ abstract class BaseOrdenCotizacionDetalleFormFilter extends BaseFormFilterPropel
       'cantidad_caja'       => 'Number',
       'peso'                => 'Text',
       'existencia_actual'   => 'Number',
+      'bulto_inicio'        => 'Text',
+      'bulto_fin'           => 'Text',
+      'bulto_superior'      => 'Number',
     );
   }
 }

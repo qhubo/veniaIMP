@@ -15,8 +15,8 @@ class reporteActions extends sfActions {
         date_default_timezone_set("America/Guatemala");
         error_reporting(-1);
         $id = $request->getParameter('id');
-        $operacion = OperacionQuery::create()->findOneById($id);
-        $detalle = OperacionDetalleQuery::create()->filterByProductoId(null, Criteria::NOT_EQUAL)->filterByOperacionId($id)->find();
+        $operacion = OrdenCotizacionQuery::create()->findOneById($id);
+        $detalle = OrdenCotizacionDetalleQuery::create()->filterByProductoId(null, Criteria::NOT_EQUAL)->filterByOrdenCotizacionId($id)->find();
         $html = '';
 
         $logo = $operacion->getEmpresa()->getLogo();

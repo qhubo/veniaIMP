@@ -13,6 +13,8 @@ class pedido_pendienteActions extends sfActions
 
   
     public function executeConfirmar(sfWebRequest $request) {
+        
+
         sfContext::getInstance()->getUser()->setAttribute('CotizacionIPendie', null, 'seguridad');
         date_default_timezone_set("America/Guatemala");
         $id = $request->getParameter('id');
@@ -60,7 +62,7 @@ class pedido_pendienteActions extends sfActions
                 //$ordenQ->setFecha(date('Y-m-d H:i:s'));
                 $ordenQ->setToken(sha1($ordenQ->getCodigo()));
                 $ordenQ->save();
-                $idv = OrdenCotizacionPeer::ProcesaAutoUbicacion($ordenQ);
+      
                 $this->getUser()->setFlash('exito', 'Registro actualizado   con exito ');
                 $this->redirect('pedido_pendiente/index?id=' . $idv);
             }

@@ -59,9 +59,8 @@
                 <?php //if ($pendientes == 0) { ?>
                     <tr>
                         <td>
-                               <a target="_blank" href="<?php echo url_for('reporte/ordenCotizacion?token='.$orden->getToken()) ?>" class="btn btn-sm btn-warning" > 
-      <i class="flaticon2-printer"></i><?php echo $reg->getOrdenCotizacion()->getCodigo(); ?>
-                               </a>
+                   <?php echo $reg->getOrdenCotizacion()->getCodigo(); ?>
+                
 
                         </td>
                         <td><?php echo $reg->getOrdenCotizacion()->getUsuario(); ?>
@@ -100,7 +99,11 @@
                         
             <?Php // } ?>
                         </td>                     
-                        <td> <a href="<?php echo url_for('orden_cotizacion/nueva?codigo=' . $reg->getOrdenCotizacion()->getCodigo()) ?>" class="btn btn-sm btn-dark btn-secondary" > Editar  </a></td>
+                        <td> 
+                                        <a target="_blank" href="<?php echo url_for('reporte/ordenCotizacion?token='.$orden->getToken()) ?>" class="btn btn-sm btn-block btn-warning" > 
+      <i class="flaticon2-printer"></i>
+                                        </a>
+                            <a href="<?php echo url_for('orden_cotizacion/nueva?codigo=' . $reg->getOrdenCotizacion()->getCodigo()) ?>" class="btn btn-sm  btn-block btn-dark btn-secondary" > Editar  </a></td>
                     </tr>
                 <?php // } ?>
             <?php } ?>

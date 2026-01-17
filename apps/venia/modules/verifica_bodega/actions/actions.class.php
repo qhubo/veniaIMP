@@ -2,159 +2,149 @@
 
 class verifica_bodegaActions extends sfActions {
 
-    public function executeGrabaEmpaque(sfWebRequest $request) {
-        error_reporting(-1);
-        $id = $request->getParameter('id');
-        $cantitad = $request->getParameter('cantidad' . $id);
-        $inicio = $request->getParameter('inicio' . $id);
-        if ($cantitad==0) {
-          $this->getUser()->setFlash('error', 'Debe Ingresar cantidad  ');
-          $this->redirect('verifica_bodega/index');
-        }
-        if ($inicio==0) {
-          $this->getUser()->setFlash('error', 'Debe Ingresar numero de bulto  ');
-          $this->redirect('verifica_bodega/index');
-        }
-        $operacionDetalle = OperacionDetalleQuery::create()->findOneById($id);
-        $operaiconId = $operacionDetalle->getOperacionId();
-        $registros = OperacionDetalleQuery::create()->filterByCantidadCaja(0, Criteria::GREATER_THAN)->filterById($id, Criteria::NOT_EQUAL) ->filterByOperacionId($operaiconId)->find();
-
-        $ListaPrevia[0]=0;
-        foreach($registros as $deta) {
-            $inicioCon = $deta->getBultoInicio();
-            $fin = $deta->getBultoFin();
-            for ($i = $inicioCon; $i <=$fin ; $i++) {
-                $ListaPrevia[$i]=$i;
-           }
-        }
-      if (array_key_exists($inicio,$ListaPrevia)) {
-           $this->getUser()->setFlash('error', 'Numero de bulto ya se encuentra registrado  ');
-         $this->redirect('verifica_bodega/index');
-      }
-//        echo $inicio;
-//        echo "<pre>";
-//        print_r($ListaPrevia);
-//        die();
-        $fin=$inicio+$cantitad-1;         
-        $operacionDetalle->setCantidadCaja($cantitad);
-        $operacionDetalle->setBultoInicio($inicio);
-        $operacionDetalle->setBultoFin($fin);
-        $operacionDetalle->save();
-        $this->getUser()->setFlash('exito', 'Registro actualizado con exito  ');
-        $this->redirect('verifica_bodega/index');
-       
-    }
-
-    public function executeTcaja(sfWebRequest $request) {
-        $id = $request->getParameter('id');
-        $val = $request->getParameter('val');
-        $ordenCoti = OperacionQuery::create()->findOneById($id);
-        $ordenCoti->setCantidadTotalCaja($val);
-        $ordenCoti->save();
-        die();
-    }
-
-    public function executeTpeso(sfWebRequest $request) {
-        $id = $request->getParameter('id');
-        $val = $request->getParameter('val');
-        $ordenCoti = OperacionQuery::create()->findOneById($id);
-        $ordenCoti->setPesoTotal($val);
-        $ordenCoti->save();
-        die();
-    }
-
-    public function executeCaja(sfWebRequest $request) {
-        $id = $request->getParameter('id');
-        $val = $request->getParameter('val');
-        $ordenId = OperacionDetalleQuery::create()->findOneById($id);
-        $ordenId->setCantidadCaja($val);
-        $ordenId->save();
-        $ordenCoti = OperacionQuery::create()->findOneById($ordenId->getOperacionId());
-        $movimiento = OperacionDetalleQuery::create()
-                ->filterByOperacionId($ordenId->getOperacionId())
-                ->withColumn('sum(OperacionDetalle.CantidadCaja)', 'TotalTotal')
-                ->findOne();
-        $total = round($movimiento->getTotalTotal(), 2);
-        $ordenCoti->setCantidadTotalCaja($total);
-        $ordenCoti->save();
-        echo $total;
-        die();
-    }
-
-    public function executePeso(sfWebRequest $request) {
-        $id = $request->getParameter('id');
-        $val = $request->getParameter('val');
-        $ordenId = OperacionDetalleQuery::create()->findOneById($id);
-        $ordenId->setPeso($val);
-        $ordenId->save();
-        $ordenCoti = OperacionQuery::create()->findOneById($ordenId->getOperacionId());
-        $movimiento = OperacionDetalleQuery::create()
-                ->filterByOperacionId($ordenId->getOperacionId())
-                ->withColumn('sum(OperacionDetalle.Peso)', 'TotalTotal')
-                ->findOne();
-        echo $movimiento->getTotalTotal();
-        $ordenCoti->setPesoTotal($movimiento->getTotalTotal());
-        $ordenCoti->save();
-
-        die();
-        die();
-    }
-
-    public function executeConfirmaPedi(sfWebRequest $request) {
-        $id = $request->getParameter('id');
-
-        $opreacion = OperacionQuery::create()->findOneById($id);
-        $opreacionDetalle = OperacionDetalleQuery::create()
+     public function executeConfirmaPedi(sfWebRequest $request) {
+     error_reporting(-1);
+         $id = $request->getParameter('id');
+       $opreacion = OrdenCotizacionQuery::create()->findOneById($id);
+        $opreacionDetalle = OrdenCotizacionDetalleQuery::create()
                 ->filterByProductoId(null, Criteria::NOT_EQUAL)
 //                ->filterByCantidadCaja()
-                ->filterByOperacionId($id)
+                ->filterByOrdenCotizacionId($id)
                 ->find();
         foreach ($opreacionDetalle as $detalle) {
-            if (!$detalle->getCantidadCaja()) {
+            if ((!$detalle->getCantidadCaja()) && (!$detalle->getBultoSuperior())) {
                 $this->getUser()->setFlash('error', 'Cantidad de bulto no definidad para producto ' . $detalle->getDetalle());
                 $this->redirect('verifica_bodega/index?id=' . $id);
             }
         }
-
         $opreacion->setEmpacado(true);
         $opreacion->save();
         $this->getUser()->setFlash('exito', 'Pedido empacado ' . $opreacion->getCodigo());
-        $this->redirect('verifica_bodega/index');
+        $this->redirect('verifica_bodega/index?id='.$opreacion->getId());
+    }
+    
+    public function executeGrabaEmpaque(sfWebRequest $request) {
+        error_reporting(-1);
+        $id = $request->getParameter('id');
+        $OrdenCotizacionDetalle = OrdenCotizacionDetalleQuery::create()->findOneById($id);
+        $bulto_superior = $request->getParameter('seleccion_' . $id);
+        if ($bulto_superior > 0) {
+            $query = "select bulto_inicio, bulto_fin from orden_cotizacion_detalle where id ='" . $bulto_superior . "'";
+            $con = Propel::getConnection();
+            $stmt = $con->prepare($query);
+            $resource = $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($result) {
+                $inicio = $result[0]['bulto_inicio'];
+                $fin = $result[0]['bulto_fin'];
+            }
 
-//        $ordeDetalle = OperacionDetalleQuery::create()->findOneById($id);
-//        //$ordeDetalle->setVerificado(true);
-//        $ordeDetalle->save();
+            $OrdenCotizacionDetalle->setBultoSuperior($bulto_superior);
+            $OrdenCotizacionDetalle->setCantidadCaja(0);
+            $OrdenCotizacionDetalle->setBultoInicio($inicio);
+            $OrdenCotizacionDetalle->setBultoFin($fin);
+            $OrdenCotizacionDetalle->save();
+            $this->getUser()->setFlash('exito', 'Registro actualizado con exito  ');
+            $this->redirect('verifica_bodega/index');
+        }
+        $cantitad = $request->getParameter('cantidad' . $id);
+        $inicio = $request->getParameter('inicio' . $id);
+        if ($cantitad == 0) {
+            $this->getUser()->setFlash('error', 'Debe Ingresar cantidad  ');
+            $this->redirect('verifica_bodega/index');
+        }
+        if ($inicio == 0) {
+            $this->getUser()->setFlash('error', 'Debe Ingresar numero de bulto  ');
+            $this->redirect('verifica_bodega/index');
+        }
+
+        $operaiconId = $OrdenCotizacionDetalle->getOrdenCotizacionId();
+        $registros = OrdenCotizacionDetalleQuery::create()->filterByCantidadCaja(0, Criteria::GREATER_THAN)->filterById($id, Criteria::NOT_EQUAL)->filterByOrdenCotizacionId($operaiconId)->find();
+
+        $ListaPrevia[0] = 0;
+        foreach ($registros as $deta) {
+            $inicioCon = $deta->getBultoInicio();
+            $fin = $deta->getBultoFin();
+            for ($i = $inicioCon; $i <= $fin; $i++) {
+                $ListaPrevia[$i] = $i;
+            }
+        }
+        if (array_key_exists($inicio, $ListaPrevia)) {
+            $this->getUser()->setFlash('error', 'Numero de bulto ya se encuentra registrado  ');
+            $this->redirect('verifica_bodega/index');
+        }
+        $fin = $inicio + $cantitad - 1;
+        $OrdenCotizacionDetalle->setCantidadCaja($cantitad);
+        $OrdenCotizacionDetalle->setBultoInicio($inicio);
+        $OrdenCotizacionDetalle->setBultoFin($fin);
+        $OrdenCotizacionDetalle->save();
+
+
+        $bultoSuperiores = OrdenCotizacionDetalleQuery::create()
+                ->filterByBultoSuperior($OrdenCotizacionDetalle->getId())
+                ->find();
+        foreach ($bultoSuperiores as $superio) {
+            $superio->setBultoSuperior(null);
+            $superio->setCantidadCaja(0);
+            $superio->setBultoInicio(null);
+            $superio->setBultoFin(null);
+            $superio->save();
+        }
+
+        $this->getUser()->setFlash('exito', 'Registro actualizado con exito  ');
+        $this->redirect('verifica_bodega/index');
+    }
+
+    public function executeDividir(sfWebRequest $request) {
+        error_reporting(-1);
+        $id = $request->getParameter('id');
+        $cantidadTotal = $request->getParameter('cantidad' . $id);
+        $Linea1 = $request->getParameter('linea1_' . $id);
+        $Linea2 = $cantidadTotal - $Linea1;
+        $Detalle = OrdenCotizacionDetalleQuery::create()->findOneById($id);
+        $valorUnitario = $Detalle->getValorUnitario();
+        /// ACTUALIZANDO VALOR 1
+        $Detalle->setCantidad($Linea1);
+        $Detalle->setValorTotal(round($Linea1 * $valorUnitario, 2));
+        $Detalle->save();
+        if ($Linea2 > 0) {
+            $productoQ = $Detalle->getProducto();
+            $nueva = new OrdenCotizacionDetalle();
+            $nueva->setOrdenCotizacionId($Detalle->getOrdenCotizacionId());
+            $nueva->setProductoId($productoQ->getId());
+            $nueva->setDetalle($productoQ->getDescripcion());
+            $nueva->setCodigo($productoQ->getCodigoSku());
+            $nueva->setValorUnitario($valorUnitario);
+            $nueva->setCantidad($Linea2);
+            $nueva->setValorTotal(round($Linea2 * $valorUnitario, 2));
+            $nueva->save();
+        }
+        $this->getUser()->setFlash('exito', 'Linea modificada con exito  ');
+        $this->redirect('verifica_bodega/index');
     }
 
     public function executeIndex(sfWebRequest $request) {
         error_reporting(-1);
+          $id = $request->getParameter('id');
         date_default_timezone_set("America/Guatemala");
         if ($request->getParameter('em')) {
             sfContext::getInstance()->getUser()->setAttribute('em', $request->getParameter('em'), 'seguridad');
         }
-
-        $PREfijo = substr($request->getParameter('em'), 0, 2);
         $this->em = sfContext::getInstance()->getUser()->getAttribute('em', null, 'seguridad');
         $this->token = '';
-
         $this->tipo = 1;
-
-        $this->detalles = OperacionDetalleQuery::create()
+        $this->detalles = OrdenCotizacionDetalleQuery::create()
                 ->filterByProductoId(null, Criteria::NOT_EQUAL)
-                ->useOperacionQuery()
+                ->useOrdenCotizacionQuery()
                 ->filterById($this->em)
-                ->filterByEstatus('Procesada')
+                ->filterByEstatus('Confirmada')
                 ->filterByEmpacado(false)
-
-                //  ->filterBySolicitarBodega(true)
                 ->endUse()
                 ->find();
 
-        //*** OPCION PEDIDDO VENDEROD
-
         $this->muestraBoton = 1;
         $this->codigo = '';
-        $ordenq = OperacionQuery::create()->findOneById($this->em);
+        $ordenq = OrdenCotizacionQuery::create()->findOneById($this->em);
         if ($ordenq) {
             $this->token = $ordenq->getToken();
             $this->codigo = $ordenq->getCodigo();
@@ -165,25 +155,43 @@ class verifica_bodegaActions extends sfActions {
         if (count($this->detalles) == 0) {
             sfContext::getInstance()->getUser()->setAttribute('em', null, 'seguridad');
             $this->em = '';
-            $this->detalles = OperacionDetalleQuery::create()
+            $this->detalles = OrdenCotizacionDetalleQuery::create()
                     ->filterByProductoId(null, Criteria::NOT_EQUAL)
-                    ->useOperacionQuery()
+                    ->useOrdenCotizacionQuery()
                     ->filterByEmpacado(false)
-                    ->filterByEstatus('Procesada')
+                    ->filterByEstatus('Confirmada')
                     ->endUse()
                     ->find();
-
             $this->muestraBoton = 0;
         }
 
-        $this->cotizacio = OperacionDetalleQuery::create()
+        $this->cotizacio = OrdenCotizacionDetalleQuery::create()
                 ->filterByProductoId(null, Criteria::NOT_EQUAL)
-                ->groupByOperacionId()
-                ->useOperacionQuery()
+                ->groupByOrdenCotizacionId()
+                ->useOrdenCotizacionQuery()
                 ->filterByEmpacado(false)
-                ->filterByEstatus('Procesada')
+                ->filterByEstatus('Confirmada')
                 ->endUse()
                 ->find();
+        $bultocreados = OrdenCotizacionDetalleQuery::create()
+                ->filterByBultoSuperior(null)
+                ->filterByOrdenCotizacionId($this->em)
+                ->filterByCantidadCaja(0, Criteria::GREATER_EQUAL)
+                ->find();
+        $listaCr = null;
+        foreach ($bultocreados as $reg) {
+            if ($reg->getBultoInicio() >0) {
+            $detalle = "Bulto " . $reg->getBultoInicio();
+            if ($reg->getCantidadCaja() > 1) {
+                $detalle .= " A Bulto " . $reg->getBultoFin();
+            }
+             $listaCr[$reg->getId()] = $detalle;
+            }
+           
+        }
+
+        $this->bultosCreado = $listaCr;
+        $this->operacion= OrdenCotizacionQuery::create()->findOneById($id);
     }
 
 }

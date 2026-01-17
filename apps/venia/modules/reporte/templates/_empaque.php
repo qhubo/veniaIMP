@@ -63,7 +63,7 @@
                 <strong><?php echo $operacion->getEmpresa()->getNombre(); ?></strong><br>
                 <strong>FECHA:</strong> <?php echo $operacion->getFecha('d/m/Y'); ?><br>
                 <strong>NOMBRE:</strong> <?php echo $operacion->getNombre(); ?><br>
-                <strong>OBSERVACIONES:</strong> <?php echo $operacion->getObservaciones(); ?>
+                <strong>OBSERVACIONES:</strong> <?php echo $operacion->getComentario(); ?>
             </div>
         </td>
         <td  style="width:50%">  

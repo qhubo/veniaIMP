@@ -12,45 +12,23 @@
                 <small>&nbsp;&nbsp;&nbsp; &nbsp;</small>
             </h3>
         </div>
-        <div class="kt-portlet__head-toolbar">
-        </div>
+        <div class="kt-portlet__head-toolbar"> </div>
     </div>
     <div class="kt-portlet__body">
-
         <form action="<?php echo url_for($modulo . '/index?id=0') ?>" method="get">
             <div class="row" style="padding-top:2px;padding-bottom:5px;">
                 <div class="col-lg-1"></div>
                 <div class="col-lg-2">Seleccione pedido </div>
-                <div class="col-lg-4">
+                <div class="col-lg-7">
                     <select  onchange="this.form.submit()" class="form-control mi-selector" name="em" id="em">
                         <option  selected="selected"  value="99" >Todos los pedidos</option>
-                        <?php foreach ($pedidos as $reg) { ?>
-                            <option value="PE<?php echo $reg->getId(); ?>"  <?php if ($em == 'PE' . $reg->getId()) { ?> selected="selected" <?php } ?> >  
-                                <?php echo "PEDIDO" . $reg->getId(); ?>
-                            </option>
-                        <?php } ?>
                         <?php foreach ($cotizacio as $reg) { ?>
-                            <option value="<?php echo $reg->getOperacionId(); ?>"  <?php if ($em == $reg->getOperacionId()) { ?> selected="selected" <?php } ?> >  
-                                <?php echo $reg->getOperacion()->getCodigo(); ?>      <?php echo $reg->getOperacion()->getNombre(); ?>
+                            <option value="<?php echo $reg->getOrdenCotizacionId(); ?>"  <?php if ($em == $reg->getOrdenCotizacionId()) { ?> selected="selected" <?php } ?> >  
+                                <?php echo $reg->getOrdenCotizacion()->getCodigo(); ?>      <?php echo $reg->getOrdenCotizacion()->getNombre(); ?>
                             </option>
                         <?php } ?>
                     </select>
                 </div>
-                <?php if ($muestraBoton) { ?>  
-                    <div class="col-lg-2">
-                    </div>
-                    <div class="col-lg-2">
-                        <?php if ($tipo == 1) { ?>
-                          <?php } ?>
-                        <?php if ($tipo == 2) { ?>
-
-                            <a target="_blank" href="<?php echo url_for('producto_vendedor/reporte?id=' . $em) ?>" class="btn btn-sm btn-warning"  target = "_blank">
-                                <i class="flaticon2-print"></i>   Pedido     
-                            </a>
-                        <?php } ?>
-
-                    </div>
-                <?php } ?>
             </div>     
         </form>
         <?php $ruta = 'ConfirmaPedi'; ?>
@@ -63,7 +41,6 @@
                         <th>#</th>
                     <?php } else { ?>
                         <th>Orden</th>
-
                     <?php } ?>
                     <th>Codigo Producto</th>
                     <th>Producto </th>
@@ -71,24 +48,24 @@
                     <th>Unidad</th>
                     <?php if ($muestraBoton) { ?>
                         <th>Cant.<br>Bultos</th>
-                           <th>No.<br>Bultos</th>
+                        <th>No.<br>Bultos</th>
                         <th>Peso</th>
                         <th>Total<br>Peso</th>
                         <th>CBM</th>
                         <th>Total<br>CBM</th>
-                     
+
                     <?php } ?>
                 </tr>
                 <?php $totalPeso = 0; ?>
                 <?php $no = 0; ?>
-                <?php $pendiente=false; ?>
+                <?php $pendiente = false; ?>
                 <?php foreach ($detalles as $reg) { ?>
                     <?php $no++; ?>
                     <?php $totalPeso = $totalPeso + ( $reg->getProducto()->getPeso() * $reg->getCantidad()) ?>
                     <?php $pesoLin = round($reg->getProducto()->getPeso() * $reg->getCantidad(), 2); ?>
                     <tr>
                         <?php if (!$muestraBoton) { ?>
-                            <td><?php echo $reg->getOperacion()->getCodigo(); ?></td>
+                            <td><?php echo $reg->getOrdenCotizacion()->getCodigo(); ?></td>
                         <?php } else { ?>
                             <td style="text-align:right;"><?php echo $no; ?>&nbsp;&nbsp;</td>
                         <?php } ?>
@@ -96,32 +73,27 @@
                         <td><?php echo $reg->getProducto()->getNombre(); ?></td>
                         <td><?php echo $reg->getProducto()->getMarcaProducto(); ?></td>
                         <td style="background-color:white !important; font-weight: bold; text-align: right; font-size:16px;">
-                            <?php echo $reg->getCantidad(); ?>
+                            <a class="btn btn-sm btn-block" href="#" data-toggle="modal" data-target="#ajaxmodalCan<?php echo $reg->getId() ?>">       
+                                <?php echo $reg->getCantidad(); ?>
+                            </a>
                         </td>                   
                         <?php if ($muestraBoton) { ?>
                             <td  style="text-align:right"><?php echo $reg->getCantidadCaja(); ?></td>
                             <td>
-                                <?php if ($reg->getCantidadCaja() >0) { ?>
-                                <?php echo "&nbsp;&nbsp;&nbsp;Bulto ".$reg->getBultoInicio(); ?>
-                                <?php if ($reg->getCantidadCaja() >1) { ?>
-                                         <?php echo "<br>&nbsp;&nbsp;&nbsp;A Bulto ".$reg->getBultoFin(); ?>
-                                   <?php  }  ?>
-                              <?php  }  else { ?>
-                              <?php $pendiente=true; ?>
-                                                                        
-
-                              <?php } ?>
+                                <?php if ($reg->getCantidadCaja() > 0 or $reg->getBultoSuperior() > 0) { ?>
+                                    <?php echo "&nbsp;&nbsp;&nbsp;Bulto " . $reg->getBultoInicio(); ?>
+                                    <?php if ($reg->getBultoInicio() < $reg->getBultoFin()) { ?>
+                                        <?php echo "<br>&nbsp;&nbsp;&nbsp;A Bulto " . $reg->getBultoFin(); ?>
+                                    <?php } ?>
+                                <?php } else { ?>
+                                    <?php $pendiente = true; ?>
+                                <?php } ?>
                             </td>
                             <td style="text-align:right"><?php echo $reg->getProducto()->getPeso(); ?></td>
                             <td style="text-align:right"><?php echo $reg->getProducto()->getPeso() * $reg->getCantidad(); ?></td>
                             <td style="text-align:right"><?php echo $reg->getProducto()->getCMB(); ?></td>
                             <td style="text-align:right"><?php echo $reg->getProducto()->getCMB() * $reg->getCantidad(); ?></td>
-                            <td>
-                                      <a class="btn btn-sm  btn-block btn-success  "   href="#"  data-toggle="modal" data-target="#ajaxmodalCE<?php echo $reg->getId() ?>">
-                                ..    </a>                         
-
-                            </td>
-                              
+                            <td><a class="btn btn-sm btn-success" href="#" data-toggle="modal" data-target="#ajaxmodalCE<?php echo $reg->getId() ?>">..</a>  </td>
                         <?php } ?>
                     </tr>
                 <?php } ?>
@@ -130,23 +102,17 @@
             <?php if ($muestraBoton) { ?>  
                 <div class="row" style="padding-top:2px;padding-bottom:5px;">
                     <div class="col-lg-6" ></div>
-                    <div class="col-lg-2" style="font-weight:bold;">
-
-                    </div>
-      
-                 
+                    <div class="col-lg-2" style="font-weight:bold;">  </div>
                     <div class="col-lg-2" style="padding-top:10px;">
-                       <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $idp) ?>" class="btn btn-sm btn-warning" > <i class="flaticon2-print"></i> Reporte </a>
+                        <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $idp) ?>" class="btn btn-sm btn-warning" > <i class="flaticon2-print"></i> Reporte </a>
                     </div>
-                  
                     <div class="col-lg-2" style="padding-top:10px;">
-                          <?php if (!$pendiente) { ?>
-                        <button class="btn btn-block  btn-xs btn-dark dark"  type="submit">
-                            <i class="flaticon2-check-mark"></i>CONFIRMAR EMPAQUE
-                        </button> 
-                           <?php } ?>
+                        <?php if (!$pendiente) { ?>
+                            <button class="btn btn-block  btn-xs btn-dark dark"  type="submit">
+                                <i class="flaticon2-check-mark"></i>CONFIRMAR EMPAQUE
+                            </button> 
+                        <?php } ?>
                     </div> 
-                 
                 </div>
             </form>
         <?php } ?>
@@ -180,87 +146,208 @@
 
 <?php foreach ($detalles as $lista) { ?>
 
-   <script type="text/javascript">
+    <script type="text/javascript">
         $(document).ready(function () {
-            $("#cantidad<?php echo $lista->getId(); ?>").on('change', function () {
-              var id = <?php echo $lista->getId(); ?>;
-              var cantidad = parseInt($("#cantidad" + <?php echo $lista->getId(); ?>).val(), 10);
-              var inicio = parseInt($("#inicio" + <?php echo $lista->getId(); ?>).val(), 10);
-              // Contemplar null, vacío o NaN
-              cantidad = isNaN(cantidad) ? 0 : cantidad;
-              inicio = isNaN(inicio) ? 0 : inicio;
-              var fin = inicio + cantidad-1;
-              if (fin >0) {
-                $('#fin' + <?php echo $lista->getId(); ?>).val(fin);
-               }
+
+            var id = <?php echo $lista->getId(); ?>;
+
+            var $select = $("#seleccion_" + id);
+            var $datos = $("#datos_" + id);
+
+            function toggleDatos() {
+                if ($select.val() == "0") {
+                    $datos.show();
+                } else {
+                    $datos.hide();
+                }
+            }
+
+            // Ejecutar al cargar
+            toggleDatos();
+
+            // Ejecutar al cambiar el select
+            $select.on("change", function () {
+                toggleDatos();
             });
-        });
-    </script>
-    
-       <script type="text/javascript">
-        $(document).ready(function () {
-            $("#inicio<?php echo $lista->getId(); ?>").on('change', function () {
-                   var id = <?php echo $lista->getId(); ?>;
-              var cantidad = parseInt($("#cantidad" + <?php echo $lista->getId(); ?>).val(), 10);
-              var inicio = parseInt($("#inicio" + <?php echo $lista->getId(); ?>).val(), 10);
-              // Contemplar null, vacío o NaN
-              cantidad = isNaN(cantidad) ? 0 : cantidad;
-              inicio = isNaN(inicio) ? 0 : inicio;
-              var fin = inicio + cantidad-1;
-             if (fin >0) {
-                $('#fin' + <?php echo $lista->getId(); ?>).val(fin);
-               }
-            });
+
         });
     </script>
 
 
-  <form action="<?php echo url_for($modulo . '/grabaEmpaque?id='.$lista->getId()) ?>" method="get">
-    <div class="modal fade" id="ajaxmodalCE<?php echo $lista->getId() ?>" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
-         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog" style="width: 550px">
-            <div class="modal-content" style=" width: 550px">
-                <div class="modal-header">
-                 
-                    <h4 class="modal-title" id="myModalLabel6">Detallar Bultos  <?php echo $lista->getProducto()->getCodigoSku(); ?> </h4>
-                     <?php echo $lista->getProducto()->getNombre(); ?>
-                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-lg-12 ">  
-                            <table class="table table-bordered">
-                                <tr>
-                                    <th>Cantidad Bultos</th>
-                                    <td>
-                                    <input min="1" type="number" " class="form-control" value="<?php echo $lista->getCantidadCaja() ?>"   name="cantidad<?php echo $lista->getId(); ?>" id="cantidad<?php echo $lista->getId(); ?>">
-                                    </td>
-                                </tr>
-                                  <tr>
-                                    <th>Bulto Inicial</th>
-                                    <td>
-                                      <input min="1" type="number" " class="form-control" value="<?php echo $lista->getBultoInicio() ?>"   name="inicio<?php echo $lista->getId(); ?>" id="inicio<?php echo $lista->getId(); ?>">
-                                    </td>
-                                </tr>
-                                   <tr>
-                                    <th>Bulto Final</th>
-                                    <td>
-                                        <input  disabled="" min="1" type="number" " class="form-control" value="<?php echo $lista->getBultoFin() ?>"   name="fin<?php echo $lista->getId(); ?>" id="fin<?php echo $lista->getId(); ?>">                                        
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var id = <?php echo $lista->getId(); ?>;
+
+            var $cantidad = $("#cantidadV" + id);
+            var $linea1 = $("#linea1_" + id);
+            var $linea2 = $("#linea2_" + id);
+
+            // Cuando cambia la cantidad total
+            $cantidad.on("input", function () {
+                var cantidad = parseInt($(this).val()) || 0;
+
+                $linea1.val(cantidad);
+                $linea2.val(0);
+            });
+
+            // Cuando cambia la línea 1
+            $linea1.on("input", function () {
+                var cantidad = parseInt($cantidad.val()) || 0;
+                var linea1 = parseInt($(this).val()) || 0;
+
+                // No permitir mayor que cantidad
+                if (linea1 > cantidad) {
+                    linea1 = cantidad;
+                    $(this).val(cantidad);
+                }
+
+                var linea2 = cantidad - linea1;
+                $linea2.val(linea2);
+            });
+
+        });
+    </script>
+
+    <form action="<?php echo url_for($modulo . '/dividir?id=' . $lista->getId()) ?>" method="get">
+        <div class="modal fade" id="ajaxmodalCan<?php echo $lista->getId() ?>" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
+             role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 550px">
+                <div class="modal-content" style=" width: 550px">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel6"><span style="background-color: #DCEEF2; padding-top:3px; padding-bottom: 3px;"> Distribuir Item </span>  <?php echo $lista->getProducto()->getCodigoSku(); ?> </h4>
+                        <?php echo $lista->getProducto()->getNombre(); ?>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
                     </div>
-                </div> 
-                <div class="modal-footer">
+                    <div class="modal-body">
+                        <table class="table ">
+                            <tr>
+                                <th style="width:200px;">Cantidad</th>
+                                <td>
+                                    <span style="display:block;  font-size: 10px;">Solicitada</span>
+                                    <input min="0" type="number" " class="form-control" value="<?php echo $lista->getCantidad() ?>"  disabled="" >
+                                </td>
+                                <td>
+                                    <span style="display:block;  font-size: 10px;">Nueva Cantidad</span>
+                                    <input min="0" type="number" " class="form-control" value="<?php echo $lista->getCantidad() ?>"   name="cantidadV<?php echo $lista->getId(); ?>" id="cantidadV<?php echo $lista->getId(); ?>">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="width:200px;">Dividir  </th>
+                                <th>Linea 1  </th>
+                                <th>Linea 2  </th>
+                            </tr>
+                            <tr>
+
+                                <td style="width:200px;"></td>
+                                <td><input min="1" type="number" " class="form-control" value="<?php echo $lista->getCantidad() ?>"   name="linea1_<?php echo $lista->getId(); ?>" id="linea1_<?php echo $lista->getId(); ?>"></td>
+                                <td><input min="1" type="number" " class="form-control" placeholder="0"   name="linea2_<?php echo $lista->getId(); ?>" id="linea2_<?php echo $lista->getId(); ?>" disabled=""></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
                         <button class="btn btn-primary btn-sm " type="submit"> <i class="fa fa-save "></i>Actualizar        </button>
-                    <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancelar</button>
+                        <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancelar</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-  </form>
+    </form>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#cantidad<?php echo $lista->getId(); ?>").on('change', function () {
+                var id = <?php echo $lista->getId(); ?>;
+                var cantidad = parseInt($("#cantidad" + <?php echo $lista->getId(); ?>).val(), 10);
+                var inicio = parseInt($("#inicio" + <?php echo $lista->getId(); ?>).val(), 10);
+                // Contemplar null, vacío o NaN
+                cantidad = isNaN(cantidad) ? 0 : cantidad;
+                inicio = isNaN(inicio) ? 0 : inicio;
+                var fin = inicio + cantidad - 1;
+                if (fin > 0) {
+                    $('#fin' + <?php echo $lista->getId(); ?>).val(fin);
+                }
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#inicio<?php echo $lista->getId(); ?>").on('change', function () {
+                var id = <?php echo $lista->getId(); ?>;
+                var cantidad = parseInt($("#cantidad" + <?php echo $lista->getId(); ?>).val(), 10);
+                var inicio = parseInt($("#inicio" + <?php echo $lista->getId(); ?>).val(), 10);
+                // Contemplar null, vacío o NaN
+                cantidad = isNaN(cantidad) ? 0 : cantidad;
+                inicio = isNaN(inicio) ? 0 : inicio;
+                var fin = inicio + cantidad - 1;
+                if (fin > 0) {
+                    $('#fin' + <?php echo $lista->getId(); ?>).val(fin);
+                }
+            });
+        });
+    </script>
+    <form action="<?php echo url_for($modulo . '/grabaEmpaque?id=' . $lista->getId()) ?>" method="get">
+        <div class="modal fade" id="ajaxmodalCE<?php echo $lista->getId() ?>" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
+             role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 550px">
+                <div class="modal-content" style=" width: 550px">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel6">
+                            <span style="background-color: #DCEEF2; padding-top:3px; padding-bottom: 3px;">
+                                Detallar Bultos </span> <?php echo $lista->getProducto()->getCodigoSku(); ?> </h4>
+                        <?php echo $lista->getProducto()->getNombre(); ?>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row" style="padding-bottom:3px;">
+                            <div class="col-lg-2 " style="font-weight:bold;"> Selección   </div>
+                            <div class="col-lg-10 ">
+                                <select   class="form-control" name="seleccion_<?php echo $lista->getId() ?>" id="seleccion_<?php echo $lista->getId() ?>">
+                                    <option  selected="selected"  value='0' >Nuevo Bulto</option>
+                                    <?php foreach ($bultosCreado as $key => $value) { ?>
+                                        <option value="<?php echo $key; ?>" >  
+                                            <?php echo $value; ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 ">  
+                                <div id='datos_<?php echo $lista->getId(); ?>' >
+                                    <table class="table">
+                                        <tr>
+                                            <td>
+                                                <span style="display: block; font-weight:bold; font-size: 13px;">Unidades</span>
+                                                <input  class="form-control" value="<?php echo $lista->getCantidad() ?>" disabled="" ></td>
+                                            <td>
+                                                <span style="display: block; font-weight:bold; font-size: 13px;">Cantidad Bultos</span>
+                                                <input min="0" type="number" " class="form-control" value="<?php echo $lista->getCantidadCaja() ?>"   name="cantidad<?php echo $lista->getId(); ?>" id="cantidad<?php echo $lista->getId(); ?>"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span style="display: block; font-weight:bold; font-size: 13px;">Bulto Inicial</span>
+                                                <input min="0" type="number" " class="form-control" value="<?php echo $lista->getBultoInicio() ?>"   name="inicio<?php echo $lista->getId(); ?>" id="inicio<?php echo $lista->getId(); ?>">
+                                            </td>
+                                            <td>
+                                                <span style="display: block; font-weight:bold; font-size: 13px;">Bulto Final</span>
+                                                <input  disabled="" min="0" type="number" " class="form-control" value="<?php echo $lista->getBultoFin() ?>"   name="fin<?php echo $lista->getId(); ?>" id="fin<?php echo $lista->getId(); ?>"></td>
+
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="modal-footer">
+                        <button class="btn btn-primary btn-sm " type="submit"> <i class="fa fa-save "></i>Actualizar        </button>
+                        <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -315,3 +402,38 @@
         });
     });
 </script>
+
+<?php if ($operacion) { ?>
+    <div id="ajaxmodalFactura" class="modal " tabindex="-1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-lg"  role="document">
+            <div class="modal-content">
+                <?php include_partial('soporte/avisos') ?>
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel6">Pedido Empaque <?php echo $operacion->getCodigo(); ?>   </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+
+                        <div class="col-lg-6" style="text-align:right; font-weight: bold;">
+                            Empaque
+                        </div>
+                        <div class="col-lg-2">
+                                   <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $operacion->getId()) ?>" class="btn btn-sm btn-warning" > <i class="flaticon2-print"></i> Reporte </a>
+                    </div>
+                    </div>
+
+
+               
+                </div>
+            </div>
+        </div>
+    </div>
+<?php } ?>
+
+<script>
+    $(document).ready(function () {
+        $("#ajaxmodalFactura").modal();
+    });
+</script>
+

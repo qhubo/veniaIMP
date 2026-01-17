@@ -1426,6 +1426,7 @@ propel:
      vendedor_id:                      ~ 
      pais_id:                          ~
      transporte:                       { type: varchar(200) }
+     empacado:                         { type: boolean, default: false }
      
          
   orden_cotizacion_detalle:
@@ -1446,6 +1447,9 @@ propel:
       cantidad_caja:                    { type: double }
       peso:                             { type: varchar(150) }
       existencia_actual:                { type: integer }
+      bulto_inicio:                     { type: varchar(10) }
+      bulto_fin:                        { type: varchar(10) }
+      bulto_superior:                   { type: integer }
     
     
   moneda:
