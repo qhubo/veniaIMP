@@ -167,6 +167,15 @@ class verifica_bodegaActions extends sfActions {
     }
 
     public function executeIndex(sfWebRequest $request) {
+        $odenC = OrdenCotizacionQuery::create()
+                       ->filterByEstatus('Confirmada')
+                ->filterByEmpacado(null)
+                ->find();
+        foreach ($odenC as $reg) {
+            $reg->setEmpacado(false);
+            $reg->save();
+        }
+        
         error_reporting(-1);
         $id = $request->getParameter('id');
         date_default_timezone_set("America/Guatemala");
