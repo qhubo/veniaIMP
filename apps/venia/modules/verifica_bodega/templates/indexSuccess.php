@@ -75,9 +75,14 @@
                         <td><?php echo $reg->getProducto()->getNombre(); ?></td>
                         <td><?php echo $reg->getProducto()->getMarcaProducto(); ?></td>
                         <td style="background-color:white !important; font-weight: bold; text-align: right; font-size:16px;">
+                        <?php if ($muestraBoton) { ?>
                             <a class="btn btn-sm btn-block" href="#" data-toggle="modal" data-target="#ajaxmodalCan<?php echo $reg->getId() ?>">       
                                 <?php echo $reg->getCantidad(); ?>
                             </a>
+                        <?php }  else { ?>
+                                <?php echo $reg->getCantidad(); ?>
+                            
+                        <?php } ?>
                         </td>                   
                         <?php if ($muestraBoton) { ?>
                             <td  style="text-align:right"><?php echo $reg->getCantidadCaja(); ?></td>
@@ -259,7 +264,7 @@
                                 </td>
                                 <td>
                                     <span style="display:block;  font-size: 10px;">Nueva Cantidad</span>
-                                    <input min="0" type="number" " class="form-control" value="<?php echo $lista->getCantidad() ?>"   name="cantidadV<?php echo $lista->getId(); ?>" id="cantidadV<?php echo $lista->getId(); ?>">
+                                    <input min="0" type="number" max="<?php echo  $lista->getProducto()->getExistencia(); ?>" class="form-control" value="<?php echo $lista->getCantidad() ?>"   name="cantidadV<?php echo $lista->getId(); ?>" id="cantidadV<?php echo $lista->getId(); ?>">
                                 </td>
                             </tr>
                             <tr>
