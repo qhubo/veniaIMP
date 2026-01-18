@@ -20,7 +20,7 @@
 
     <div class="kt-portlet__body">
 
-        <?php include_partial($modulo . '/cabecera', array('operacion' => $operacion, 'modulo' => $modulo)) ?>
+        <?php include_partial($modulo . '/cabecera', array('transportes'=>$transportes, 'operacion' => $operacion, 'modulo' => $modulo)) ?>
         <div class="row" style="padding-top:10px;">
             <div class="col-lg-2">
                 <a class="btn btn-sm btn-warning btn-block" data-toggle="modal" href="#staticB"> <li class="fa fa-plus"></li>  Servicios</a>

@@ -62,14 +62,24 @@
 <div class="row"  style="background-color:#F9FBFE; padding-top:5px;  "  >
     <div class="col-lg-1" >  <div style="text-align:right"> Observaciones</div> </div>
     <div class="col-lg-11 ">
-           <input class="form-control"  style="background-color:#F0F8FA"  readonly="1"  type="text"  value="<?php echo $operacion->getObservaciones(); ?>" >         
+           <input class="form-control"  style="background-color:#F0F8FA"  readonly="1"  type="text"  value="<?php echo $operacion->getComentario(); ?>" >         
     </div>
 </div>
 
 <div class="row"  style="background-color:#F9FBFE; padding-top:5px;  "  >
     <div class="col-lg-1" >  <div style="text-align:right"> Transporte</div> </div>
     <div class="col-lg-5 ">
-           <input class="form-control"   name="transporte" id="transporte" type="text"  value="<?php echo $operacion->getTransporte(); ?>" >         
+        
+              <select  class="form-control mi-selector" name="transporte" id="transporte">
+                        <option>Seleccione</option>
+                        <?php foreach ($transportes as $reg) { ?>
+                            <option value="<?php echo $reg->getId(); ?>"  <?php if ($reg->getId() == $operacion->getTransporte()) { ?> selected="selected" <?php } ?> >  
+                                     <?php echo $reg->getNombre(); ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+        
+        
     </div>
 </div>
 

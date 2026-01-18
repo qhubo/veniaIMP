@@ -33,22 +33,25 @@
                 <?php foreach ($registros as $dete) { ?>
                 <tr>
                     <td>
-                           <a target="_blank" href="<?php echo url_for('reporte/ordenCotizacion?token='.$dete->getToken()) ?>" class="btn btn-sm btn-warning" > 
-      <i class="flaticon2-printer"></i><?php echo $dete->getCodigo(); ?>
+ 
+<?php echo $dete->getCodigo(); ?>
                                </a>
                         
                     </td>
                     <td><?php echo $dete->getUsuario(); ?></td>
                     <td><?php echo $dete->getNit(); ?></td>
                     <td><?php echo $dete->getCliente()->getCodigo(); ?> <?php echo $dete->getCliente()->getNombre();  ?> </td>
-                    <td><?php echo $dete->getObservaciones(); ?></td>
+                    <td><?php echo $dete->getComentario(); ?></td>
                     <td>
-                          <a class="btn btn-block  btn-sm " data-toggle="modal" href="#staticPP<?php echo $dete->getId() ?>">
+                   <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $dete->getId()) ?>" class="btn btn-block btn-sm btn-warning" > 
                             <?php echo $dete->getTotalProductos(); ?>
-             </a>
-                    
-                    </td>
-                    <td style="text-align: right;"><?php echo Parametro::formato($dete->getValorTotal()); ?></td>
+                      </a>
+                  </td>
+                    <td style="text-align: right;">
+                      <a class="btn btn-block  btn-sm " data-toggle="modal" href="#staticPP<?php echo $dete->getId() ?>">
+                        <?php echo Parametro::formato($dete->getValorTotal()); ?>
+                      </a>
+                      </td>
                     <td> <a href="<?php echo url_for('pedido_factura/nueva?codigo=' . $dete->getCodigo()) ?>" class="btn btn-sm btn-dark btn-secondary" > Facturar  >> </a></td>
    
                     
@@ -102,3 +105,50 @@
         </div>
     </div> 
 <?php } ?>
+<script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+
+<?php if ($operacion) { ?>
+    <div id="ajaxmodalFactura" class="modal " tabindex="-1" data-backdrop="static" data-keyboard="false">
+        <div class="modal-lg"  role="document">
+            <div class="modal-content">
+                 <?php include_partial('soporte/avisos') ?>
+                  <?php $val = explode('-', $operacion->getFaceFirma()) ?>
+                                <?php $numero ="FACTIRA"; // $val[0]; ?>
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel6">Factura <?php echo $operacion->getCodigo(); ?>   </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        
+                        <div class="col-lg-6" style="text-align:right; font-weight: bold;">
+                            Factura
+                        </div>
+                        <div class="col-lg-2">
+                              <a target="_blank" href="<?php echo url_for('pdf/factura?tok=' . $operacion->getCodigo()) ?>" class="btn btn-block btn-xs btn-info " target = "_blank">
+  <?php echo $numero; ?>
+             </a>
+                        </div>
+                    </div>
+                    
+           
+                         <?php if ($operacion->getFaceError() <> "") { ?>
+                                                        <?php echo $operacion->getFaceError(); ?>
+                                    <a href="<?php echo url_for('reporte_venta/reenviar?id=' . $operacion->getId()) ?>" class="btn btn-secondary btn-dark btn-sm" > <i class="flaticon-refresh"></i>Reenviar</a>
+               
+                         <?php  } ?>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php } ?>
+
+
+
+<script>
+        $(document).ready(function () {
+            $("#ajaxmodalFactura").modal();
+       
+        });
+    </script>
+

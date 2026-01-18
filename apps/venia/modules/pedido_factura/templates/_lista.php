@@ -17,12 +17,15 @@
 
     
     <tbody>
+        <?php $can=0; ?>
         <?php foreach ($detalle as $registro) { ?>
-            <tr>
+
+        <tr>
                 <td><?php echo $registro->getCodigo(); ?></td>
                 <td><?php echo $registro->getDetalle(); ?></td>
                 <td style="text-align: right">
                      <?php if ($registro->getProductoId()) { ?>
+                            <?php $can=$can+$registro->getCantidad(); ?>
                     <?php echo Parametro::formato($registro->getValorUnitario(),false); ?>
                      <?php } else { ?>
              <input class="form-control"   name="valor<?php echo $registro->getId(); ?>" id="valor<?php echo $registro->getId(); ?>" type="text"  value="<?php echo $registro->getValorUnitario(); ?>" >         
@@ -44,7 +47,8 @@
     </tbody>
     <tfoot>
         <tr>
-            <td colspan="4"> TOTALES</td>
+            <td colspan="3"> TOTALES</td>
+            <th style="text-align: right;"><?php echo $can;  ?></th>
             <th style="text-align: right;"> 
                 <div name="total" id="total">
                <?php echo Parametro::formato($operacion->getValorTotal()); ?> 

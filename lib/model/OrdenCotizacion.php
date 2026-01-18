@@ -31,6 +31,18 @@ class OrdenCotizacion extends BaseOrdenCotizacion {
           }
           
 
+          
+               public function getTotalProductos() {
+         $LISTA = OrdenCotizacionDetalleQuery::create()
+             ->filterByOrdenCotizacionId($this->getId())
+             ->filterByProductoId(null, Criteria::NOT_EQUAL)
+             ->withColumn('sum(OrdenCotizacionDetalle.Cantidad)', 'CantidadTotal')
+             ->findOne();
+         if ($LISTA) {
+             $retorna = $LISTA->getCantidadTotal();
+         }
+         return $retorna;
+          }
     public function getUUID() {
         $return = '';
         $opera = OperacionQuery::create()->findOneByCodigo($this->getCodigo());

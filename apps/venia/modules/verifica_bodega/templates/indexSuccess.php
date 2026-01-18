@@ -55,6 +55,8 @@
                         <th>Total<br>CBM</th>
 
                     <?php } ?>
+                        <td></td>
+                                                <td></td>
                 </tr>
                 <?php $totalPeso = 0; ?>
                 <?php $no = 0; ?>
@@ -94,7 +96,8 @@
                             <td style="text-align:right"><?php echo $reg->getProducto()->getCMB(); ?></td>
                             <td style="text-align:right"><?php echo $reg->getProducto()->getCMB() * $reg->getCantidad(); ?></td>
                             <td><a class="btn btn-sm btn-success" href="#" data-toggle="modal" data-target="#ajaxmodalCE<?php echo $reg->getId() ?>">..</a>  </td>
-                        <?php } ?>
+                            <td><a class="btn btn-sm btn-danger" style="width:10px !important;" data-toggle="modal" href="#static<?php echo $reg->getId() ?>"></a> </td>                     
+  <?php } ?>
                     </tr>
                 <?php } ?>
             </table>
@@ -145,6 +148,33 @@
 </script>
 
 <?php foreach ($detalles as $lista) { ?>
+
+     <div id="static<?php echo $lista->getId() ?>" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Confirmación de Proceso</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p> Confirma Eliminar 
+                                    <span class="caption-subject font-green bold uppercase"> 
+                                        <?php echo $lista->getCodigo() ?>
+                                    </span> ?
+                                </p>
+                            </div>
+                            <?php $token = md5($lista->getId()); ?>
+                            <div class="modal-footer">
+                                <a class="btn  btn-danger " href="<?php echo url_for($modulo . '/elimina?token=' . $token . '&id=' . $lista->getId()) ?>" >
+                                    <i class="fa fa-trash-o "></i> Confirmar </a> 
+                                <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancelar </button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div> 
 
     <script type="text/javascript">
         $(document).ready(function () {

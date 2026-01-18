@@ -184,8 +184,8 @@ propel:
     pais_id:                           ~
     empacado:                         { type: boolean, default: false }
     transporte:                       { type: varchar(350) }
+    direccion:                        {  type: varchar(350) }
  
-
   operacion_detalle:
     _attributes: { phpName: OperacionDetalle, idMethod: native }
     id:                               ~

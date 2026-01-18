@@ -2,10 +2,34 @@
 
 class verifica_bodegaActions extends sfActions {
 
-     public function executeConfirmaPedi(sfWebRequest $request) {
-     error_reporting(-1);
-         $id = $request->getParameter('id');
-       $opreacion = OrdenCotizacionQuery::create()->findOneById($id);
+    public function executeElimina(sfWebRequest $request) {
+        error_reporting(-1);
+        $id = $request->getParameter('id');
+        $operacion = OrdenCotizacionDetalleQuery::create()->findOneById($id);
+        $OrdenID = $operacion->getOrdenCotizacionId();
+        $operacion->delete();
+        $ordenQ = OrdenCotizacionQuery::create()->findOneById($OrdenID);
+        $lista = OrdenCotizacionDetalleQuery::create()
+                ->withColumn('sum(OrdenCotizacionDetalle.ValorTotal)', 'TotalGeneral')
+                ->filterByOrdenCotizacionId($OrdenID)
+                ->findOne();
+        $suma = $lista->getTotalGeneral();
+        $valores = ParametroQuery::ObtenerIva($suma, false);
+        $iva = $valores['IVA'];
+        $valorSInIVa = $valores['VALOR_SIN_IVA'];
+        $ordenQ->setSubTotal($valorSInIVa);
+        $ordenQ->setValorTotal($suma);
+        $ordenQ->setIva($iva);
+        $ordenQ->save();
+        
+        $this->getUser()->setFlash('error', 'Linea eliminada con exito');
+        $this->redirect('verifica_bodega/index');
+    }
+
+    public function executeConfirmaPedi(sfWebRequest $request) {
+        error_reporting(-1);
+        $id = $request->getParameter('id');
+        $opreacion = OrdenCotizacionQuery::create()->findOneById($id);
         $opreacionDetalle = OrdenCotizacionDetalleQuery::create()
                 ->filterByProductoId(null, Criteria::NOT_EQUAL)
 //                ->filterByCantidadCaja()
@@ -20,9 +44,9 @@ class verifica_bodegaActions extends sfActions {
         $opreacion->setEmpacado(true);
         $opreacion->save();
         $this->getUser()->setFlash('exito', 'Pedido empacado ' . $opreacion->getCodigo());
-        $this->redirect('verifica_bodega/index?id='.$opreacion->getId());
+        $this->redirect('verifica_bodega/index?id=' . $opreacion->getId());
     }
-    
+
     public function executeGrabaEmpaque(sfWebRequest $request) {
         error_reporting(-1);
         $id = $request->getParameter('id');
@@ -98,15 +122,20 @@ class verifica_bodegaActions extends sfActions {
     public function executeDividir(sfWebRequest $request) {
         error_reporting(-1);
         $id = $request->getParameter('id');
-        $cantidadTotal = $request->getParameter('cantidad' . $id);
+        $cantidadTotal = $request->getParameter('cantidadV' . $id);
         $Linea1 = $request->getParameter('linea1_' . $id);
         $Linea2 = $cantidadTotal - $Linea1;
+//        echo " LINEA 1 ".$Linea1;
+//        echo "<br>";
+//        echo " LINEA 2 ".$Linea2;
+//        die();
         $Detalle = OrdenCotizacionDetalleQuery::create()->findOneById($id);
         $valorUnitario = $Detalle->getValorUnitario();
         /// ACTUALIZANDO VALOR 1
         $Detalle->setCantidad($Linea1);
         $Detalle->setValorTotal(round($Linea1 * $valorUnitario, 2));
         $Detalle->save();
+        
         if ($Linea2 > 0) {
             $productoQ = $Detalle->getProducto();
             $nueva = new OrdenCotizacionDetalle();
@@ -119,13 +148,27 @@ class verifica_bodegaActions extends sfActions {
             $nueva->setValorTotal(round($Linea2 * $valorUnitario, 2));
             $nueva->save();
         }
+        $OrdenID=$Detalle->getOrdenCotizacionId();
+        $ordenQ = OrdenCotizacionQuery::create()->findOneById($OrdenID);
+        $lista = OrdenCotizacionDetalleQuery::create()
+                ->withColumn('sum(OrdenCotizacionDetalle.ValorTotal)', 'TotalGeneral')
+                ->filterByOrdenCotizacionId($OrdenID)
+                ->findOne();
+        $suma = $lista->getTotalGeneral();
+        $valores = ParametroQuery::ObtenerIva($suma, false);
+        $iva = $valores['IVA'];
+        $valorSInIVa = $valores['VALOR_SIN_IVA'];
+        $ordenQ->setSubTotal($valorSInIVa);
+        $ordenQ->setValorTotal($suma);
+        $ordenQ->setIva($iva);
+        $ordenQ->save();
         $this->getUser()->setFlash('exito', 'Linea modificada con exito  ');
         $this->redirect('verifica_bodega/index');
     }
 
     public function executeIndex(sfWebRequest $request) {
         error_reporting(-1);
-          $id = $request->getParameter('id');
+        $id = $request->getParameter('id');
         date_default_timezone_set("America/Guatemala");
         if ($request->getParameter('em')) {
             sfContext::getInstance()->getUser()->setAttribute('em', $request->getParameter('em'), 'seguridad');
@@ -180,18 +223,17 @@ class verifica_bodegaActions extends sfActions {
                 ->find();
         $listaCr = null;
         foreach ($bultocreados as $reg) {
-            if ($reg->getBultoInicio() >0) {
-            $detalle = "Bulto " . $reg->getBultoInicio();
-            if ($reg->getCantidadCaja() > 1) {
-                $detalle .= " A Bulto " . $reg->getBultoFin();
+            if ($reg->getBultoInicio() > 0) {
+                $detalle = "Bulto " . $reg->getBultoInicio();
+                if ($reg->getCantidadCaja() > 1) {
+                    $detalle .= " A Bulto " . $reg->getBultoFin();
+                }
+                $listaCr[$reg->getId()] = $detalle;
             }
-             $listaCr[$reg->getId()] = $detalle;
-            }
-           
         }
 
         $this->bultosCreado = $listaCr;
-        $this->operacion= OrdenCotizacionQuery::create()->findOneById($id);
+        $this->operacion = OrdenCotizacionQuery::create()->findOneById($id);
     }
 
 }

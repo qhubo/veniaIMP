@@ -34,9 +34,10 @@ class OrdenCotizacionPeer extends BaseOrdenCotizacionPeer {
         $operacion->setCodigoEstablecimiento($tiendaQ->getCodigoEstablecimiento());
         $operacion->setFecha($cotizacion->getFecha('Y-m-d'));
         $operacion->setTipo("Cotizacion");
-        $operacion->setEstatus('Procesada');
+        $operacion->setEstatus('Facturado');
         $operacion->setTransporte($cotizacion->getTransporte());
         $operacion->setObservaciones($cotizacion->getComentario());
+        $operacion->setDireccion($cotizacion->getDireccion());
         $operacion->setNombre($cotizacion->getNombre());
         $operacion->setUsuario(sfContext::getInstance()->getUser()->getAttribute('usuarioNombre', null, 'seguridad'));
         $operacion->setNit($cotizacion->getNit());
@@ -69,7 +70,6 @@ class OrdenCotizacionPeer extends BaseOrdenCotizacionPeer {
             $valorlineaTOTAL = $regi->getValorUnitario() * $regi->getCantidad();
             $valorlineaTOTAL = round($valorlineaTOTAL, 2);
             $IVA = round($valorlineaTOTAL - ($valorlineaTOTAL / 1.12), 2);
-
             $detalle = new OperacionDetalle();
             $detalle->setServicioId($regi->getServicioId());
             $detalle->setCodigo($regi->getCodigo());
@@ -130,7 +130,7 @@ class OrdenCotizacionPeer extends BaseOrdenCotizacionPeer {
         $operacion->setSubTotal($totalVal - $totalIva);
         $operacion->save();
 
-        BitacoraDocumento::grabacion('Cotizacion', $cotizacion->getCodigo(), 'Finalizacion', "Cotizacion Finalizada");
+   //     BitacoraDocumento::grabacion('Cotizacion', $cotizacion->getCodigo(), 'Finalizacion', "Cotizacion Finalizada");
 
         $PROCESADO = false;
         $ubicacionesPro = OrdenUbicacionQuery::create()
