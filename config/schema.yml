@@ -2185,3 +2185,9 @@ propel:
     codigo:	                       { type: varchar(32) }
     nombre:                            { type: varchar(260), required: true, primaryString: true, default: ''  } 
     activo:                            { type: boolean, default: true }   
+    descripcion:                       { type: varchar(260) }
+    telefono:                          { type: varchar(50) } 
+    clave:                             { type: varchar(150) } 
+    clave_2:                           { type: varchar(150) } 
+    direccion:                         { type: varchar(450) } 
+    correo:                            { type: varchar(150) } 

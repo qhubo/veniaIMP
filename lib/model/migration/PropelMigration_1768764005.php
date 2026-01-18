@@ -2,10 +2,10 @@
 
 /**
  * Data object containing the SQL and PHP code to migrate the database
- * up to version 1768533466.
- * Generated on 2026-01-16 04:17:46 
+ * up to version 1768764005.
+ * Generated on 2026-01-18 20:20:05 
  */
-class PropelMigration_1768533466
+class PropelMigration_1768764005
 {
 
     public function preUp($manager)
@@ -42,15 +42,13 @@ class PropelMigration_1768533466
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `cliente` CHANGE `tipo_cliente` `tipo_cliente` VARCHAR(120);
-
-ALTER TABLE `partida` CHANGE `ano` `ano` INTEGER DEFAULT false;
-
-ALTER TABLE `partida` CHANGE `mes` `mes` INTEGER DEFAULT false;
-
-ALTER TABLE `partida_agrupa` CHANGE `ano` `ano` INTEGER DEFAULT false;
-
-ALTER TABLE `partida_agrupa` CHANGE `mes` `mes` INTEGER DEFAULT false;
+ALTER TABLE `tipo_transporte`
+    ADD `descripcion` VARCHAR(260) AFTER `activo`,
+    ADD `telefono` VARCHAR(50) AFTER `descripcion`,
+    ADD `clave` VARCHAR(150) AFTER `telefono`,
+    ADD `clave_2` VARCHAR(150) AFTER `clave`,
+    ADD `direccion` VARCHAR(450) AFTER `clave_2`,
+    ADD `correo` VARCHAR(150) AFTER `direccion`;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
@@ -72,15 +70,17 @@ SET FOREIGN_KEY_CHECKS = 1;
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `cliente` CHANGE `tipo_cliente` `tipo_cliente` VARCHAR(200);
+ALTER TABLE `tipo_transporte` DROP `descripcion`;
 
-ALTER TABLE `partida` CHANGE `ano` `ano` INTEGER DEFAULT 0;
+ALTER TABLE `tipo_transporte` DROP `telefono`;
 
-ALTER TABLE `partida` CHANGE `mes` `mes` INTEGER DEFAULT 0;
+ALTER TABLE `tipo_transporte` DROP `clave`;
 
-ALTER TABLE `partida_agrupa` CHANGE `ano` `ano` INTEGER DEFAULT 0;
+ALTER TABLE `tipo_transporte` DROP `clave_2`;
 
-ALTER TABLE `partida_agrupa` CHANGE `mes` `mes` INTEGER DEFAULT 0;
+ALTER TABLE `tipo_transporte` DROP `direccion`;
+
+ALTER TABLE `tipo_transporte` DROP `correo`;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

@@ -25,6 +25,12 @@
             <font size="-2">* Se crea automático </font>
         </div>
     <?php } ?>
+        <?php if ($proveedor) { ?>
+    
+          <div  class="col-lg-2">
+              Fecha Creación  <strong> <?php echo $proveedor->getFecha('d/m/Y'); ?> </strong>   
+        </div>
+        <?php } ?>
 
 
 

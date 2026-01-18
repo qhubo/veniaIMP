@@ -39,10 +39,8 @@
                     <?php echo $form['codigo']->renderError() ?>  
                 </span>
             </div>
-        </div>
-        
- 
-        <div class="row" style="padding-bottom:8px;">
+        </div>       
+        <div class="row" style="padding-bottom:3px;">
             <div class="col-lg-1"> </div>
             <div class="col-lg-2">Nombre </div>
          <div class="col-lg-4 <?php if ($form['nombre']->hasError()) echo "has-error" ?>">
@@ -52,11 +50,70 @@
                 </span>
             </div>
         </div>
-        
-            
+                <div class="row" style="padding-bottom:3px;">
+            <div class="col-lg-1"> </div>
+            <div class="col-lg-2">Descripción </div>
+         <div class="col-lg-4 <?php if ($form['descripcion']->hasError()) echo "has-error" ?>">
+                <?php echo $form['descripcion'] ?>           
+                <span class="help-block form-error"> 
+                    <?php echo $form['descripcion']->renderError() ?>  
+                </span>
+            </div>
+        </div>            
 
+              <div class="row" style="padding-bottom:3px;">
+            <div class="col-lg-1"> </div>
+            <div class="col-lg-2">Telefono </div>
+         <div class="col-lg-4 <?php if ($form['telefono']->hasError()) echo "has-error" ?>">
+                <?php echo $form['telefono'] ?>           
+                <span class="help-block form-error"> 
+                    <?php echo $form['telefono']->renderError() ?>  
+                </span>
+            </div>
+        </div>
+                     <div class="row" style="padding-bottom:3px;">
+            <div class="col-lg-1"> </div>
+            <div class="col-lg-2">Clave </div>
+         <div class="col-lg-4 <?php if ($form['clave']->hasError()) echo "has-error" ?>">
+                <?php echo $form['clave'] ?>           
+                <span class="help-block form-error"> 
+                    <?php echo $form['clave']->renderError() ?>  
+                </span>
+            </div>
+        </div>
         
-
+                          <div class="row" style="padding-bottom:3px;">
+            <div class="col-lg-1"> </div>
+            <div class="col-lg-2">Clave 2</div>
+         <div class="col-lg-4 <?php if ($form['clave_2']->hasError()) echo "has-error" ?>">
+                <?php echo $form['clave_2'] ?>           
+                <span class="help-block form-error"> 
+                    <?php echo $form['clave_2']->renderError() ?>  
+                </span>
+            </div>
+        </div>
+        
+                           <div class="row" style="padding-bottom:3px;">
+            <div class="col-lg-1"> </div>
+            <div class="col-lg-2">Dirección</div>
+         <div class="col-lg-8 <?php if ($form['direccion']->hasError()) echo "has-error" ?>">
+                <?php echo $form['direccion'] ?>           
+                <span class="help-block form-error"> 
+                    <?php echo $form['direccion']->renderError() ?>  
+                </span>
+            </div>
+        </div>
+                  <div class="row" style="padding-bottom:3px;">
+            <div class="col-lg-1"> </div>
+            <div class="col-lg-2">Correo</div>
+         <div class="col-lg-4 <?php if ($form['correo']->hasError()) echo "has-error" ?>">
+                <?php echo $form['correo'] ?>           
+                <span class="help-block form-error"> 
+                    <?php echo $form['correo']->renderError() ?>  
+                </span>
+            </div>
+        </div>
+        
             <div class="row"  style="padding-bottom:8px;">
                  <div class="col-lg-1"> </div>
             <label class="col-lg-1 control-label font-blue-steel right ">Activo</label>

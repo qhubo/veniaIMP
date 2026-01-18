@@ -33,7 +33,8 @@
                 <tr class="active">
                     <th  align="center"><span class="kt-font-success">Código </span></th>
                     <th  align="center"><span class="kt-font-success">  Nombre</span></th>
-
+ <th  align="center"><span class="kt-font-success">  Descripcion</span></th>
+                     <th  align="center"><span class="kt-font-success">  Correo</span></th>
                      <th  align="center"><span class="kt-font-success"> Activo </span></th>
                     <th  align="center"><span class="kt-font-success"> Editar </span></th>
                     <th  align="center"><span class="kt-font-success"> Eliminar </span></th>
@@ -45,6 +46,8 @@
                     <tr>
                         <td><?php echo $data->getCodigo(); ?></td>
                         <td><?php echo $data->getNombre() ?> </td>
+                        <td><?php echo $data->getDescripcion() ?> </td>
+                        <td><?php echo $data->getCorreo() ?> </td>
 
                         <td> <?php if ($data->getActivo()) { ?><li class="fa fa-check"></li> <?php } ?> </td>
                 <td>    
