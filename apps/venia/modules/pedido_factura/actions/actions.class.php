@@ -13,8 +13,10 @@ class pedido_facturaActions extends sfActions {
     public function executeConfirmar(sfWebRequest $request) {
         $id = $request->getParameter('id');
         $ordenQ= OrdenCotizacionQuery::create()->findOneById($id);
-        OrdenCotizacionPeer::ProcesaAutoUbicacion($ordenQ);
         
+        OrdenCotizacionPeer::ProcesaAutoUbicacion($ordenQ);
+        $ordenQ->setEstatus('Facturada');
+        $ordenQ->save();
 //        $operaicon = OperacionQuery::create()->findOneById($id);
 //        $operaicon->setEstatus('Facturado');
 //        $operaicon->save();
