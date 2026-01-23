@@ -16,7 +16,16 @@
  * @package    propel.generator.lib.model
  */
 class Operacion extends BaseOperacion {
-        public function getNombreTransporte() {
+   public function getOrdenCotizacionId() {
+       $ordenCotizacion = OrdenCotizacionQuery::create()->findOneByCodigo($this->getCodigo());
+       $retorna=0;
+       if ($ordenCotizacion) {
+           $retorna = $ordenCotizacion->getId();
+       }
+       return $retorna;
+   }
+    
+    public function getNombreTransporte() {
         $retorna = $this->getTransporte();
         $queryTi = TipoTransporteQuery::create()->findOneById($this->getTransporte());
         if ($queryTi) {

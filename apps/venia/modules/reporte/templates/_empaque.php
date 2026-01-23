@@ -122,12 +122,14 @@
                 <td style="width:60px;  font-size:26px;" class="center"><?php echo $detra->getProducto()->getMarcaProducto(); ?></td>
                 <td style="width:50px; font-size:26px;" class="center"><?php echo $detra->getCantidad(); ?></td>
                 <td style="width:50px; font-size:26px;" class="center"><?php echo $detra->getCantidadCaja(); ?></td>
-                <td style="width:80px; font-size:26px;" class="center">   <?php if ($detra->getCantidadCaja() > 0) { ?>
-                        <?php echo "&nbsp;&nbsp;&nbsp;Bulto " . $detra->getBultoInicio(); ?>
-                        <?php if ($detra->getCantidadCaja() > 1) { ?>
-                            <?php echo "<br>&nbsp;&nbsp;&nbsp;A Bulto " . $detra->getBultoFin(); ?>
-                        <?php } ?>
-                    <?php } ?>
+                <td style="width:80px; font-size:26px;" class="center">  
+ <?php if ($detra->getCantidadCaja() > 0 or $detra->getBultoSuperior() > 0) { ?>
+                                    <?php echo "&nbsp;&nbsp;&nbsp;Bulto " . $detra->getBultoInicio(); ?>
+                                    <?php if ($detra->getBultoInicio() < $detra->getBultoFin()) { ?>
+                                        <?php echo "<br>&nbsp;&nbsp;&nbsp;A Bulto " . $detra->getBultoFin(); ?>
+                                    <?php } ?>
+                           
+                                <?php } ?>                   
                 </td>
                 <td style="width:50px; font-size:26px;" class="right"><?php echo $detra->getProducto()->getPeso(); ?></td>
                 <td style="width:50px; font-size:26px;" class="right"><?php echo $detra->getProducto()->getPeso() * $detra->getCantidad(); ?></td>

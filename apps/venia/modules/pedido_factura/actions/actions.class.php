@@ -32,6 +32,7 @@ class pedido_facturaActions extends sfActions {
         $codigo = $operacionDetalle->getOrdenCotizacion()->getCodigo();
         $operacionDetalle->delete();
         $LISTA = OrdenCotizacionDetalleQuery::create()
+                      ->filterByConfirmado(true)
                 ->filterByOrdenCotizacionId($operacion->getId())
                 ->withColumn('sum(OrdenCotizacionDetalle.ValorTotal)', 'TotalValorTotal')
                 ->findOne();
@@ -53,6 +54,7 @@ class pedido_facturaActions extends sfActions {
         $codigo = $operacionDetalle->getOrdenCotizacion()->getCodigo();
 
         $LISTA = OrdenCotizacionDetalleQuery::create()
+                      ->filterByConfirmado(true)
                 ->filterByOrdenCotizacionId($operacion->getId())
                 ->withColumn('sum(OrdenCotizacionDetalle.ValorTotal)', 'TotalValorTotal')
                 ->findOne();
@@ -90,6 +92,7 @@ class pedido_facturaActions extends sfActions {
         $detalle->save();
 
         $LISTA = OrdenCotizacionDetalleQuery::create()
+                      ->filterByConfirmado(true)
                 ->filterByOrdenCotizacionId($id)
                 ->withColumn('sum(OrdenCotizacionDetalle.ValorTotal)', 'TotalValorTotal')
                 ->findOne();
@@ -104,6 +107,7 @@ class pedido_facturaActions extends sfActions {
         $codigo = $request->getParameter('codigo');
         $this->operacion = OrdenCotizacionQuery::create()->findOneByCodigo($codigo);
         $this->detalle = OrdenCotizacionDetalleQuery::create()
+                      ->filterByConfirmado(true)
                 ->filterByOrdenCotizacionId($this->operacion->getId())
                 ->find();
         $this->servicios = ServicioQuery::create()

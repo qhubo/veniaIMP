@@ -2,7 +2,7 @@
 <table class="table table-bordered  xdataTable table-condensed flip-content" >
     <thead class="flip-content">
         <tr class="active">
-<!--            <th  align="center"><span class="kt-font-success"># </span></th>-->
+            <th  align="center"><span class="kt-font-success"># </span></th>
             <th  align="center"><span class="kt-font-success">Codigo  </span></th><!--            
             <th  align="center"><span class="kt-font-success">Servicio </span></th>-->
             <th  align="center"><span class="kt-font-success">Descripción </span></th>
@@ -18,9 +18,12 @@
     
     <tbody>
         <?php $can=0; ?>
+         <?php $pos=0; ?>
         <?php foreach ($detalle as $registro) { ?>
-
+     <?php $pos++; ?>
+    
         <tr>
+            <td><?php echo $pos; ?></td>
                 <td><?php echo $registro->getCodigo(); ?></td>
                 <td><?php echo $registro->getDetalle(); ?></td>
                 <td style="text-align: right">

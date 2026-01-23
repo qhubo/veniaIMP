@@ -16,7 +16,7 @@
     </div>
     <div class="kt-portlet__body">
         <form action="<?php echo url_for($modulo . '/index?id=0') ?>" method="get">
-            <div class="row" style="padding-top:2px;padding-bottom:5px;">
+            <div class="row" style="padding-top:2px;padding-bottom:1px;">
                 <div class="col-lg-1"></div>
                 <div class="col-lg-2">Seleccione pedido </div>
                 <div class="col-lg-7">
@@ -30,6 +30,22 @@
                     </select>
                 </div>
             </div>     
+             <?php if ($muestraBoton) { ?>  
+                <div class="row" style="padding-top:2px;padding-bottom:5px;">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2">Seleccione producto </div>
+                <div class="col-lg-7">
+                    <select  onchange="this.form.submit()" class="form-control mi-selector" name="pr" id="pr">
+                        <option  selected="selected"  value="" >Todos los Productos</option>
+                        <?php foreach ($productos as $reg) { ?>
+                            <option value="<?php echo $reg->getProductoId(); ?>"  <?php if ($pr == $reg->getProductoId()) { ?> selected="selected" <?php } ?> >  
+                                <?php echo $reg->getProducto()->getCodigoSku(); ?>      <?php echo $reg->getProducto()->getNombre(); ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+            </div>  
+             <?php } ?>
         </form>
         <?php $ruta = 'ConfirmaPedi'; ?>
         <?php if ($muestraBoton) { ?>  
@@ -62,10 +78,24 @@
                 <?php $no = 0; ?>
                 <?php $pendiente = false; ?>
                 <?php foreach ($detalles as $reg) { ?>
+                <?php $ver=true; ?>
+                <?php if ($pr) { ?>
+                <?php $ver=false; ?>
+               <?php if ($pr) { ?>
+                <?php if ($pr==$reg->getProductoId()) { ?>
+                <?php $ver=true; ?>
+
+                <?php } ?>
+ 
+                
+                <?php } ?>
+ 
+                <?php } ?>
                     <?php $no++; ?>
                     <?php $totalPeso = $totalPeso + ( $reg->getProducto()->getPeso() * $reg->getCantidad()) ?>
                     <?php $pesoLin = round($reg->getProducto()->getPeso() * $reg->getCantidad(), 2); ?>
-                    <tr>
+                <?php if ($ver) { ?>  
+                <tr>
                         <?php if (!$muestraBoton) { ?>
                             <td><?php echo $reg->getOrdenCotizacion()->getCodigo(); ?></td>
                         <?php } else { ?>
@@ -105,6 +135,7 @@
   <?php } ?>
                     </tr>
                 <?php } ?>
+                      <?php } ?>
             </table>
 
             <?php if ($muestraBoton) { ?>  

@@ -51,6 +51,7 @@ class OrdenCotizacionPeer extends BaseOrdenCotizacionPeer {
         $operacion->setRecetarioId($cotizacion->getRecetarioId());
         $operacion->setPesoTotal($cotizacion->getPesoTotal());
         $operacion->setPaisId($cotizacion->getPaisId());
+        $operacion->setAcuerdoPago($cotizacion->getAcuerdoPago());
         $operacion->setCantidadTotalCaja($cotizacion->getCantidadTotalCaja());
         if ($cotizacion->getClienteId()) {
             $operacion->setClienteId($cotizacion->getClienteId());
@@ -58,6 +59,8 @@ class OrdenCotizacionPeer extends BaseOrdenCotizacionPeer {
         $operacion->save();
         /// ** FIN CREACION
         $ordenDetalle = OrdenCotizacionDetalleQuery::create()
+                ->orderByBultoInicio('Asc')
+                 ->filterByConfirmado(true)
                 ->filterByCantidad(0, Criteria::GREATER_THAN)
                 ->filterByOrdenCotizacionId($cotizacion->getId())
                 ->find();

@@ -86,6 +86,7 @@
 <!--                                <th width="50px" >Ticket</th>-->
                     <th width="25px">Fel</th>
                     <th  align="center"> Observaciones</th>   
+                    <th>Pedido</th>
                     <th  align="center"> Recibo</th>   
                 </tr>
             </thead>
@@ -117,7 +118,7 @@
 
                     <tr>     
                         <td>
-                            <a class="btn  btn-small btn-block "   href="<?php echo url_for('reporte_venta/muestra?id=' . $lista->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $lista->getId() ?>">
+                            <a class="btn  btn-sm btn-block "   href="<?php echo url_for('reporte_venta/muestra?id=' . $lista->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $lista->getId() ?>">
                                 <?php echo $lista->getCodigo() ?>  
                             </a>
                             <?php echo substr($lista->getTienda(), 0, 5) ?>  
@@ -166,9 +167,7 @@
                             <a target="_blank" href="<?php echo url_for('pdf/factura?tok=' . $lista->getCodigo()) ?>" class="btn btn-block btn-sm btn-info " target = "_blank">
                                 <?php if ($lista->getFaceEstado() == "FIRMADONOTA") { ?> <?php echo "NOTA "; ?> <?php } ?>   <?php echo $numero; ?>
                             </a>  
-                            <?php if ($reenviar) { ?>
-                                <a href="<?php echo url_for('reporte_venta/reenviar?id=' . $lista->getId()) ?>" class="btn btn-secondary btn-block  btn-dark btn-sm" > <i class="flaticon-refresh"></i>Reenviar</a>
-                            <?php } ?>
+                     
 
                             <?php echo $lista->getFaceError(); ?>
                             <?php if ($lista->getFaceEstado() == "") { ?>
@@ -178,7 +177,7 @@
                             <?php } ?>
 
 
-                                    <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $lista->getId()) ?>" class="btn btn-sm btn-warning btn-block" > <i class="flaticon2-print"></i> Empaque </a>
+                                    <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $lista->getOrdenCotizacionId()) ?>" class="btn btn-sm btn-warning btn-block" > <i class="flaticon2-print"></i> Empaque </a>
                                     
                  
 
@@ -192,6 +191,11 @@
                                 ..    </a>                         
 
 
+                        </td>
+                        <td>                       <a target="_blank" href="<?php echo url_for('reporte/ordenCotizacion?token='.$lista->getToken()) ?>" class="btn btn-sm btn-block btn-warning" > 
+      <i class="flaticon2-printer"></i>
+                                        </a>
+                            
                         </td>
                         <td>  <?php if ($lista->getRecibo()) { ?> 
                                 <a target="_blank" href="<?php echo url_for('lista_cobro/reporte?id=' . $lista->getRecibo()) ?>" class="btn btn-block btn-xs  " target = "_blank">
