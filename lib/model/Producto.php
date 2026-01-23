@@ -18,6 +18,7 @@
 class Producto extends BaseProducto {
 
     
+    
       public function getPrecioLista($PrecioId) {
         $valor = 0;
         $query="select  valor from producto_precio where producto_id=".$this->getId()." and lista_precio_id=".$PrecioId;

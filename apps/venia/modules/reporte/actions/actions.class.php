@@ -244,6 +244,7 @@ class reporteActions extends sfActions {
         $token = $request->getParameter('token');
         $ordenCompra = OrdenCotizacionQuery::create()->findOneByToken($token);
         $lista = OrdenCotizacionDetalleQuery::create()
+                ->filterByConfirmado(true, Criteria::NOT_EQUAL)
                 ->filterByProductoId(null, Criteria::NOT_EQUAL)
                 ->filterByCantidad(0, Criteria::GREATER_THAN)
                 ->filterByOrdenCotizacionId($ordenCompra->getId())

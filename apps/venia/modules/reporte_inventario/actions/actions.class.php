@@ -11,6 +11,7 @@
 class reporte_inventarioActions extends sfActions {
 
     public function executeReporteUbicacion(sfWebRequest $request) {
+        $tipoPrecios = ListaPrecioQuery::create()->orderByNombre()->filterByActivo(true)->find();
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
         error_reporting(-1);
 //        $bodegas = TiendaQuery::create()->orderByNombre()->find();
@@ -40,31 +41,45 @@ class reporte_inventarioActions extends sfActions {
         $Datos .= "\r\n";
 //        echo $Datos;
 //        die();
-
+        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaInventa'));
+        $filtro = false;
+        if ($valores['tipo_filtro']) {
+            $filtro = true;
+        }
+        $bodegaId = $valores['bodega'];
 
         $datosR = $this->datos();
         foreach ($datosR as $lista) {
+            $pinta = true;
+            if ($filtro) {
+                $existencia = $lista->getExistenciaTotal($bodegaId);
+                $pinta = false;
+                if ($existencia > 0) {
+                    $pinta = true;
+                }
+            }
+            if ($pinta) {
+                $bodegas = ProductoExistenciaQuery::create()->filterByProductoId($lista->getId())->filterByCantidad(0, criteria::GREATER_THAN)->find();
+                foreach ($bodegas as $bode) {
+                    $ubicaciones = ProductoUbicacionQuery::create()->filterByTiendaId($bode->getTiendaId())->filterByCantidad(0, criteria::GREATER_THAN)->filterByProductoId($lista->getId())->find();
+                    foreach ($ubicaciones as $registr) {
 
-            $bodegas = ProductoExistenciaQuery::create()->filterByProductoId($lista->getId())->filterByCantidad(0, criteria::GREATER_THAN)->find();
-            foreach ($bodegas as $bode) {
-                $ubicaciones = ProductoUbicacionQuery::create()->filterByTiendaId($bode->getTiendaId())->filterByCantidad(0, criteria::GREATER_THAN)->filterByProductoId($lista->getId())->find();
-                foreach ($ubicaciones as $registr) {
-
-                    $datos = null;
-                    $datos[] = "'" . str_replace(",", "", $lista->getCodigoSku());  // ENTERO
-                    $datos[] = str_replace(",", "", $lista->getNombre());  // ENTERO
-                    $apar = TipoAparatoQuery::create()->findOneById($lista->getTipoAparatoId());
-                    if ($apar) {
-                        $datos[] = str_replace(",", "", $apar->getDescripcion()); //->getDescripcion();  // ENTERO    
-                    } else {
-                        $datos[] = $lista->getTipoAparatoId(); //->getDescripcion();  // ENTERO
+                        $datos = null;
+                        $datos[] = "'" . str_replace(",", "", $lista->getCodigoSku());  // ENTERO
+                        $datos[] = str_replace(",", "", $lista->getNombre());  // ENTERO
+                        $apar = TipoAparatoQuery::create()->findOneById($lista->getTipoAparatoId());
+                        if ($apar) {
+                            $datos[] = str_replace(",", "", $apar->getDescripcion()); //->getDescripcion();  // ENTERO    
+                        } else {
+                            $datos[] = $lista->getTipoAparatoId(); //->getDescripcion();  // ENTERO
+                        }
+                        $datos[] = $registr->getTienda()->getNombre();
+                        $datos[] = $registr->getUbicacion();
+                        $datos[] = $registr->getCantidad();
+                        $lineas = implode(",", $datos);
+                        $Datos .= $lineas;
+                        $Datos .= "\r\n";
                     }
-                    $datos[] = $registr->getTienda()->getNombre();
-                    $datos[] = $registr->getUbicacion();
-                    $datos[] = $registr->getCantidad();
-                    $lineas = implode(",", $datos);
-                    $Datos .= $lineas;
-                    $Datos .= "\r\n";
                 }
             }
         }
@@ -73,13 +88,15 @@ class reporte_inventarioActions extends sfActions {
     }
 
     public function executeReporte(sfWebRequest $request) {
+              $tipoPrecios = ListaPrecioQuery::create()->orderByNombre()->filterByActivo(true)->find();
+  
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
         error_reporting(-1);
 //        $bodegas = TiendaQuery::create()->orderByNombre()->find();
         $bodegas = ProductoExistenciaQuery::create()->useTiendaQuery()->endUse()->groupByTiendaId()->filterByEmpresaId($empresaId)->filterByCantidad(0, Criteria::GREATER_THAN)->find();
         $text = '';
         $file = fopen("uploads/reporteInventario" . $text . ".csv", "w");
-        $file = "reporteInventario" . $text . ".csv";
+        $file = "uploads/reporteInventario" . $text . ".csv";
         $this->getResponse()->setContentType('charset=utf-8');
         header('Expires: 0');
         header('Cache-control: private');
@@ -89,9 +106,13 @@ class reporte_inventarioActions extends sfActions {
         header('Last-Modified: ' . date('D, d M Y H:i:s'));
         header('Content-Disposition: attachment; filename="' . $file . '"');
         header("Content-Transfer-Encoding: binary");
-        $listaPrecio = ListaPrecioQuery::create()->find();
 
-
+        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaInventa'));
+        $filtro = false;
+        if ($valores['tipo_filtro']) {
+            $filtro = true;
+        }
+        $bodegaId = $valores['bodega'];
         $encabezados = null;
         $encabezados[] = "Codigo Sku";
         $encabezados[] = "Nombre";
@@ -101,42 +122,55 @@ class reporte_inventarioActions extends sfActions {
             $encabezados[] = strtoupper($bode);
         }
         $encabezados[] = strtoupper("Precio");
+         foreach ($tipoPrecios as $datad) { 
+            $encabezados[] =  $datad->getNombre();
+         }
         $encabezados[] = strtoupper("Costo");
-        foreach ($listaPrecio as $dtPrecio) {
-            $encabezados[] = strtoupper($dtPrecio->getNombre());
-        }
-
         $Datos = implode(",", $encabezados);
         $Datos .= "\r\n";
         $datosR = $this->datos();
         foreach ($datosR as $lista) {
-            $datos = null;
-            $datos[] = "'" . str_replace(",", "", $lista->getCodigoSku());  // ENTERO
-            $datos[] = str_replace(",", "", $lista->getNombre());  // ENTERO
-            $apar = TipoAparatoQuery::create()->findOneById($lista->getTipoAparatoId());
-            if ($apar) {
-                $datos[] = str_replace(",", "", $apar->getDescripcion()); //->getDescripcion();  // ENTERO    
-            } else {
-                $datos[] = $lista->getTipoAparatoId(); //->getDescripcion();  // ENTERO
+            $pinta = true;
+            if ($filtro) {
+                $existencia = $lista->getExistenciaTotal($bodegaId);
+                $pinta = false;
+                if ($existencia > 0) {
+                    $pinta = true;
+                }
             }
-            foreach ($bodegas as $data) {
-                $bode = $data->getTienda();
-                $datos[] = $lista->getExistenciaBodega($bode->getId());  // ENTERO
+            if ($pinta) {
+                $datos = null;
+                $datos[] = "'" . str_replace(",", "", $lista->getCodigoSku());  // ENTERO
+                $datos[] = str_replace(",", "", $lista->getNombre());  // ENTERO
+                $apar = TipoAparatoQuery::create()->findOneById($lista->getTipoAparatoId());
+                if ($apar) {
+                    $datos[] = str_replace(",", "", $apar->getDescripcion()); //->getDescripcion();  // ENTERO    
+                } else {
+                    $datos[] = $lista->getTipoAparatoId(); //->getDescripcion();  // ENTERO
+                }
+                foreach ($bodegas as $data) {
+                    $bode = $data->getTienda();
+                    $datos[] = $lista->getExistenciaBodega($bode->getId());  // ENTERO
+                }
+                $datos[] = round($lista->getPrecio(), 2);  // ENTERO
+                
+                                             foreach ($tipoPrecios as $datad) { 
+$datos[] = round($lista->getPrecioLista($datad->getId()), 2);  // ENTERO                          
+      } 
+                
+                $datos[] = round($lista->getCostoProveedor(), 2);  // ENTERO
+                $lineas = implode(",", $datos);
+                $Datos .= $lineas;
+                $Datos .= "\r\n";
             }
-            $datos[] = round($lista->getPrecio(), 2);  // ENTERO
-            $datos[] = round($lista->getCostoProveedor(), 2);  // ENTERO
-             foreach ($listaPrecio as $dtPrecio) {
-                    $datos[] = round($lista->getPrecioLista($dtPrecio->getId()), 2);  // ENTERO 
-             }
-            $lineas = implode(",", $datos);
-            $Datos .= $lineas;
-            $Datos .= "\r\n";
         }
         echo $Datos;
         die();
     }
 
     public function executeReportex(sfWebRequest $request) {
+              $tipoPrecios = ListaPrecioQuery::create()->orderByNombre()->filterByActivo(true)->find();
+  
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
         // $bodegas = TiendaQuery::create()->orderByNombre()->find();
         $bodegas = ProductoExistenciaQuery::create()->useTiendaQuery()->endUse()->groupByTiendaId()->filterByEmpresaId($empresaId)->filterByCantidad(0, Criteria::GREATER_THAN)->find();
@@ -192,25 +226,37 @@ class reporte_inventarioActions extends sfActions {
         $encabezados[] = array("Nombre" => strtoupper("Costo"), "width" => 15, "align" => "right", "format" => "#,##0.00");
         sfContext::getInstance()->getUser()->HojaImprimeEncabezadoHorizontal($encabezados, $columna, $fila, $hoja);
         $datosR = $this->datos();
+        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaInventa'));
+        $filtro = false;
+        if ($valores['tipo_filtro']) {
+            $filtro = true;
+        }
+        $bodegaId = $valores['bodega'];
+
         foreach ($datosR as $lista) {
-            $fila++;
-            $datos = null;
-            $datos[] = array("tipo" => 3, "valor" => "'" . $lista->getCodigoSku());  // ENTERO
-            $datos[] = array("tipo" => 3, "valor" => $lista->getNombre());  // ENTERO
-            $datos[] = array("tipo" => 3, "valor" => $lista->getTipoAparato()->getDescripcion());  // ENTERO
-//           if ($lista->getMarcaId()) {
-//            $datos[] = array("tipo" => 3, "valor" => $lista->getMarca()->getDescripcion());  // ENTERO
-//           } else {
-//                $datos[] = array("tipo" => 3, "valor" => '');
-//           }
-            foreach ($bodegas as $data) {
-                $bode = $data->getTienda();
-                $datos[] = array("tipo" => 2, "valor" => $lista->getExistenciaBodega($bode->getId()));  // ENTERO
-                $canf = $lista->getExistenciaBodega($bode->getId());
+            $pinta = true;
+            if ($filtro) {
+                $existencia = $lista->getExistenciaTotal($bodegaId);
+                $pinta = false;
+                if ($existencia > 0) {
+                    $pinta = true;
+                }
             }
-            $datos[] = array("tipo" => 1, "valor" => round($lista->getPrecio(), 2));  // ENTERO
-            $datos[] = array("tipo" => 1, "valor" => round($lista->getCostoProveedor(), 2));  // ENTERO
-            $columnafinal = sfContext::getInstance()->getUser()->HojaImprimeListaHorizontal($datos, $columna, $fila, $hoja);
+            if ($pinta) {
+                $fila++;
+                $datos = null;
+                $datos[] = array("tipo" => 3, "valor" => "'" . $lista->getCodigoSku());  // ENTERO
+                $datos[] = array("tipo" => 3, "valor" => $lista->getNombre());  // ENTERO
+                $datos[] = array("tipo" => 3, "valor" => $lista->getTipoAparato()->getDescripcion());  // ENTERO
+                foreach ($bodegas as $data) {
+                    $bode = $data->getTienda();
+                    $datos[] = array("tipo" => 2, "valor" => $lista->getExistenciaBodega($bode->getId()));  // ENTERO
+                    $canf = $lista->getExistenciaBodega($bode->getId());
+                }
+                $datos[] = array("tipo" => 1, "valor" => round($lista->getPrecio(), 2));  // ENTERO
+                $datos[] = array("tipo" => 1, "valor" => round($lista->getCostoProveedor(), 2));  // ENTERO
+                $columnafinal = sfContext::getInstance()->getUser()->HojaImprimeListaHorizontal($datos, $columna, $fila, $hoja);
+            }
         }
 
         $LetraFin = UsuarioQuery::numeroletra(6);
@@ -296,6 +342,9 @@ class reporte_inventarioActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
         error_reporting(-1);
+        sfContext::getInstance()->getUser()->setAttribute("filtraExistencia", false, 'empresa');
+
+
         $datos = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaInventa'));
         $default['bodega'] = $bodegaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'bodega');
         $valores = null;
@@ -307,7 +356,9 @@ class reporte_inventarioActions extends sfActions {
 
         //$this->bodegas = TiendaQuery::create()->orderByNombre()->find();
         $this->bodegas = ProductoExistenciaQuery::create()->useTiendaQuery()->endUse()->groupByTiendaId()->filterByEmpresaId($empresaId)->filterByCantidad(0, Criteria::GREATER_THAN)->find();
-
+    
+        
+        $this->bodegaId = null;
         $this->form = new consultaProductoInventarioForm($default);
         // $this->total = ProductoQuery::create()->filterByComboProductoId(null)->count();
         //$this->productos = ProductoQuery::create()->find();
@@ -323,14 +374,19 @@ class reporte_inventarioActions extends sfActions {
             if ($valores['bodega']) {
                 $this->bodegas = ProductoExistenciaQuery::create()->filterByTiendaId($valores['bodega'])->groupByTiendaId()->find(); //TiendaQuery::create()->filterById($valores['bodega'])->find();
             }
+            sfContext::getInstance()->getUser()->setAttribute("filtraExistencia", null, 'empresa');
+            if ($valores['tipo_filtro']) {
+                sfContext::getInstance()->getUser()->setAttribute("filtraExistencia", 1, 'empresa');
+            }
         }
         $this->productos = $this->datos();
         $this->totalB = count($this->productos);
-        //$this->productosVence = $this->datosVENCE();
-
-        $this->listaPrecio = ListaPrecioQuery::create()->find();
-
-
+        $this->productosVence = $this->datosVENCE();
+        $filtro = sfContext::getInstance()->getUser()->getAttribute("filtraExistencia", null, 'empresa');
+        $this->filtro = $filtro;
+        $this->bodegaId = $valores['bodega'];
+//        echo $filtro;
+//        die();
 //    echo "<pre>";
 //    print_r($this->productosVence);
 //    die();
@@ -414,6 +470,11 @@ class reporte_inventarioActions extends sfActions {
         $productos = null;
         $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaInventa'));
         if ($valores) {
+
+            sfContext::getInstance()->getUser()->setAttribute("filtraExistencia", null, 'empresa');
+            if ($valores['tipo_filtro']) {
+                sfContext::getInstance()->getUser()->setAttribute("filtraExistencia", 1, 'empresa');
+            }
             $nombre = $valores['nombrebuscar']; // => 4555
             $tipo = $valores['tipo']; // => 4
             $marca = $valores['marca']; // => 

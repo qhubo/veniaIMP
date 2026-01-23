@@ -185,6 +185,7 @@ propel:
     empacado:                         { type: boolean, default: false }
     transporte:                       { type: varchar(350) }
     direccion:                        {  type: varchar(350) }
+    acuerdo_pago:                      { type: varchar(150) }
  
   operacion_detalle:
     _attributes: { phpName: OperacionDetalle, idMethod: native }
@@ -1427,6 +1428,7 @@ propel:
      pais_id:                          ~
      transporte:                       { type: varchar(200) }
      empacado:                         { type: boolean, default: false }
+     acuerdo_pago:                     { type: varchar(150) }
      
          
   orden_cotizacion_detalle:
@@ -1450,6 +1452,7 @@ propel:
       bulto_inicio:                     { type: varchar(10) }
       bulto_fin:                        { type: varchar(10) }
       bulto_superior:                   { type: integer }
+      confirmado:                       { type: boolean, default: false}
     
     
   moneda:

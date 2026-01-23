@@ -10,6 +10,7 @@ class verifica_bodegaActions extends sfActions {
         $operacion->delete();
         $ordenQ = OrdenCotizacionQuery::create()->findOneById($OrdenID);
         $lista = OrdenCotizacionDetalleQuery::create()
+                ->filterByConfirmado(true)
                 ->withColumn('sum(OrdenCotizacionDetalle.ValorTotal)', 'TotalGeneral')
                 ->filterByOrdenCotizacionId($OrdenID)
                 ->findOne();
@@ -31,6 +32,8 @@ class verifica_bodegaActions extends sfActions {
         $id = $request->getParameter('id');
         $opreacion = OrdenCotizacionQuery::create()->findOneById($id);
         $opreacionDetalle = OrdenCotizacionDetalleQuery::create()
+                ->filterByConfirmado(true)
+
                 ->filterByProductoId(null, Criteria::NOT_EQUAL)
 //                ->filterByCantidadCaja()
                 ->filterByOrdenCotizacionId($id)

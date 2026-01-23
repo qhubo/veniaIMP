@@ -1,4 +1,12 @@
-<?php $tiendas = TiendaQuery::create()->find(); ?>
+<?php $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad'); ?>
+<?php $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId); ?>
+<?php $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario()); ?>
+<?php $tiendas = TiendaQuery::create()->filterByActivo(true)->find(); ?>
+<?php  //if ($TIPO_USUARIO != 'ADMINISTRADOR') {  ?>
+<?php $tiendas = TiendaQuery::create()->filterByActivo(true)->filterByActivaBuscador(true)->find(); ?>
+<?php //} ?>
+
+<?php $tipoPrecios  = ListaPrecioQuery::create()->orderByNombre()->filterByActivo(true)->find(); ?>
 <style>
 .tabla-scroll {
     max-height: 400px;   /* Ajusta la altura */
@@ -21,7 +29,14 @@
             <?php foreach ($tiendas as $data) { ?>
                 <th width="10%"><?php echo $data->getCodigo(); ?></th>
             <?php } ?>
+
             <th width="10%">Precio</th>
+               <?php foreach ($tipoPrecios as $data) { ?>
+                <th width="10%"><?php echo $data->getNombre(); ?></th>
+            <?php } ?>
+            <?php if ($TIPO_USUARIO == 'ADMINISTRADOR') { ?>
+                <th width="10%"></th>
+            <?php } ?>
         </tr>
     </thead>
     <tbody>
@@ -29,15 +44,20 @@
             <td></td>
             <td></td>
             <td></td>
-            <td></td>
+         
+            <td></td>            
+                <?php if ($TIPO_USUARIO == 'ADMINISTRADOR') { ?>
+                <th width="10%"></th>
+            <?php } ?>
+                
 
         </tr>
     </tbody>
     <tfoot>
     </tfoot>
 </table> 
-</div>
 
+</div>
 
 <!-- /.modal-dialog -->
 
@@ -64,23 +84,34 @@
 <?php foreach ($tiendas as $data) { ?>
                 {"bSearchable": true},
 <?php } ?>
-            {"bSearchable": true},
+    <?php foreach ($tipoPrecios as $data) { ?>
+                {"bSearchable": true},
+<?php } ?>
+    
+<?php if ($TIPO_USUARIO == 'ADMINISTRADOR') { ?>
+                {"bSearchable": true}
+                ,
+<?php } ?>
+            {"bSearchable": true}
+            ,
             ],
-            fnDrawCallback: function ()
-            {
-            //  this.parent().applyTemplateSetup();
-            },
-            fnInitComplete: function ()
-            {
-            //this.parent().applyTemplateSetup();
-            var oSettings = this.fnSettings();
-                    for (var i = 0; i < oSettings.aoPreSearchCols.length; i++) {
+
+    fnDrawCallback: function ()
+    {
+        //  this.parent().applyTemplateSetup();
+    }
+    ,
+    fnInitComplete: function ()
+    {
+        //this.parent().applyTemplateSetup();
+        var oSettings = this.fnSettings();
+        for (var i = 0; i < oSettings.aoPreSearchCols.length; i++) {
             if (oSettings.aoPreSearchCols[i].sSearch.length > 0) {
-            $("tfoot input")[i].value = oSettings.aoPreSearchCols[i].sSearch;
-                    $("tfoot input")[i].className = "";
+                $("tfoot input")[i].value = oSettings.aoPreSearchCols[i].sSearch;
+                $("tfoot input")[i].className = "";
             }
-            }
-            }
+        }
+        }
     });
 
 

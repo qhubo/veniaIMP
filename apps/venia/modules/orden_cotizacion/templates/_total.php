@@ -1,6 +1,6 @@
         <div class="row">        
-            <div class="col-lg-4"></div>
-            <div class="col-lg-1">
+            <div class="col-lg-7"></div>
+<!--            <div class="col-lg-1">
                 <span class="kt-font-success"> <h5>SUB TOTAL </h5>  </span>
             </div>
             <div class="col-lg-1">
@@ -8,10 +8,10 @@
             </div>                
             <div class="col-lg-1">
                 <span class="kt-font-success"><h5>IVA  </h5></span>
-            </div>
-            <div class="col-lg-1">
+            </div>-->
+<!--            <div class="col-lg-1">
                 <span class="kt-font-success"><div name="graiva" id ="graiva"><?php if ($orden)  { echo number_format($orden->getIva(),2);   } ?></div>  </span>
-            </div>                
+            </div>                -->
             <div class="col-lg-1">
                 <span class="kt-font-success"><h5>TOTAL </h5> </span>
             </div>

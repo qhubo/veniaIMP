@@ -81,10 +81,11 @@ class bodega_confirmoActions extends sfActions {
         $bodega = $valores['bodega'];
         $usuario = $valores['usuario'];
      
-        $operaciones = OperacionQuery::create();
+        $operaciones = OrdenCotizacionQuery::create();
+        $operaciones->filterByEstatus('Confirmada');
         $listab = TiendaQuery::TiendaActivas(); // ctivas();
-        $operaciones->where("Operacion.Fecha >= '" . $fechaInicio . " 00:00:00" . "'");
-        $operaciones->where("Operacion.Fecha <= '" . $fechaFin . " 23:59:00" . "'");
+        $operaciones->where("OrdenCotizacion.Fecha >= '" . $fechaInicio . " 00:00:00" . "'");
+        $operaciones->where("OrdenCotizacion.Fecha <= '" . $fechaFin . " 23:59:00" . "'");
         if ($usuario) {
             $operaciones->filterByUsuario($usuario);
         }

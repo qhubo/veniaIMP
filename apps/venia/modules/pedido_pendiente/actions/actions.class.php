@@ -8,13 +8,9 @@
  * @author     Via
  * @version    SVN: $Id: actions.class.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
  */
-class pedido_pendienteActions extends sfActions
-{
+class pedido_pendienteActions extends sfActions {
 
-  
     public function executeConfirmar(sfWebRequest $request) {
-        
-
         sfContext::getInstance()->getUser()->setAttribute('CotizacionIPendie', null, 'seguridad');
         date_default_timezone_set("America/Guatemala");
         $id = $request->getParameter('id');
@@ -23,16 +19,16 @@ class pedido_pendienteActions extends sfActions
         $productos = OrdenCotizacionDetalleQuery::create()
                 ->filterByOrdenCotizacionId($id)
                 ->find();
-        $listaPendi=null;
+        $listaPendi = null;
         foreach ($productos as $detalle) {
             if ($detalle->getProductoId()) {
 //                $existencia = $detalle->getProducto()->getExistencia();
-                $existencia= $detalle->getProducto()->getExistenciaBodega($ordenQ->getTiendaId());
+                $existencia = $detalle->getProducto()->getExistenciaBodega($ordenQ->getTiendaId());
                 $cantidaSOlicita = $detalle->getCantidad();
                 if ($cantidaSOlicita > $existencia) {
-                  $listaPendi[]= $detalle->getDetalle();
-                  $detalle->setExistenciaActual($existencia);
-                  $detalle->save();
+                    $listaPendi[] = $detalle->getDetalle();
+                    $detalle->setExistenciaActual($existencia);
+                    $detalle->save();
 //                  $this->getUser()->setFlash('error', 'No hay existencia de ' . $cantidaSOlicita . ' para el producto seleccionado ' . $detalle->getDetalle());
 //                  $this->redirect('pedido_pendiente/index?id=');
                 }
@@ -43,17 +39,45 @@ class pedido_pendienteActions extends sfActions
                 }
             }
         }
-        
+
         if ($listaPendi) {
             $detallePen = implode(",", $listaPendi);
-                    sfContext::getInstance()->getUser()->setAttribute('CotizacionIPendie', $detallePen, 'seguridad');
+            sfContext::getInstance()->getUser()->setAttribute('CotizacionIPendie', $detallePen, 'seguridad');
             $this->getUser()->setFlash('error', 'No hay existencia para los producto(s) ' . $detallePen);
-            $this->redirect('orden_cotizacion/nueva?codigo='.$ordenQ->getCodigo());  
+            $this->redirect('orden_cotizacion/nueva?codigo=' . $ordenQ->getCodigo());
         }
-          
 
-  
         sfContext::getInstance()->getUser()->setAttribute('CotizacionId', null, 'seguridad');
+        //****
+        $ordenDetalle= OrdenCotizacionDetalleQuery::create()
+                ->filterByProductoId(null, Criteria::NOT_EQUAL)
+                ->filterByOrdenCotizacionId($ordenQ->getId())
+                ->find();
+        
+        foreach($ordenDetalle as $detalle) {
+            $new = new OrdenCotizacionDetalle();
+            $new->setOrdenCotizacionId( $detalle->getOrdenCotizacionId());
+            $new->setConfirmado(true);
+            $new->setProductoId( $detalle->getProductoId());
+            $new->setDetalle( $detalle->getDetalle());
+            $new->setCodigo( $detalle->getCodigo());
+            $new->setValorUnitario( $detalle->getValorUnitario());
+            $new->setValorTotal( $detalle->getValorTotal());
+            $new->setCantidad( $detalle->getCantidad());
+            $new->setCostoUnitario( $detalle->getCostoUnitario());
+            $new->save();
+        }
+        
+           $ordenDetalle= OrdenCotizacionDetalleQuery::create()
+                ->filterByServicioId(null, Criteria::NOT_EQUAL)
+                ->filterByOrdenCotizacionId($ordenQ->getId())
+                ->find();
+        foreach($ordenDetalle as $reg) {
+            $reg->setConfirmado(true);
+            $reg->save();
+        }
+           
+        
         if ($ordenQ) {
             $tokenGuardado = sha1($ordenQ->getCodigo());
             if ($token == $tokenGuardado) {
@@ -62,17 +86,15 @@ class pedido_pendienteActions extends sfActions
                 //$ordenQ->setFecha(date('Y-m-d H:i:s'));
                 $ordenQ->setToken(sha1($ordenQ->getCodigo()));
                 $ordenQ->save();
-      
                 $this->getUser()->setFlash('exito', 'Registro actualizado   con exito ');
                 $this->redirect('pedido_pendiente/index?id=' . $idv);
             }
         }
         $this->redirect('pedido_pendiente/index');
     }
-    
-    
-     public function executeEliminaOR(sfWebRequest $request) {
-          date_default_timezone_set("America/Guatemala");
+
+    public function executeEliminaOR(sfWebRequest $request) {
+        date_default_timezone_set("America/Guatemala");
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
         $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
         $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
@@ -88,40 +110,39 @@ class pedido_pendienteActions extends sfActions
         }
         $ordenQ = OrdenCotizacionQuery::create()->findOneById($id);
         if ($ordenQ) {
-            $fech=date('d/m/Y H:i');
+            $fech = date('d/m/Y H:i');
             $ordenQ->setEstatus("Rechazada");
-           $ordenQ->setComentario("RECHAZADA POR USUARIO ".$usuarioQ->getUsuario()." ".$fech);
+            $ordenQ->setComentario("RECHAZADA POR USUARIO " . $usuarioQ->getUsuario() . " " . $fech);
             $this->getUser()->setFlash('error', 'Registro eliminado con exito');
-           
         }
         $this->redirect('pedido_pendiente/index');
     }
-  public function executeIndex(sfWebRequest $request) {
+
+    public function executeIndex(sfWebRequest $request) {
         error_reporting(-1);
         date_default_timezone_set("America/Guatemala");
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
         $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
         $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
-              
-       if ($TIPO_USUARIO=='ADMINISTRADOR') {
-        $this->detalles = OrdenCotizacionDetalleQuery::create()
-                ->useOrdenCotizacionQuery()
-                ->filterBySolicitarBodega(true)
-                ->endUse()
-                ->groupByOrdenCotizacionId()
-                ->withColumn('sum(OrdenCotizacionDetalle.Cantidad)', 'CantidadTotal')
-                ->find();
-           
-       } else {
-        $this->detalles = OrdenCotizacionDetalleQuery::create()
-                ->useOrdenCotizacionQuery()
-                ->filterByUsuario($usuarioQ->getUsuario())
-                ->filterBySolicitarBodega(true)
-                ->endUse()
-                ->groupByOrdenCotizacionId()
-                ->withColumn('sum(OrdenCotizacionDetalle.Cantidad)', 'CantidadTotal')
-                ->find();
-       }
+
+        if ($TIPO_USUARIO == 'ADMINISTRADOR') {
+            $this->detalles = OrdenCotizacionDetalleQuery::create()
+                    ->useOrdenCotizacionQuery()
+                    ->filterBySolicitarBodega(true)
+                    ->endUse()
+                    ->groupByOrdenCotizacionId()
+                    ->withColumn('sum(OrdenCotizacionDetalle.Cantidad)', 'CantidadTotal')
+                    ->find();
+        } else {
+            $this->detalles = OrdenCotizacionDetalleQuery::create()
+                    ->useOrdenCotizacionQuery()
+                    ->filterByUsuario($usuarioQ->getUsuario())
+                    ->filterBySolicitarBodega(true)
+                    ->endUse()
+                    ->groupByOrdenCotizacionId()
+                    ->withColumn('sum(OrdenCotizacionDetalle.Cantidad)', 'CantidadTotal')
+                    ->find();
+        }
     }
 
 }

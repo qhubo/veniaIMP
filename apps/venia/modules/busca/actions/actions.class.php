@@ -403,7 +403,7 @@ class buscaActions extends sfActions {
       
         $ini = 0;
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("empresa", null, 'seguridad');
-
+    $tipoPrecios = ListaPrecioQuery::create()->orderByNombre()->filterByActivo(true)->find();
         if ($r->getParameter('iDisplayStart')) {
             $ini = $r->getParameter('iDisplayStart');
         }
@@ -417,12 +417,12 @@ class buscaActions extends sfActions {
         }
 
 
-        $OperacionId = sfContext::getInstance()->getUser()->getAttribute('CotizacionId', null, 'seguridad');
-        $tiendaId = 0;
-        $Cotizacion = OrdenCotizacionQuery::create()->findOneById($OperacionId);
-        if ($Cotizacion) {
-            $tiendaId = $Cotizacion->getTiendaId();
-        }
+//        $OperacionId = sfContext::getInstance()->getUser()->getAttribute('CotizacionId', null, 'seguridad');
+//        $tiendaId = 0;
+//        $Cotizacion = OrdenCotizacionQuery::create()->findOneById($OperacionId);
+//        if ($Cotizacion) {
+//            $tiendaId = $Cotizacion->getTiendaId();
+//        }
 //         
         $con = Propel::getConnection();
         $stmt = $con->prepare($sqlexp);
@@ -448,8 +448,13 @@ class buscaActions extends sfActions {
             "iTotalDisplayRecords" => $iTotal,
             "aaData" => array()
         );
-
-        $tiendas = TiendaQuery::create()->find();
+$usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad'); 
+        $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
+       $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
+ $tiendas = TiendaQuery::create()->filterByActivo(true)->find();
+  //if ($TIPO_USUARIO != 'ADMINISTRADOR') { 
+ $tiendas = TiendaQuery::create()->filterByActivo(true)->filterByActivaBuscador(true)->find();
+ //}
 
 //        $bodegaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'bodega');
         foreach ($rResult as $reg) {
@@ -482,13 +487,18 @@ class buscaActions extends sfActions {
 
 //            $row[] = '<a href="' . $url . '"><font size="-1"><i class="  flaticon2-next"></i><i class="  flaticon2-next"></i><font></a>';
 
-                foreach ($tiendas as $regi) {
+               foreach ($tiendas as $regi) {
                     $exit = $productoQ->getExistenciaBodega($regi->getId());
                     $row[] = '<a href="' . $url . '"><div "style:text-align:right">' . $exit . "</div></a>";
                 }
-
+                $textoCosto = '<div style="style:text-align:right; display:block">' . Parametro::formato($costo, false) . "</div>";
                 $row[] = '<div "style:text-align:right">' . Parametro::formato($precio, false) . "</div>";
-
+                foreach ($tipoPrecios as $prec) {
+                $row[] = Parametro::formato($productoQ->getPrecioLista($prec->getId()), false);
+                    
+                }
+                
+                $row[] = $textoCosto;
                 $output["aaData"][] = $row;
             }
         }

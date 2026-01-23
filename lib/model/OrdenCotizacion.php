@@ -18,6 +18,14 @@
 class OrdenCotizacion extends BaseOrdenCotizacion {
     
     
+    public function getNombreTransporte() {
+        $retorna = $this->getTransporte();
+        $queryTi = TipoTransporteQuery::create()->findOneById($this->getTransporte());
+        if ($queryTi) {
+            $retorna = $queryTi->getNombre();
+        }
+        return $retorna;
+    }
        public function getTotalRecargo() {
          $LISTA = OrdenCotizacionDetalleQuery::create()
              ->filterByOrdenCotizacionId($this->getId())

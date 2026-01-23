@@ -62,6 +62,7 @@ abstract class BaseOperacionFormFilter extends BaseFormFilterPropel
       'empacado'                  => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
       'transporte'                => new sfWidgetFormFilterInput(),
       'direccion'                 => new sfWidgetFormFilterInput(),
+      'acuerdo_pago'              => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -115,6 +116,7 @@ abstract class BaseOperacionFormFilter extends BaseFormFilterPropel
       'empacado'                  => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
       'transporte'                => new sfValidatorPass(array('required' => false)),
       'direccion'                 => new sfValidatorPass(array('required' => false)),
+      'acuerdo_pago'              => new sfValidatorPass(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('operacion_filters[%s]');
@@ -183,6 +185,7 @@ abstract class BaseOperacionFormFilter extends BaseFormFilterPropel
       'empacado'                  => 'Boolean',
       'transporte'                => 'Text',
       'direccion'                 => 'Text',
+      'acuerdo_pago'              => 'Text',
     );
   }
 }

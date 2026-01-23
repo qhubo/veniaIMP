@@ -1,9 +1,11 @@
 <?php $modulo = 'orden_cotizacion'; ?>
+<?php $precios = ListaPrecioQuery::create()->filterByActivo(true)->find(); ?>
 <br><br>
 
 <table class="table table-bordered  xdataTable table-condensed flip-content" >
     <thead class="flip-content">
         <tr class="active">
+            <td></td>
 <!--            <th  align="center"><span class="kt-font-success"># </span></th>-->
             <th  align="center"><span class="kt-font-success">Codigo  </span></th>
 <!--            
@@ -18,24 +20,23 @@
     </thead>
     <?php if ($id) { ?>
     <tbody>
-        <?php $can=0; ?>
+        <?php $pos=0; ?>
           <?php $grantotal=0; ?>
         <?php foreach ($listado  as $registro) { ?>
         <?php $Max=999; ?>
         <?php if ($registro->getProductoId()) {  ?>
         <?php $Max=$registro->getProducto()->getExistencia()-$registro->getProducto()->getTransito();; //Bodega($registro->getOrdenCotizacion()->getTiendaId()); ?>
-        
         <?php } ?>
-            <?php $lista= $registro; ?>
-        <?php $can++; ?>
-             <?php $pid = $lista->getId(); ?>
+          <?php $lista= $registro; ?>
+         <?php $pos++; ?>
+          <?php $pid = $lista->getId(); ?>
             <?php $can = $lista->getCantidad(); ?>
             <?php $val = $lista->getValorUnitario(); ?>
             <?php $total = $lista->getValorUnitario() * $can; ?>
         <?php $grantotal= $total+$grantotal; ?>
         
         <tr>   
-<!--            <td><?php echo $can; ?> </td>-->
+            <td><?php echo $pos; ?> </td>
             <td>
              <a class="btn btn-block  btn-xs " style=" font-size: 11px !important;" data-toggle="modal" href="#staticE<?php echo $registro->getId() ?>">
                <?php if ($registro->getProductoId()) { echo  $registro->getProducto()->getCodigoSku(); } ?>
@@ -104,6 +105,8 @@
                                 <li class="fa fa-cogs"></li>
                                 <span class="caption-subject bold font-yellow-casablanca uppercase"> Editar Precio</span>
                             </div>
+                        
+                            <?php if (!$lis->getProductoId()) { ?>
                             <div class="modal-body">
                                 <p> Esta seguro de editar precio
                                     <span class="caption-subject font-green bold uppercase"> 
@@ -116,6 +119,71 @@
                                 <a class="btn  btn green " href="<?php echo url_for('orden_cotizacion/index?edit=' . $lis->getId()) ?>" >
                                     <i class="fla flaticon2-checking "></i> Confirmar</a> 
                             </div>
+                            <?php } ?>
+                            
+                                        <?php if ($lis->getProductoId()) { ?> 
+                            <div class="modal-body">
+                                <div class='row'>
+                                    <div class="col-lg-12" style="text-align:center;">
+                                            <h4> <?php echo $lis->getProducto()->getCodigoSku(); ?> <?php echo $lis->getProducto()->getNombre(); ?> </h4>
+                                    </div>
+                                    
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-lg-2"></div>
+                                    <div class="col-lg-8">
+                                    
+                                        <?php $Menor=$lis->getProducto()->getPrecio(); ?>
+                                             <form action="<?php echo url_for('orden_cotizacion/precio') ?>" method="get">
+                                        <table class="table table-bordered">
+                                            <tr style="background-color:#E6F0F2 !important">
+                                            <th>LISTA</th>
+                                            <th>PRECIO</th>
+                                            </tr>
+                                            <tr>
+                                                <th>PUBLICO</th>
+                                                <td style="text-align: right;"><?php echo Parametro::formato($lis->getProducto()->getPrecio()); ?></td>
+                                                <td style="width:30px;">
+                                                    <a class="btn btn-sm   btn-primary " href="<?php echo url_for('orden_cotizacion/precioEdit?edit=' . $lis->getId()."&valor=".$lis->getProducto()->getPrecio()) ?>"><i class="fa fa-check"></i> </a>  
+                                                </td>
+                                            </tr>
+                                            <?php foreach($precios as $deta) { ?>
+                                            <?php if ($lis->getProducto()->getPrecioLista($deta->getId()) < $Menor) { ?>
+                                            <?php $Menor=$lis->getProducto()->getPrecioLista($deta->getId()); ?>
+                                                <?php  } ?>
+                                            <tr>
+                                                <th style="text-align: left;"><?php echo $deta->getNombre(); ?></th>
+                                                <td style="text-align: right;"><?php echo Parametro::formato($lis->getProducto()->getPrecioLista($deta->getId())); ?></td>
+                                                <td>
+                                                    <a class="btn btn-sm   btn-primary " href="<?php echo url_for('orden_cotizacion/precioEdit?edit=' . $lis->getId()."&valor=".$lis->getProducto()->getPrecioLista($deta->getId())) ?>"><i class="fa fa-check"></i> </a>  
+                                                </td>
+                                            </tr>                                            
+                                            <?php } ?>
+                                            
+                                            <input type="hidden" id='lineaid' name='lineaid' value='<?php echo $lis->getId(); ?>' />
+                                            <input type="hidden" id='mini<?php echo $lis->getId(); ?>' name='mini<?php echo $lis->getId(); ?>' value='<?php echo $Menor; ?>' />
+                                               <tr>
+                                                <th>NUEVO PRECIO</th>
+                                                <td style="text-align: right;"><input min="<?php $Menor; ?>" class="form-control" id="nuevoprecio<?php echo $lis->getId(); ?>" name="nuevoprecio<?php echo $lis->getId(); ?>" value="<?php echo $Menor; ?>" /></td>
+                                                
+                                                <td>
+                                                <button class="btn btn-sm  btn-primary " type="submit"><i class="fa fa-check"></i></button>
+                                                </td>
+                                               </tr>
+                                         
+                                        </table>
+                                               </form>
+                                    </div>                                    
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancelar</button>
+             
+                               
+                            </div>
+                          <?php } ?>
                         </div>
                     </div>
                 </div> 

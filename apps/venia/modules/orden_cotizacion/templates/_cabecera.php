@@ -119,14 +119,27 @@
 
 <div class="row" style="padding-top:5px; <?php if (!$id) { ?> background-color:#F9FBFE; padding-top:5px; <?php } ?>" >
 
-    <div class="col-lg-1" >  <div style="text-align:right"> Observaciones</div> </div>
-    <div class="col-lg-7 <?php if ($form['observaciones']->hasError()) echo "has-error" ?>">
+    <div class="col-lg-2" >  <div style="text-align:right"> Observaciones</div> </div>
+    <div class="col-lg-9 <?php if ($form['observaciones']->hasError()) echo "has-error" ?>">
         <?php echo $form['observaciones'] ?>           
         <span class="help-block form-error"> 
             <?php echo $form['observaciones']->renderError() ?>  
         </span>
     </div>
-<div class="col-lg-1" >  <div style="text-align:right"> Tipo Transporte</div> </div>
+
+
+</div>
+
+<div class="row" style="padding-top:5px; <?php if (!$id) { ?> background-color:#F9FBFE; padding-top:5px; <?php } ?>" >
+
+    <div class="col-lg-2" >  <div style="text-align:right"> Acuerdo Pago</div> </div>
+    <div class="col-lg-3 <?php if ($form['acuerdo_pago']->hasError()) echo "has-error" ?>">
+        <?php echo $form['acuerdo_pago'] ?>           
+        <span class="help-block form-error"> 
+            <?php echo $form['acuerdo_pago']->renderError() ?>  
+        </span>
+    </div><!-- comment -->
+<div class="col-lg-2" >  <div style="text-align:right"> Tipo Transporte</div> </div>
 
     <div class="col-lg-2 <?php if ($form['transporte']->hasError()) echo "has-error" ?>">
         <?php echo $form['transporte'] ?>           
@@ -134,8 +147,9 @@
             <?php echo $form['transporte']->renderError() ?>  
         </span>
     </div>
+
     <?php if ($id) { ?>
-        <div class="col-lg-1" style="padding-top:10px;"> 
+        <div class="col-lg-2" style="padding-top:10px;"> 
 
             <button class="btn btn-primary btn-sm " type="submit">
                 <i class="fa fa-save "></i>Actualizar
@@ -143,7 +157,6 @@
         </div>
     <?php } ?>
 </div>
-
 
 
 <?php echo '</form>'; ?>

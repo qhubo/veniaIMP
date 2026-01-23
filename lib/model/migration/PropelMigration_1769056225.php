@@ -2,10 +2,10 @@
 
 /**
  * Data object containing the SQL and PHP code to migrate the database
- * up to version 1768764005.
- * Generated on 2026-01-18 20:20:05 
+ * up to version 1769056225.
+ * Generated on 2026-01-22 05:30:25 
  */
-class PropelMigration_1768764005
+class PropelMigration_1769056225
 {
 
     public function preUp($manager)
@@ -42,13 +42,11 @@ class PropelMigration_1768764005
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `tipo_transporte`
-    ADD `descripcion` VARCHAR(260) AFTER `activo`,
-    ADD `telefono` VARCHAR(50) AFTER `descripcion`,
-    ADD `clave` VARCHAR(150) AFTER `telefono`,
-    ADD `clave_2` VARCHAR(150) AFTER `clave`,
-    ADD `direccion` VARCHAR(450) AFTER `clave_2`,
-    ADD `correo` VARCHAR(150) AFTER `direccion`;
+ALTER TABLE `operacion`
+    ADD `acuerdo_pago` VARCHAR(150) AFTER `direccion`;
+
+ALTER TABLE `orden_cotizacion` CHANGE `empacado` `empacado` TINYINT(1) DEFAULT 0;
+
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
@@ -70,17 +68,21 @@ SET FOREIGN_KEY_CHECKS = 1;
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `tipo_transporte` DROP `descripcion`;
+ALTER TABLE `cliente` CHANGE `tipo_cliente` `tipo_cliente` VARCHAR(200);
 
-ALTER TABLE `tipo_transporte` DROP `telefono`;
+ALTER TABLE `operacion` DROP `acuerdo_pago`;
 
-ALTER TABLE `tipo_transporte` DROP `clave`;
+ALTER TABLE `orden_cotizacion` CHANGE `empacado` `empacado` bit(1);
 
-ALTER TABLE `tipo_transporte` DROP `clave_2`;
+ALTER TABLE `orden_cotizacion` DROP `acuerdo_pago`;
 
-ALTER TABLE `tipo_transporte` DROP `direccion`;
+ALTER TABLE `partida` CHANGE `ano` `ano` INTEGER DEFAULT 0;
 
-ALTER TABLE `tipo_transporte` DROP `correo`;
+ALTER TABLE `partida` CHANGE `mes` `mes` INTEGER DEFAULT 0;
+
+ALTER TABLE `partida_agrupa` CHANGE `ano` `ano` INTEGER DEFAULT 0;
+
+ALTER TABLE `partida_agrupa` CHANGE `mes` `mes` INTEGER DEFAULT 0;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

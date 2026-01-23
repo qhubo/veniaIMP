@@ -49,6 +49,7 @@ abstract class BaseOrdenCotizacionForm extends BaseFormPropel
       'pais_id'             => new sfWidgetFormPropelChoice(array('model' => 'Pais', 'add_empty' => true)),
       'transporte'          => new sfWidgetFormInputText(),
       'empacado'            => new sfWidgetFormInputCheckbox(),
+      'acuerdo_pago'        => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -87,6 +88,7 @@ abstract class BaseOrdenCotizacionForm extends BaseFormPropel
       'pais_id'             => new sfValidatorPropelChoice(array('model' => 'Pais', 'column' => 'id', 'required' => false)),
       'transporte'          => new sfValidatorString(array('max_length' => 200, 'required' => false)),
       'empacado'            => new sfValidatorBoolean(array('required' => false)),
+      'acuerdo_pago'        => new sfValidatorString(array('max_length' => 150, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('orden_cotizacion[%s]');

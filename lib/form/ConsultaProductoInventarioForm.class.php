@@ -72,6 +72,15 @@ class consultaProductoInventarioForm extends sfForm {
         $this->setValidator('marca', new sfValidatorString(array('required' => false)));
 
         $this->setValidator('modelo', new sfValidatorString(array('required' => false)));
+    
+        $line[null]='Todos';
+        $line['existencia']='PRODUCTOS CON EXISTENCIA';
+       // $line['transito']='EXCLUIR PRODUCTOS TRANSITO';
+        
+        
+        $this->setWidget('tipo_filtro', new sfWidgetFormChoice(array( "choices" => $line,), array("class" => "form-control")));
+        $this->setValidator('tipo_filtro', new sfValidatorString(array('required' => false)));
+        
         $this->widgetSchema->setNameFormat('consulta[%s]');
     }
 

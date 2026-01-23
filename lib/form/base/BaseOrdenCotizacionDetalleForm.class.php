@@ -33,6 +33,7 @@ abstract class BaseOrdenCotizacionDetalleForm extends BaseFormPropel
       'bulto_inicio'        => new sfWidgetFormInputText(),
       'bulto_fin'           => new sfWidgetFormInputText(),
       'bulto_superior'      => new sfWidgetFormInputText(),
+      'confirmado'          => new sfWidgetFormInputCheckbox(),
     ));
 
     $this->setValidators(array(
@@ -55,6 +56,7 @@ abstract class BaseOrdenCotizacionDetalleForm extends BaseFormPropel
       'bulto_inicio'        => new sfValidatorString(array('max_length' => 10, 'required' => false)),
       'bulto_fin'           => new sfValidatorString(array('max_length' => 10, 'required' => false)),
       'bulto_superior'      => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
+      'confirmado'          => new sfValidatorBoolean(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('orden_cotizacion_detalle[%s]');

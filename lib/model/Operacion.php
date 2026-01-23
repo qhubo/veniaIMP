@@ -16,6 +16,14 @@
  * @package    propel.generator.lib.model
  */
 class Operacion extends BaseOperacion {
+        public function getNombreTransporte() {
+        $retorna = $this->getTransporte();
+        $queryTi = TipoTransporteQuery::create()->findOneById($this->getTransporte());
+        if ($queryTi) {
+            $retorna = $queryTi->getNombre();
+        }
+        return $retorna;
+    }
        public function getTotalRecargo() {
          $LISTA = OperacionDetalleQuery::create()
              ->filterByOperacionId($this->getId())

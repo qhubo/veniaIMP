@@ -29,13 +29,20 @@
                     
 
                    
+                     <div class="col-lg-2   <?php if ($form['activa_buscador']->hasError()) echo "has-error" ?>">
+ Activo   Buscador                             
+ <?php echo $form['activa_buscador'] ?>      
+                            <div  for="consulta_activo"><span></span></div>
+                            <span class="help-block form-error"> 
+                                <?php echo $form['activa_buscador']->renderError() ?>       
+                            </span>
 
-                        <div  class="col-lg-1">
-                            Activo     
-                        </div>
+                        </div>  
+                       
 
                         <div class="col-lg-1   <?php if ($form['activo']->hasError()) echo "has-error" ?>">
-                            <?php echo $form['activo'] ?>      
+ Activo                                
+ <?php echo $form['activo'] ?>      
                             <div  for="consulta_activo"><span></span></div>
                             <span class="help-block form-error"> 
                                 <?php echo $form['activo']->renderError() ?>       
