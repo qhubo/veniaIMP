@@ -148,13 +148,14 @@
                 </span>
             </div>
     <?php if ($orden) { ?>
+
+    <div class="col-lg-1">
      <?php  if ($orden->getEstatus() =="Autorizado") {  ?>
-    <div class="col-lg-4">
-     <img  src="/images/autorizado.png" width="300px" >
+        <img  src="/images/autorizado.png" width="300px" >
+    <?php } ?>
         
     </div>
      <?php } ?>
-    <?php } ?>
    
     
              <?php if ($id) { ?>
