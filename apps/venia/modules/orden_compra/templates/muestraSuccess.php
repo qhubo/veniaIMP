@@ -42,9 +42,9 @@
 
     <div class="kt-portlet__body">
 
-
-
-        <ul class="nav nav-tabs nav-tabs-line nav-tabs-line-danger nav-tabs-line-2x nav-tabs-line-right" role="tablist">
+        <div class="row">
+            <div class="col-lg-10">
+                    <ul class="nav nav-tabs nav-tabs-line nav-tabs-line-danger nav-tabs-line-2x nav-tabs-line-right" role="tablist">
             <li class="nav-item">
                 <a class="nav-link  <?php if ($tab == 1) { ?> active <?php } ?> " data-toggle="tab" href="#kt_portlet_base_demo_2_3_tab_content" role="tab" aria-selected="false">
                     <i class="fa fa-calendar-check-o" aria-hidden="true"></i>General
@@ -53,11 +53,6 @@
             <li class="nav-item">
                 <a class="nav-link <?php if ($tab == 3) { ?> active <?php } ?>  " data-toggle="tab" href="#kt_portlet_base_demo_3_3_tab_content" role="tab" aria-selected="false">
                     <i class="fa fa-bar-chart" aria-hidden="true"></i>Información Adicional
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link <?php if ($tab == 4) { ?> active <?php } ?>  " data-toggle="tab" href="#kt_portlet_base_demo_3_4_tab_content" role="tab" aria-selected="false">
-                    <i class="fa fa-bar-chart" aria-hidden="true"></i>Documento
                 </a>
             </li>
             <?php if ($orden->getEstatus() == "Autorizado") { ?>
@@ -72,13 +67,24 @@
                     </a>
                 </li>
             <?Php } ?> 
-        </ul>
+        </ul>  
+                
+            </div>
+              <div class="col-lg-2">          
+                  <a target="_blank" href="<?php echo url_for('reporte/ordenCompra?token=' . $orden->getToken()) ?>" class="btn btn-secondary btn-warning" > <i class="flaticon2-printer"></i> Reporte </a>
+               </div>
+            
+        </div>
+  
 
         <div class="tab-content"    >
             <div class="tab-pane <?php if ($tab == 1) { ?> active <?php } ?> " id="kt_portlet_base_demo_2_3_tab_content" role="tabpanel">
-                <?php include_partial($modulo . '/ficha', array('orden' => $orden)) ?>  
+      
+   
+    <?php include_partial($modulo . '/ficha', array('orden' => $orden)) ?>  
 
                 <?php include_partial($modulo . '/fichalista', array('orden' => $orden, 'lista' => $lista)) ?> 
+            
             </div>
             <div class="tab-pane <?php if ($tab == 3) { ?> active <?php } ?> " id="kt_portlet_base_demo_3_3_tab_content" role="tabpanel">
             <?php include_partial('soporte/valorCampo', array('tipoDocumento' => 'OrdenCompra', 'idDoc' => $orden->getId())) ?> 
@@ -91,11 +97,6 @@
                 <?php } ?>
                 <?php $urlReporte = $urlFrame . "/index.php/reporte/ordenCompra?token=" . $orden->getToken(); ?>
 
-                <div class="row">
-                    <div class="col-lg-10"></div>
-                    <div class="col-lg-2">          <a target="_blank" href="<?php echo url_for('reporte/ordenCompra?token=' . $orden->getToken()) ?>" class="btn btn-secondary btn-warning" > <i class="flaticon-download-1"></i> Descargar </a>
-                    </div>
-                </div>
 
                 <?php //echo $urlReporte; ?>
                 

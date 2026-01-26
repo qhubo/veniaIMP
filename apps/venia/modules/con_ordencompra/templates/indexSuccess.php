@@ -54,9 +54,9 @@
                         <td><?php echo $data->getComentario(); ?></td>
                         <th style="text-align: right" ><?php echo Parametro::formato($data->getValorTotal()); ?></th>
                         <td>
-                            <div class="row">
+<!--                            <div class="row">
                                 <div class="col-lg-10">
-                                    <?php echo html_entity_decode($data->getLineas()); ?>
+                                    <?php //echo html_entity_decode($data->getLineas()); ?>
 
                                 </div>
                                 <div class="col-lg-2">
@@ -64,7 +64,9 @@
 
                                 </div>
 
-                            </div>
+                            </div>-->
+               <a target="_blank" href="<?php echo url_for('reporte/ordenCompra?token=' . $data->getToken()) ?>" class="btn btn-block btn-sm  btn-warning" > <i class="flaticon2-print"></i> Reporte </a>
+ 
 
                         </td>
                         <td><a href="<?php echo url_for("proceso/confirma?tipo=ordencompra&token=" . $data->getToken()) ?>" class="btn btn-sm btn-block btn-success" data-toggle="modal" data-target="#ajaxmodalCONFIRMA<?php echo $data->getId(); ?>"> <li class="fa flaticon2-checkmark"></li>    </a></td>

@@ -10,7 +10,7 @@
             <th  align="center"><span class="kt-font-success">Valor Unitario </span></th>
             <th  align="center"><span class="kt-font-success">Cantidad </span></th>
             <th  align="center"><span class="kt-font-success">Valor Total </span></th>
-            <th>Iva</th>
+
 
         </tr>
     </thead>
@@ -30,7 +30,7 @@
 
               <td  style="text-align: right" ><?php echo $registro->getCantidad(); ?></td> 
                           <td style="text-align: right" ><?php echo Parametro::formato($registro->getValorTotal()); ?></td>
-            <td style="text-align: right" ><?php echo Parametro::formato($registro->getTotalIva()); ?></td>
+  
 
         </tr>
           <?php } ?>

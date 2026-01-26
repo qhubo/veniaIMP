@@ -34,42 +34,39 @@
 
                     <th  style="border: 0.2px solid #5E80B4;"  align="center" width="200px">Documento </th>
                     <th style="border: 0.2px solid #5E80B4;"  align="center" width="110px" >Fecha  Documento</th>
-                    <th style="border: 0.2px solid #5E80B4;" align="center" width="100px">Sub Total</th>
-                    <th  style="border: 0.2px solid #5E80B4;" align="center" width="85px">Iva</th>
+                    <th style="border: 0.2px solid #5E80B4;" align="center" width="100px"></th>
+                    <th  style="border: 0.2px solid #5E80B4;" align="center" width="85px"></th>
                     <th  style="border: 0.2px solid #5E80B4;" align="center" width="120px">Total</th>
 
                 </tr>
                 <tr>
                     <td style="border: 0.2px solid #5E80B4;"><?php echo $orden->getSerie() ?> <?php echo $orden->getNoDocumento() ?> </td>
                     <td style="border: 0.2px solid #5E80B4;" align="center"><?php echo $orden->getFechaDocumento('d/m/Y') ?></td>
-                    <td style="border: 0.2px solid #5E80B4;" align="right"><?php echo Parametro::formato($orden->getSubTotal(), 2); ?> </td>
-                    <td style="border: 0.2px solid #5E80B4;" align="right" ><?php echo Parametro::formato($orden->getIva(), 2); ?> </td>
+                    <td style="border: 0.2px solid #5E80B4;" align="right"><?php //echo Parametro::formato($orden->getSubTotal(), 2); ?> </td>
+                    <td style="border: 0.2px solid #5E80B4;" align="right" ><?php //echo Parametro::formato($orden->getIva(), 2); ?> </td>
                     <td style="border: 0.2px solid #5E80B4;" align="right"><h3><?php echo Parametro::formato($orden->getValorTotal(), 2); ?></h3> </td>
                 </tr>
                 
                 
                    <?php if ($orden->getValorImpuesto()) { ?>
-                 <tr>
-              
-                     <td></td>
+<!--              <tr>
+                <td></td>
                 <td></td>
                 <td>ISR</td>
                 <td>Valor Retenido</td>
                 <td></td>
                 <td style="text-align: right"> <?php echo Parametro::formato($orden->getValorImpuesto() * -1);  ?> </td>
           
-            </tr>
+        
+        -->
+          
                  <tr>
-                <td></td>
-                <td></td>
-           
-               
-                <td colspan="3" style="text-align: right"><strong> <font size="+2">VALOR PAGAR</font></strong> </td>
-
-                <td> <div style="text-align: right"><strong> <font size="+2"> <?php echo Parametro::formato($orden->getValorTotal()+$orden->getValorImpuesto() * -1); //, 2, '.', '');  ?></font></strong></div> </td>
+                      <td></td>
+   
+                      <td colspan="3" style="text-align: right"><strong> <font size="+2">VALOR PAGAR</font></strong> </td>
+                <td> <?php echo Parametro::formato($orden->getValorTotal()+$orden->getValorImpuesto() * -1); ?> </td>
           
             </tr>
-        
         <?php } ?>
             
             
@@ -77,7 +74,7 @@
             </table>
             <br>
             <br>
-            <table   >
+            <table>
                 <br><br>
                 <tr>
 <!--                    <th  align="center" width="10px" style="font-size:30px; border-left: 0.2px solid #5E80B4;border-top: 0.2px solid #5E80B4; text-align: center; font-weight: bold"># </th>-->
@@ -85,20 +82,18 @@
                     <th  align="center" width="225px"  style="font-size:30px; border-left: 0.2px solid #5E80B4;border-top: 0.2px solid #5E80B4;text-align: center; font-weight: bold">Descripción </th>
                     <th  align="center" width="100px"  style="font-size:30px;border-left: 0.2px solid #5E80B4;border-top: 0.2px solid #5E80B4; text-align: center; font-weight: bold">Valor Unitario </th>
                     <th  align="center" width="90px"  style="font-size:30px;border-left: 0.2px solid #5E80B4;border-top: 0.2px solid #5E80B4; text-align: center; font-weight: bold">Cantidad </th>
-                    <th  align="center" width="100px"  style="font-size:30px; border-left: 0.2px solid #5E80B4;border-top: 0.2px solid #5E80B4; text-align: center; font-weight: bold">Valor Total </th>
-                    <th width="80px"  style="font-size:30px; border-left: 0.2px solid #5E80B4; border-right: 0.2px solid #5E80B4; border-top: 0.2px solid #5E80B4;text-align: center; font-weight: bold">Iva</th>
+                    <th  align="center" width="180px"  style="font-size:30px; border-left: 0.2px solid #5E80B4; border-right: 0.2px solid #5E80B4; border-top: 0.2px solid #5E80B4; text-align: center; font-weight: bold">Valor Total </th>
                 </tr>
         
      
-                  <tr>
-<!--                    <td style="border-top: 0.2px solid #5E80B4;border-left: 0.2px solid #5E80B4;"></td>-->
+<!--                  <tr>
                     <td style="border-top: 0.2px solid #5E80B4;border-left: 0.2px solid #5E80B4;"></td>
                     <td style="border-top: 0.2px solid #5E80B4;border-left: 0.2px solid #5E80B4;"></td>
                     <td style="border-top: 0.2px solid #5E80B4;border-left: 0.2px solid #5E80B4;"></td>
                     <td style="border-top: 0.2px solid #5E80B4;border-left: 0.2px solid #5E80B4;"></td>
                     <td style="border-top: 0.2px solid #5E80B4;border-left: 0.2px solid #5E80B4;"></td>
-                    <td style="border-top: 0.2px solid #5E80B4;border-left: 0.2px solid #5E80B4;border-right: 0.2px solid #5E80B4;"></td>
-                </tr>
+                    <td style="border-top: 0.2px solid #5E80B4;border-left: 0.2px solid #5E80B4;"></td>
+                </tr>-->
                 
 
                 <?php $can = 0; ?>
@@ -119,19 +114,17 @@
                         <td width="100px" style="text-align: right;font-size:25px;border-left: 0.2px solid #5E80B4; padding-top: 10px;" ><?php echo number_format((float) ($registro->getValorUnitario()), 2, '.', ''); ?>&nbsp;&nbsp;</td>
 
                         <td width="90px"  style="text-align: right;font-size:25px;border-left: 0.2px solid #5E80B4;" ><?php echo $registro->getCantidad(); ?>&nbsp;&nbsp;</td> 
-                        <td width="100px" style="text-align: right;font-size:25px;border-left: 0.2px solid #5E80B4;" ><?php echo Parametro::formato($registro->getValorTotal()) ?>&nbsp;&nbsp;</td>
-                        <td width="80px" style="text-align: right;font-size:25px;border-left: 0.2px solid #5E80B4;border-right: 0.2px solid #5E80B4;" ><?php echo Parametro::formato($registro->getTotalIva()); ?>&nbsp;&nbsp;</td>
-
+                        <td width="180px" style="text-align: right;font-size:25px;border-left: 0.2px solid #5E80B4;border-right:  0.2px solid #5E80B4;" ><?php echo Parametro::formato($registro->getValorTotal()) ?>&nbsp;&nbsp;</td>
+             
                     </tr>
                     <tr>
                           <td colspan="2"  width="220px" style="border-bottom:  0.2px solid #5E80B4; font-size:25px;border-left: 0.2px solid #5E80B4;  "></td>
-                          <td  width="495px" colspan="5" style="font-size:25px; text-align: left; border-bottom:  0.2px solid #5E80B4; border-right:  0.2px solid #5E80B4;"><?php echo html_entity_decode($registro->getObservaciones()); ?> </td>
+                          <td  width="495px" colspan="6" style="font-size:25px; text-align: left; border-bottom:  0.2px solid #5E80B4; border-right:  0.2px solid #5E80B4;"><?php echo html_entity_decode($registro->getObservaciones()); ?> </td>
                     </tr>
                     
 <?php } ?>
                 <tr>
 <!--                    <td style="border-top: 0.2px solid #5E80B4;"></td>-->
-                    <td style="border-top: 0.2px solid #5E80B4;"></td>
                     <td style="border-top: 0.2px solid #5E80B4;"></td>
                     <td style="border-top: 0.2px solid #5E80B4;"></td>
                     <td style="border-top: 0.2px solid #5E80B4;"></td>

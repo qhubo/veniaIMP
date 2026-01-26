@@ -27,8 +27,8 @@
             <th align="center"><span class="kt-font-success">Documento </span></th>
             <th align="center"><span class="kt-font-success">Fecha  Documento</span></th>
 <!--            <th align="center"><span class="kt-font-success">Fecha  Contabilidad</span></th>-->
-            <th align="center"><span class="kt-font-success">Sub Total</span></th>
-            <th align="center"><span class="kt-font-success">Iva</span></th>
+            <th align="center"><span class="kt-font-success"></span></th>
+            <th align="center"><span class="kt-font-success"></span></th>
             <th align="center"><span class="kt-font-success">Total</span></th>
 
         </tr>
@@ -38,8 +38,8 @@
             <td><?php echo $orden->getSerie() ?> <?php echo $orden->getNoDocumento() ?> </td>
             <td><?php echo $orden->getFechaDocumento('d/m/Y') ?></td>
 <!--            <td><?php echo $orden->getFechaContabilizacion('d/m/Y') ?></td>-->
-            <td style ="text-align: right; align-content: right" ><?php echo number_format($orden->getSubTotal(), 2); ?> </td>
-            <td style ="text-align: right; align-content: right"><?php echo number_format($orden->getIva(), 2); ?> </td>
+            <td style ="text-align: right; align-content: right" ><?php //echo number_format($orden->getSubTotal(), 2); ?> </td>
+            <td style ="text-align: right; align-content: right"><?php //echo number_format($orden->getIva(), 2); ?> </td>
             <td style="text-align: right"><h3><?php echo number_format($orden->getValorTotal(), 2); ?></h3> </td>
         </tr>
         

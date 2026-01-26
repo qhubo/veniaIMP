@@ -203,7 +203,7 @@ class verifica_bodegaActions extends sfActions {
                 ->useOrdenCotizacionQuery()
                 ->filterById($this->em)
                 ->filterByEstatus('Confirmada')
-                ->filterByEmpacado(false)
+            //    ->filterByEmpacado(false)
                 ->endUse()
                 ->orderByBultoInicio()
                 ->find();
@@ -234,12 +234,12 @@ class verifica_bodegaActions extends sfActions {
         }
 
         $this->cotizacio = OrdenCotizacionDetalleQuery::create()
-                 ->filterByConfirmado(true)
+               ->filterByConfirmado(true)
                 ->filterByProductoId(null, Criteria::NOT_EQUAL)
                 ->groupByOrdenCotizacionId()
                 ->useOrdenCotizacionQuery()
-                ->filterByEmpacado(false)
-                ->filterByEstatus('Confirmada')
+             //   ->filterByEmpacado(false)
+               ->filterByEstatus('Confirmada')
                 ->endUse()
                 ->find();
         $bultocreados = OrdenCotizacionDetalleQuery::create()

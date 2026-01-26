@@ -315,6 +315,9 @@ class buscaActions extends sfActions {
             if ($_SERVER['SERVER_NAME'] == "veniaerp") {
                 $url = '/venia_dev.php/orden_compra/propi?id=' . $regid;
             }
+                if ($_SERVER['SERVER_NAME'] == "veniaimp") {
+                $url = '/venia_dev.php/orden_compra/propi?id=' . $regid;
+            }
             $row[] = '<a href="' . $url . '"><font size="-2">' . $codigo . '<font></a>';
             $row[] = '<a href="' . $url . '"><font size="-1">' . $nombre . '<font></a>';
             $row[] = '<a href="' . $url . '"><font size="-1">' . $nit . '<font></a>';
@@ -326,14 +329,14 @@ class buscaActions extends sfActions {
         return sfView::NONE;
     }
 
-    public function executeTabJsProducto(sfWebRequest $r) {
+public function executeTabJsProducto(sfWebRequest $r) {
         $ini = 0;
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("empresa", null, 'seguridad');
 
         if ($r->getParameter('iDisplayStart')) {
             $ini = $r->getParameter('iDisplayStart');
         }
-        $sqlexp = "SELECT count(id) as cantidad FROM  producto where top_venta=1 and empresa_id=" . $empresaId;
+        $sqlexp = "SELECT count(id) as cantidad FROM  producto where  empresa_id=" . $empresaId;
         ;
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("empresa", null, 'seguridad');
 
@@ -343,7 +346,7 @@ class buscaActions extends sfActions {
 
         if ($r->getParameter('sSearch') != "") {
 
-            $sqlexp = "select count(vi.id) as cantidad from producto vi  where top_venta=1 and  (vi.nombre like  '%" . $busqueda . "%'
+            $sqlexp = "select count(vi.id) as cantidad from producto vi  where  (vi.nombre like  '%" . $busqueda . "%'
                 or vi.codigo_sku like '%" . $busqueda . "%') and  vi.empresa_id=" . $empresaId;
         }
 
@@ -354,16 +357,15 @@ class buscaActions extends sfActions {
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $iTotal = $result[0]["cantidad"];
 //    $query = new ProductoQuery();
-        $sqlexp = "select vi.id,imagen, codigo_sku,nombre  from producto vi  where top_venta=1 and   vi.empresa_id=" . $empresaId . " limit 0, 5";
+        $sqlexp = "select vi.id,imagen, codigo_sku,nombre  from producto vi  where    vi.empresa_id=" . $empresaId . " limit 0, 5";
 
         if ($r->getParameter('sSearch') != "") {
-            $sqlexp = "select vi.id,imagen, codigo_sku,nombre  from producto vi   where top_venta=1 and  (vi.nombre like  '%" . $busqueda . "%'
+            $sqlexp = "select vi.id,imagen, codigo_sku,nombre  from producto vi   where  (vi.nombre like  '%" . $busqueda . "%'
                 or vi.codigo_sku like '%" . $busqueda . "%') and  vi.empresa_id=" . $empresaId . " limit " . $ini . ", 5";
 //        } else {
 //            $sqlexp = "select  id, '' as nombre, nit,  codigo   from proveedor  where id= -9";
         }
-//                echo $sqlexp;
-//        die();
+   
         $con = Propel::getConnection();
         $stmt = $con->prepare($sqlexp);
         $resource = $stmt->execute();
@@ -388,6 +390,10 @@ class buscaActions extends sfActions {
             }
 
             $url = '/index.php/orden_compra/producto?id=' . $regid;
+            
+              if ($_SERVER['SERVER_NAME'] == "veniaerp") {
+                $url = '/venia_dev.php/orden_compra/producto?id=' . $regid;
+                   }
 //            $row[] = '<a href="' . $url . '">' . '<img src="' . $rutaimage . '" height="45px" >' . '</a>';
             $row[] = '<a href="' . $url . '"><font size="-1">' . $codigo . '<font></a>';
             $row[] = '<a href="' . $url . '"><font size="-1">' . $nombre . '<font></a>';

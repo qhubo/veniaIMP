@@ -12,14 +12,15 @@
                             </div>
                         </div>-->
 <?php } ?>
-<table class="table table-bordered "  >
+    <table class="table table-bordered "  style="padding:1px !important;" >
     <thead class="flip-content">
         <tr class="active">
             <th  align="center"><span class="kt-font-success"># </span></th>
             <th  align="center"><span class="kt-font-success">Producto /  Servicio </span></th>
             <th  align="center"><span class="kt-font-success">Descripción </span></th>
-            <th  align="center"><span class="kt-font-success">Valor Unitario </span></th>
             <th  align="center"><span class="kt-font-success">Cantidad </span></th>
+            <th  align="center"><span class="kt-font-success">Valor Unitario </span></th>
+
             <th  align="center"><span class="kt-font-success">Valor Total </span></th>
             <th></th>
 
@@ -39,9 +40,9 @@
                 <?php $grantotal = $total + $grantotal; ?>
                 <?php $detalle = $lista->getObservaciones(); ?>
 
-                <tr <?php if (($can % 2) == 0) { ?>  style="background-color:#ebedf2"  <?php } ?> >
+                <tr>
                     <td  rowspan="2" ><?php echo $can; ?> </td>
-                    <td><?php
+                    <td style="padding: 0.1rem !important;"><?php
                         if ($registro->getProductoId()) {
                             echo substr($registro->getProducto()->getCodigoSku(), -6);
                         }
@@ -51,16 +52,17 @@
                             echo substr($registro->getServicio()->getCodigo(), -6);
                         }
                         ?></td>    
-                    <td><?php echo $registro->getDetalle(); ?></td>    
-                    <td><?php //echo $registro->getValorUnitario();   ?>
+                    <td style="padding: 0.1rem !important;"><?php echo $registro->getDetalle(); ?></td>    
+                          <td><?php //echo $registro->getCantidad();   ?>
+                        <input min="1"   class="form-control xlarge" value="<?php echo $can ?>"  id="consulta_numero_<?php echo $pid ?>"  
+                               name="consulta[numero_<?php echo $pid ?>]" onkeypress='validate<?php echo $pid ?>(event)' >
+                    </td>
+                    <td style="padding: 0.1rem !important;"><?php //echo $registro->getValorUnitario();   ?>
                         <input    class="form-control " value="<?php echo $val ?>" type="number" step="any" id="consulta_valor_<?php echo $lista->getId() ?>"  
                                   name="consulta[valor_<?php echo $lista->getId() ?>]" onkeypress='validateX<?php echo $lista->getId() ?>(event)' >
                     </td>    
-                    <td><?php //echo $registro->getCantidad();   ?>
-                        <input min="1"   class="form-control xlarge" value="<?php echo $can ?>"  id="consulta_numero_<?php echo $pid ?>"  
-                               name="consulta[numero_<?php echo $pid ?>]" onkeypress='validate<?php echo $pid ?>(event)' >
-                    </td>    
-                    <td><?php //echo $registro->getValorTotal();   ?>
+                  
+                    <td style="padding: 0.1rem !important;"><?php //echo $registro->getValorTotal();   ?>
                         <div  align="right" class="total_<?Php echo $pid ?>" id="total_<?Php echo $pid ?>"><?php echo number_format($total, 2); ?></div>
 
 
@@ -70,9 +72,9 @@
                 </tr>
 
                 <tr  <?php if (($can % 2) == 0) { ?>  style="background-color:#ebedf2"  <?php } ?> >
-                    <td style="text-align:right; align-content: right "> <strong>Detalle </strong> </td>
-                    <td colspan="4">
-                        <textarea name="consulta[det_<?php echo $lista->getId() ?>]" id="consulta_det_<?php echo $lista->getId() ?>"  name="textarea" rows="3" class="form-control" ><?php echo $detalle ?></textarea>
+                    <td style="" style="text-align:right; align-content: right;padding: 0.1rem !important; "> <strong>Detalle </strong> </td>
+                    <td  style="padding: 0.1rem !important;" colspan="4">
+                        <textarea name="consulta[det_<?php echo $lista->getId() ?>]" id="consulta_det_<?php echo $lista->getId() ?>"  name="textarea" rows="1" class="form-control" ><?php echo $detalle ?></textarea>
   </td>
                   
 

@@ -345,6 +345,9 @@ class reporteActions extends sfActions {
             $img_file = "images/autorizado.png";
         }
 
+//echo $html;
+//die();
+//        
         // Render the image
         //      $pdf->Image($img_file, 0, 0, 223, 280, '', '', '', false, 300, '', false, false, 0);
         $pdf->SetCreator(PDF_CREATOR);
@@ -368,9 +371,11 @@ class reporteActions extends sfActions {
         $pdf->setPrintFooter(false);
         $pdf->SetFont('dejavusans', '', 9);
         $pdf->AddPage();
-        $pdf->Image($img_file, 140, 5, 50, '', '', '', '300', false, 0);
+    if (strtoupper($ordenCompra->getEstatus()) != "CONFIRMADA") {
+                            $pdf->Image($img_file, 140, 5, 50, '', '', '', '300', false, 0);
+                }
         $pdf->writeHTML($html);
-
+            
         $pdf->Output('OrdenCompra' . $ordenCompra->getCodigo() . '.pdf', 'I');
         die();
         echo $html;

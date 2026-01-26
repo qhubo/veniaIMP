@@ -10,16 +10,212 @@
  */
 class orden_compraActions extends sfActions {
 
-     public function executeTest(sfWebRequest $request) {
-    
-         $ordenProveedor= OrdenProveedorQuery::create()->findOneById(5);
-         $partida =$this->partidaInventario($ordenProveedor);
-                 
-                 
-                 die();
+    public function executeCarga(sfWebRequest $request) {
+           error_reporting(-1);
+        $ordenId = sfContext::getInstance()->getUser()->getAttribute('OrdenId', null, 'seguridad');
+        $id = $request->getParameter('id');
+        $bitacora = BitacoraArchivoQuery::create()->findOneById($id);
+        sfContext::getInstance()->getUser()->setAttribute('muestrabusqueda', 0, 'busqueda');
+        $filename = $bitacora->getNombre();
+        $inputFileName = sfConfig::get("sf_upload_dir") . DIRECTORY_SEPARATOR . 'cargas' . DIRECTORY_SEPARATOR . $filename;
+
+        $objReader = new PHPExcel_Reader_Excel5();
+        $objPHPExcel = $objReader->load($inputFileName);
+        $sheetData = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
+        $contador = 0;
+        $columnaCodigo = null;
+        $columnaCantidad = null;
+        $columnaValor = null;
+//
+//        $linea = null;
+//     echo "<pre>";
+//     print_r($sheetData);
+//     die();
+
+        foreach ($sheetData as $registro) {
+            $valido = false;
+            $contador++;
+            /// encabezado
+            if ($contador == 2) {
+                for ($i = 0; $i <= 3; $i++) {
+                    $letra = sfContext::getInstance()->getUser()->numeroletra($i);
+                    $valor = str_replace(" ", "", strtoupper(trim($registro[$letra])));
+                    if ($valor == 'CANTIDAD') {
+                        $columnaCantidad = $letra;
+                    }
+                    if ($valor == strtoupper("código")) {
+                        $columnaCodigo = $letra;
+                    }
+                    if ($valor == "CóDIGO") {
+                        $columnaCodigo = $letra;
+                    }
+                    if ($valor == "CÓDIGO") {
+                        $columnaCodigo = $letra;
+                    }
+                    if ($valor == "CODIGO") {
+                        $columnaCodigo = $letra;
+                    }
+                    if ($valor == "VALORUNITARIO") {
+                        $columnaValor = $letra;
+                    }
+                }
+            }
+            if ($contador > 2) {
+                if ((!$columnaCodigo) or (!$columnaCantidad) or (!$columnaValor)) {
+                    sfContext::getInstance()->getUser()->setAttribute('carga', null, 'busqueda');
+                    $this->getUser()->setFlash('error', ' Revisar archivo!! Nombre de una columna no fue econtrada: ' . strtoupper("código") . ", CANTIDAD, VALOR UNITARIO ");
+                    $this->redirect('orden_compra/index?id=' . $ordenId);
+                }
+                $codigo = "";
+                if (array_key_exists($columnaCodigo, $registro)) {
+                    $codigo = trim($registro[$columnaCodigo]);
+                }
+                $cantidad = 0;
+                if (array_key_exists($columnaCantidad, $registro)) {
+                    $cantidad = $registro[$columnaCantidad];
+                }
+                if (!(is_numeric($cantidad))) {
+                    $cantidad = 0;
+                }
+                if ($cantidad < 0) {
+                    $cantidad = 0;
+                }
+                $valorUnitario = 0;
+//                echo $columnaValor;
+//                die();
+                if (array_key_exists($columnaValor, $registro)) {
+                    $valorUnitario = $registro[$columnaValor];
+                }
+                if (!(is_numeric($valorUnitario))) {
+                    $valorUnitario = 0;
+                }
+                if ($valorUnitario < 0) {
+                    $valorUnitario = 0;
+                }
+                
+                $productoExiste = ProductoQuery::create()
+                        ->filterByCodigoSku($codigo)
+                        ->findOne();
+//                echo $codigo." ".$valorUnitario;
+//                echo "<pre>";
+//                print_r($productoExiste);
+//                die();
+                if ($productoExiste) {
+                    $productoid = $productoExiste->getId();
+                    if (($valorUnitario > 0) & ($cantidad > 0)) {
+                  
+                        $ordenQ = new OrdenProveedorDetalle();
+                        $ordenQ->setCantidad(1);
+                        $ordenQ->setProductoId($productoExiste->getId());
+                        $ordenQ->setDetalle($productoExiste->getNombre());
+                        $ordenQ->setCodigo($productoExiste->getCodigoSku());
+                        $ordenQ->setCantidad($cantidad);
+                        $ordenQ->setValorTotal(round($cantidad * $valorUnitario, 2));
+                        $ordenQ->setValorUnitario($valorUnitario);
+                        $ordenQ->setTotalIva(0);
+                        $ordenQ->setOrdenProveedorId($ordenId);
+                        $ordenQ->save();
+                    }
+                }
+            }
+        }
+        sfContext::getInstance()->getUser()->setAttribute('carga', serialize($linea), 'busqueda');
+        $this->getUser()->setFlash('exito', ' Archivo exportado con éxito ');
+        $this->redirect('orden_compra/index?id=' . $ordenId);
     }
-    
-    
+
+    public function executeReporte(sfWebRequest $request) {
+        $this->getResponse()->setContentType('text/html;charset=utf-8');
+        $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
+        $EmpresaQuery = EmpresaQuery::create()->findOneById($empresaId);
+        $nombreempresa = "Modelo";
+        $pestanas[] = "ACTUALIZA_INV";
+        $nombre = "Modelo";
+        $nombreEMpresa = $EmpresaQuery->getNombre();
+        $nombreEMpresa = str_replace(" ", "_", $nombreEMpresa);
+        $filename = "Carga_orden_compra_" . $nombreEMpresa . date("Ymd");
+        $xl = sfContext::getInstance()->getUser()->nuevoExcel($nombreempresa, $pestanas, $nombre);
+        $hoja = $xl->setActiveSheetIndex(0);
+        $hoja->getCell("A1")->setValueExplicit("TIPO DE ARCHIVO ", PHPExcel_Cell_DataType::TYPE_STRING);
+        $hoja->getStyle("A1")->getFonect()->setBold(true);
+        $hoja->getStyle("A1")->getFont()->setSize(10);
+        $hoja->getCell("B1")->setValueExplicit("Orden Compra " . strtoupper($nombreEMpresa), PHPExcel_Cell_DataType::TYPE_STRING);
+        $hoja->mergeCells("B1:D1");
+        $fila = 2;
+        $columna = 0;
+        $encabezados = null;
+        $encabezados[] = array("Nombre" => "CODIGO", "width" => 20, "align" => "center", "format" => "@");
+        $encabezados[] = array("Nombre" => strtoupper("Nombre"), "width" => 60, "align" => "left", "format" => "@");
+        $encabezados[] = array("Nombre" => strtoupper("cantidad"), "width" => 15, "align" => "left", "format" => "#,##0");
+        $encabezados[] = array("Nombre" => strtoupper("valor unitario"), "width" => 20, "align" => "left", "format" => "#,##0.00");
+        sfContext::getInstance()->getUser()->HojaImprimeEncabezadoHorizontal($encabezados, $columna, $fila, $hoja);
+        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaproducto'));
+
+
+        $fila++;
+
+
+        header("Content-Type: text/html;charset=utf-8");
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
+        header('Cache-Control: max-age=0');
+
+        $xl = PHPExcel_IOFactory::createWriter($xl, 'Excel5');
+        $xl->save('php://output');
+        throw new sfStopException();
+    }
+
+    public function executeAgregaProducto(sfWebRequest $request) {
+        $id = $request->getParameter('id');
+        $ordenProveedor = OrdenProveedorQuery::create()->findOneById($id);
+        $this->formProducto = new CreaProductoOrdenForm();
+        if ($request->isMethod('post')) {
+            $this->formProducto->bind($request->getParameter("consulta"), $request->getFiles("consulta"));
+            if ($this->formProducto->isValid()) {
+                $valores = $this->formProducto->getValues();
+                $productoQ = ProductoQuery::create()->findOneByCodigoSku($valores['codigo_sku']);
+                if ($productoQ) {
+                    $this->getUser()->setFlash('error', 'Codigo de Producto ya existe');
+                }
+                $producto = New Producto();
+                $producto->setCodigoSku($valores['codigo_sku']);  // => COML
+                $producto->setNombre($valores['nombre']);  // => INSTALACION
+                $producto->setTipoAparatoId($valores['tipo']);  // => 1
+                $producto->setPrecio($valores['precio']);  // => 515
+                $producto->setExistencia(0); //   $valores['existencia'];  // => 10
+                $producto->setCostoProveedor($valores['costo']);  // => 550
+                $producto->setNombreIngles($valores['nombre_ingles']);  // => 
+                $producto->setMarcaProducto($valores['marcaProducto']);  // => JAPANYFORCE
+                $producto->setCaracteristica($valores['caracteristica']);  // => 
+                $producto->setCodigoArancel($valores['codigo_arancel']);  // => 
+                $producto->setCostoFabrica($valores['costo_fabrica']);  // => 
+                $producto->setCostoCif($valores['costo_cif']);  // => 
+                $producto->setOrigen($valores['origen']);  // => 
+                $producto->setPeso($valores['peso']);  // => 
+                $producto->setAlto($valores['alto']);  // => 
+                $producto->setAncho($valores['ancho']);  // => 
+                $producto->setLargo($valores['largo']);  // => 
+                $producto->setCodigoProveedor($valores['codigo_proveedor']);  // => 
+                $producto->setActivo(false);
+                $producto->setCreatedBy('ORDEN');
+                $producto->save();
+                $ordenQ = new OrdenProveedorDetalle();
+                $ordenQ->setCantidad(1);
+                $ordenQ->setProductoId($producto->getId());
+                $ordenQ->setDetalle($producto->getNombre());
+                $ordenQ->setCodigo($producto->getCodigoSku());
+                $ordenQ->setCantidad($valores['existencia']);
+                $ordenQ->setValorTotal(round($valores['existencia'] * $valores['costo'], 2));
+                $ordenQ->setValorUnitario($valores['costo']);
+                $ordenQ->setTotalIva(0);
+                $ordenQ->setOrdenProveedorId($id);
+                $ordenQ->save();
+                $this->getUser()->setFlash('exito', 'Registro actualizado  con exito ');
+            }
+        }
+        $this->redirect('orden_compra/index?id=' . $id);
+    }
+
     public function executeValorPendiente(sfWebRequest $request) {
         $val = $request->getParameter('val');
         $id = $request->getParameter('id');
@@ -34,11 +230,8 @@ class orden_compraActions extends sfActions {
         $notaCredito = NotaCreditoQuery::create()->findOneById($val);
         if ($notaCredito) {
             $retorna = $notaCredito->getValorTotal() - $notaCredito->getValorConsumido();
-            ;
         }
-
         echo $retorna;
-        ;
         die();
     }
 
@@ -120,14 +313,14 @@ class orden_compraActions extends sfActions {
         $cuentaContable = $cuentaPartida['cuenta'];
         $nombreCuenta = $cuentaPartida['nombre'];
 
-          $proveedorQ = ProveedorQuery::create()->findOneById($ordenPago->getProveedorId());
+        $proveedorQ = ProveedorQuery::create()->findOneById($ordenPago->getProveedorId());
         $cuentaContableQ = CuentaErpContableQuery::create()->findOneByCuentaContable($proveedorQ->getCuentaContable());
         if ($cuentaContableQ) {
             $cuentaContable = $cuentaContableQ->getCuentaContable();
             $nombreCuenta = $cuentaContableQ->getNombre();
         }
 
-        
+
         //   $nombreCuenta = Partida::cuenta($cuentaContable);
         $partidaLinea = new PartidaDetalle();
         $partidaLinea->setPartidaId($partidaId);
@@ -143,14 +336,14 @@ class orden_compraActions extends sfActions {
         $cuentaPartida = Partida::busca($MedioPago->getCodigo(), 2, 2);
         $cuentaContable = $cuentaPartida['cuenta'];
         $nombreCuenta = $cuentaPartida['nombre'];
-        
-        
+
+
         if ($MedioPago->getBancoId()) {
-             $cuentaContableQ = CuentaErpContableQuery::create()->findOneByCuentaContable($MedioPago->getBanco()->getCuentaContable());
-        if ($cuentaContableQ) {
-            $cuentaContable = $cuentaContableQ->getCuentaContable();
-            $nombreCuenta = $cuentaContableQ->getNombre();
-        }
+            $cuentaContableQ = CuentaErpContableQuery::create()->findOneByCuentaContable($MedioPago->getBanco()->getCuentaContable());
+            if ($cuentaContableQ) {
+                $cuentaContable = $cuentaContableQ->getCuentaContable();
+                $nombreCuenta = $cuentaContableQ->getNombre();
+            }
         }
 
         $partidaLinea = new PartidaDetalle();
@@ -171,10 +364,9 @@ class orden_compraActions extends sfActions {
         //    $ordenProveedor = OrdenProveedorQuery::create()->findOneByCodigo($codigo);
         $ordenProveedorDetalle = OrdenProveedorDetalleQuery::create()
                 ->filterByOrdenProveedorId($ordenProveedor->getId())
-
                 ->find();
 
-     
+
         $TOTALIVA = 0;
         $TOTAL_GAS = $ordenProveedor->getImpuestoGas();
         $VALORtotal = 0;
@@ -235,7 +427,7 @@ class orden_compraActions extends sfActions {
             $partidaLinea->setHaber(0);
             $partidaLinea->setTipo(1);
             $partidaLinea->setGrupo($grupo);
-           $partidaLinea->save();
+            $partidaLinea->save();
         }
 
 
@@ -285,7 +477,7 @@ class orden_compraActions extends sfActions {
 
             $partidaLinea->setHaber($VALOR_RETIENE_IVA);
             $partidaLinea->setGrupo('RETENCIONES DE IVA');
-           $partidaLinea->save();
+            $partidaLinea->save();
         }
 
         $cuentaPartida = Partida::busca("RENTA%POR%PAGAR", 0, 2);
@@ -329,72 +521,6 @@ class orden_compraActions extends sfActions {
         $ordenProveedor->setValorImpuesto($VALOR_ISR + $VALOR_RETIENE_IVA);
         $ordenProveedor->setPartidaNo($partidaQ->getId());
         $ordenProveedor->save();
-    }
-
-    public function executeProcesaAuto(sfWebRequest $request) {
-                error_reporting(-1);
-        date_default_timezone_set("America/Guatemala");
-        $token = $request->getParameter('token');
-        $ordenQ = OrdenProveedorQuery::create()->findOneByToken($token);
-        if (!$ordenQ->getTiendaId()) {
-            $this->getUser()->setFlash('error', 'Debe seleccionar tienda ');
-            $this->redirect('orden_compra/index?id=');
-        }
-        $ordenDetalle = OrdenProveedorDetalleQuery::create()
-                ->filterByOrdenProveedorId($ordenQ->getId())
-                ->find();
-        $bodegaId = $ordenQ->getTiendaId();
-        $empresaId = $ordenQ->getEmpresaId();
-        foreach ($ordenDetalle as $regi) {
-            $productoQuery = ProductoQuery::create()->findOneById($regi->getId());
-            if ($productoQuery) {
-                $clave = $productoQuery->getId();
-                // $valoresIVa = ParametroQuery::ObtenerIva($regi->getValorTotal(), $ordenQ->getExcento());
-                ProductoMovimientoQuery::Ingreso($clave, $regi->getCantidad(), $ordenQ->getCodigo() . "-" . $regi->getId(), "Orden de Compra", null, null, null);
-                ProductoExistenciaQuery::Actualiza($clave, $regi->getCantidad(), $bodegaId);
-                $ListaProductos = ProductoExistenciaQuery::create()
-                        ->filterByEmpresaId($empresaId)
-                        ->filterByProductoId($clave)
-                        ->withColumn('sum(ProductoExistencia.Cantidad)', 'ValorTotal')
-                        ->findOne();
-                $nuevaExistencia = $ListaProductos->getValorTotal();
-                $productoQuery->setExistencia($nuevaExistencia);
-                $productoQuery->save();
-            }
-        }
-        BitacoraDocumento::grabacion('Orden Compra', $ordenQ->getCodigo(), 'Finalizacion', "Orden Finalizada");
-        //// CREAR PARTIDA
-        ////  CREAR REGISTRO CUENTA PROVEEDOR
-        sfContext::getInstance()->getUser()->setAttribute('OrdenId', null, 'seguridad');
-        $ordenQ->setDespacho(true);
-        $ordenQ->save();
-        if (!$ordenQ->getPartidaNo()) {
-            $this->partidaInventario($ordenQ);
-        }
-        $cuentaProveedor = CuentaProveedorQuery::create()->findOneByOrdenProveedorId($ordenQ->getId());
-        if (!$cuentaProveedor) {
-            $cuentaProveedor = new CuentaProveedor();
-            $cuentaProveedor->setOrdenProveedorId($ordenQ->getId());
-        }
-
-        $valorTota = $ordenQ->getValorTotal() - $ordenQ->getValorImpuesto();
-
-        if ($ordenQ->getImpuestoGas() > 0) {
-            $valorTota = $ordenQ->getValorTotal() - $ordenQ->getValorImpuesto() + $ordenQ->getImpuestoGas();
-        }
-        $valorTota = round($valorTota, 2);
-        $ordenQ->setValorTotal($valorTota);
-        $ordenQ->save();
-
-        $cuentaProveedor->setProveedorId($ordenQ->getProveedorId());
-        $cuentaProveedor->setFecha(date('Y-m-d'));
-        $cuentaProveedor->setDetalle("Orden Compra " . $ordenQ->getCodigo());
-        $cuentaProveedor->setValorTotal($valorTota);
-        $cuentaProveedor->setValorPagado(0);
-        $cuentaProveedor->save();
-        $this->redirect('orden_compra/muestra?token=' . $token);
-
-        $this->getUser()->setFlash('exito', 'Registro actualizado  con exito ');
     }
 
     public function executeVista(sfWebRequest $request) {
@@ -445,7 +571,7 @@ class orden_compraActions extends sfActions {
         //    $this->cuenta = CuentaProveedorQuery::create()->findOneById($this->id);
         $value['fecha'] = date('d/m/Y');
         if ($cuentaVivi) {
-            $value['valor'] = round($cuentaVivi->getValorTotal()-$ordenQ->getValorImpuesto() - $cuentaVivi->getValorPagado(), 2);
+            $value['valor'] = round($cuentaVivi->getValorTotal() - $ordenQ->getValorImpuesto() - $cuentaVivi->getValorPagado(), 2);
         }
         sfContext::getInstance()->getUser()->setAttribute("proveedorId", $ordenQ->getProveedorId(), 'seguridad');
 
@@ -552,14 +678,13 @@ class orden_compraActions extends sfActions {
     }
 
     public function executeConfirmar(sfWebRequest $request) {
-        
-    
-           error_reporting(-1);
+
+        error_reporting(-1);
         date_default_timezone_set("America/Guatemala");
         $id = $request->getParameter('id');
         $token = $request->getParameter('token');
         $ordenQ = OrdenProveedorQuery::create()->findOneById($id);
-
+        $tiendaId = $ordenQ->getTiendaId();
         $camposOblitatorios = CampoUsuarioQuery::create()
                 ->filterByTipoDocumento('OrdenCompra')
                 ->filterByTiendaId(null)
@@ -602,23 +727,99 @@ class orden_compraActions extends sfActions {
                 $this->redirect('orden_compra/index?tab=3&aler=' . $regitr->getId());
             }
         }
+        if (!$ordenQ->getTiendaId()) {
+            $this->getUser()->setFlash('error', 'Debe seleccionar tienda ');
+            $this->redirect('orden_compra/index?id=');
+        }
 
-  
+            if ($ordenQ->getEstatus() == 'Proceso') {
+              sfContext::getInstance()->getUser()->setAttribute('OrdenId', null, 'seguridad');
+                $ordenQ->setEstatus("Confirmada");
+                $ordenQ->setFecha(date('Y-m-d H:i:s'));
+                $ordenQ->setToken(sha1($ordenQ->getCodigo()));
+                $ordenQ->save();
+                $this->getUser()->setFlash('exito', 'Registro actualizado  con exito ');
+                $this->redirect('orden_compra/muestra?token=' . $token);
+            }
+        
         if ($ordenQ) {
             $tokenGuardado = sha1($ordenQ->getCodigo());
             if ($token == $tokenGuardado) {
 
                 if ($ordenQ->getEstatus() == 'Autorizado') {
-                    $this->redirect('orden_compra/procesaAuto?token=' . $token);
+                    $productos = OrdenProveedorDetalleQuery::create()
+                            ->filterByOrdenProveedorId($id)
+                            ->filterByProductoId(null, Criteria::NOT_EQUAL)
+                            ->find();
+                    foreach ($productos as $reg) {
+                        $productoExistencia = ProductoExistenciaQuery::create()
+                                ->filterByTiendaId($tiendaId)
+                                ->filterByProductoId($reg->getProductoId())
+                                ->findOne();
+                        if (!$productoExistencia) {
+                            $productoExistencia = new ProductoExistencia();
+                            $productoExistencia->setTiendaId($tiendaId);
+                            $productoExistencia->setProductoId($reg->getProductoId());
+                            $productoExistencia->setCantidad(0);
+                            $productoExistencia->save();
+                        }
+                        $inicial = $productoExistencia->getCantidad();
+                        $nuevoValor = $productoExistencia->getCantidad() + $reg->getCantidad();
+
+                        $movimienoto = new ProductoMovimiento();
+                        $movimienoto->setTiendaId($tiendaId);
+                        $movimienoto->setProductoId($reg->getProductoId());
+                        $movimienoto->setCantidad($reg->getCantidad());
+                        $movimienoto->setIdentificador("ORDEN COMPRA " . $ordenQ->getCodigo());
+                        $movimienoto->setTipo('INGRESO');
+                        $movimienoto->setFecha(date('Y-m-d H:i:s'));
+                        $movimienoto->setMotivo("Proveedor " . $ordenQ->getProveedor()->getNombre() . " Documento " . $ordenQ->getNoDocumento());
+                        $movimienoto->setInicio($inicial);
+                        $movimienoto->setEmpresaId($ordenQ->getEmpresaId());
+                        $movimienoto->setFin($nuevoValor);
+                        $movimienoto->setCosto($reg->getValorUnitario());
+                        $movimienoto->save();
+                        $productoExistencia->setCantidad($nuevoValor);
+                        $productoExistencia->save();
+                    }
+
+
+                    sfContext::getInstance()->getUser()->setAttribute('OrdenId', null, 'seguridad');
+                    $ordenQ->setEstatus("Finalizada");
+                    $ordenQ->setFecha(date('Y-m-d H:i:s'));
+                    $ordenQ->setToken(sha1($ordenQ->getCodigo()));
+                    $ordenQ->save();
+
+                    $ordenQ->setDespacho(true);
+                    $ordenQ->save();
+                    if (!$ordenQ->getPartidaNo()) {
+                        $this->partidaInventario($ordenQ);
+                    }
+                    $cuentaProveedor = CuentaProveedorQuery::create()->findOneByOrdenProveedorId($ordenQ->getId());
+                    if (!$cuentaProveedor) {
+                        $cuentaProveedor = new CuentaProveedor();
+                        $cuentaProveedor->setOrdenProveedorId($ordenQ->getId());
+                    }
+
+                    $valorTota = $ordenQ->getValorTotal() - $ordenQ->getValorImpuesto();
+
+                    if ($ordenQ->getImpuestoGas() > 0) {
+                        $valorTota = $ordenQ->getValorTotal() - $ordenQ->getValorImpuesto() + $ordenQ->getImpuestoGas();
+                    }
+                    $valorTota = round($valorTota, 2);
+                    $ordenQ->setValorTotal($valorTota);
+                    $ordenQ->save();
+
+                    $cuentaProveedor->setProveedorId($ordenQ->getProveedorId());
+                    $cuentaProveedor->setFecha(date('Y-m-d'));
+                    $cuentaProveedor->setDetalle("Orden Compra " . $ordenQ->getCodigo());
+                    $cuentaProveedor->setValorTotal($valorTota);
+                    $cuentaProveedor->setValorPagado(0);
+                    $cuentaProveedor->save();
+
+                    $this->redirect('orden_compra/muestra?token=' . $token);
+                    $this->getUser()->setFlash('exito', 'Registro actualizado  con exito ');
                 }
-           
-                sfContext::getInstance()->getUser()->setAttribute('OrdenId', null, 'seguridad');
-                $ordenQ->setEstatus("Confirmada");
-                $ordenQ->setFecha(date('Y-m-d H:i:s'));
-                $ordenQ->setToken(sha1($ordenQ->getCodigo()));
-                $ordenQ->save();
-                $this->redirect('orden_compra/muestra?token=' . $token);
-                $this->getUser()->setFlash('exito', 'Registro actualizado  con exito ');
             }
         }
         $this->redirect('orden_compra/index');
@@ -795,6 +996,7 @@ class orden_compraActions extends sfActions {
                 ->findOne();
         if ($ordenDetalle) {
             $OperacionId = $ordenDetalle->getOrdenProveedorId();
+            $PRODUCTOid = $ordenDetalle->getProductoId();
             $ordenProveedor = OrdenProveedorQuery::create()->findOneById($OperacionId);
             $excenta = $ordenProveedor->getExcento();
             $ordenDetalle->delete();
@@ -822,7 +1024,18 @@ class orden_compraActions extends sfActions {
                 $ordenProveedor->setValorRetieneIva($valores['VALOR_RETIENE_IVA']);
             }
             $ordenProveedor->save();
-            $this->getUser()->setFlash('error', 'Registro eliminado  con exito ');
+
+//            $prodQ = ProductoQuery::create()->filterByCreatedAt('ORDEN')->filterById($PRODUCTOid)->filterByActivo(false)->findOne();
+//            if ($prodQ) {
+//                $con = Propel::getConnection();
+//                $con->beginTransaction();
+//                try {
+//                    $prodQ->delete();
+//                    $con->commit();
+//                } catch (Exception $e) {
+//                    $con->rollback();
+//                }
+//            }
         }
         $this->redirect('orden_compra/index?id=');
     }
@@ -978,23 +1191,21 @@ class orden_compraActions extends sfActions {
         sfContext::getInstance()->getUser()->setAttribute('tab', null, 'seguridad');
         $id = sfContext::getInstance()->getUser()->getAttribute('OrdenId', null, 'seguridad');
         $tipoApara = TipoAparatoQuery::create()->find();
-        foreach($tipoApara as $reg) {
-           $prudcto  = ProductoQuery::create()
-                   ->filterByNombre($reg->getDescripcion())
-                   ->filterByCodigoSku($reg->getCodigo())
-                   ->findOne();
-           if (!$prudcto) {
-            $prudcto = New Producto();
-           }
+        foreach ($tipoApara as $reg) {
+            $prudcto = ProductoQuery::create()
+                    ->filterByNombre($reg->getDescripcion())
+                    ->filterByCodigoSku($reg->getCodigo())
+                    ->findOne();
+            if (!$prudcto) {
+                $prudcto = New Producto();
+            }
             $prudcto->setTopVenta(true);
             $prudcto->setActivo(false);
             $prudcto->setNombre($reg->getDescripcion());
             $prudcto->setCodigoSku($reg->getCodigo());
             $prudcto->save();
-//            echo $prudcto->getId();
-//            die();
         }
-        
+
         $orden = OrdenProveedorQuery::create()->findOneById($id);
         $this->proveedores = ProveedorQuery::create()->orderByNombre("Asc")->find();
         $provedorId = null;
@@ -1036,9 +1247,8 @@ class orden_compraActions extends sfActions {
             $default['aplica_isr'] = $orden->getAplicaIsr();
             $default['aplica_iva'] = $orden->getAplicaIva();
             $default['exento_isr'] = $orden->getExcentoIsr();
-
-            // $default['tienda'] = $orden;
         }
+        $this->formProducto = new CreaProductoOrdenForm();
         $this->form = new CreaOrdenProveedorForm($default);
         if ($request->isMethod('post')) {
             $this->form->bind($request->getParameter("consulta"), $request->getFiles("consulta"));

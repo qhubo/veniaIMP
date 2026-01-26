@@ -40,8 +40,9 @@
             <?php $conta++; ?>
             <tr >
                 <td><?php echo $data->getCodigo(); ?></td>
-                <td><?php echo $data->getEstatus(); ?></td>
+     
                 <td style="text-align: center"><?php echo $data->getFecha('d/m/Y H:i'); ?></td>
+                           <td><?php echo $data->getEstatus(); ?></td>
                 <td><?php echo $data->getUsuario(); ?></td>
                 <td><?php echo $data->getNombre(); ?></td>
                 <td><?php echo $data->getComentario(); ?></td>

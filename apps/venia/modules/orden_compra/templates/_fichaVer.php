@@ -26,8 +26,8 @@
 
             <th align="center"><span class="kt-font-success">Documento </span></th>
 
-            <th align="center"><span class="kt-font-success">Sub Total</span></th>
-            <th align="center"><span class="kt-font-success">Iva</span></th>
+            <th align="center"><span class="kt-font-success"></span></th>
+            <th align="center"><span class="kt-font-success"></span></th>
             <th align="center"><span class="kt-font-success">Total</span></th>
 
         </tr>
@@ -35,29 +35,12 @@
     <tbody>
         <tr>
             <td><?php echo $orden->getSerie() ?> <?php echo $orden->getNoDocumento() ?> </td>
-            <td><?php echo number_format($orden->getSubTotal(), 2); ?> </td>
-            <td><?php echo number_format($orden->getIva(), 2); ?> </td>
+            <td><?php //echo number_format($orden->getSubTotal(), 2); ?> </td>
+            <td><?php //echo number_format($orden->getIva(), 2); ?> </td>
             <td><h3><?php echo number_format($orden->getValorTotal(), 2); ?></h3> </td>
         </tr>
         
-             <?php if ($orden->getValorImpuesto()) { ?>
-                 <tr>
-    
-                <td>ISR</td>
-                <td>Valor Retenido</td>
-                <td style="text-align: right"></td>
-                <td> <div style="text-align: right"> <?php echo Parametro::formato($orden->getValorImpuesto() * -1); //, 2, '.', '');  ?></div> </td>
-          
-            </tr>
-                 <tr>
-                 
-                <td colspan="3" style="text-align: right"><strong> <font size="+2">VALOR PAGAR</font></strong> </td>
-
-                <td> <div style="text-align: right"><strong> <font size="+2"> <?php echo Parametro::formato($orden->getValorTotal()+$orden->getValorImpuesto() * -1); //, 2, '.', '');  ?></font></strong></div> </td>
-          
-            </tr>
-        
-        <?php } ?>
+       
             
     </tbody>
 

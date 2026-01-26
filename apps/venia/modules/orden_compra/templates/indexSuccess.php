@@ -2,7 +2,21 @@
 <?php $estiloUno = ''; ?>
 <?php $estiloDos = 'style="display:none;"'; ?>
 <?php $vivienda = 1; ?>
+<style>
+    .required {
+  border-color:  red;
+   border-left: 1px solid right;
+}
+    .required2 {
+  color: red;
 
+
+}
+.required:invalid {
+    border-color: red;
+}
+
+    </style>
 
 
 <div class="kt-portlet kt-portlet--responsive-mobile">
@@ -24,7 +38,15 @@
             </h3>
         </div>
         <div class="kt-portlet__head-toolbar">
-            <?php if ($orden) { ?>  <font size="+2"> <strong> <?php echo $orden->getCodigo(); ?>  </strong> </font> <?php } ?>
+            <?php if ($orden) { ?> 
+            <font size="+2"> <strong> <?php echo $orden->getCodigo(); ?>  </strong> </font>
+
+             <a href="<?php echo url_for($modulo . '/reporte') ?>" class="btn btn-sm btn-dark" > <li class="fa fa-cloud-upload"></li> Archivo Modelo Carga  </a>
+       
+
+ <?php } ?>
+        
+        
         </div>
     </div>
     <div class="kt-portlet__body">
@@ -95,6 +117,9 @@
                                     Servicios
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a data-toggle="modal" href="#staticProducto" class="btn btn-secondary btn-dark"> <i class="flaticon-plus"></i> Nuevo </a>
+                            </li>
 <!--                            <li class="nav-item">
                                 <a class="nav-link   <?php if ($tablista == 3) { ?> active <?php } ?>" data-toggle="tab" href="#kt_portlet_base_demo_2_6_tab_content" role="tab" aria-selected="false">
                                     Otros
@@ -105,7 +130,9 @@
                 </div>
                 <div class="tab-content">
                     <div class="tab-pane  <?php if ($tablista == 1) { ?> active <?php } ?>  " id="kt_portlet_base_demo_2_4_tab_content" role="tabpanel">
-                        <?php  include_partial('busca/ordenProducto', array()) ?>  
+                      
+                    
+  <?php  include_partial('busca/ordenProducto', array()) ?>  
                     </div>
                     <div class="tab-pane   <?php if ($tablista == 2) { ?> active <?php } ?>" id="kt_portlet_base_demo_2_5_tab_content" role="tabpanel">
                         <div class="row">
@@ -132,7 +159,7 @@
                 <?php include_partial($modulo . '/lista', array('id'=>$id,'listado'=>$listado)) ?>      
             </div>
         </div>
-             <?php  include_partial($modulo . '/total', array('listado'=>$listado, 'modulo'=>$modulo, 'orden' => $orden, 'proveedor' => $proveedor, 'id' => $id, 'form'=>$form)) ?>
+             <?php  include_partial($modulo . '/total', array('formProducto'=>$formProducto, 'listado'=>$listado, 'modulo'=>$modulo, 'orden' => $orden, 'proveedor' => $proveedor, 'id' => $id, 'form'=>$form)) ?>
               
     </div>
 </div>
@@ -257,3 +284,14 @@ jQuery(document).ready(function($){
 <?php } ?>
  
  
+ <div class="modal fade" id="ajaxmodal" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
+     role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 700px">
+        <div class="modal-content" style=" width: 700px">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="ti-close"></span></button>
+                <h4 class="modal-title" id="myModalLabel6">Carga Archivo</h4>
+            </div>
+        </div>
+    </div>
+</div>

@@ -93,6 +93,10 @@ class cargaActions extends sfActions {
                     $this->redirect('actualiza_inventario_ubica/carga?id=' . $bitacora->getId());
                 }
                 
+                  if ($this->tipo == 'ordencompra') {
+                    $this->redirect('orden_compra/carga?id=' . $bitacora->getId());
+                }
+                
 
                 if ($this->tipo == 'existencianueva') {
                     $this->redirect('actualiza_tienda_ubica/carga?id=' . $bitacora->getId());

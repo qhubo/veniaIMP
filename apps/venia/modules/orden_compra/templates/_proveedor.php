@@ -80,12 +80,12 @@
                     <?php echo $form['dia_credito']->renderError() ?>  
                 </span>
             </div>
-         <div class="col-lg-2"><div style="text-align:right">Aplica IVA&nbsp;<?php if ($orden) { ?> <?php echo $form['aplica_iva'] ?>  <?php } ?> 
+<!--         <div class="col-lg-2"><div style="text-align:right">Aplica IVA&nbsp;<?php if ($orden) { ?> <?php echo $form['aplica_iva'] ?>  <?php } ?> 
                 <BR>Retiene IVA&nbsp;&nbsp;<?php if ($orden) { ?><?php echo $form['aplica_isr'] ?>  <?php } ?>
                <BR>Exento ISR&nbsp;&nbsp;<?php if ($orden) { ?><?php echo $form['exento_isr'] ?>  <?php } ?>
            
              </div> </div>
-    </div>
+    </div>-->
 <?php } ?>
 <?php // } ?>
 
@@ -155,7 +155,7 @@
     </div>
      <?php } ?>
     <?php } ?>
-        <div class="col-lg-2"> </div>
+   
     
              <?php if ($id) { ?>
      <div class="col-lg-2"> 
@@ -163,7 +163,14 @@
                 <button class="btn btn-primary btn-sm " type="submit">
                     <i class="fa fa-save "></i> Actualizar
                 </button>
+        
+    
             </div>
+           <div class="col-lg-2"> 
+                 <br>
+               <a href="<?php echo url_for("carga/index?tipo=ordencompra") ?>" class="btn btn-secondary btn-hover-brand" data-toggle="modal" data-target="#ajaxmodal"> <li class="fa fa-cloud-download"></li> Importar archivo   </a>
+
+           </div>
      <?php } ?>   
 </div>
 
