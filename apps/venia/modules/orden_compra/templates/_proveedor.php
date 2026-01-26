@@ -105,83 +105,30 @@
 <?php } ?>
 
 <?php if ($orden) { ?>
-<div class="row" style="background-color:#F9FBFE " >
-<!--    <div class="col-lg-1"> </div>-->
-<!--    <div class="col-lg-1" ><div style="text-align:right">Nit</div> </div>
-    <div class="col-lg-2 <?php if ($form['nit']->hasError()) echo "has-error" ?>">
-        <input   class="form-control"  <?php if ($orden) { ?>  value="<?php echo $orden->getNit(); ?>"  <?php } ?> style="background-color:#F9FBFE ;"  placeholder="Nit"  name="consulta[nit]" id ="consulta_nit" readonly="true">
-                <span class="help-block form-error"> 
-                    <?php echo $form['nit']->renderError() ?>  
-                </span>
-     </div>-->
-    
-    
-<!--    <div class="col-lg-1"><div style="text-align:right">Nombre</div> </div>
-   <div class="col-lg-3 <?php if ($form['nombre']->hasError()) echo "has-error" ?>">
-        <input   class="form-control"  <?php if ($orden) { ?>  value="<?php echo $orden->getNombre(); ?>"  <?php } ?> style="background-color:#F9FBFE ;"  placeholder="Nombre"  name="consulta[nombre]"  id ="consulta_nombre" readonly="true">
-                <span class="help-block form-error"> 
-                    <?php echo $form['nombre']->renderError() ?>  
-                </span>
-     </div>-->
-<!--    <div class="col-lg-1">
-<?php if ($id) { ?>
-        <div class="row">
-            <div class="col-lg-10">
-                <div  id="btlista<?php echo $i ?>"  <?php echo $estiloUno ?> >
-                    <a id="activar<?php echo $i ?>" vivi="1" dat="<?php echo $i ?>" class="btn btn-outline  "><img src="/images/UnCheck.png"> </a>     
-                </div> 
-                <div  id="bNtactiva<?php echo $i ?>" <?php echo $estiloDos ?>>
-                    <a id="Nactivar<?php echo $i ?>"  vivi="1"  dat="<?php echo $i ?>" class="btn btn-outline  "><img src="/images/Check.png"></a> 
-                </div> 
-            </div>
-        </div>
-<?php } ?>
-    </div>-->
-   
-       
-    
-        <div class="col-lg-2" >  <div style="text-align:right"> Observaciones</div> </div>
-       <div class="col-lg-6 <?php if ($form['observaciones']->hasError()) echo "has-error" ?>">
+    <div class="row" style="background-color:#F9FBFE " >
+     <div class="col-lg-2" >  <div style="text-align:right"> Observaciones</div> </div>
+     <div class="col-lg-5 <?php if ($form['observaciones']->hasError()) echo "has-error" ?>">
                 <?php echo $form['observaciones'] ?>           
                 <span class="help-block form-error"> 
                     <?php echo $form['observaciones']->renderError() ?>  
                 </span>
-            </div>
-    <?php if ($orden) { ?>
-
-    <div class="col-lg-1">
+     </div>
+     <div class="col-lg-1">
      <?php  if ($orden->getEstatus() =="Autorizado") {  ?>
         <img  src="/images/autorizado.png" width="300px" >
-    <?php } ?>
-        
+    <?php } ?>        
     </div>
-     <?php } ?>
-   
-    
-             <?php if ($id) { ?>
      <div class="col-lg-2"> 
         <br>
-                <button class="btn btn-primary btn-sm " type="submit">
-                    <i class="fa fa-save "></i> Actualizar
-                </button>
-        
-    
-            </div>
-           <div class="col-lg-2"> 
-                 <br>
-               <a href="<?php echo url_for("carga/index?tipo=ordencompra") ?>" class="btn btn-secondary btn-hover-brand" data-toggle="modal" data-target="#ajaxmodal"> <li class="fa fa-cloud-download"></li> Importar archivo   </a>
-
-           </div>
-     <?php } ?>   
+          <button class="btn btn-primary btn-sm " type="submit"><i class="fa fa-save "></i> Actualizar </button>
+      </div>
+       <div class="col-lg-2"> 
+             <br>
+              <a href="<?php echo url_for("carga/index?tipo=ordencompra") ?>" class="btn btn-secondary btn-hover-brand" data-toggle="modal" data-target="#ajaxmodal"> <li class="fa fa-cloud-download"></li> Importar archivo   </a>
+        </div>
 </div>
-
 <?php } ?>
 
-<div class="row" <?php if (!$id) { ?>  style="background-color:#F9FBFE " <?php } ?> >
-
-
-
-</div>
 
 
 
