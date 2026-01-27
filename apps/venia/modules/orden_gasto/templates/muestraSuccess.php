@@ -49,11 +49,11 @@
                     <i class="fa fa-bar-chart" aria-hidden="true"></i>Documento
                 </a>
             </li>
-                    <li class="nav-item">
+<!--                    <li class="nav-item">
                     <a class="nav-link <?php if ($tab == 5) { ?> active <?php } ?>  " data-toggle="tab" href="#kt_portlet_base_demo_3_5_tab_content" role="tab" aria-selected="false">
                         <i class="fa fa-bar-chart" aria-hidden="true"></i>Contable
                     </a>
-                </li>
+                </li>-->
                 <li class="nav-item">
                     <a class="nav-link <?php if ($tab == 6) { ?> active <?php } ?>  " data-toggle="tab" href="#kt_portlet_base_demo_3_6_tab_content" role="tab" aria-selected="false">
                         <i class="fa fa-bar-chart" aria-hidden="true"></i>Pago

@@ -32,11 +32,11 @@
                     <i class="fa fa-calendar-check-o" aria-hidden="true"></i>Informativo
                 </a>
             </li>
-            <li class="nav-item">
+<!--            <li class="nav-item">
                 <a class="nav-link <?php if ($tab == 2) { ?> active <?php } ?>  " data-toggle="tab" href="#kt_portlet_base_demo_3_3_tab_content<?php echo $lin; ?><?php echo $orden->getId(); ?>" role="tab" aria-selected="false">
                     <i class="fa fa-bar-chart" aria-hidden="true"></i>Contable
                   </a>
-            </li>
+            </li>-->
                      <li class="nav-item">
                 <a class="nav-link <?php if ($tab == 3) { ?> active <?php } ?>  " data-toggle="tab" href="#kt_portlet_base_demo_3_4_tab_content<?php echo $lin; ?><?php echo $orden->getId(); ?>" role="tab" aria-selected="false">
                     <i class="fa fa-bar-chart" aria-hidden="true"></i>Detalle Gasto Caja

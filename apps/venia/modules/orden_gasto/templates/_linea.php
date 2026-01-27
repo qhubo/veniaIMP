@@ -8,14 +8,13 @@
     } ?>
 <table class="table table-bordered " >
     <thead >
-    <th  align="center"><font size="-1">Cuenta Contable </font> </th>
+
     <th  align="center"><font size="-1">Concepto </font> </th>
-    <th  align="center"><font size="-1">Cantidad </font> </th>
-    <th  align="center"> </th>
-    <th  align="center"><font size="-1">Valor </font> </th>
-    <th  align="center"><font size="-1">Subtotal </font></th>
-    <th  align="center"><font size="-1">IVA </font></th>
-    <th></th>
+    <th  align="center" style="width:100px;"><font size="-1">Cantidad </font> </th>
+    <th  align="center" style="width:50px;"> </th>
+    <th  align="center" style="width:200px;"><font size="-1">Valor </font> </th>
+
+     <th  align="center" style="width:130px;"> </th>
 
 
 </thead>
@@ -29,13 +28,12 @@
             $nombre = $cuentaQ->getNombre();
         } ?>
         <tr>
-            <td><?php echo $data->getCuentaContable() . " " . $nombre; ?> </td>
+  
             <td><?php echo $data->getConcepto(); ?> </td>
             <td><?php echo $data->getCantidad(); ?> </td>
             <td><strong><?php echo $moneda; ?></strong> </td>
             <td><?php echo number_format((float) ($data->getValorTotal()), 2, '.', ''); ?> </td>
-            <td><?php echo number_format((float) ($data->getSubTotal()), 2, '.', ''); ?> </td>
-            <td><?php echo number_format((float) ($data->getIva()), 2, '.', ''); ?> </td>
+
             <td>  
                 <a href="<?php echo url_for($modulo . '/eliminaLinea?id=' . $data->getId()) ?>" class="btn btn-sm  btn-danger" > <i class="fa fa-trash"></i>  </a>
 
@@ -57,12 +55,7 @@
         <?php $id = 0; ?>
                     <?php $total = 0; ?>
             <tr>
-                <td class=" <?php if ($form['cuenta_contable']->hasError()) echo "has-error" ?>">
-                        <?php echo $form['cuenta_contable'] ?>     
-                    <span class="help-block form-error"> 
-        <?php echo $form['cuenta_contable']->renderError() ?>  
-                    </span>
-                </td>
+         
                 <td class=" <?php if ($form['nombre']->hasError()) echo "has-error" ?>">
                         <?php echo $form['nombre'] ?>     
                     <span class="help-block form-error"> 
@@ -82,22 +75,14 @@
         <?php echo $form['valor']->renderError() ?>  
                     </span>
                 </td>
-                <td>       <div  align="right" class="total" id="total"><?php echo number_format($subtotal, 2); ?></div>
-
-                </td>
-                <td>
-                    <div  align="right" class="graiva" id="graiva"><?php echo number_format($iva, 2); ?></div>
-
-                </td>
+               
                 <td> 
                     <?php if ($can >0 ) { ?>
                     <?php if (!$id_detalle) { ?>   
                     <?php if (!$agrega) {  ?>
                     <a href="<?php echo url_for($modulo . '/index?agrega=1') ?>" class="btn btn-sm  btn-success" > <i class="fa flaticon2-add"></i>  </a></td>
                     <?php } else { ?>
-                  <button class="btn btn-primary btn-sm " type="submit">
-                            <i class="fa fa-save "></i> Agregar
-                        </button>
+                  <button class="btn btn-primary btn-sm " type="submit"><i class="fa fa-save "></i>Agregar</button>
                     <?php } ?>
                     <?php } ?>
                     <?php } ?>

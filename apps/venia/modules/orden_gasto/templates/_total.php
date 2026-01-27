@@ -1,17 +1,6 @@
         <div class="row" style="padding-top: 5px;">        
-            <div class="col-lg-4"></div>
-            <div class="col-lg-1">
-                <span class="kt-font-success"> <h5>SUB TOTAL </h5>  </span>
-            </div>
-            <div class="col-lg-1">
-                <span class="kt-font-success"><div name="grasubtotal" id ="grasubtotal"><?php if ($orden)  { echo number_format($orden->getSubTotal(),2);   } ?></div>  </span>
-            </div>                
-            <div class="col-lg-1">
-                <span class="kt-font-success"><h5>IVA  </h5></span>
-            </div>
-            <div class="col-lg-1">
-                <span class="kt-font-success"><div name="graiva" id ="graiva"><?php if ($orden)  { echo number_format($orden->getIva(),2);   } ?></div>  </span>
-            </div>                
+            <div class="col-lg-7"></div>
+                        
             <div class="col-lg-1">
                 <span class="kt-font-success"><h5>TOTAL </h5> </span>
             </div>
@@ -22,24 +11,7 @@
         </div>
 
 
-   <div class="row" style="padding-top: 5px;">        
-            <div class="col-lg-4"></div>
-                     
-            <div class="col-lg-2">
-                <span class="kt-font-success"><h5>ISR RETENIDO  </h5></span>
-            </div>
-            <div class="col-lg-1">
-                <span class="kt-font-success"><div name="graiva" id ="graisr"><?php if ($orden)  { echo number_format($orden->getValorIsr(),2);   } ?></div>  </span>
-            </div>                
-            <div class="col-lg-2">
-                <span class="kt-font-success"><h5>IVA RETENIDO </h5> </span>
-            </div>
-            <div class="col-lg-1">
-                <span class="kt-font-success"><h5> <div name="graRETIENEivA" id ="graRETIENEivA"><?php if ($orden)  { echo number_format($orden->getValorRetieneIva()+$orden->getValorRetenidoIva(),2);   } ?></div></h5> </span>
-            </div>  
-            
 
-        </div>
 
 <?php if (count($orden) >0) { ?>
 <div class="row" style="background-size: auto; background-image: url(./assets/media//bg/300.jpg);">

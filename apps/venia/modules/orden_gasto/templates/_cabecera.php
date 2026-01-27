@@ -13,11 +13,11 @@
             <?php echo $form['proveedor_id']->renderError() ?>  
         </span>
     </div>
-    <div class="col-lg-1" ><div style="text-align:right">Proyecto</div> </div>
-    <div class="col-lg-3 <?php if ($form['proyecto_id']->hasError()) echo "has-error" ?>">
-        <?php if ($orden) { ?>    <?php echo $form['proyecto_id'] ?> <?php } ?>          
+    <div class="col-lg-1" ><div style="text-align:right">Tienda</div> </div>
+    <div class="col-lg-3 <?php if ($form['tienda_id']->hasError()) echo "has-error" ?>">
+        <?php if ($orden) { ?>    <?php echo $form['tienda_id'] ?> <?php } ?>          
         <span class="help-block form-error"> 
-            <?php echo $form['proyecto_id']->renderError() ?>  
+            <?php echo $form['tienda_id']->renderError() ?>  
         </span>
     </div>
 
@@ -68,21 +68,8 @@
 
 
 <div class="row">
-<div class="col-lg-2"><div style="text-align:right">Tienda</div> </div>
-    <div class="col-lg-2">      <?php if ($orden) { ?>      <?php echo $form['tienda_id'] ?>    <?php } ?> </div>
-  
-       <div class="col-lg-2">
-           <div style="text-align:right">Aplica IVA&nbsp;<?php if ($orden) { ?> <?php echo $form['aplica_iva'] ?>  <?php } ?> 
-               <BR>Retiene IVA&nbsp;&nbsp;<?php if ($orden) { ?><?php echo $form['aplica_isr'] ?>  <?php } ?>
-               
-               <BR>Exento ISR&nbsp;&nbsp;<?php if ($orden) { ?><?php echo $form['exento_isr'] ?>  <?php } ?>
-<!--           <BR>Retiene IVA&nbsp;&nbsp;
-               -->
-               <?php if ($orden) { ?><?php //echo $form['retiene_iva'] ?>  <?php } ?>
-           
-           </div> 
-       
-       </div>
+<div class="col-lg-7"> </div>
+
  
      <?php if (count($detalles) >0) { ?>
                 <?php if ($id) { ?>

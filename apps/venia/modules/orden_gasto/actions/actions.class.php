@@ -860,18 +860,6 @@ class orden_gastoActions extends sfActions {
                     $iva = $valoresIVA['IVA'];
                     $valorSInIVa = $valoresIVA['VALOR_SIN_IVA'];
 
-                    $IVAIDP = $iva;
-                    $valorSInIVaIDP = $valorSInIVa;
-                    if ($registr->getCuentaContable() == "61203047") {
-                        $USAIDP = 1;
-                        $iva = 0;
-                        $valorSInIVa = $suma;
-                    }
-                    if ($registr->getCuentaContable() != "61203047") {
-                        $IVAIDP = 0;
-                        $valorSInIVaIDP = 0;
-                    }
-
                     $TOTALTiva = $iva + $TOTALTiva;
                     $TOTALTSINiva = $valorSInIVa + $TOTALTSINiva;
                     $registr->setSubTotal($valorSInIVa);
@@ -885,7 +873,7 @@ class orden_gastoActions extends sfActions {
 
                 $idseleccion = 0;
                 if ($valores['nombre'] <> '') {
-                    if ($valores['cuenta_contable'] <> '') {
+                 //   if ($valores['cuenta_contable'] <> '') {
                         if (($valores['cantidad'] > 0) && ($valores['valor'] > 0)) {
                             if (!$ordenDetalle) {
                                 $ordenDetalle = new GastoDetalle();
@@ -910,7 +898,7 @@ class orden_gastoActions extends sfActions {
                             $ordenDetalle->save();
                             $idseleccion = $ordenDetalle->getId();
                         }
-                    }
+                  //  }
                 }
 
                 if ($id_detalle) {

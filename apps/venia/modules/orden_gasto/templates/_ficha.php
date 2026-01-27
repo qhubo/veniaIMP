@@ -27,8 +27,6 @@
             <th align="center"><span class="kt-font-success">Tipo Documento </span></th>
             <th align="center"><span class="kt-font-success">No  Documento</span></th>
            
-            <th align="center"><span class="kt-font-success">Sub Total</span></th>
-            <th align="center"><span class="kt-font-success">Iva</span></th>
             <th align="center"><span class="kt-font-success">Total</span></th>
 
         </tr>
@@ -39,8 +37,6 @@
                <td><?php echo $orden->getTipoDocumento() ?></td>
             <td> <?php echo $orden->getDocumento() ?> </td>
          
-            <td><?php echo number_format($orden->getSubTotal(), 2); ?> </td>
-            <td><?php echo number_format($orden->getIva(), 2); ?> </td>
             <td><h3><?php echo number_format($orden->getValorTotal(), 2); ?></h3> </td>
         </tr>
     </tbody>
