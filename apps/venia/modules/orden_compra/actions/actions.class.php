@@ -801,11 +801,9 @@ class orden_compraActions extends sfActions {
                         $cuentaProveedor->setOrdenProveedorId($ordenQ->getId());
                     }
 
-                    $valorTota = $ordenQ->getValorTotal() - $ordenQ->getValorImpuesto();
+                    $valorTota = $ordenQ->getValorTotal();  //- $ordenQ->getValorImpuesto();
 
-                    if ($ordenQ->getImpuestoGas() > 0) {
-                        $valorTota = $ordenQ->getValorTotal() - $ordenQ->getValorImpuesto() + $ordenQ->getImpuestoGas();
-                    }
+                   
                     $valorTota = round($valorTota, 2);
                     $ordenQ->setValorTotal($valorTota);
                     $ordenQ->save();
