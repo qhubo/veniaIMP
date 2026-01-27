@@ -299,6 +299,7 @@ class carga_gastoActions extends sfActions {
     }
 
     public function executeIndex(sfWebRequest $request) {
+           error_reporting(-1);
         date_default_timezone_set("America/Guatemala");
         $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('seledatos', null, 'carga'));
         $this->tiendaver = null;
@@ -323,10 +324,10 @@ class carga_gastoActions extends sfActions {
         if ($valores) {
             if ($request->isMethod('post')) {
                 $cuenta = $request->getPostParameter("cuentaid");
-                if (trim($cuenta) == "") {
-                    $this->getUser()->setFlash('error', 'Debe seleccionar numero de cuenta ');
-                    $this->redirect('carga_gasto/index');
-                }
+//                if (trim($cuenta) == "") {
+//                    $this->getUser()->setFlash('error', 'Debe seleccionar numero de cuenta ');
+//                    $this->redirect('carga_gasto/index');
+//                }
                 $gastoCaja->setCuenta($cuenta);
                 $gastoCaja->save();
                 foreach ($valores as $regi) {
@@ -358,7 +359,7 @@ class carga_gastoActions extends sfActions {
                 sfContext::getInstance()->getUser()->setAttribute('seledatos', null, 'carga');
                 $gastoCaja->setEstatus('Confirmado');
                 $gastoCaja->save();
-                $this->partida($gastoCaja);
+              //  $this->partida($gastoCaja);
 
                 // ** busca proveeoro crea proveedor
                 $provedorQ = ProveedorQuery::create()->findOneByCodigo("TIENDA" . $gastoCaja->getTiendaId());
@@ -383,7 +384,7 @@ class carga_gastoActions extends sfActions {
                 $gasto->setToken(sha1('Caja' . $gastoCaja->getId()));
                 $gasto->setTipoDocumento("GastoTienda");
                 $gasto->setDocumento($gastoCaja->getId());
-                $gasto->setValorTotal($gastoCaja->getValorTotal()-$gastoCaja->getValorIdp());
+                $gasto->setValorTotal($gastoCaja->getValorTotal()); //-$gastoCaja->getValorIdp());
                 $gasto->setValorPagado(0);
                 $gasto->setValorImpuesto($gastoCaja->getValorImpuesto());
                 $gasto->setValorIsr($gastoCaja->getValorIsr());
@@ -399,7 +400,7 @@ class carga_gastoActions extends sfActions {
                     $cuentaProveedor = new CuentaProveedor();
                     $cuentaProveedor->setGastoId($gasto->getId());
                 }
-                $valorPagar = $gastoCaja->getValor() - $gastoCaja->getValorImpuesto();
+                $valorPagar = $gastoCaja->getValor(); // - $gastoCaja->getValorImpuesto();
                 $valorPagar = round($valorPagar, 2);
                 $cuentaProveedor->setProveedorId($gasto->getProveedorId());
                 $cuentaProveedor->setFecha(date('Y-m-d'));
@@ -451,13 +452,13 @@ class carga_gastoActions extends sfActions {
         $encabezados[] = array("Nombre" => 'descripcion', "width" => 45, "align" => "left", "format" => "@");
         $encabezados[] = array("Nombre" => 'codigo proveedor', "width" => 22, "align" => "left", "format" => "@");
         $encabezados[] = array("Nombre" => 'proveedor', "width" => 45, "align" => "left", "format" => "@");
-        $encabezados[] = array("Nombre" => 'cuenta', "width" => 18, "align" => "left", "format" => "@");
-        $encabezados[] = array("Nombre" => 'nombre cuenta', "width" => 35, "align" => "left", "format" => "@");
+//        $encabezados[] = array("Nombre" => 'cuenta', "width" => 18, "align" => "left", "format" => "@");
+//        $encabezados[] = array("Nombre" => 'nombre cuenta', "width" => 35, "align" => "left", "format" => "@");
         $encabezados[] = array("Nombre" => 'valor', "width" => 15, "align" => "left", "format" => "#,##0.00");
-        $encabezados[] = array("Nombre" => 'aplica iva', "width" => 13, "align" => "left", "format" => "@");
-        $encabezados[] = array("Nombre" => 'retiene iva', "width" => 13, "align" => "left", "format" => "@");
-        $encabezados[] = array("Nombre" => 'exento isr', "width" => 13, "align" => "left", "format" => "@");
-        $encabezados[] = array("Nombre" => 'IDP', "width" => 15, "align" => "left", "format" => "#,##0.00");
+//        $encabezados[] = array("Nombre" => 'aplica iva', "width" => 13, "align" => "left", "format" => "@");
+//        $encabezados[] = array("Nombre" => 'retiene iva', "width" => 13, "align" => "left", "format" => "@");
+//        $encabezados[] = array("Nombre" => 'exento isr', "width" => 13, "align" => "left", "format" => "@");
+//        $encabezados[] = array("Nombre" => 'IDP', "width" => 15, "align" => "left", "format" => "#,##0.00");
         // $encabezados[] = array("Nombre" => 'TIPO', "width" => 13, "align" => "left", "format" => "@");
         sfContext::getInstance()->getUser()->HojaImprimeEncabezadoHorizontal($encabezados, $columna, $fila, $hoja);
         $hoja->getStyle('A2:I2')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('819BFB');

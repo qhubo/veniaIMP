@@ -97,21 +97,12 @@ $vboedgas = CuentaErpContableQuery::create()
             <table class="table table-bordered  dataTable table-condensed flip-content" >
                 <thead class="flip-content">
                     <tr class="active">
-                        <th align="center" width="20px"><font size="-1"> SERIE FACTURA</font></th>
-                      <th align="center" width="20px"><font size="-1">FECHA</font></th>
+                        <th align="center" width="120px"><font size="-1"> SERIE FACTURA</font></th>
+                      <th align="center" width="50px"><font size="-1">FECHA</font></th>
                         <th align="center" ><font size="-1">DESCRIPCION</font></th>
                         <th align="center" ><font size="-1">CODIGO PROVEEDOR</font></th>
                         <th align="center" ><font size="-1">PROVEEDOR</font></th>
-                        <th align="center" ><font size="-1">CUENTA</font></th>
-                        <th align="center" ><font size="-1">NOMBRE CUENTA</font></th>
-                        <th align="center" ><font size="-1"> VALOR</font></th>
-                        <th align="center" ><font size="-1"> IVA</font></th>
-                        <th align="center" ><font size="-1">ISR RETENIDO</font></th>
-                        <th align="center" ><font size="-1"> IVA RETENIDO</font></th>
-                         <th align="center" ><font size="-1"> APLICA IVA</font></th>
-                        <th align="center" ><font size="-1">RETIENE ISR</font></th>
-                        <th align="center" ><font size="-1"> EXENTO ISR</font></th>
-                         <th align="center" ><font size="-1"> IDP</font></th>
+                              <th align="center" ><font size="-1"> VALOR</font></th>
                     </tr>
                 </thead>
                 <?php if ($valores) { ?>
@@ -124,17 +115,9 @@ $vboedgas = CuentaErpContableQuery::create()
                                 <td><font size="-1"><?php echo $registro['DESCRIPCION']; ?></font></td>
                                 <td><font size="-1"><?php echo $registro['CODIGO_PROVEEDOR']; ?></font></td>
                                 <td><font size="-1"><?php echo $registro['PROVEEDOR']; ?></font></td>
-                                <td><font size="-1"><?php echo $registro['CUENTA']; ?></font></td>
-                                <td><font size="-1"><?php echo $registro['NOMBRE_CUENTA']; ?></font></td>
+     
                                 <td  style="text-align: right"><font size="-1"><?php echo Parametro::formato($registro['VALOR'],false); ?></font></td>
-               <td  style="text-align: right"><font size="-1"><?php echo Parametro::formato($registro['IVA'],false); ?></font></td>
-                                <td  style="text-align: right"><font size="-1"><?php echo Parametro::formato($registro['VALOR_ISR'],false); ?></font></td>
-                                    <td  style="text-align: right"><font size="-1"><?php echo Parametro::formato($registro['VALOR_RETIENE_IVA'],false); ?></font></td>
-                                    <td  style="text-align: center"><font size="-1"><?php  if ($registro['APLICA_IVA']) { ?> <li class="fa fa-check"></li> <?php } ?></font></td>
-              <td style="text-align: center"><font size="-1"><?php  if ($registro['RETIENE_ISR']) { ?> <li class="fa fa-check"></li> <?php } ?></font></td>
-                       
-            <td style="text-align: center"><font size="-1"><?php  if ($registro['EXENTO_ISR']) { ?> <li class="fa fa-check"></li> <?php } ?></font></td>
-                                         <td><font size="-1"><?php echo $registro['IDP']; ?></font></td>                         
+                                                                              
 </tr>
                         <?php } ?>
                     </tbody>
@@ -144,17 +127,9 @@ $vboedgas = CuentaErpContableQuery::create()
         </div>
              <?php if ($valores) { ?>
         <div class="row">
-            <div class="col-lg-4"></div>
+            <div class="col-lg-7"></div>
             
-             <div class="col-lg-1">Cuenta</div>
-             <div class="col-lg-4">
-               <select   class="form-control mi-selector"  name="cuentaid" id="cuentaid">
-                <option value="">[Seleccione Cuenta]</option>
-                <?php foreach ($listaCuenta as $value=>$key) { ?>
-                <option <?php if ($gasto->getCuenta() == $value) { ?> selected="selected"  <?php } ?>  value="<?php echo $value; ?>"><?php echo $key; ?></option>
-                <?php } ?>
-            </select>
-             </div>
+             
             <div class="col-lg-2">
                 <button class="btn-block btn-success btn " type="submit">
                     <i class="fa fa-save "></i>

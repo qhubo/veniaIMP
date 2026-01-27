@@ -169,18 +169,18 @@ class Gasto extends BaseGasto {
                     $valido = false;
                     $pendientes[] = 'PROVEEDOR';
                 }
-                if (array_key_exists($colCUENTA, $registro)) {
-                    $CUENTA = trim(($registro[$colCUENTA]));
-                } else {
-                    $valido = false;
-                    $pendientes[] = 'CUENTA';
-                }
-                if (array_key_exists($colNOMBRE_CUENTA, $registro)) {
-                    $NOMBRECUENTA = trim(($registro[$colNOMBRE_CUENTA]));
-                } else {
-                    $valido = false;
-                    $pendientes[] = 'NOMBRE CUENTA';
-                }
+//                if (array_key_exists($colCUENTA, $registro)) {
+//                    $CUENTA = trim(($registro[$colCUENTA]));
+//                } else {
+//                    $valido = false;
+//                    $pendientes[] = 'CUENTA';
+//                }
+//                if (array_key_exists($colNOMBRE_CUENTA, $registro)) {
+//                    $NOMBRECUENTA = trim(($registro[$colNOMBRE_CUENTA]));
+//                } else {
+//                    $valido = false;
+//                    $pendientes[] = 'NOMBRE CUENTA';
+//                }
                 if (array_key_exists($colVALOR, $registro)) {
                     $VALOR = trim(($registro[$colVALOR]));
                 } else {
@@ -188,33 +188,33 @@ class Gasto extends BaseGasto {
                     $pendientes[] = 'VALOR';
                 }
 
-                if (array_key_exists($colexento_isr, $registro)) {
-                    $exento_isr = trim(($registro[$colexento_isr]));
-                } else {
-                    $valido = false;
-                    $pendientes[] = 'EXENTO ISR';
-                }
+//                if (array_key_exists($colexento_isr, $registro)) {
+//                    $exento_isr = trim(($registro[$colexento_isr]));
+//                } else {
+//                    $valido = false;
+//                    $pendientes[] = 'EXENTO ISR';
+//                }
+//
+//                if (array_key_exists($colaplica_iva, $registro)) {
+//                    $aplica_iva = trim(($registro[$colaplica_iva]));
+//                } else {
+//                    $valido = false;
+//                    $pendientes[] = 'APLICA IVA';
+//                }
 
-                if (array_key_exists($colaplica_iva, $registro)) {
-                    $aplica_iva = trim(($registro[$colaplica_iva]));
-                } else {
-                    $valido = false;
-                    $pendientes[] = 'APLICA IVA';
-                }
-
-                if (array_key_exists($colretiene_isr, $registro)) {
-                    $retiene_isr = trim(($registro[$colretiene_isr]));
-                } else {
-                    $valido = false;
-                    $pendientes[] = 'RETIENE IVA';
-                }
-
-                if (array_key_exists($colIDP, $registro)) {
-                    $IDP = trim(($registro[$colIDP]));
-                } else {
-                    $valido = false;
-                    $pendientes[] = 'IDP';
-                }
+//                if (array_key_exists($colretiene_isr, $registro)) {
+//                    $retiene_isr = trim(($registro[$colretiene_isr]));
+//                } else {
+//                    $valido = false;
+//                    $pendientes[] = 'RETIENE IVA';
+//                }
+//
+//                if (array_key_exists($colIDP, $registro)) {
+//                    $IDP = trim(($registro[$colIDP]));
+//                } else {
+//                    $valido = false;
+//                    $pendientes[] = 'IDP';
+//                }
 
 
 
@@ -273,15 +273,15 @@ class Gasto extends BaseGasto {
 //                    $validolI=0;
 //                    $lista['PROVEEDOR'] = "<font color='red' size='-2'> *CODIGO PROVEEDOR NO EXISTE** </font>".$PROVEEDOR;
                     }
-                    $lista['CUENTA'] = $CUENTA;
-                    $lista['NOMBRE_CUENTA'] = $NOMBRECUENTA;
-                    if ($cuentaErp) {
-                        $lista['NOMBRE_CUENTA'] = $cuentaErp->getNombre();
-                    }
-                    if (!$cuentaErp) {
-                        $lista['NOMBRE_CUENTA'] = "*<font color='red' size='-2'> NUMERO DE CUENTA NO EXISTE**  </font>" . $NOMBRECUENTA;
-                        $validolI = 0;
-                    }
+//                    $lista['CUENTA'] = $CUENTA;
+//                    $lista['NOMBRE_CUENTA'] = $NOMBRECUENTA;
+//                    if ($cuentaErp) {
+//                        $lista['NOMBRE_CUENTA'] = $cuentaErp->getNombre();
+//                    }
+//                    if (!$cuentaErp) {
+//                        $lista['NOMBRE_CUENTA'] = "*<font color='red' size='-2'> NUMERO DE CUENTA NO EXISTE**  </font>" . $NOMBRECUENTA;
+//                        $validolI = 0;
+//                    }
                     if ($validolI == 1) {
                         $totalCorrecto = $totalCorrecto + $VALOR;
                     }

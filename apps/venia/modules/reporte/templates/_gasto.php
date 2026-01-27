@@ -35,8 +35,8 @@
                     <th  style="border: 0.2px solid #5E80B4;"  align="center" width="200px">Fecha </th>
                     <th style="border: 0.2px solid #5E80B4;"  align="center" width="110px" >Tipo Documento</th>
                     <th style="border: 0.2px solid #5E80B4;"  align="center" width="110px">Documento</th>
-                    <th style="border: 0.2px solid #5E80B4;" align="center" width="100px">Sub Total</th>
-                    <th  style="border: 0.2px solid #5E80B4;" align="center" width="85px">Iva</th>
+                    <th style="border: 0.2px solid #5E80B4;" align="center" width="100px"></th>
+                    <th  style="border: 0.2px solid #5E80B4;" align="center" width="85px"></th>
                     <th  style="border: 0.2px solid #5E80B4;" align="center" width="120px">Total</th>
 
                 </tr>
@@ -44,8 +44,8 @@
                     <td style="border: 0.2px solid #5E80B4;"> <?php echo $orden->getFecha('d/m/Y') ?> </td>
                     <td style="border: 0.2px solid #5E80B4;" align="center"><?php echo $orden->getTipoDocumento() ?></td>
                     <td style="border: 0.2px solid #5E80B4;" align="center"><?php echo $orden->getDocumento() ?></td>
-                    <td style="border: 0.2px solid #5E80B4;" align="right"><?php echo number_format($orden->getSubTotal(), 2); ?> </td>
-                    <td style="border: 0.2px solid #5E80B4;" align="right" ><?php echo number_format($orden->getIva(), 2); ?> </td>
+                    <td style="border: 0.2px solid #5E80B4;" align="right"><?php //echo number_format($orden->getSubTotal(), 2); ?> </td>
+                    <td style="border: 0.2px solid #5E80B4;" align="right" ><?php //echo number_format($orden->getIva(), 2); ?> </td>
                     <td style="border: 0.2px solid #5E80B4;" align="right"><h3><?php echo number_format($orden->getValorTotal(), 2); ?></h3> </td>
                 </tr>
             </table>
