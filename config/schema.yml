@@ -1449,7 +1449,7 @@ propel:
       cantidad_caja:                    { type: double }
       peso:                             { type: varchar(150) }
       existencia_actual:                { type: integer }
-      bulto_inicio:                     { type: varchar(10) }
+      bulto_inicio:                     { type: integer }
       bulto_fin:                        { type: varchar(10) }
       bulto_superior:                   { type: integer }
       confirmado:                       { type: boolean, default: false}

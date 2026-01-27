@@ -197,17 +197,16 @@ class verifica_bodegaActions extends sfActions {
         $this->em = sfContext::getInstance()->getUser()->getAttribute('em', null, 'seguridad');
         $this->token = '';
         $this->tipo = 1;
-        $this->detalles = OrdenCotizacionDetalleQuery::create()
-                 ->filterByConfirmado(true)
-                ->filterByProductoId(null, Criteria::NOT_EQUAL)
-                ->useOrdenCotizacionQuery()
-                ->filterById($this->em)
-                ->filterByEstatus('Confirmada')
-            //    ->filterByEmpacado(false)
-                ->endUse()
-                ->orderByBultoInicio()
-                ->find();
-        
+    $this->detalles = OrdenCotizacionDetalleQuery::create()
+    ->filterByConfirmado(true)
+    ->filterByProductoId(null, Criteria::NOT_EQUAL)
+    ->useOrdenCotizacionQuery()
+        ->filterById($this->em)
+        ->filterByEstatus('Confirmada')
+    ->endUse()
+    ->withColumn('CAST(orden_cotizacion_detalle.bulto_inicio AS UNSIGNED)', 'BultoOrden')
+    ->orderBy('BultoOrden')
+    ->find();
 
         $this->muestraBoton = 1;
         $this->codigo = '';

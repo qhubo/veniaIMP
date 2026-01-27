@@ -16,12 +16,17 @@ class reporteActions extends sfActions {
         error_reporting(-1);
         $id = $request->getParameter('id');
         $operacion = OrdenCotizacionQuery::create()->findOneById($id);
-        $detalle = OrdenCotizacionDetalleQuery::create()
-                ->orderByBultoInicio('Asc')
-                ->filterByConfirmado(true)
-                ->filterByProductoId(null, Criteria::NOT_EQUAL)
-                ->filterByOrdenCotizacionId($id)
-                ->find();
+    $detalle = OrdenCotizacionDetalleQuery::create()
+    ->filterByConfirmado(true)
+    ->filterByProductoId(null, Criteria::NOT_EQUAL)
+    ->filterByOrdenCotizacionId($id)
+    ->withColumn('CAST(orden_cotizacion_detalle.bulto_inicio AS UNSIGNED)', 'BultoOrden')
+    ->orderBy('BultoOrden', Criteria::ASC)
+    ->find();
+        
+        
+        
+        
         $html = '';
 
         $logo = $operacion->getEmpresa()->getLogo();
