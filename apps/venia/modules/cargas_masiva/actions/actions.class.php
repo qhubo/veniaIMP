@@ -10,6 +10,41 @@
  */
 class cargas_masivaActions extends sfActions {
 
+    
+    public function executeProveedores(sfWebRequest $request) {
+        error_reporting(-1);
+        $inputFileName = sfConfig::get("sf_upload_dir") . DIRECTORY_SEPARATOR . "PROVEDORES.xls";
+        $objReader = new PHPExcel_Reader_Excel5();
+        $objPHPExcel = $objReader->load($inputFileName);
+        $sheetData = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
+        $cont = 0;
+        foreach ($sheetData as $regisr) {
+            $cont++;
+            if ($cont > 1) {
+                $codigo = $regisr['A'];
+                $nombre = $regisr['B'];
+                $nit = $regisr['C'];
+                $telefono = $regisr['D'];
+                 $pais = $regisr['E'];
+                 $PROVEERO = ProveedorQuery::create()->findOneByCodigo($codigo);
+                 if (!$PROVEERO) {
+                     $PROVEERO = new Proveedor();
+                     $PROVEERO->setCodigo($codigo);
+                     $PROVEERO->save();
+                 }
+                 $paisq = PaisQuery::create()->findOneByNombre($pais);
+                 $PROVEERO->setNombre($nombre);
+                 $PROVEERO->setNit($nit);
+                 $PROVEERO->setTelefono($telefono);
+                 $PROVEERO->setPaisId($paisq->getId());
+                 $PROVEERO->setDireccion($pais);
+                 $PROVEERO->save();
+            }
+        }
+          echo "actualizado " . $cont;
+        die();
+    }
+    
     public function executeCliente(sfWebRequest $request) {
         $filename = 'Clientes.xls';
         $inputFileName = sfConfig::get("sf_upload_dir") . DIRECTORY_SEPARATOR . $filename;
