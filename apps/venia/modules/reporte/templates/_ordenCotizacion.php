@@ -88,7 +88,7 @@
                 <strong>Cliente:</strong> <?php echo $operacion->getNombre(); ?><br>
                 <strong>Dirección:</strong> <?php echo $operacion->getCliente()->getDireccion(); ?><BR>
                 <strong>Acuerdo de Pago:</strong> <?php echo $operacion->getAcuerdoPago(); ?> <BR>
-                <strong>Código CLiente:</strong> <?php echo $operacion->getCliente()->getCodigo(); ?><br>
+                <strong>Código Cliente:</strong> <?php echo $operacion->getCliente()->getCodigo(); ?><br>
                 <strong>RUC:</strong> <?php echo $operacion->getNit(); ?><br>
 
             </div>
@@ -152,8 +152,8 @@
 
                 <td style="width:85px;font-size: 25px; "><?php echo $regist->getProducto()->getCaracteristica(); ?></td>
                 <td style="width:50px;font-size: 25px; " class="centrado"><?php echo $regist->getCantidad(); ?></td>
-                <td style="width:60px;font-size: 25px; " class="derecha"><?php echo $regist->getValorUnitario(); ?></td>
-                <td style="width:60px;font-size: 25px; " class="derecha"><?php echo $regist->getValorTotal(); ?></td>
+                <td style="width:60px;font-size: 25px; " class="derecha"><?php  echo Parametro::formato($regist->getValorUnitario(),false); ?></td>
+                <td style="width:60px;font-size: 25px; " class="derecha"><?php echo  Parametro::formato($regist->getValorTotal(),false); ?></td>
             </tr>
 <?php } ?>
     </tbody>

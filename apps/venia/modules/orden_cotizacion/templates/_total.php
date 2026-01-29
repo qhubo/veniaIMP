@@ -23,10 +23,7 @@
 
 <?php if (count($listado) >0) { ?>
 <div class="row" style="background-image: url(./assets/media/bg/bg-6.jpg);">
-    <div class="col-lg-5"></div>
-      <div class="col-lg-2">
-
-    </div>
+    <div class="col-lg-6"></div>
     <div class="col-lg-3" style="text-align: right"><font color="white"><br>  Confirma Guardar Pedido </font></div>
     <div class="col-lg-1">
 <!--        <a href="<?php echo url_for($modulo . '/confirmar?id='.$orden->getId()."&token=". sha1($orden->getCodigo())) ?>" class="btn btn-secondary btn-dark" > <i class="flaticon-lock"></i> Procesar </a>-->
@@ -34,7 +31,11 @@
           <a href="<?php echo url_for($modulo . '/posponer?id='.$orden->getId()."&token=". sha1($orden->getCodigo())) ?>" class="btn btn-small btn-success btn-block" > <i class="flaticon-black"></i><br> Guardar </a>
     </div>
      <div class="col-lg-1">
-         <a target="_blank" href="<?php echo url_for('reporte/ordenCotizacion?token='.$orden->getToken()) ?>" class="btn btn-secondary btn-warning" > <i class="flaticon2-print"></i><br> Reporte </a>
+         <a target="_blank" href="<?php echo url_for('reporte/ordenCotizacion?token='.$orden->getToken()) ?>" class="btn btn-sm btn-warning" ><i class="flaticon2-print"></i>Reporte </a>
+</div>
+         <div class="col-lg-1">
+            <a target="_blank" href="<?php echo url_for('reporte_excel/pedido?id=' . $orden->getId()) ?>" class="btn  btn-sm  " style="background-color:#04AA6D; color:white"> <i class="flaticon2-printer"></i>Reporte </a>
+        
 </div>
      </div>
 

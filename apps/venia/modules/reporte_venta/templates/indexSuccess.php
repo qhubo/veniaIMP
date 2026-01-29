@@ -84,7 +84,7 @@
                     <th  align="center"> Estado</th>
                     <th  align="center"> Valor</th>    
 <!--                                <th width="50px" >Ticket</th>-->
-                    <th width="25px">Fel</th>
+                    <th width="25px">Reporte</th>
                     <th  align="center"> Observaciones</th>   
                     <th>Pedido</th>
                     <th  align="center"> Recibo</th>   
@@ -167,7 +167,9 @@
                             <a target="_blank" href="<?php echo url_for('pdf/factura?tok=' . $lista->getCodigo()) ?>" class="btn btn-block btn-sm btn-info " target = "_blank">
                                 <?php if ($lista->getFaceEstado() == "FIRMADONOTA") { ?> <?php echo "NOTA "; ?> <?php } ?>   <?php echo $numero; ?>
                             </a>  
-                     
+                        <a target="_blank" href="<?php echo url_for('reporte_excel/factura?id=' . $lista->getId()) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"> <i class="flaticon2-printer"></i>Factura </a>
+        
+                            
 
                             <?php echo $lista->getFaceError(); ?>
                             <?php if ($lista->getFaceEstado() == "") { ?>
@@ -193,8 +195,10 @@
 
                         </td>
                         <td>                       <a target="_blank" href="<?php echo url_for('reporte/ordenCotizacion?token='.$lista->getToken()) ?>" class="btn btn-sm btn-block btn-warning" > 
-      <i class="flaticon2-printer"></i>
+      <i class="flaticon2-printer"></i>Pedido
                                         </a>
+                             <a target="_blank" href="<?php echo url_for('reporte_excel/pedido?id=' . $lista->getOrdenCotizacionId()) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"> <i class="flaticon2-printer"></i>Pedido </a>
+        
                             
                         </td>
                         <td>  <?php if ($lista->getRecibo()) { ?> 

@@ -141,9 +141,14 @@
             <?php if ($muestraBoton) { ?>  
                 <div class="row" style="padding-top:2px;padding-bottom:5px;">
                     <div class="col-lg-6" ></div>
-                    <div class="col-lg-2" style="font-weight:bold;">  </div>
-                    <div class="col-lg-2" style="padding-top:10px;">
-                        <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $idp) ?>" class="btn btn-sm btn-warning" > <i class="flaticon2-print"></i> Reporte </a>
+           
+                    <div class="col-lg-2" >
+                        <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $idp) ?>" class="btn btn-block btn-sm btn-warning" > <i class="flaticon2-print"></i> Reporte </a>
+                    </div>
+                         <div class="col-lg-2">
+                 <a target="_blank" href="<?php echo url_for('reporte_excel/empaque?id=' . $idp) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"> <i class="flaticon2-printer"></i>Reporte </a>
+        
+                                
                     </div>
                     <div class="col-lg-2" style="padding-top:10px;">
                         <?php if (!$pendiente) { ?>
@@ -486,6 +491,11 @@
                         </div>
                         <div class="col-lg-2">
                                    <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $operacion->getId()) ?>" class="btn btn-sm btn-warning" > <i class="flaticon2-print"></i> Reporte </a>
+                    </div>
+                            <div class="col-lg-2">
+                 <a target="_blank" href="<?php echo url_for('reporte_excel/empaque?id=' . $operacion->getId()) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"> <i class="flaticon2-printer"></i>Reporte </a>
+        
+                                
                     </div>
                     </div>
 

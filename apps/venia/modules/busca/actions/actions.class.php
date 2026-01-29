@@ -251,7 +251,7 @@ class buscaActions extends sfActions {
 
                 $url = '/index.php/orden_cotizacion/producto?id=' . $regid;
               //  $url = '/index.php/ubicacion/vista?id=' . $regid;
-                if ($_SERVER['SERVER_NAME'] == "veniaerp") {
+                if ($_SERVER['SERVER_NAME'] == "veniaimp") {
                     $url = '/venia_dev.php/orden_cotizacion/producto?id=' . $regid;
                  //   $url = '/venia_dev.php/ubicacion/vista?id=' . $regid;
                 }

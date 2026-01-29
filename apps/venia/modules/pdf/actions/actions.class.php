@@ -44,6 +44,7 @@ class pdfActions extends sfActions {
                 array('logo' => $logo, 'orden' => $ordenCompra, 'lista' => $lista,
                     'totalImprime' => $totalImprime));
         $img_file = "uploads/images/" . $logo;
+       
         $pdf = new sfTCPDF("P", "mm", "Letter");
         $this->id = $request->getParameter("id");
         $pdf->SetCreator(PDF_CREATOR);

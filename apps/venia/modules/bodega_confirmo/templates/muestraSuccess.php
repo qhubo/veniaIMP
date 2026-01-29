@@ -110,6 +110,9 @@
                                            <a target="_blank" href="<?php echo url_for('reporte/ordenCotizacion?token='.$lista->getToken()) ?>" class="btn btn-sm btn-block btn-warning" > 
       <i class="flaticon2-printer"></i>
                                         </a>
+                                
+                                                     <a target="_blank" href="<?php echo url_for('reporte_excel/pedido?id=' . $lista->getId()) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"> <i class="flaticon2-printer"></i>Reporte </a>
+        
                             </td>
                       
                       

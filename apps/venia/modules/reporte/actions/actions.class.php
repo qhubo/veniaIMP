@@ -59,6 +59,7 @@ class reporteActions extends sfActions {
         $pdf->writeHTML($html);
             $pdf->Image($img_file, 18, -8, 40); //, 50, '', '', '', '300', false, 0);
 
+        
 
         $pdf->Output('Lista Empaque ' . $operacion->getCodigo() . '.pdf', 'I');
     }
@@ -317,6 +318,7 @@ class reporteActions extends sfActions {
 
 
         $pdf->writeHTML($html);
+     
         $pdf->Output('Pedido ' . $ordenCompra->getCodigo() . '.pdf', 'I');
         die();
         echo $html;

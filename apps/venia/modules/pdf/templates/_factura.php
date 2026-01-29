@@ -88,7 +88,7 @@
                 <strong>Cliente:</strong> <?php echo $operacion->getNombre(); ?><br>
                 <strong>Dirección:</strong> <?php echo $operacion->getCliente()->getDireccion(); ?><BR>
                 <strong>Acuerdo de Pago:</strong> Credito 60 Dias <BR>
-                <strong>Código CLiente:</strong> <?php echo $operacion->getCliente()->getCodigo(); ?><br>
+                <strong>Código Cliente:</strong> <?php echo $operacion->getCliente()->getCodigo(); ?><br>
                 <strong>RUC:</strong> <?php echo $operacion->getNit(); ?><br>
 
             </div>
@@ -101,7 +101,7 @@
 } ?> <br>
                 <strong>País:</strong> <?php echo $operacion->getCliente()->getPais(); ?><br>
                 <strong>Telefono:</strong> <?php echo $operacion->getCliente()->getTelefono(); ?><br>
-                <strong>Transporte:</strong> <?php echo $operacion->getTransporte(); ?><br>
+                <strong>Transporte:</strong> <?php echo $operacion->getNombreTransporte(); ?><br>
             </div>
         </td>
     </tr>

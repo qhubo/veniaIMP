@@ -235,9 +235,9 @@ class orden_cotizacionActions extends sfActions {
             $maximo = $listaProducto->getProducto()->getExistencia() - $listaProducto->getProducto()->getTransito(); //Bodega($ordenCliente->getTiendaId());
         }
 
-        if ($cantidad > $maximo) {
-            $cantidad = $maximo;
-        }
+//        if ($cantidad > $maximo) {
+//            $cantidad = $maximo;
+//        }
 
         $valor = $listaProducto->getValorUnitario();
         $retorna = $cantidad * $valor;
@@ -405,11 +405,11 @@ class orden_cotizacionActions extends sfActions {
             $ordenQ = OrdenCotizacionQuery::create()->findOneById($OrdenID);
             if ($ordenQ) {
 
-                $existecia = $producto->getExistencia();
-                if ($existecia <= 0) {
-                    $this->getUser()->setFlash('error', 'No hay existencia para el producto seleccionado ' . $producto->getCodigoSku());
-                    $this->redirect('orden_cotizacion/index?id=');
-                }
+//                $existecia = $producto->getExistencia();
+//                if ($existecia <= 0) {
+//                    $this->getUser()->setFlash('error', 'No hay existencia para el producto seleccionado ' . $producto->getCodigoSku());
+//                    $this->redirect('orden_cotizacion/index?id=');
+//                }
 
                 $valoresIva = ParametroQuery::ObtenerIva($producto->getPrecio(), false);
                 $valor = $valoresIva['VALOR_SIN_IVA'];

@@ -62,7 +62,8 @@
             <?php $can = $registro->getExistenciaActual(); ?>
         <?php } ?>
              <input min="1"   class="form-control xlarge" value="<?php echo $can ?>" type="number" id="consulta_numero_<?php echo $pid ?>"  
-               max="<?php echo $Max; ?>"         name="consulta[numero_<?php echo $pid ?>]" onkeypress='validate<?php echo $pid ?>(event)' >
+         
+                    name="consulta[numero_<?php echo $pid ?>]" onkeypress='validate<?php echo $pid ?>(event)' >
                 
             </td>    
                

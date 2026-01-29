@@ -44,8 +44,11 @@
                     <td><?php echo $dete->getComentario(); ?></td>
                     <td>
                    <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $dete->getId()) ?>" class="btn btn-block btn-sm btn-warning" > 
-                            <?php echo $dete->getTotalProductos(); ?>
+                        Productos    <?php echo $dete->getTotalProductos(); ?>
                       </a>
+                           <a target="_blank" href="<?php echo url_for('reporte_excel/empaque?id=' . $dete->getId()) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"> <i class="flaticon2-printer"></i>Empaque </a>
+        
+                     
                   </td>
                     <td style="text-align: right;">
                       <a class="btn btn-block  btn-sm " data-toggle="modal" href="#staticPP<?php echo $dete->getId() ?>">
@@ -121,14 +124,14 @@
                 <div class="modal-body">
                     <div class="row">
                         
-                        <div class="col-lg-6" style="text-align:right; font-weight: bold;">
-                            Factura
-                        </div>
+                        <div class="col-lg-6" style="text-align:right; font-weight: bold;">  Factura </div>
                         <div class="col-lg-2">
-                              <a target="_blank" href="<?php echo url_for('pdf/factura?tok=' . $operacion->getCodigo()) ?>" class="btn btn-block btn-xs btn-info " target = "_blank">
-  <?php echo $numero; ?>
-             </a>
+                              <a target="_blank" href="<?php echo url_for('pdf/factura?tok=' . $operacion->getCodigo()) ?>" class="btn btn-block btn-sm btn-info " target = "_blank">
+                             <?php echo $numero; ?>
+                            </a>
                         </div>
+                        <div class="col-lg-2"><a target="_blank" href="<?php echo url_for('reporte_excel/factura?id=' . $operacion->getId()) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"> <i class="flaticon2-printer"></i>Reporte </a>
+       </div>
                     </div>
                     
            
