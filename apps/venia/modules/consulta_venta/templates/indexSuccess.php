@@ -94,7 +94,7 @@
                     <th align="center" width="20px">Usuario</th>
                     <th width="25px">Cliente</th>
                     <th  align="center"> Nombre</th>
-                    <th  align="center"> Nit</th>
+                    <th  align="center"> RUC</th>
                     <th  align="center"> Estado</th>
                     <th  align="center"> Valor</th>    
                     <th width="25px">Factura</th>

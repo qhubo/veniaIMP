@@ -472,7 +472,7 @@ class cuenta_por_cobrarActions extends sfActions {
 
         $encabezados[] = array("Nombre" => strtoupper("Fecha"), "width" => 18, "align" => "left", "format" => "#,##0");
         $encabezados[] = array("Nombre" => strtoupper("Cliente"), "width" => 45, "align" => "left", "format" => "#,##0.00");
-        $encabezados[] = array("Nombre" => strtoupper("Nit"), "width" => 20, "align" => "left", "format" => "#,##0");
+        $encabezados[] = array("Nombre" => strtoupper("RUC"), "width" => 20, "align" => "left", "format" => "#,##0");
         $encabezados[] = array("Nombre" => strtoupper("Valor"), "width" => 20, "align" => "rigth", "format" => "#,##0.00");
         $encabezados[] = array("Nombre" => strtoupper("Valor Prefechado"), "width" => 20, "align" => "rigth", "format" => "#,##0.00");
 

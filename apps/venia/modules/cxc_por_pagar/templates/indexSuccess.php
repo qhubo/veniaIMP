@@ -64,8 +64,7 @@
                         <th  align="center"><span class="kt-font-success"> Fecha</span></th>
                         <th  align="center"><span class="kt-font-success"> Crédito</span></th>
                         <th  align="center"><span class="kt-font-success"> Detalle</span></th>
-                        <th  align="center"><span class="kt-font-success">Sub Total </span></th>
-                        <th  align="center"><span class="kt-font-success"> Valor ISR </span></th>
+        
                         <th  align="center"><span class="kt-font-success"> Valor Total </span></th>
                         <th  align="center"><span class="kt-font-success"> Valor Pagado</span></th>
                         <th  align="center"><span class="kt-font-success">Saldo </span></th>
@@ -90,8 +89,7 @@
                             <td><?php echo $deta->getFecha('d/m/Y'); ?></td>
                             <td style="text-align: right"><?php echo $deta->getDias(); ?> Días</td>
                             <td><?php echo $deta->getDetalle(); ?></td>
-                            <td style="text-align: right" ><?php echo Parametro::formato($deta->getValorSubTotal()); ?></td>
-                            <td style="text-align: right" > <?php echo Parametro::formato($deta->getValorImpuesto()); ?></td>
+
                             <td style="text-align: right" ><?php echo Parametro::formato($deta->getValorTotal()); ?></td>                      
                             <td  style="text-align: right"><?php echo Parametro::formato($deta->getValorPagado()); ?></td>
                             <td  style="text-align: right">

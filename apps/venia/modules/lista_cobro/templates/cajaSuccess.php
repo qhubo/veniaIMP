@@ -27,7 +27,7 @@
                 <div class="row" style="padding-top:3PX; padding-bottom:3PX; ;">
                     <div class="col-lg-2"><strong> <font size="+1">Código</font></strong></div>
                     <div class="col-lg-4"><font size="+1"><?php echo $operacion->getCodigo(); ?></font></div>
-                    <div class="col-lg-2"><strong><font size="+1">Nit</font></strong></div>
+                    <div class="col-lg-2"><strong><font size="+1">RUC</font></strong></div>
                     <div class="col-lg-4"><font size="+1"><?php echo $operacion->getNit(); ?></font></div>
                 </div>
 
@@ -120,7 +120,7 @@
                         
                                                <?php if ($operacion->getFaceEstado() == "ERROR NIT") { ?>
                       <div class="row" style="background-color:#F9FBFE; padding-bottom: 5px; ">
-    <div class="col-lg-1"><div style="text-align:right">Nit</div> </div>
+    <div class="col-lg-1"><div style="text-align:right">RUC</div> </div>
     <div class="col-lg-3 ">
         <input class="form-control" value="<?php echo $operacion->getNit(); ?>" placeholder="Nit" name="consulta[nit]" id="consulta_nit">
      </div>

@@ -62,7 +62,7 @@
                         <th align="center" width="20px">Fecha / Usuario</th>
 
                         <th  align="center"> Cliente</th>
-                        <th  align="center"> Nit</th>
+                        <th  align="center"> RUC</th>
                         <th  align="center"> Observaciones</th>    
 
                         <th  align="center"> Valor</th>    

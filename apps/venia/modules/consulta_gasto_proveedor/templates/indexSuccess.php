@@ -49,7 +49,7 @@
                 </div>
                 
                   <div class="col-lg-2">
-     
+                               <a class="btn  btn btn-warning   "  target="_blank"  href="<?php echo url_for($modulo . '/reporte') ?>" ><i class="fa fa-list"></i>&nbsp;&nbsp;Reporte&nbsp;&nbsp;  <i class="fa fa-print"></i></a>
         </div>
             </div>
         <?php echo "</form>"; ?>

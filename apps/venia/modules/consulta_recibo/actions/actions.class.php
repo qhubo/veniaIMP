@@ -116,10 +116,12 @@ class consulta_reciboActions extends sfActions
             $datos[] = array("tipo" => 3, "valor" => $reg->getOperacion()->getNombre());
             $datos[] = array("tipo" => 3, "valor" => $reg->getTipo());
             $datos[] = array("tipo" => 3, "valor" => $reg->getTipo());
-            $datos[] = array("tipo" => 3, "valor" => "");
+       
             if ($reg->getBancoId()) {
               $datos[] = array("tipo" => 3, "valor" => $reg->getBanco()->getNombre());   
                 
+            } else {
+                     $datos[] = array("tipo" => 3, "valor" => "");
             }
             $datos[] = array("tipo" => 3, "valor" =>$reg->getDocumento());       
             $datos[] = array("tipo" => 3, "valor" =>$reg->getFechaDocumento('d/m/Y'));       

@@ -49,7 +49,7 @@ class consulta_ventaActions extends sfActions {
         $encabezados[] = array("Nombre" => "USUARIO", "width" => 20, "align" => "center", "format" => "@");
         $encabezados[] = array("Nombre" => "CLIENTE", "width" => 30, "align" => "center", "format" => "@");
         $encabezados[] = array("Nombre" => "NOMBRE", "width" => 50, "align" => "center", "format" => "@");
-        $encabezados[] = array("Nombre" => "NIT", "width" => 20, "align" => "center", "format" => "@");
+        $encabezados[] = array("Nombre" => "RUC", "width" => 20, "align" => "center", "format" => "@");
         $encabezados[] = array("Nombre" => "ESTADO", "width" => 20, "align" => "center", "format" => "@");
         $encabezados[] = array("Nombre" => strtoupper("Valor"), "width" => 15, "align" => "left", "format" => "#,##0.00");
         $encabezados[] = array("Nombre" => "Fel", "width" => 20, "align" => "center", "format" => "@");

@@ -24,7 +24,7 @@
             <th  align="center"><span class="kt-font-success"> Medio Pago </span></th>
             <th  align="center"><span class="kt-font-success">Documento Pago  </span></th>
             <th  align="center"><span class="kt-font-success"> </span></th>
-            <th></th>
+
         </tr>
     </thead>
     <tbody>
@@ -44,14 +44,32 @@
                 <td style="text-align: right" ><?php echo $reg->getTipoPago(); ?></td>
                 <td style="text-align: right" ><?php echo $reg->getDocumento(); ?></td>
                 <td>
-                    <a href="<?php echo url_for("orden_gasto/vista?token=" . $data->getToken()) ?>" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#ajaxmodal<?php echo $data->getId(); ?>"> <li class="fa flaticon-more-v2"></li>    </a>
-                </td>
-                <td>
+                    <a href="<?php echo url_for("orden_gasto/vista?token=" . $data->getToken()) ?>" class="btn  btn-block btn-sm btn-dark" data-toggle="modal" data-target="#ajaxmodal<?php echo $data->getId(); ?>"> <li class="fa flaticon-more-v2"></li>    </a>
 
-                    <a href="<?php echo url_for("proceso/rechaza?tipo=pago&token=" . $reg->getId()) ?>" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#ajaxmodalRECHAZA<?php echo $data->getId(); ?>"> <li class="fa flaticon2-cancel"></li>    </a>
+
+                    <a href="<?php echo url_for("proceso/rechaza?tipo=pago&token=" . $reg->getId()) ?>" class="  btn-block   btn-sm btn-danger" data-toggle="modal" data-target="#ajaxmodalRECHAZA<?php echo $data->getId(); ?>"> <li class="fa flaticon2-cancel"></li>    </a>
     <!--                           <a class="btn   btn-sm btn-danger" data-toggle="modal" href="#static<?php echo $reg->getId() ?>"><i class="fa fa-trash"></i>  </a>
                     -->
                 </td>      
+            </tr>
+        <?php } ?>
+             <?php foreach ($registrosPago as $reg) { ?>
+            <?php $data = $reg; ?>
+            <?php $conta++; ?>
+            <tr >
+                <td><?php echo $reg->getCodigo(); ?></td>
+                <td style="text-align: center"><?php echo $reg->getFecha('d/m/Y '); ?></td>
+                <td><?php echo $data->getUsuario(); ?></td>
+                <td><?php echo $data->getProveedor(); ?></td>
+                <td><?php echo $data->getTipoPago(); ?> <?php echo $data->getDocumento(); ?></td>
+                <td><?php //echo $data->getConcepto(); ?></td>
+                <td style="text-align: right" ><div style="text-align:right"> <?php echo Parametro::formato($reg->getValorTotal()); ?></div></td>
+                <td style="text-align: right" ><?php echo $reg->getBanco(); ?></td>
+                <td style="text-align: right" ><?php echo $reg->getTipoPago(); ?></td>
+                <td style="text-align: right" ><?php echo $reg->getDocumento(); ?></td>
+                <td>
+                </td>
+               
             </tr>
         <?php } ?>
 

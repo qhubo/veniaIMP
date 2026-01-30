@@ -147,10 +147,10 @@ class lista_cobroActions extends sfActions {
             $this->getUser()->setFlash('error', 'ERROR FEL ' . $returna['ERROR']);
         }
         if (trim($returna['CONTIGENCIA']) <> "") {
-            $this->getUser()->setFlash('error', 'FACTURA EN CONTINGENCIA ' . $returna['CONTIGENCIA']);
+            $this->getUser()->setFlash('error', 'FACTURA EN CONTINGENCIA ' );
         }
         if (trim($returna['UUID']) <> "") {
-            $this->getUser()->setFlash('exito', 'FACTURA FEL creada con exito ' . $returna['UUID']);
+            $this->getUser()->setFlash('exito', 'FACTURA FEL creada con exito ' );
         }
         $this->redirect('lista_cobro/caja?id=' . $OperacionId);
     }
@@ -345,7 +345,7 @@ class lista_cobroActions extends sfActions {
                             $this->getUser()->setFlash('error', 'FACTURA EN CONTINGENCIA ' . $returna['CONTIGENCIA']);
                         }
                         if (trim($returna['UUID']) <> "") {
-                            $this->getUser()->setFlash('exito', 'FACTURA FEL creada con exito ' . $returna['UUID']);
+                            $this->getUser()->setFlash('exito', 'FACTURA FEL creada con exito ' );
                         }
 
 //                      $returna['ERROR'] = $ERROR; // = '';

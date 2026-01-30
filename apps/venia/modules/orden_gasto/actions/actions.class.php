@@ -379,7 +379,7 @@ class orden_gastoActions extends sfActions {
                 $ordenQ->setToken(sha1($ordenQ->getCodigo()));
                 $ordenQ->save();
                 if (!$ordenQ->getPartidaNo()) {
-                    $this->partidaInventario($ordenQ);
+              //      $this->partidaInventario($ordenQ);
                 }
 
                 $cuentaProveedor = CuentaProveedorQuery::create()->findOneByGastoId($ordenQ->getId());
@@ -578,7 +578,7 @@ class orden_gastoActions extends sfActions {
                 $OperaPgo->setEmpresaId($empresaId);
                 $OperaPgo->setValorTotal($valor);
                 $OperaPgo->save();
-                $this->partidaPago($OperaPgo);
+             //   $this->partidaPago($OperaPgo);
                 $valorPagado = $cuentaVivi->getValorPagado() + $valor;
                 $cuentaVivi->setFecha(date('Y-m-d H:i:s'));
                 $cuentaVivi->setValorPagado($valorPagado);

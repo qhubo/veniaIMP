@@ -34,8 +34,6 @@ class cxc_por_pagarActions extends sfActions {
         $encabezados[] = array("Nombre" => strtoupper("Fecha"), "width" => 25, "align" => "left", "format" => "#,##0");
         $encabezados[] = array("Nombre" => strtoupper("Crédito"), "width" => 20, "align" => "left", "format" => "#,##0");
         $encabezados[] = array("Nombre" => strtoupper("Detalle"), "width" => 40, "align" => "left", "format" => "#,##0");
-        $encabezados[] = array("Nombre" => strtoupper("Sub Total"), "width" => 35, "align" => "rigth", "format" => "#,##0.00");
-        $encabezados[] = array("Nombre" => strtoupper("Valor ISR"), "width" => 35, "align" => "rigth", "format" => "#,##0.00");
         $encabezados[] = array("Nombre" => strtoupper("Valor Total"), "width" => 35, "align" => "rigth", "format" => "#,##0.00");
         $encabezados[] = array("Nombre" => strtoupper("Valor Pagado"), "width" => 35, "align" => "rigth", "format" => "#,##0.00");
         $encabezados[] = array("Nombre" => strtoupper("Saldo"), "width" => 35, "align" => "rigth", "format" => "#,##0.00");
@@ -58,9 +56,7 @@ class cxc_por_pagarActions extends sfActions {
             $datos[] = array("tipo" => 3, "valor" => $deta->getProveedor()->getNombre());  // ENTERO
             $datos[] = array("tipo" => 3, "valor" => $deta->getFecha('d/m/Y'));  // ENTERO
             $datos[] = array("tipo" => 3, "valor" => $deta->getDias() . " Días ");  // ENTERO
-            $datos[] = array("tipo" => 2, "valor" => $deta->getValorSubTotal());  // ENTERO
-            $datos[] = array("tipo" => 2, "valor" => $deta->getValorImpuesto());  // ENTERO
-            $datos[] = array("tipo" => 2, "valor" => $deta->getValorImpuesto());  // ENTERO
+            $datos[] = array("tipo" => 3, "valor" => $deta->getDetalle());  // ENTERO
             $datos[] = array("tipo" => 2, "valor" => $deta->getValorTotal());  // ENTERO
             $datos[] = array("tipo" => 2, "valor" => $deta->getValorPagado());  // ENTERO          
             $datos[] = array("tipo" => 2, "valor" => $deta->getValorTotal() - $deta->getValorPagado());

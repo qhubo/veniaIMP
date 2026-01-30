@@ -298,6 +298,9 @@ class orden_compraActions extends sfActions {
     }
 
     public function executeMuestraPaga(sfWebRequest $request) {
+      
+        error_reporting(-1);
+
         $token = $request->getParameter('token');
         $ordenPRove = OrdenProveedorQuery::create()->findOneByToken($token);
         sfContext::getInstance()->getUser()->setAttribute('tab', 4, 'seguridad');
@@ -538,6 +541,9 @@ class orden_compraActions extends sfActions {
     }
 
     public function executeMuestra(sfWebRequest $request) {
+        
+        error_reporting(-1);
+
         date_default_timezone_set("America/Guatemala");
         $token = $request->getParameter('token');
         $tab = 1;
@@ -631,7 +637,7 @@ class orden_compraActions extends sfActions {
 
                 //* AQUI MOVIMIENTO_BANCO
 
-                $partidaNo = $this->partidaPago($OperaPgo);
+               // $partidaNo = $this->partidaPago($OperaPgo);
                 $valorPagado = $cuentaVivi->getValorPagado() + $valor;
                 $cuentaVivi->setFecha(date('Y-m-d H:i:s'));
                 $cuentaVivi->setValorPagado($valorPagado);
