@@ -339,8 +339,8 @@ class carga_gastoActions extends sfActions {
                         $proyectQ = ProyectoQuery::create()->findOneByNombre($regi['TIPO']);
                         $detalle = New GastoCajaDetalle();
                         $detalle->setGastoCajaId($gastoCaja->getId());
-                        $detalle->setSerie($regi['SERIE']);
-                        $detalle->setFactura($regi['FACTURA']);
+                        $detalle->setSerie($regi['CUFE']);
+                        //$detalle->setFactura($regi['FACTURA']);
                         $detalle->setFecha($fecha);
                         $detalle->setDescripcion($regi['DESCRIPCION']);
                         $detalle->setProveedorId($regi['PROVEEDORID']);
@@ -446,8 +446,8 @@ class carga_gastoActions extends sfActions {
         $columna = 0;
         $encabezados = null;
         $this->getResponse()->setContentType('charset=utf-8');
-        $encabezados[] = array("Nombre" => 'serie', "width" => 12, "align" => "center", "format" => "@");
-        $encabezados[] = array("Nombre" => 'factura', "width" => 16, "align" => "left", "format" => "@");
+
+        $encabezados[] = array("Nombre" => 'CUFE', "width" => 40, "align" => "left", "format" => "@");
         $encabezados[] = array("Nombre" => 'fecha', "width" => 12, "align" => "left", "format" => "@");
         $encabezados[] = array("Nombre" => 'descripcion', "width" => 45, "align" => "left", "format" => "@");
         $encabezados[] = array("Nombre" => 'codigo proveedor', "width" => 22, "align" => "left", "format" => "@");

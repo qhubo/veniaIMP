@@ -119,7 +119,28 @@ class orden_compraActions extends sfActions {
                 }
             }
         }
-        sfContext::getInstance()->getUser()->setAttribute('carga', serialize($linea), 'busqueda');
+
+        
+       $ordenProveedor = OrdenProveedorQuery::create()->findOneById($ordenId);
+   $lista = OrdenProveedorDetalleQuery::create()
+                ->withColumn('sum(OrdenProveedorDetalle.ValorTotal)', 'TotalGeneral')
+                ->filterByOrdenProveedorId($ordenId)
+                ->findOne();
+        if ($lista) {
+            $suma = $lista->getTotalGeneral();
+
+            $valores = ParametroQuery::ObtenerIva($suma, false,false, false, '');
+            $iva = $valores['IVA'];
+            $valorSInIVa = $valores['VALOR_SIN_IVA'];
+        }
+        $retorna = "<strong>" . number_format($retorna, 2) . "</strong>";
+        $retorna .= '|' . number_format($suma, 2) . "|" . number_format($iva, 2) . "|" . number_format($valorSInIVa, 2);
+        $ordenProveedor->setSubTotal($suma);
+        $ordenProveedor->setValorTotal($suma);
+        $ordenProveedor->setIva(0);
+        $ordenProveedor->setValorIsr($valores['VALOR_ISR']);
+        $ordenProveedor->setValorRetieneIva($valores['VALOR_RETIENE_IVA']);
+        $ordenProveedor->save();
         $this->getUser()->setFlash('exito', ' Archivo exportado con éxito ');
         $this->redirect('orden_compra/index?id=' . $ordenId);
     }
@@ -738,7 +759,7 @@ class orden_compraActions extends sfActions {
             $this->redirect('orden_compra/index?id=');
         }
 
-            if ($ordenQ->getEstatus() == 'Proceso') {
+            if (($ordenQ->getEstatus() == 'Proceso') or  ($ordenQ->getEstatus() == 'Pendiente')) {
               sfContext::getInstance()->getUser()->setAttribute('OrdenId', null, 'seguridad');
                 $ordenQ->setEstatus("Confirmada");
                 $ordenQ->setFecha(date('Y-m-d H:i:s'));
@@ -1173,6 +1194,7 @@ class orden_compraActions extends sfActions {
 
         if (!$operacion) {
             $operacion = new OrdenProveedor();
+            $operacion->setDiaCredito(60);
             $operacion->setUsuario($usuarioQ->getUsuario());
             $operacion->setEstatus('Proceso');
             $operacion->save();

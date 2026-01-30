@@ -58,7 +58,7 @@ abstract class BaseOrdenProveedorForm extends BaseFormPropel
       'proveedor_id'          => new sfValidatorPropelChoice(array('model' => 'Proveedor', 'column' => 'id', 'required' => false)),
       'nit'                   => new sfValidatorString(array('max_length' => 50, 'required' => false)),
       'nombre'                => new sfValidatorString(array('max_length' => 150, 'required' => false)),
-      'no_documento'          => new sfValidatorString(array('max_length' => 50, 'required' => false)),
+      'no_documento'          => new sfValidatorString(array('max_length' => 250, 'required' => false)),
       'fecha_documento'       => new sfValidatorDate(array('required' => false)),
       'fecha_contabilizacion' => new sfValidatorDate(array('required' => false)),
       'fecha'                 => new sfValidatorDateTime(array('required' => false)),

@@ -44,12 +44,12 @@
                     <td  rowspan="2" ><?php echo $can; ?> </td>
                     <td style="padding: 0.1rem !important;"><?php
                         if ($registro->getProductoId()) {
-                            echo substr($registro->getProducto()->getCodigoSku(), -6);
+                            echo $registro->getProducto()->getCodigoSku();
                         }
                         ?>
                         <?php
                         if ($registro->getServicioId()) {
-                            echo substr($registro->getServicio()->getCodigo(), -6);
+                            echo $registro->getServicio()->getCodigo();
                         }
                         ?></td>    
                     <td style="padding: 0.1rem !important;"><?php echo $registro->getDetalle(); ?></td>    

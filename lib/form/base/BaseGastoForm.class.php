@@ -66,7 +66,7 @@ abstract class BaseGastoForm extends BaseFormPropel
       'estatus'            => new sfValidatorString(array('max_length' => 32, 'required' => false)),
       'dias_credito'       => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
       'tipo_documento'     => new sfValidatorString(array('max_length' => 32, 'required' => false)),
-      'documento'          => new sfValidatorString(array('max_length' => 150, 'required' => false)),
+      'documento'          => new sfValidatorString(array('max_length' => 250, 'required' => false)),
       'sub_total'          => new sfValidatorNumber(array('required' => false)),
       'iva'                => new sfValidatorNumber(array('required' => false)),
       'valor_total'        => new sfValidatorNumber(array('required' => false)),

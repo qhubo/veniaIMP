@@ -32,39 +32,36 @@
 </div>
 
 <div class="row">
+   <div class="col-lg-2" ><div style="text-align:right">Tipo Documento </div> </div>
 
-    <div class="col-lg-2" ><div style="text-align:right">Tipo Documento </div> </div>
-
-    <div class="col-lg-2 <?php if ($form['tipo_documento']->hasError()) echo "has-error" ?>">
+    <div class="col-lg-3 <?php if ($form['tipo_documento']->hasError()) echo "has-error" ?>">
         <?php if ($orden) { ?>      <?php echo $form['tipo_documento'] ?>    <?php } ?>        
         <span class="help-block form-error"> 
             <?php echo $form['tipo_documento']->renderError() ?>  
         </span>
     </div>
 
-    <div class="col-lg-1" ><div style="text-align:right">Documento </div> </div>
-
-    <div class="col-lg-2 <?php if ($form['documento']->hasError()) echo "has-error" ?>">
-        <?php if ($orden) { ?>      <?php echo $form['documento'] ?>    <?php } ?>        
-        <span class="help-block form-error"> 
-            <?php echo $form['documento']->renderError() ?>  
-        </span>
-    </div>
 
 
-    <div class="col-lg-2 ">Dias Crédito</div>
+    <div class="col-lg-2 " style="text-align:right !important;">Dias Crédito</div>
     <div class="col-lg-2 <?php if ($form['dia_credito']->hasError()) echo "has-error" ?>">
       <?php if ($orden) { ?>   <?php echo $form['dia_credito'] ?>     <?php } ?>       
         <span class="help-block form-error"> 
             <?php echo $form['dia_credito']->renderError() ?>  
         </span>
     </div>
-    
-    <div class="col-lg-1" > </div>
-    
-    
-  
 </div>
+<div class="row">
+     <div class="col-lg-2" ><div style="text-align:right">Documento (CUFE) </div> </div>
+
+    <div class="col-lg-9 <?php if ($form['documento']->hasError()) echo "has-error" ?>">
+        <?php if ($orden) { ?>      <?php echo $form['documento'] ?>    <?php } ?>        
+        <span class="help-block form-error"> 
+            <?php echo $form['documento']->renderError() ?>  
+        </span>
+    </div>
+
+    </div>
 
 
 <div class="row">

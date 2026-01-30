@@ -61,7 +61,7 @@ class buscaActions extends sfActions {
             $regid = $reg['id'];
             $nombre = $reg['nombre'];
             $imagen = $reg['imagen'];
-            $codigo = substr($reg['codigo_sku'], -6);
+            $codigo = $reg['codigo_sku'];
 
             $rutaimage = "/uploads/nofoto.jpg";
             if ($reg['imagen']) {
@@ -136,7 +136,7 @@ class buscaActions extends sfActions {
             $regid = $reg['id'];
             $nombre = $reg['nombre'];
             $imagen = $reg['imagen'];
-            $codigo = substr($reg['codigo_sku'], -6);
+            $codigo = $reg['codigo_sku'];
 
             $rutaimage = "/uploads/nofoto.jpg";
             if ($reg['imagen']) {
@@ -382,7 +382,7 @@ public function executeTabJsProducto(sfWebRequest $r) {
             $regid = $reg['id'];
             $nombre = $reg['nombre'];
             $imagen = $reg['imagen'];
-            $codigo = substr($reg['codigo_sku'], -6);
+            $codigo = $reg['codigo_sku'];
 
             $rutaimage = "/uploads/nofoto.jpg";
             if ($reg['imagen']) {

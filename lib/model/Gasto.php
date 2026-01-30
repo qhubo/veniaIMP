@@ -84,7 +84,7 @@ class Gasto extends BaseGasto {
 //                         echo $campo;
 //                        echo " ------------- ";
                     switch ($campo) {
-                        case 'SERIE':
+                        case 'CUFE':
                             $colSERIE = $letra;
                             break;
                         case 'FACTURA':
@@ -137,14 +137,14 @@ class Gasto extends BaseGasto {
                     $SERIE = trim(($registro[$colSERIE]));
                 } else {
                     $valido = false;
-                    $pendientes[] = 'SERIE';
+                    $pendientes[] = 'CUFE';
                 }
-                if (array_key_exists($colFACTURA, $registro)) {
-                    $FACTURA = trim(($registro[$colFACTURA]));
-                } else {
-                    $valido = false;
-                    $pendientes[] = 'FACTURA';
-                }
+//                if (array_key_exists($colFACTURA, $registro)) {
+//                    $FACTURA = trim(($registro[$colFACTURA]));
+//                } else {
+//                    $valido = false;
+//                    $pendientes[] = 'FACTURA';
+//                }
                 if (array_key_exists($colFECHA, $registro)) {
                     $FECHA = trim(($registro[$colFECHA]));
                 } else {
@@ -255,9 +255,9 @@ class Gasto extends BaseGasto {
                     $lista['LINEA'] = $contador;
                     $lista['PROVEEDORID'] = NULL;
                     //    if ($cuentaErp) {
-                    $lista['SERIE'] = $SERIE;
+                    $lista['CUFE'] = $SERIE;
                     //  $lista['EXISTE'] = PartidaQuery::create()->filterByCodigo($ASIENTO)->count();
-                    $lista['FACTURA'] = $FACTURA;
+                  //  $lista['FACTURA'] = $FACTURA;
                     $lista['FECHA'] = $FECHA;
                     $lista['DESCRIPCION'] = $DESCRIPCION;
                     $lista['CODIGO_PROVEEDOR'] = $CODIGO_PROVEEOR;

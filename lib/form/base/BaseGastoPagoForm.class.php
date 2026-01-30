@@ -43,7 +43,7 @@ abstract class BaseGastoPagoForm extends BaseFormPropel
       'proveedor_id'        => new sfValidatorPropelChoice(array('model' => 'Proveedor', 'column' => 'id', 'required' => false)),
       'gasto_id'            => new sfValidatorPropelChoice(array('model' => 'Gasto', 'column' => 'id', 'required' => false)),
       'tipo_pago'           => new sfValidatorString(array('max_length' => 50, 'required' => false)),
-      'documento'           => new sfValidatorString(array('max_length' => 150, 'required' => false)),
+      'documento'           => new sfValidatorString(array('max_length' => 250, 'required' => false)),
       'fecha'               => new sfValidatorDate(array('required' => false)),
       'valor_total'         => new sfValidatorNumber(array('required' => false)),
       'usuario'             => new sfValidatorString(array('max_length' => 50, 'required' => false)),

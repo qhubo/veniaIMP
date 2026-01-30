@@ -97,7 +97,7 @@ $vboedgas = CuentaErpContableQuery::create()
             <table class="table table-bordered  dataTable table-condensed flip-content" >
                 <thead class="flip-content">
                     <tr class="active">
-                        <th align="center" width="120px"><font size="-1"> SERIE FACTURA</font></th>
+                        <th align="center" width="120px"><font size="-1"> CUFE</font></th>
                       <th align="center" width="50px"><font size="-1">FECHA</font></th>
                         <th align="center" ><font size="-1">DESCRIPCION</font></th>
                         <th align="center" ><font size="-1">CODIGO PROVEEDOR</font></th>
@@ -109,8 +109,8 @@ $vboedgas = CuentaErpContableQuery::create()
                     <tbody>
                         <?php foreach ($valores as $registro) { ?>
                             <tr <?php if (!$registro['VALIDO']) { ?> style="background-color: #F8ED82" <?php } ?>>
-                                <td><font size="-1"><?php echo $registro['SERIE']; ?><BR>
-                                  <?php echo $registro['FACTURA']; ?></font></td>
+                                <td><font size="-1"><?php echo $registro['CUFE']; ?><BR>
+                               </font></td>
                                 <td><font size="-1"><?php echo $registro['FECHA']; ?></font></td>
                                 <td><font size="-1"><?php echo $registro['DESCRIPCION']; ?></font></td>
                                 <td><font size="-1"><?php echo $registro['CODIGO_PROVEEDOR']; ?></font></td>

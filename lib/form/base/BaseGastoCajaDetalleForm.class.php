@@ -34,8 +34,8 @@ abstract class BaseGastoCajaDetalleForm extends BaseFormPropel
     $this->setValidators(array(
       'id'                => new sfValidatorChoice(array('choices' => array($this->getObject()->getId()), 'empty_value' => $this->getObject()->getId(), 'required' => false)),
       'gasto_caja_id'     => new sfValidatorPropelChoice(array('model' => 'GastoCaja', 'column' => 'id', 'required' => false)),
-      'serie'             => new sfValidatorString(array('max_length' => 20, 'required' => false)),
-      'factura'           => new sfValidatorString(array('max_length' => 50, 'required' => false)),
+      'serie'             => new sfValidatorString(array('max_length' => 250, 'required' => false)),
+      'factura'           => new sfValidatorString(array('max_length' => 250, 'required' => false)),
       'fecha'             => new sfValidatorString(array('max_length' => 10, 'required' => false)),
       'descripcion'       => new sfValidatorString(array('max_length' => 450, 'required' => false)),
       'proveedor_id'      => new sfValidatorPropelChoice(array('model' => 'Proveedor', 'column' => 'id', 'required' => false)),

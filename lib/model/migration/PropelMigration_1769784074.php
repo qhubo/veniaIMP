@@ -2,10 +2,10 @@
 
 /**
  * Data object containing the SQL and PHP code to migrate the database
- * up to version 1769141717.
- * Generated on 2026-01-23 05:15:17 
+ * up to version 1769784074.
+ * Generated on 2026-01-30 15:41:14 
  */
-class PropelMigration_1769141717
+class PropelMigration_1769784074
 {
 
     public function preUp($manager)
@@ -42,10 +42,9 @@ class PropelMigration_1769141717
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `cliente` CHANGE `tipo_cliente` `tipo_cliente` VARCHAR(120);
+ALTER TABLE `gasto_caja_detalle` CHANGE `serie` `serie` VARCHAR(250);
 
-ALTER TABLE `orden_cotizacion_detalle`
-    ADD `confirmado` TINYINT(1) DEFAULT 0 AFTER `bulto_superior`;
+ALTER TABLE `gasto_caja_detalle` CHANGE `factura` `factura` VARCHAR(250);
 
 ALTER TABLE `partida` CHANGE `ano` `ano` INTEGER DEFAULT false;
 
@@ -75,9 +74,9 @@ SET FOREIGN_KEY_CHECKS = 1;
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `cliente` CHANGE `tipo_cliente` `tipo_cliente` VARCHAR(200);
+ALTER TABLE `gasto_caja_detalle` CHANGE `serie` `serie` VARCHAR(20);
 
-ALTER TABLE `orden_cotizacion_detalle` DROP `confirmado`;
+ALTER TABLE `gasto_caja_detalle` CHANGE `factura` `factura` VARCHAR(50);
 
 ALTER TABLE `partida` CHANGE `ano` `ano` INTEGER DEFAULT 0;
 

@@ -35,7 +35,7 @@ abstract class BaseCuentaBancoForm extends BaseFormPropel
       'movimiento_banco_id' => new sfValidatorPropelChoice(array('model' => 'MovimientoBanco', 'column' => 'id', 'required' => false)),
       'valor'               => new sfValidatorNumber(array('required' => false)),
       'fecha'               => new sfValidatorDate(array('required' => false)),
-      'documento'           => new sfValidatorString(array('max_length' => 50, 'required' => false)),
+      'documento'           => new sfValidatorString(array('max_length' => 250, 'required' => false)),
       'observaciones'       => new sfValidatorString(array('max_length' => 450, 'required' => false)),
       'usuario'             => new sfValidatorString(array('max_length' => 50, 'required' => false)),
       'created_at'          => new sfValidatorDateTime(array('required' => false)),

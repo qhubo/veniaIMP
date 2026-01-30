@@ -19,8 +19,8 @@
         <?php $can++; ?>
         <tr>
                  <td><?php echo $can; ?> </td>
-            <td><?php if ($registro->getProductoId()) { echo  substr($registro->getProducto()->getCodigoSku(),-6); } ?>
-                <?php if ($registro->getServicioId()) { echo  substr($registro->getServicio()->getCodigo(),-6); } ?></td>    
+            <td><?php if ($registro->getProductoId()) { echo  ($registro->getProducto()->getCodigoSku()); } ?>
+                <?php if ($registro->getServicioId()) { echo  ($registro->getServicio()->getCodigo()); } ?></td>    
             <td <?php if ($orden->getEstatus()=="Autorizado") { ?>
         style="background-color:  #D1DEF6" <?Php } ?> ><?php echo $registro->getDetalle(); ?></td> 
             <td <?php if ($orden->getEstatus()=="Autorizado") { ?>

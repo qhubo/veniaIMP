@@ -342,7 +342,7 @@ propel:
      proveedor_id:                     ~  
      nit:                              { type: varchar(50) }
      nombre:                           { type: varchar(150) }
-     no_documento:                     { type: varchar(50) }
+     no_documento:                     { type: varchar(250) }
      fecha_documento:                  { type: date } 
      fecha_contabilizacion:            { type: date }  
      fecha:                            { type: timestamp }
@@ -1204,7 +1204,7 @@ propel:
     estatus:                           { type: varchar(32) } 
     dias_credito:                      { type: integer } 
     tipo_documento:                    { type: varchar(32) }
-    documento:                         { type: varchar(150) } 
+    documento:                         { type: varchar(250) } 
     sub_total:                         { type: double }    
     iva:                               { type: double } 
     valor_total:                       { type: double }
@@ -1250,7 +1250,7 @@ propel:
      proveedor_id:                     ~   
      gasto_id:               ~   
      tipo_pago:                        { type: varchar(50) }   
-     documento:                        { type: varchar(150) }
+     documento:                        { type: varchar(250) }
      fecha:                            { type: date }
      valor_total:                      { type: double } 
      usuario:                          { type: varchar(50) }
@@ -1579,7 +1579,7 @@ propel:
      movimiento_banco_id:               ~
      valor:                             { type: double }
      fecha:                             { type: date,index: true  }
-     documento:                         { type: varchar(50) }
+     documento:                         { type: varchar(250) }
      observaciones:                     { type: varchar(450) }
      usuario:                           { type: varchar(50) }
      created_at:                        ~ 
@@ -1708,8 +1708,8 @@ propel:
      _attributes: { phpName: GastoCajaDetalle, idMethod: native }
      id:                                ~
      gasto_caja_id:                     ~
-     serie:	                        { type: varchar(20) }
-     factura:	                        { type: varchar(50) } 
+     serie:	                        { type: varchar(250) }
+     factura:	                        { type: varchar(250) } 
      fecha:	                        { type: varchar(10) } 
      descripcion:	                { type: varchar(450) }  
      proveedor_id:	                ~ 

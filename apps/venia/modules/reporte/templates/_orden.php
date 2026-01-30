@@ -103,11 +103,11 @@
 <!--                        <td width="10px" style="font-size:25px;border-left: 0.2px solid #5E80B4; padding-top: 10px;  "><?php echo $can; ?> </td>-->
                         <td width="120px" style="font-size:25px;border-left: 0.2px solid #5E80B4;  padding-top: 10px;"> <?php
                             if ($registro->getProductoId()) {
-                                echo substr($registro->getProducto()->getCodigoSku(),-6);
+                                echo $registro->getProducto()->getCodigoSku();
                             }
                             ?> <?php
                         if ($registro->getServicioId()) {
-                            echo substr($registro->getServicio()->getCodigo(),-6);
+                            echo $registro->getServicio()->getCodigo();
                         }
                         ?></td>    
                         <td width="225px" style="font-size:25px;border-left: 0.2px solid #5E80B4; padding-top: 10px;">&nbsp;&nbsp;<?php echo $registro->getDetalle(); ?></td> 

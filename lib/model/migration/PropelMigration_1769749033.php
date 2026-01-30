@@ -2,10 +2,10 @@
 
 /**
  * Data object containing the SQL and PHP code to migrate the database
- * up to version 1769056225.
- * Generated on 2026-01-22 05:30:25 
+ * up to version 1769749033.
+ * Generated on 2026-01-30 05:57:13 
  */
-class PropelMigration_1769056225
+class PropelMigration_1769749033
 {
 
     public function preUp($manager)
@@ -42,11 +42,25 @@ class PropelMigration_1769056225
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `operacion`
-    ADD `acuerdo_pago` VARCHAR(150) AFTER `direccion`;
+ALTER TABLE `cliente` CHANGE `tipo_cliente` `tipo_cliente` VARCHAR(120);
 
-ALTER TABLE `orden_cotizacion` CHANGE `empacado` `empacado` TINYINT(1) DEFAULT 0;
+ALTER TABLE `cuenta_banco` CHANGE `documento` `documento` VARCHAR(250);
 
+ALTER TABLE `gasto` CHANGE `documento` `documento` VARCHAR(250);
+
+ALTER TABLE `gasto_pago` CHANGE `documento` `documento` VARCHAR(250);
+
+ALTER TABLE `orden_cotizacion_detalle` CHANGE `bulto_inicio` `bulto_inicio` INTEGER;
+
+ALTER TABLE `orden_proveedor` CHANGE `no_documento` `no_documento` VARCHAR(250);
+
+ALTER TABLE `partida` CHANGE `ano` `ano` INTEGER DEFAULT false;
+
+ALTER TABLE `partida` CHANGE `mes` `mes` INTEGER DEFAULT false;
+
+ALTER TABLE `partida_agrupa` CHANGE `ano` `ano` INTEGER DEFAULT false;
+
+ALTER TABLE `partida_agrupa` CHANGE `mes` `mes` INTEGER DEFAULT false;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
@@ -70,11 +84,15 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 ALTER TABLE `cliente` CHANGE `tipo_cliente` `tipo_cliente` VARCHAR(200);
 
-ALTER TABLE `operacion` DROP `acuerdo_pago`;
+ALTER TABLE `cuenta_banco` CHANGE `documento` `documento` VARCHAR(50);
 
-ALTER TABLE `orden_cotizacion` CHANGE `empacado` `empacado` bit(1);
+ALTER TABLE `gasto` CHANGE `documento` `documento` VARCHAR(150);
 
-ALTER TABLE `orden_cotizacion` DROP `acuerdo_pago`;
+ALTER TABLE `gasto_pago` CHANGE `documento` `documento` VARCHAR(150);
+
+ALTER TABLE `orden_cotizacion_detalle` CHANGE `bulto_inicio` `bulto_inicio` VARCHAR(10);
+
+ALTER TABLE `orden_proveedor` CHANGE `no_documento` `no_documento` VARCHAR(50);
 
 ALTER TABLE `partida` CHANGE `ano` `ano` INTEGER DEFAULT 0;
 
