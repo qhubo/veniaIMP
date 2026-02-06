@@ -30,8 +30,10 @@
                                 <?php if (array_key_exists($modu, $permisos)) { ?>
                                     <?php $valido = true; ?>
                                 <?php } ?> 
+                            <?php if ($valido) { ?>
                                 <li class="kt-menu__item " aria-haspopup="true"><a href="<?php echo url_for($modu . '/index') ?>" class="kt-menu__link "><i class="kt-menu__link-bullet kt-menu__link-bullet--dot"><span></span></i><span class="kt-menu__link-text"><?php echo $data->getDescripcion(); ?></span></a></li>
-                            <?php } ?>   
+     <?php } ?>                          
+     <?php } ?>   
                             <?php
                             $submenus = MenuSeguridadQuery::create()
                                     ->filterByModulo('')
