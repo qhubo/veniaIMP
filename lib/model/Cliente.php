@@ -354,34 +354,7 @@ class Cliente extends BaseCliente {
         if ($empresaId) {
             $this->setEmpresaId($empresaId);
         }
-        if (trim($this->getCodigo()) == "") {
-            $tipo = $empresaId . 'CI';
-            $pre = $empresaId . 'CLI';
-            $numero = 1;
-            $busca = CorrelativoCodigoQuery::create()
-                    ->filterByTipo($tipo)
-                    ->findOne();
-            if (!$busca) {
-                $busca = New CorrelativoCodigo();
-                $busca->setTipo($tipo);
-                $busca->setPrefijo($pre);
-                $busca->setNumeroAsginar($numero);
-                $busca->save();
-            }
-            $numero = $busca->getNumeroAsginar();
-            $numero = $busca->getNumeroAsginar();
-            $prefijo = $pre . $numero;
-            if (strlen($numero) == 1) {
-                $prefijo = $pre . '0' . $numero;
-            }
-            if ($numero > 99) {
-                $prefijo = $pre . $numero;
-            }
-            $this->setCodigo($prefijo);
 
-            $busca->setNumeroAsginar($numero + 1);
-            $busca->save();
-        }
 
 
         parent::save($con);

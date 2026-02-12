@@ -13,7 +13,7 @@
         </span>
     </div>
 
-    <?php if (!$proveedor) { ?>
+ 
         <div  class="col-lg-1">
             Código     
         </div>
@@ -24,7 +24,7 @@
             </span>
             <font size="-2">* Se crea automático </font>
         </div>
-    <?php } ?>
+
         <?php if ($proveedor) { ?>
     
           <div  class="col-lg-2">
