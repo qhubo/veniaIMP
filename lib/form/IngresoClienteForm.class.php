@@ -5,7 +5,7 @@ class IngresoClienteForm extends sfForm {
     public function configure() {
         $DepartamentoId = sfContext::getInstance()->getUser()->getAttribute("departamento", null, 'seleccion');
         $this->setWidget("archivo", new sfWidgetFormInputFile(array(), array('label' => 'label', 'accept' => 'application/pdf, application/pdf',)));
-        $this->setValidator('archivo', new sfValidatorFile(array('required' => true,), array()));
+        $this->setValidator('archivo', new sfValidatorFile(array('required' => false,), array()));
         $paisQ = PaisQuery::create()->filterByActivo(true)->find();
         $listaP[null] = '[Seleccione]';
         foreach ($paisQ as $reg) {
