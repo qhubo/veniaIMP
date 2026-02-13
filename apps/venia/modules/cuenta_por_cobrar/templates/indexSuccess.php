@@ -81,7 +81,7 @@
                         <th align="center" width="20px">Fecha / Usuario</th>
 
                         <th  align="center">Vendedor </th>
-                        <th  align="center"> Cliente / Nit</th>
+                        <th  align="center"> Cliente / RUC</th>
                         <th  align="center"> Observaciones</th>    
 
                         <th  align="center"> Valor</th>    
