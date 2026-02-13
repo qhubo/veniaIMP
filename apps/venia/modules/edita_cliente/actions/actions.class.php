@@ -294,6 +294,7 @@ class edita_clienteActions extends sfActions {
                 $nueva->setTipoProducto($valores['precio']);
                 $nueva->setTipoReferencia($valores['fuente']);
                 $nueva->setTipoCliente($valores['tipo_cliente']);
+                $nueva->setPaisId($valores['pais']);
                 if ($valores["archivo"]) {
                     $archivo = $valores["archivo"];
                     $nombre = $archivo->getOriginalName();
