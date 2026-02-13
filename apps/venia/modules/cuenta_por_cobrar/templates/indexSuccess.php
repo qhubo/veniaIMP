@@ -20,8 +20,9 @@
         <?php $modulo = $sf_params->get('module'); ?>
         <form action="<?php echo url_for($modulo . '/index') ?>" method="get">
             <div class="row"  style="padding-bottom:10px;">
-                <div class="col-lg-2"></div>
-                <div class="col-lg-5">
+                <div class="col-lg-1"></div>
+                <div class="col-lg-4">
+                    <span style="display:block">Clientes</span>
                     <select  onchange="this.form.submit()" class="form-control mi-selector"  name="prover" id="prover">
                         <option value="0">[    Todos    ]</option>
                         <?php foreach ($seleccion as $key => $value) { ?>
@@ -29,7 +30,18 @@
                         <?php } ?>
                     </select>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-lg-4">
+                    <span style="display:block">Vendedores</span>
+                    <select  onchange="this.form.submit()" class="form-control mi-selector"  name="vende" id="vende">
+                        <option value="0">[    Todos    ]</option>
+                        <?php foreach ($vendedores as $vent) { ?>
+                            <option <?php if ($vent->getId() == $vende) { ?> selected="selected"  <?php } ?>  value="<?php echo $vent->getId(); ?>"><?php echo $vent->getNombre(); ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="col-lg-1"></div>
+
+                <div class="col-lg-1">
                     <a target="_blank" href="<?php echo url_for($modulo . '/reporte?prover=' . $prover) ?>" class="btn  btn-sm  " style="background-color:#04AA6D; color:white"> <i class="flaticon2-printer"></i> Excel </a>
                 </div>
 
@@ -50,26 +62,32 @@
                 <?php } ?>
             </div>
         </div>
+        <div class="row">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-7" style="font-size:18px; font-weight: bold;"> Valor Total <?php echo Parametro::formato($totalSuma); ?> </div>
+        </div>
+
+
         <?php if ($prover) { ?>
             <table class="table table-striped- table-bordered table-hover table-checkable XXdataTable no-footer dtr-inlin XXkt-datatable" id="html_table" width="100%">
             <?php } ?>
             <?php if (!$prover) { ?>
                 <table class="table table-striped- table-bordered table-hover table-checkable  no-footer dtr-inlin kt-datatable" id="html_table" width="100%">
                 <?php } ?>
+
                 <thead class="flip-content">
                     <tr class="active">
                         <th align="center" width="20px"> Código</th>
                         <th align="center" width="20px">Fecha / Usuario</th>
 
-                        <th  align="center"> Cliente</th>
-                        <th  align="center"> RUC</th>
+                        <th  align="center">Vendedor </th>
+                        <th  align="center"> Cliente / Nit</th>
                         <th  align="center"> Observaciones</th>    
 
                         <th  align="center"> Valor</th>    
                         <th  align="center"> Cheque Prefechado</th>     
                         <th  align="center"> Valor Pagado</th>     
                         <th  align="center"> Saldo</th>     
-                        <th  align="center"> Pagar</th>  
                         <th  align="center"> Estado </th>
                         <th  align="center"> #</th>    
 
@@ -81,50 +99,43 @@
                         <?php $total = $lista->getValorTotal() + $total; ?>
                         <?php $detalleProducto = OperacionDetalleQuery::create()->filterByOperacionId($lista->getId())->count(); ?>    
                         <tr>     
-                            <td>
-                                <?php if ($lista->getCodigo()) { ?>
-
-
+                            <td> <?php if ($lista->getCodigo()) { ?>
                                     <a class="btn btn-sm  btn-warning btn-block "   href="<?php echo url_for('reporte_venta/muestra?id=' . $lista->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $lista->getId() ?>">
-
                                         <font size="-2"> <?php echo $lista->getCodigo() ?>   </font>
                                     </a>
                                 <?php } else { ?>
-
                                     <a class="btn  btn-small  btn-info btn-block "   href="<?php echo url_for('reporte_venta/muestra?id=' . $lista->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $lista->getId() ?>">
                                         <?php echo $lista->getCodigoFactura() ?>  
                                     </a>   
                                     <font size="-2"> <?php echo $lista->getCodigoFactura() ?>  </font>
                                 <?php } ?>
-
                                 <font size="-2"> <?php echo substr($lista->getTienda(), 0, 5) ?> </font>  
-
-
                             </td>
                             <td><font size="-2"><?php echo $lista->getFecha('d/m/Y H:i') ?></font>  
                                 <br><font size="-1"><?php echo $lista->getUsuario() ?></font>  </td>
-                            <td>
-                            <td> <strong><?php  if ($lista->getClienteId()) {  echo  $lista->getCliente()->getCodigoCli(); } ?></strong>  <br>
-                                
+                            <td><?php if ($lista->getVendedorId()) echo $lista->getVendedor()->getNombre(); ?></td>
+                            <td> <strong><?php if ($lista->getClienteId()) {
+                                echo $lista->getCliente()->getCodigoCli();
+                            } ?></strong>  <br>
                                 <?php if ($lista->getCliente()->getNombre() <> $lista->getNombre()) { ?>
                                     <?php echo $lista->getCliente()->getNombre() . "   " . $lista->getNombre(); ?>
                                 <?php } else { ?>
-                                    <?php echo $lista->getCliente()->getNombre(); ?>
-                                <?php } ?>
+        <?php echo $lista->getCliente()->getNombre(); ?>
+    <?php } ?>
+                                <br> <font size="-1"><?php echo $lista->getNit() ?></font>  
                             </td>
-                            <td>  <font size="-1"><?php echo $lista->getNit() ?></font>  </td>
                             <td>  <font size="-1"><?php echo $lista->getObservaciones() ?></font>  </td>
 
 
                             <td>  <font size="-1"><?php echo number_format($lista->getValorTotal(), 2) ?>  </font>  </td>
                             <td>  <font size="-1"><?php echo number_format($lista->getValorPrefechado(), 2) ?>  </font>  </td>
                             <td>  <font size="-1"><?php echo number_format($lista->getValorPagado(), 2) ?>  </font>  </td>
-                            <td style="text-align:right">  <font size="-1"><?php echo number_format($lista->getValorTotal() - $lista->getValorPagado(), 2) ?>  </font>  </td>
-
-                            <td >
+                            <td style="text-align:right">  
                                 <a class="btn btn-sm btn-block btn-success btn-outline  "  href="<?php echo url_for($modulo . '/caja?id=' . $lista->getId()) ?>"  >
-                                    <i class="fa flaticon-signs"></i> Pago </a>    
+                                    <i class="fa flaticon-signs"></i> Pago <font size="-1"><?php echo number_format($lista->getValorTotal() - $lista->getValorPagado(), 2) ?>  </font>  
+                                </a>
                             </td>
+
                             <td>  <font size="-1"><?php echo $lista->getEstatus() ?>  </font>  </td>
                             <td><?php echo $lista->getId(); ?></td>
 
@@ -132,9 +143,9 @@
 
 
 
-                    <?php } ?>
+                <?php } ?>
                 </tbody>
-                <?php if ($prover) { ?>
+<?php if ($prover) { ?>
                     <tfoot>
                     <td></td>
                     <td colspan="4" style="text-align: right"> <strong>Totales</strong></td>
@@ -144,7 +155,7 @@
                     <td style="text-align: right" colspan="1">
                         <font size='+1'> <?php echo Parametro::formato($totalSuma); ?></font></td>
 
-            <!--                    <input class="form-control" value="<?php echo Parametro::formato($totalSuma, false); ?>" style="background-color:#F9FBFE ;" readonly="true" name="totalselec" id="totalselec">-->
+                <!--                    <input class="form-control" value="<?php echo Parametro::formato($totalSuma, false); ?>" style="background-color:#F9FBFE ;" readonly="true" name="totalselec" id="totalselec">-->
                     <!--                    <div style="padding-top:3px; padding-bottom:3px;">
                                             
                                             <a href="<?php echo url_for("proceso/confirma?tipo=cuentapagar&token=" . $prover) ?>" class="btn btn-sm btn-block btn-success" data-toggle="modal" data-target="#ajaxmodalCONFIRMA"> <li class="fa flaticon2-checkmark"></li>&nbsp;&nbsp;Pagos Seleccionados    </a>
@@ -152,7 +163,7 @@
                                         </div>-->
                     </td>
                     </tfoot>
-                <?php } ?>
+<?php } ?>
 
             </table>
 
@@ -234,19 +245,19 @@ $partidaPen = PartidaQuery::create()
 
 
 
-                    <?php include_partial('proceso/partidaCambia', array('partidaPen' => $partidaPen)) ?>  
+    <?php include_partial('proceso/partidaCambia', array('partidaPen' => $partidaPen)) ?>  
                 </div>
             </div>
         </div>
     </div>
-    <script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+
     <?php foreach ($partidaPen->getListDetalle() as $cta) { ?>
         <script>
-                        $(document).ready(function () {
-                            $("#cuenta<?php echo $cta; ?>").select2({
-                                dropdownParent: $("#ajaxmodalPartida")
-                            });
-                        });
+            $(document).ready(function () {
+                $("#cuenta<?php echo $cta; ?>").select2({
+                    dropdownParent: $("#ajaxmodalPartida")
+                });
+            });
         </script>
     <?php } ?>
     <script>
