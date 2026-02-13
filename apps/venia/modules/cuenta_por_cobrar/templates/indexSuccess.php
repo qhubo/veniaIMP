@@ -85,7 +85,7 @@
                         <th  align="center"> Observaciones</th>    
 
                         <th  align="center"> Valor</th>    
-                        <th  align="center"> Cheque Prefechado</th>     
+                  
                         <th  align="center"> Valor Pagado</th>     
                         <th  align="center"> Saldo</th>     
                         <th  align="center"> Estado </th>
@@ -128,7 +128,7 @@
 
 
                             <td>  <font size="-1"><?php echo number_format($lista->getValorTotal(), 2) ?>  </font>  </td>
-                            <td>  <font size="-1"><?php echo number_format($lista->getValorPrefechado(), 2) ?>  </font>  </td>
+
                             <td>  <font size="-1"><?php echo number_format($lista->getValorPagado(), 2) ?>  </font>  </td>
                             <td style="text-align:right">  
                                 <a class="btn btn-sm btn-block btn-success btn-outline  "  href="<?php echo url_for($modulo . '/caja?id=' . $lista->getId()) ?>"  >
@@ -149,7 +149,7 @@
                     <tfoot>
                     <td></td>
                     <td colspan="4" style="text-align: right"> <strong>Totales</strong></td>
-                    <td></td>
+
                     <td  style="text-align: right"><font size='-1'> <?php echo Parametro::formato($total); ?></font></td>
                     <td></td>
                     <td style="text-align: right" colspan="1">
