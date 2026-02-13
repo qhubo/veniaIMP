@@ -70,8 +70,7 @@ class cargas_masivaActions extends sfActions {
                 $TIPO_CLIENTE = $registro['M'];
          
                 $FECHA_DE_INGRESO = $registro['N'];
-                $valorFecha = explode("/", $FECHA_DE_INGRESO);
-                $FECHA = $valorFecha[2] . "-" . $valorFecha[1] . "-" . $valorFecha[0];
+            
                 $FUENTE = $registro['O'];
                 $LIMITE_CREDITO = $registro['P'];
                 $OBSERVACION_INTERNAS = $registro['Q'];
@@ -91,6 +90,11 @@ class cargas_masivaActions extends sfActions {
                     $cliente->setActivo(true);
                     $cliente->setLimiteCredito($LIMITE_CREDITO);
                     $PAISQ = PaisQuery::create()->findOneByNombre($PAIS);
+                    if (!$PAISQ) {
+                        $PAISQ = new Pais();
+                        $PAISQ->setNombre($PAIS);
+                        $PAISQ->save();
+                    }
                     $cliente->setPaisId($PAISQ->getId());
                     $deparq = DepartamentoQuery::create()
                             ->filterByPaisId($PAISQ->getId())
@@ -131,7 +135,7 @@ class cargas_masivaActions extends sfActions {
                     $con->beginTransaction();
                     try {
                         if ($FECHA_DE_INGRESO) {
-                            $cliente->setFecha($FECHA);
+                            $cliente->setFecha($FECHA_DE_INGRESO);
                             $cliente->save();
                         }
                         $con->commit();
