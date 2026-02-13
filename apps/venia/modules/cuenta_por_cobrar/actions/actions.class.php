@@ -471,8 +471,7 @@ class cuenta_por_cobrarActions extends sfActions {
         $encabezados[] = array("Nombre" => strtoupper("Cliente"), "width" => 45, "align" => "left", "format" => "#,##0.00");
         $encabezados[] = array("Nombre" => strtoupper("RUC"), "width" => 20, "align" => "left", "format" => "#,##0");
         $encabezados[] = array("Nombre" => strtoupper("Valor"), "width" => 20, "align" => "rigth", "format" => "#,##0.00");
-        $encabezados[] = array("Nombre" => strtoupper("Valor Prefechado"), "width" => 20, "align" => "rigth", "format" => "#,##0.00");
-
+     
         $encabezados[] = array("Nombre" => strtoupper("Valor Pagado"), "width" => 20, "align" => "rigth", "format" => "#,##0.00");
         $encabezados[] = array("Nombre" => strtoupper("Saldo"), "width" => 20, "align" => "rigth", "format" => "#,##0.00");
 
@@ -498,7 +497,6 @@ class cuenta_por_cobrarActions extends sfActions {
             $datos[] = array("tipo" => 3, "valor" => $deta->getNit());  // ENTERO
 
             $datos[] = array("tipo" => 2, "valor" => $deta->getValorTotal());  // ENTERO
-            $datos[] = array("tipo" => 2, "valor" => $deta->getValorPrefechado());  // ENTERO   
             $datos[] = array("tipo" => 2, "valor" => $deta->getValorPagado());  // ENTERO          
             $datos[] = array("tipo" => 2, "valor" => $deta->getValorTotal() - $deta->getValorPagado());
 
