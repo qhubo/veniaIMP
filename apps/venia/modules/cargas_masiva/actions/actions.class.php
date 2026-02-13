@@ -200,5 +200,70 @@ class cargas_masivaActions extends sfActions {
         echo "Actualizados " . $cont;
         die();
     }
+    
+        public function executeCuentaCobrar(sfWebRequest $request) {
+        $filename = 'CuentaCobrar.xls';
+        $inputFileName = sfConfig::get("sf_upload_dir") . DIRECTORY_SEPARATOR . $filename;
+        $objReader = new PHPExcel_Reader_Excel5();
+        $objPHPExcel = $objReader->load($inputFileName);
+        $sheetData = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
+        $contador = 0;
+//        
+//        echo "<pre>";
+//        print_r($sheetData);
+//        die();
+        foreach ($sheetData as $registro) {
+            $contador++;
+            if ($contador > 1) {
+             $FECHA_FACTURA= $registro['A'];
+            $DOCUMENTO= $registro['B'];
+            $NODOCUMENTO= $registro['C'];
+            $FECHAVENCIMIENTO= $registro['D'];
+            $Total= $registro['E'];
+            $CODIGO_CLIENTE= $registro['F'];
+            $NOMBRE_CLIENTE = $registro['G'];
+            $CODIGO_VENDEDOR= $registro['H'];
+            $NOMBRE_VENDEDOR= $registro['I'];
+            
+            $codigoOperacion = $DOCUMENTO."-".$NODOCUMENTO;
+            $operacioQ= OperacionQuery::create()->findOneByCodigo($codigoOperacion);
+            if (!$operacioQ) {
+                $operacioQ= new Operacion();
+                $operacioQ->setCodigo($codigoOperacion);
+            }
+            $operacioQ->setCodigoFactura($codigoOperacion);
+             $operacioQ->setFecha($FECHA_FACTURA);
+             $operacioQ->setFechaCobro($FECHAVENCIMIENTO);
+             $operacioQ->setValorPagado(0);
+             $operacioQ->setValorTotal($Total);
+             $operacioQ->setNombre($NOMBRE_CLIENTE);
+             $clienteQ = ClienteQuery::create()->findOneByCodigo($CODIGO_CLIENTE);
+             if (!$clienteQ) {
+                 $clienteQ = New Cliente();
+                 $clienteQ->setCodigo($CODIGO_CLIENTE);
+                 $clienteQ->setNombre($NOMBRE_CLIENTE);
+                 $clienteQ->save();
+             }
+             $operacioQ->setClienteId($clienteQ->getId());
+             $Vendedro= VendedorQuery::create()->findOneByCodigo($CODIGO_VENDEDOR);
+             if (!$Vendedro) {
+                 $Vendedro= new Vendedor();
+                 $Vendedro->setCodigo($CODIGO_VENDEDOR);
+             $Vendedro->setNombre($NOMBRE_VENDEDOR);
+                 $Vendedro->save();
+             }
+             $operacioQ->setEstatus('Cuenta Cobrar');
+             $operacioQ->setPagado(false);
+             $operacioQ->setVendedorId($Vendedro->getId());
+             $operacioQ->save();
+                
+
+               
+                }
+            }
+      
+        echo "actualizado " . $contador;
+        die();
+    }
 
 }

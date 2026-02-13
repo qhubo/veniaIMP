@@ -186,6 +186,7 @@ propel:
     transporte:                       { type: varchar(350) }
     direccion:                        {  type: varchar(350) }
     acuerdo_pago:                      { type: varchar(150) }
+   
  
   operacion_detalle:
     _attributes: { phpName: OperacionDetalle, idMethod: native }
