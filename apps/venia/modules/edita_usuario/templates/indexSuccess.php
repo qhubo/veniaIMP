@@ -43,7 +43,7 @@
              <?php include_partial($modulo . '/lista', array( 'modulo' => $modulo, 'usuarioId'=>$usuarioId, 'usuarios' => $usuarios)) ?>
                 </div>
                 <div class="tab-pane  active " id="kt_portlet_base_demo_2_2_tab_content" role="tabpanel">
-      <?php  include_partial($modulo . '/listaVen', array( 'modulo' => $modulo, 'usuarioId'=>$usuarioId, 'usuarios' => $vendedores)) ?>
+      <?php  //include_partial($modulo . '/listaVen', array( 'modulo' => $modulo, 'usuarioId'=>$usuarioId, 'usuarios' => $vendedores)) ?>
        
                 </div>
 

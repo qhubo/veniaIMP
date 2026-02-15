@@ -49,7 +49,7 @@
                     <tr>
                         <td><font size="-1"><?php echo $lis->getUsuario() ?></font></td>
                         <td><font size="-1"><?php echo $lis->getNombreCompleto() ?></font></td>
-                             <td><?php echo $lis->getTipoUsuarioNombre() ?></td>
+                             <td><?php echo $lis->getTipoUsuarioNombre()?></td>
                         <td><font size="-1"><?php echo $nombre ?></font></td>
                         <td><font size="-1"><?php echo $lis->getTipoUsuario() ?></font></td>
                         <td align="center"><?php if ($lis->getActivo()) { ?>

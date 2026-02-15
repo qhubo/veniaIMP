@@ -20,7 +20,7 @@ class Usuario extends BaseUsuario {
 $retorna=$this->getTipoUsuario();
      $Tipo = PerfilQuery::create()->findOneById($this->getTipoUsuario());
      if ($Tipo) {
-         $retorna=$$Tipo->getDescripcion();
+         $retorna=$Tipo->getDescripcion();
      }
      return $retorna;
      
