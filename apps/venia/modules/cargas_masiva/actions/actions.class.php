@@ -33,6 +33,12 @@ class cargas_masivaActions extends sfActions {
                      $PROVEERO->save();
                  }
                  $paisq = PaisQuery::create()->findOneByNombre($pais);
+                 if (!$paisq) {
+                     $paisq = new Pais();
+                     $paisq->setNombre($pais);
+                     $paisq->setActivo(true);
+                     $paisq->save();
+                 }
                  $PROVEERO->setNombre($nombre);
                  $PROVEERO->setNit($nit);
                  $PROVEERO->setTelefono($telefono);
