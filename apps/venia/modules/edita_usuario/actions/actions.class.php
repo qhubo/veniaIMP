@@ -126,6 +126,7 @@ class edita_usuarioActions extends sfActions {
     }
 
     public function executeIndex(sfWebRequest $request) {
+        error_reporting(-1);
         $tipoUsu = strtoupper(sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'tipo_usuario'));
         $lista[] = 'Administrador';
         if ($tipoUsu == 'SUPERADMINISTRADOR') {
