@@ -182,7 +182,7 @@ class nota_credito_facturaActions extends sfActions {
                 $this->partida($nuevo);
                 $resultado = Operacion::NotaFel($OperacionId);
                 $firma = $operacion->getAnulaFaceFirma();
-                $nuevo->setFaceFirma($firma);
+              //  $nuevo->setFaceFirma($firma);
                 if ($firma) {
                     $nuevo->setEstatus("Procesada");
                 }

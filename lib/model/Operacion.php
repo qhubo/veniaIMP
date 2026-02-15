@@ -194,7 +194,7 @@ class Operacion extends BaseOperacion {
             $OPERACION->setFaceError($ERROR);
             $OPERACION->setFaceReferencia($CONTIGENCIA);
             $OPERACION->setFaceSerieFactura($SERIE);
-            $OPERACION->setFaceFirma($UUID);
+          //  $OPERACION->setFaceFirma($UUID);
             $OPERACION->setFaceNumeroFactura($NUMERO);
 
 
@@ -605,7 +605,7 @@ class Operacion extends BaseOperacion {
         $OPERACION->setFaceError($ERROR);
         $OPERACION->setFaceReferencia($CONTIGENCIA);
         $OPERACION->setFaceSerieFactura($SERIE);
-        $OPERACION->setFaceFirma($UUID);
+     //   $OPERACION->setFaceFirma($UUID);
         $OPERACION->setFaceNumeroFactura($NUMERO);
         $OPERACION->setCodigoFactura($Fecha_Cert);
 

@@ -78,6 +78,16 @@ class reporte_ventaActions extends sfActions {
         $this->redirect('reporte_venta/index');
         
     }
+    
+       public function executeCufe(sfWebRequest $request) {
+        $id = $request->getParameter('id'); //=155555&$dirh =
+        $val = $request->getParameter('val'); //=155555&$dirh =
+        $operacionQ = OperacionQuery::create()->findOneById($id);
+        $operacionQ->setFaceFirma($val);
+        $operacionQ->save();
+        echo "actualizado";
+        die();
+    }
     public function executeComentario(sfWebRequest $request) {
         $id = $request->getParameter('id'); //=155555&$dirh =
         $val = $request->getParameter('val'); //=155555&$dirh =
@@ -127,12 +137,12 @@ class reporte_ventaActions extends sfActions {
         $encabezados[] = array("Nombre" => "USUARIO", "width" => 20, "align" => "center", "format" => "@");
         $encabezados[] = array("Nombre" => "CLIENTE", "width" => 30, "align" => "center", "format" => "@");
         $encabezados[] = array("Nombre" => "NOMBRE", "width" => 50, "align" => "center", "format" => "@");
-        $encabezados[] = array("Nombre" => "NIT", "width" => 20, "align" => "center", "format" => "@");
+        $encabezados[] = array("Nombre" => "RUC", "width" => 20, "align" => "center", "format" => "@");
         $encabezados[] = array("Nombre" => "ESTADO", "width" => 20, "align" => "center", "format" => "@");
         $encabezados[] = array("Nombre" => strtoupper("Valor"), "width" => 15, "align" => "left", "format" => "#,##0.00");
         $encabezados[] = array("Nombre" => strtoupper("Valor Pagado"), "width" => 25, "align" => "left", "format" => "#,##0.00");
         $encabezados[] = array("Nombre" => "Fecha", "width" => 20, "align" => "center", "format" => "@");
-        $encabezados[] = array("Nombre" => "Firma", "width" => 45, "align" => "center", "format" => "@");
+        $encabezados[] = array("Nombre" => "CUFE", "width" => 45, "align" => "center", "format" => "@");
         $encabezados[] = array("Nombre" => "Vendedor", "width" => 45, "align" => "center", "format" => "@");
 
         sfContext::getInstance()->getUser()->HojaImprimeEncabezadoHorizontal($encabezados, $columna, $fila, $hoja);

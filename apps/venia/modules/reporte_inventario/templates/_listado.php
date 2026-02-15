@@ -8,7 +8,7 @@
 
                 <th  align="center"> Código Sku</th>
                 <th  align="center"> Nombre</th>
-                <th  align="center"><?php echo TipoAparatoQuery::tipo(); ?>  </th>  
+                <th  align="center">Marca  </th>  
 <!--                            <th  align="center"><?php //echo TipoAparatoQuery::Marca();    ?>  </th>  
                 <th  align="center"> Proveedor</th>-->
 <!--                            <th  align="center"> Descripción</th>-->
@@ -41,7 +41,7 @@
 
                             <td> <?php echo $lista->getCodigoSku() ?> </td>
                             <td><?php echo $lista->getNombre() ?></td>
-                            <td><?php echo $lista->getTipoAparato(); ?> </td>
+                            <td><?php echo $lista->getMarcaProducto(); ?> </td>
                             <?php foreach ($bodegas as $data) { ?>
                                             <?php if ($data->getTiendaId()) { ?>
                                 <?php $bode = $data->getTienda(); ?>

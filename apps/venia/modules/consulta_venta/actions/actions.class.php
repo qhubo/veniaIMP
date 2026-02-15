@@ -52,10 +52,10 @@ class consulta_ventaActions extends sfActions {
         $encabezados[] = array("Nombre" => "RUC", "width" => 20, "align" => "center", "format" => "@");
         $encabezados[] = array("Nombre" => "ESTADO", "width" => 20, "align" => "center", "format" => "@");
         $encabezados[] = array("Nombre" => strtoupper("Valor"), "width" => 15, "align" => "left", "format" => "#,##0.00");
-        $encabezados[] = array("Nombre" => "Fel", "width" => 20, "align" => "center", "format" => "@");
+        $encabezados[] = array("Nombre" => "CUFE", "width" => 20, "align" => "center", "format" => "@");
         $encabezados[] = array("Nombre" => "Vendedor", "width" => 45, "align" => "center", "format" => "@");
         $encabezados[] = array("Nombre" => "Observaciones/Guia", "width" => 45, "align" => "center", "format" => "@");
-        $encabezados[] = array("Nombre" => "Ruta Cobro", "width" => 25, "align" => "center", "format" => "@");
+   //     $encabezados[] = array("Nombre" => "Ruta Cobro", "width" => 25, "align" => "center", "format" => "@");
         $encabezados[] = array("Nombre" => strtoupper("Valor Pagado"), "width" => 25, "align" => "left", "format" => "#,##0.00");
         $encabezados[] = array("Nombre" => "Recibo", "width" => 20, "align" => "center", "format" => "@");
         $encabezados[] = array("Nombre" => "Fecha Pago", "width" => 20, "align" => "center", "format" => "@");
@@ -87,7 +87,7 @@ class consulta_ventaActions extends sfActions {
             $datos[] = array("tipo" => 3, "valor" => $lista->getFaceFirma());
             $datos[] = array("tipo" => 3, "valor" => $vende);
             $datos[] = array("tipo" => 3, "valor" => $lista->getObservaciones());
-            $datos[] = array("tipo" => 3, "valor" => $lista->getRutaCobro());
+        //    $datos[] = array("tipo" => 3, "valor" => $lista->getRutaCobro());
             $datos[] = array("tipo" => 2, "valor" => $lista->getValorPagado());
             $datos[] = array("tipo" => 3, "valor" => $lista->getRecibo());
             $datos[] = array("tipo" => 3, "valor" => $lista->getFechaRecibo());

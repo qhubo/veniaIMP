@@ -82,9 +82,7 @@
                    <div class="col-lg-2">
                           <a class="btn  btn grey-cascade  btn-block "  target="_blank"  href="<?php echo url_for($modulo . '/reporte') ?>" ><i class="fa fa-list"></i>&nbsp;&nbsp;Reporte&nbsp;&nbsp;  <i class="fa fa-print"></i></a>
                 </div>
-                        <div class="col-lg-2">
-                          <a class="btn  btn grey-cascade  btn-block "  target="_blank"  href="<?php echo url_for($modulo . '/reporteUbicacion') ?>" ><i class="fa fa-list"></i>&nbsp;&nbsp;Reporte Ubicaciones  <i class="fa fa-print"></i></a>
-                </div>
+                  
         </div>
 
 <?php echo '</form>'; ?>

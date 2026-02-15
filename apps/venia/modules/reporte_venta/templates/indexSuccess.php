@@ -98,8 +98,12 @@
                     <tr>   
                          <td><?php echo $lista->getFecha('d/m/Y ') ?><br> <?php echo $lista->getUsuario() ?>  </td>
                         <td>
-                           <a class="btn  btn-sm btn-block "  href="<?php echo url_for('reporte_venta/muestra?id=' . $lista->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $lista->getId() ?>">   <?php echo $lista->getCodigo() ?>  </a>   
-                           <?php echo substr($lista->getTienda(), 0, 5) ?>  
+
+                      <div id="resultadoFA<?php echo $lista->getId() ?>" class="resultadoFA<?php echo $lista->getId() ?>"><?Php echo $lista->getFaceFirma(); ?></div>
+                       <a class="btn btn-sm  btn-block  "   href="#"  data-toggle="modal" data-target="#ajaxmodalCEFA<?php echo $lista->getId() ?>"> <?php echo $lista->getCodigo() ?>  </a>                         
+                                                
+
+ <?php echo substr($lista->getTienda(), 0, 5) ?>  
                         </td>
                        
                         <td> <?php if ($lista->getClienteId()) {   echo $lista->getCliente()->getCodigoCli();  } ?>  </td>
@@ -298,6 +302,43 @@
                 $.get('<?php echo url_for("reporte_venta/comentario") ?>', {id: id, val: val}, function (response) {
 
                     $("#resultado<?php echo $lista->getId(); ?>").html(val);
+                });
+            });
+        });
+    </script>
+    
+    
+       <div class="modal fade" id="ajaxmodalCEFA<?php echo $lista->getId() ?>" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
+         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width: 550px">
+            <div class="modal-content" style=" width: 550px">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="ti-close"></span></button>
+                    <h4 class="modal-title" id="myModalLabel6">CUFE  </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12 ">
+                            <textarea name="observacionesFA<?php echo $lista->getId(); ?>"  id="observacionesFA<?php echo $lista->getId(); ?>"  class="form-control"><?php echo $lista->getFaceFirma(); ?></textarea>
+                        </div>
+                    </div>
+                </div> 
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#observacionesFA<?php echo $lista->getId(); ?>").on('change', function () {
+                var id = <?php echo $lista->getId(); ?>;
+                var val = $("#observacionesFA<?php echo $lista->getId(); ?>").val();
+                //     alert (id);
+                //      alert (val);
+                $.get('<?php echo url_for("reporte_venta/cufe") ?>', {id: id, val: val}, function (response) {
+
+                    $("#resultadoFA<?php echo $lista->getId(); ?>").html(val);
                 });
             });
         });

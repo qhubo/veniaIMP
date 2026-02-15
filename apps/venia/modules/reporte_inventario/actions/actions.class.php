@@ -116,7 +116,7 @@ class reporte_inventarioActions extends sfActions {
         $encabezados = null;
         $encabezados[] = "Codigo Sku";
         $encabezados[] = "Nombre";
-        $encabezados[] = "Grupo";
+        $encabezados[] = "Marca";
         foreach ($bodegas as $data) {
             $bode = $data->getTienda();
             $encabezados[] = strtoupper($bode);
@@ -143,11 +143,8 @@ class reporte_inventarioActions extends sfActions {
                 $datos[] = "'" . str_replace(",", "", $lista->getCodigoSku());  // ENTERO
                 $datos[] = str_replace(",", "", $lista->getNombre());  // ENTERO
                 $apar = TipoAparatoQuery::create()->findOneById($lista->getTipoAparatoId());
-                if ($apar) {
-                    $datos[] = str_replace(",", "", $apar->getDescripcion()); //->getDescripcion();  // ENTERO    
-                } else {
-                    $datos[] = $lista->getTipoAparatoId(); //->getDescripcion();  // ENTERO
-                }
+                    $datos[] = $lista->getMarcaProducto(); //->getDescripcion();  // ENTERO
+             
                 foreach ($bodegas as $data) {
                     $bode = $data->getTienda();
                     $datos[] = $lista->getExistenciaBodega($bode->getId());  // ENTERO

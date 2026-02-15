@@ -1,4 +1,17 @@
 <script src='/assets/global/plugins/jquery.min.js'></script>
+<style>
+    .table-responsive-scroll {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.table-responsive-scroll table {
+    min-width: 1400px; /* ajusta según columnas */
+    white-space: nowrap;
+}
+
+</style>
 <?php $modulo = $sf_params->get('module'); ?>
 <?php $proveedor_id = sfContext::getInstance()->getUser()->getAttribute('proveedor_id', null, 'seguridad'); ?>
 <div class="kt-portlet kt-portlet--responsive-mobile">
@@ -85,6 +98,7 @@
 
 
         <?php echo '</form>'; ?>
+        <div class="table-responsive-scroll">
         <table class="table table-bordered  dataTable table-condensed flip-content" >
             <thead class="flip-content">
                 <tr class="active">
@@ -97,10 +111,10 @@
                     <th  align="center"> RUC</th>
                     <th  align="center"> Estado</th>
                     <th  align="center"> Valor</th>    
-                    <th width="25px">Factura</th>
+                    <th width="25px">CUFE</th>
                     <th align="center" width="20px">Vendedor</th>
                     <th  align="center"> Observaciones /Guia</th>   
-                    <th  align="center"> Ruta Cobro</th>      
+                    
 
                     <th  align="center"> Valor Pagado</th>      
                     <th>Ult Recibo</th>
@@ -114,7 +128,7 @@
                     <?php $numero ="Fact"; // $val[0]; ?>
                     <tr>
                         <td>
-                            <a class="btn btn-warning" href="<?php echo url_for('reporte_venta/muestra?id=' . $id) ?>" data-toggle="modal" data-target="#ajaxmodal<?php echo $id ?>">  <?php echo $lista->getCodigo() ?> </a>
+                            <a class="btn btn-warning btn-sm btn-block" href="<?php echo url_for('reporte_venta/muestra?id=' . $id) ?>" data-toggle="modal" data-target="#ajaxmodal<?php echo $id ?>">  <?php echo $lista->getCodigo() ?> </a>
                         </td>
                         <td> <?php echo substr($lista->getTienda(), 0, 20) ?>  </td>
                         <td><?php echo $lista->getFecha('d/m/Y H:i') ?></td>
@@ -127,11 +141,10 @@
                         <td><?php echo $lista->getNombre() ?></td>
                         <td><?php echo $lista->getNit() ?></td>
                         <td><?php echo $lista->getEstatus() ?></td>
-                        <td style="text-align:right"><?php echo Parametro::formato($lista->getValorTotal()) ?> </td>
+                        <td style="text-algn:right"><?php echo Parametro::formato($lista->getValorTotal()) ?> </td>
                         <td>
-                                                            <a target="_blank" href="<?php echo url_for('pdf/factura?tok=' . $lista->getCodigo()) ?>" class="btn btn-block btn-xs btn-info " target = "_blank">
-                            <?php echo $numero ?>
-                                                            </a>
+                            <?php echo substr($lista->getFaceFirma(),0,20) ?>
+                                                          
                                                             </td>
                         <td><?php
                             if ($lista->getVendedorId()) {
@@ -139,7 +152,6 @@
                             }
                             ?></td>
                         <td><?php echo $lista->getObservaciones() ?>  </td>
-                        <td><?php echo $lista->getRutaCobro() ?>  </td>
                         <td  style="text-align:right"><?php echo Parametro::formato($lista->getValorPagado()) ?>   </td>
                         <td>  <?php if ($lista->getRecibo()) { ?> 
                                 <a target="_blank" href="<?php echo url_for('lista_cobro/reporte?id=' . $lista->getRecibo()) ?>" class="btn btn-block btn-xs  " target = "_blank">
@@ -154,7 +166,7 @@
                 <?php } ?>
             </tbody>
         </table>
-
+   </div>
     </div>
 </div>
 
