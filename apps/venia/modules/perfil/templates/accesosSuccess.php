@@ -1,6 +1,52 @@
 <?php $modulo = $sf_params->get("module"); ?>
 <?php //include_partial("soporte/avisos");      ?>
+<style>
+    /* Contenedor */
+.checkbox-custom {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    user-select: none;
+}
 
+/* Ocultar checkbox original */
+.checkbox-custom input {
+    display: none;
+}
+
+/* Caja visual */
+.checkmark {
+    width: 28px;
+    height: 28px;
+    border: 2px solid #3498db;
+    border-radius: 6px;
+    background: #fff;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+/* Al marcar */
+.checkbox-custom input:checked + .checkmark {
+    background: #3498db;
+}
+
+/* Icono check */
+.checkbox-custom input:checked + .checkmark::after {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 3px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+}
+
+    </style>
 
 <div class="kt-portlet kt-portlet--responsive-mobile">
     <div class="kt-portlet__head">
@@ -62,8 +108,11 @@
                         <div class="row">
                             <div class="col-lg-4">  <?php echo $registro->getDescripcion() ?>   </div>
                             <div class="col-lg-4">
-                                <?php echo $form['menu_' . $registro->getId()] ?>      
-                                <label for="consulta_menu_<?php echo $registro->getId() ?>"><span></span></label>
+                                 
+                                <label class="checkbox-custom" for="consulta_menu_<?php echo $registro->getId() ?>">
+                                  <?php echo $form['menu_' . $registro->getId()] ?>       <span class="checkmark"></span>
+                                </label>
+                                
                             </div>
                         </div>
                     <?php } ?>
