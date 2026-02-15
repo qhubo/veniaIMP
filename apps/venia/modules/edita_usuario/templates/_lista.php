@@ -20,7 +20,7 @@
                     <tr>
                         <td><?php echo $lis->getUsuario() ?></td>
                         <td><?php echo $lis->getNombreCompleto() ?></td>
-                        <td><?php echo $lis->getTipoUsuario() ?></td>
+                        <td><?php echo $lis->getTipoUsuarioNombre() ?></td>
                             <td align="center"><?php if ($lis->getActivo()) { ?>
                     <li class="fa flaticon2-arrow-up kt-font-info "></li>
                 <?php } else { ?>
