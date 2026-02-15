@@ -137,8 +137,10 @@
                             <div class="row">
                                 <div class="col-lg-4">  <?php echo $registro->getDescripcion() ?>   </div>
                                 <div class="col-lg-4">
-                                    <?php echo $form['menu_' . $registro->getId()] ?>      
-                                    <label for="consulta_menu_<?php echo $registro->getId() ?>"><span></span></label>
+                                        
+                                <label class="checkbox-custom" for="consulta_menu_<?php echo $registro->getId() ?>">
+                                  <?php echo $form['menu_' . $registro->getId()] ?>       <span class="checkmark"></span>
+                                </label>
                                 </div>
                             </div>
                         <?php endforeach; ?>
