@@ -16,10 +16,10 @@ foreach($listaTran as $regos) {
         $this->setWidget('transporte', new sfWidgetFormChoice(array("choices" => $listaTra,), array("class" => "form-control")));
         $this->setValidator('transporte', new sfValidatorString(array('required' => false)));
 
-        $listaP['Efectivo']='Contado';
-        $listaP['Credito 30 Dias']='Credito 30 Dias';
-        $listaP['Credito 60 Dias']='Credito 60 Dias';
-        $listaP['Credito 90 Dias']='Credito 90 Dias';
+        $listaP['CONTADO']='CONTADO';
+        $listaP['CREDITO 60 DIAS']='CREDITO 60 DIAS';
+        $listaP['CONTRA-ENTREGA']='CONTRA-ENTREGA';
+        $listaP['ANTICIPO']='ANTICIPO';
         
         $this->setWidget('acuerdo_pago', new sfWidgetFormChoice(array("choices" => $listaP,), array("class" => "form-control")));
         $this->setValidator('acuerdo_pago', new sfValidatorString(array('required' => false)));

@@ -1,7 +1,7 @@
 <script src='/assets/global/plugins/jquery.min.js'></script>
 <?php $modulo = $sf_params->get('module'); ?>
 <?php $proveedor_id = sfContext::getInstance()->getUser()->getAttribute('proveedor_id', null, 'seguridad'); ?>
-<?php        ?>
+<?php ?>
 <div class="kt-portlet kt-portlet--responsive-mobile">
     <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
@@ -63,7 +63,7 @@
 
         <div class="row">
             <div class="col-lg-6"> </div>
-            <div class="col-lg-4" >  <span style="font-weight:bold; font-size: 16px;"> &nbsp;&nbsp;&nbsp;&nbsp;<?php   //echo Parametro::formato($total,false) ?></span> </div>
+            <div class="col-lg-4" >  <span style="font-weight:bold; font-size: 16px;"> &nbsp;&nbsp;&nbsp;&nbsp;<?php //echo Parametro::formato($total,false)  ?></span> </div>
             <div class="col-lg-2">				
                 <div class="kt-input-icon kt-input-icon--left">
                     <input type="text" class="form-control" placeholder="Buscar..." id="generalSearch">
@@ -77,13 +77,12 @@
         <table class="kt-datatable  table table-bordered  dataTable table-condensed flip-content" id="html_table" width="100%" >
             <thead class="flip-content">
                 <tr class="active">
+                   <th align="center" width="20px"> Fecha</th>
                     <th align="center" width="20px"> Código</th>
-                    <th align="center" width="20px">Creación</th>
-                    <th width="25px">Cliente</th>
-                    <th  align="center"> Factura</th>
-                    <th  align="center"> Estado</th>
-                    <th  align="center"> Valor</th>    
-<!--                                <th width="50px" >Ticket</th>-->
+                    <th align="center" width="20px">Cliente</th>
+                    <th align="center"> Factura</th>
+                    <th align="center"> Estado</th>
+                    <th align="center"> Valor</th>    
                     <th width="25px">Reporte</th>
                     <th  align="center"> Observaciones</th>   
                     <th>Pedido</th>
@@ -95,126 +94,67 @@
                 <?php foreach ($operaciones as $lista) { ?>
                     <?php $total = $lista->getValorTotal() + $total; ?>
                     <?php $val = explode('-', $lista->getFaceFirma()) ?>
-                    <?php $numero ='FACTURA'; // $val[0]; ?>
-                    <?php $reenviar = false; ?>
-                    <?php if ($lista->getFaceEstado() <> "") { ?>
-                        <?php if ($lista->getFaceEstado() == "CONTIGENCIA") { ?>
-                            <?php //$reenviar = true; ?>
-                        <?php } ?>
-                        <?php if ($lista->getFaceError() <> "") { ?>
-                            <?php //$reenviar = true; ?>
-                        <?php } ?>
-                        <?php if ($numero == "") { ?>
-                            <?php if (strtoupper(TRIM($lista->getEstatus())) != "ANULADO") { ?> 
-                                <?php //$reenviar = true; ?>
-                            <?php } ?>
-                        <?php } ?>
-                    <?php } ?>    
-                    <?php if ($lista->getFaceEstado() == "") { ?>
-                        <?php if (strtoupper(TRIM($lista->getEstatus())) != "ANULADO") { ?> 
-                            <?php //$reenviar = true; ?>
-                        <?php } ?>
-                    <?php } ?>  
-
-                    <tr>     
+                    <?php $numero = 'FACTURA'; // $val[0]; ?>
+                    <tr>   
+                         <td><?php echo $lista->getFecha('d/m/Y ') ?><br> <?php echo $lista->getUsuario() ?>  </td>
                         <td>
-                            <a class="btn  btn-sm btn-block "   href="<?php echo url_for('reporte_venta/muestra?id=' . $lista->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $lista->getId() ?>">
-                                <?php echo $lista->getCodigo() ?>  
-                            </a>
-                            <?php echo substr($lista->getTienda(), 0, 5) ?>  
+                           <a class="btn  btn-sm btn-block "  href="<?php echo url_for('reporte_venta/muestra?id=' . $lista->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $lista->getId() ?>">   <?php echo $lista->getCodigo() ?>  </a>   
+                           <?php echo substr($lista->getTienda(), 0, 5) ?>  
                         </td>
-                        <td><?php echo $lista->getFecha('d/m/Y ') ?><br> <?php echo $lista->getUsuario() ?>  </td>
-                        <td> <?php
-                            if ($lista->getClienteId()) {
-                                echo $lista->getCliente()->getCodigoCli();
-                            }
-                            ?>  </td>
+                       
+                        <td> <?php if ($lista->getClienteId()) {   echo $lista->getCliente()->getCodigoCli();  } ?>  </td>
                         <td><?php echo $lista->getNit() ?> <br> <?php echo $lista->getNombre() ?></td>
 
                         <td>  <?php echo $lista->getEstatus() ?> 
-                            <?php if (!$lista->getAnulado()) { ?>
-                                <a class="btn  btn-danger btn-sm btn-block  " style="padding-top: 1px !important; height:15px !important; font-size: 10px !important;"   href="<?php echo url_for('reporte_venta/anula?id=' . $lista->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodalC<?php echo $lista->getId() ?>">
-                                    Anular
-                                </a>
-                            <?php } ?>
+                                                     <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $lista->getOrdenCotizacionId()) ?>" class="btn btn-sm btn-warning btn-block" > <i class="flaticon2-print"></i> Empaque </a>
+                <a target="_blank" href="<?php echo url_for('reporte_excel/empaque?id=' . $lista->getOrdenCotizacionId()) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"><i class="flaticon2-print"></i> Empaque </a>
+
                             <?php if ($lista->getAnulado()) { ?>
-                                <?php echo $lista->getObservaciones() ?>  <br> 
-                                <strong> <?php echo $lista->getAnuloUsuario() ?>  </strong> <br>
+                                <?php echo $lista->getObservaciones() ?>  <br>  <strong> <?php echo $lista->getAnuloUsuario() ?>  </strong> <br>
                                 <?php echo $lista->getFechaAnulo('d/m/Y H:i:s') ?>   <br>
                             <?php } ?>
-
-
-                                
-                          <?php  if ($TIPO_USUARIO=='ADMINISTRADORRRRRRR') { ?>
+                            <?php if ($TIPO_USUARIO == 'ADMINISTRADORRRRRRR') { ?>
                                 <a class="btn btn-sm  btn-block"   href="#" data-toggle="modal" data-target="#ajaxmo<?php echo $lista->getId() ?>">
-                                      <?php if ($lista->getVendedorId()) { ?>
-                                    <?php echo $lista->getVendedor()->getNombre(); ?>
-                                     <?php } else {  ?> 
-                                    .....
-                                     <?php } ?>
+                                    <?php if ($lista->getVendedorId()) { ?>
+                                        <?php echo $lista->getVendedor()->getNombre(); ?>
+                                    <?php } else { ?> 
+                                        .....
+                                    <?php } ?>
                                 </a>                        
-                          <?php } else { ?>
-                              <?php if ($lista->getVendedorId()) { ?>
+                            <?php } else { ?>
+                                <?php if ($lista->getVendedorId()) { ?>
                                     <?php echo $lista->getVendedor()->getNombre(); ?>
-                                     <?php } ?> 
-                          <?php } ?>
+                                <?php } ?> 
+                            <?php } ?>
                         </td>
-
-
                         <td style="text-align:right">  <?php echo Parametro::formato($lista->getValorTotal()) ?>    </td>
 
                         <td>
                             <a target="_blank" href="<?php echo url_for('pdf/factura?tok=' . $lista->getCodigo()) ?>" class="btn btn-block btn-sm btn-info " target = "_blank">
                                 <?php if ($lista->getFaceEstado() == "FIRMADONOTA") { ?> <?php echo "NOTA "; ?> <?php } ?>   <?php echo $numero; ?>
                             </a>  
-                        <a target="_blank" href="<?php echo url_for('reporte_excel/factura?id=' . $lista->getId()) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"> <i class="flaticon2-printer"></i>Factura </a>
-        
-                            
-
-                            <?php echo $lista->getFaceError(); ?>
-                            <?php if ($lista->getFaceEstado() == "") { ?>
-                                <?php if (strtoupper(TRIM($lista->getEstatus())) == "ANULADO") { ?> 
-                                    <strong>ANULADO</strong>              
-                                <?Php } ?>
+                            <a target="_blank" href="<?php echo url_for('reporte_excel/factura?id=' . $lista->getId()) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"> <i class="flaticon2-printer"></i>Factura </a>
+                         <?php if (!$lista->getAnulado()) { ?>
+                                <a class="btn  btn-danger btn-sm btn-block" style="padding-top: 1px !important; height:15px !important; font-size: 10px !important;"   href="<?php echo url_for('reporte_venta/anula?id=' . $lista->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodalC<?php echo $lista->getId() ?>">Anular </a>
                             <?php } ?>
-
-
-                                    <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $lista->getOrdenCotizacionId()) ?>" class="btn btn-sm btn-warning btn-block" > <i class="flaticon2-print"></i> Empaque </a>
-                                    
-                 
-
                         </td>
-
-
                         <td>
-
                             <div id="resultado<?php echo $lista->getId() ?>" class="resultado<?php echo $lista->getId() ?>"><?Php echo $lista->getObservaciones(); ?></div>
-                            <a class="btn btn-sm  btn-block  "   href="#"  data-toggle="modal" data-target="#ajaxmodalCE<?php echo $lista->getId() ?>">
-                                ..    </a>                         
-
-
+                            <a class="btn btn-sm  btn-block  "   href="#"  data-toggle="modal" data-target="#ajaxmodalCE<?php echo $lista->getId() ?>"> .. </a>                         
                         </td>
-                        <td>                       <a target="_blank" href="<?php echo url_for('reporte/ordenCotizacion?token='.$lista->getToken()) ?>" class="btn btn-sm btn-block btn-warning" > 
-      <i class="flaticon2-printer"></i>Pedido
-                                        </a>
-                             <a target="_blank" href="<?php echo url_for('reporte_excel/pedido?id=' . $lista->getOrdenCotizacionId()) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"> <i class="flaticon2-printer"></i>Pedido </a>
-        
-                            
+                        <td>  
+                            <a target="_blank" href="<?php echo url_for('reporte/ordenCotizacion?token=' . $lista->getToken()) ?>" class="btn btn-sm btn-block btn-warning" >    <i class="flaticon2-printer"></i>Pedido </a>
+                            <a target="_blank" href="<?php echo url_for('reporte_excel/pedido?id=' . $lista->getOrdenCotizacionId()) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"> <i class="flaticon2-printer"></i>Pedido </a>
                         </td>
                         <td>  <?php if ($lista->getRecibo()) { ?> 
                                 <a target="_blank" href="<?php echo url_for('lista_cobro/reporte?id=' . $lista->getRecibo()) ?>" class="btn btn-block btn-xs  " target = "_blank">
                                     <?php echo $lista->getRecibo(); ?>
                                 </a>
                             <?php } ?>
-
                         </td>
                     </tr>
-
-
-
                 <?php } ?>
             </tbody>
-
         </table>
 
 
@@ -269,63 +209,63 @@
             </div>
         </div>
     </div>
-<form action="<?php echo url_for('reporte_venta/corrigeVendedor') ?>" method="get">
+    <form action="<?php echo url_for('reporte_venta/corrigeVendedor') ?>" method="get">
 
-    <div class="modal fade" id="ajaxmo<?php echo $lista->getId() ?>" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
-         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog" style="width: 550px">
-            <div class="modal-content" style=" width: 550px">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="ti-close"></span></button>
-                    <h4 class="modal-title" id="myModalLabel6">Vendedor  </h4>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="opera" name="opera" value="<?php echo $lista->getId(); ?>">
-                    <div class="row">
-                        <div class="col-lg-12 ">
-                            <table style="width:100%">
-                                <tr>
-                                    <th>Documento</th>
-                                    <td> <?php echo $lista->getCodigo() ?></td>
-                                </tr>
-                                <tr>
-                                    <th>Vendedor Actual</th>
-                                    <td>
-                                        <?php if ($lista->getVendedorId()) { ?>
-                                            <?php echo $lista->getVendedor()->getNombre(); ?>
-                                        <?php } ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Cambiar de Vendedor</th>
-                                    <td> 
-                                        <select  class="form-control" name="vendedor" id="vendedor">
-
-                                            <option  selected="selected"   >Seleccione</option>
-                                            <?php foreach ($vendedores as $venta) { ?>
-                                                <option <?php if ($venta->getId() == $lista->getVendedorId()) { ?> selected="selected" <?php } ?> value="<?php echo $venta->getId(); ?>" ><?php echo $venta->getNombre(); ?></option>
-
-                                            <?php } ?>
-
-
-                                        </select>
-                                    </td>
-                                </tr>
-
-                            </table>
-                        </div>
+        <div class="modal fade" id="ajaxmo<?php echo $lista->getId() ?>" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
+             role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 550px">
+                <div class="modal-content" style=" width: 550px">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="ti-close"></span></button>
+                        <h4 class="modal-title" id="myModalLabel6">Vendedor  </h4>
                     </div>
-                </div> 
-                <div class="modal-footer">
-                <button class="btn btn-small btn-success" type="submit">
-                    <i class="fa fa-check "></i> Actualizar
-                  
-                </button>
-                    <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancelar</button>
+                    <div class="modal-body">
+                        <input type="hidden" id="opera" name="opera" value="<?php echo $lista->getId(); ?>">
+                        <div class="row">
+                            <div class="col-lg-12 ">
+                                <table style="width:100%">
+                                    <tr>
+                                        <th>Documento</th>
+                                        <td> <?php echo $lista->getCodigo() ?></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Vendedor Actual</th>
+                                        <td>
+                                            <?php if ($lista->getVendedorId()) { ?>
+                                                <?php echo $lista->getVendedor()->getNombre(); ?>
+                                            <?php } ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Cambiar de Vendedor</th>
+                                        <td> 
+                                            <select  class="form-control" name="vendedor" id="vendedor">
+
+                                                <option  selected="selected"   >Seleccione</option>
+                                                <?php foreach ($vendedores as $venta) { ?>
+                                                    <option <?php if ($venta->getId() == $lista->getVendedorId()) { ?> selected="selected" <?php } ?> value="<?php echo $venta->getId(); ?>" ><?php echo $venta->getNombre(); ?></option>
+
+                                                <?php } ?>
+
+
+                                            </select>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="modal-footer">
+                        <button class="btn btn-small btn-success" type="submit">
+                            <i class="fa fa-check "></i> Actualizar
+
+                        </button>
+                        <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancelar</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </form>
     <div class="modal fade" id="ajaxmodalCE<?php echo $lista->getId() ?>" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
          role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

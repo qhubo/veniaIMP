@@ -62,10 +62,10 @@ class reporte_excelActions extends sfActions {
         $sheet->setCellValue("C8", $ordenCompra->getDireccion());
         $sheet->setCellValue("B9", "Acuerdo de Pago:");
         $sheet->setCellValue("C9", $ordenCompra->getAcuerdoPago());
-        $sheet->setCellValue("B9", "Código Cliente:");
-        $sheet->setCellValue("C9", $ordenCompra->getCliente()->getCodigo());        
-        $sheet->setCellValue("B9", "RUC:");
-        $sheet->setCellValue("C9", $ordenCompra->getNit());
+        $sheet->setCellValue("B10", "Código Cliente:");
+        $sheet->setCellValue("C10", $ordenCompra->getCliente()->getCodigo());        
+        $sheet->setCellValue("B11", "RUC:");
+        $sheet->setCellValue("C11", $ordenCompra->getNit());
         
         $sheet->setCellValue("F6", "No Pedido:");
         $sheet->setCellValue("G6", $ordenCompra->getCodigo());
@@ -135,14 +135,31 @@ class reporte_excelActions extends sfActions {
 // ================= TOTALES =================
         $fila += 3;
 
+        $sheet->setCellValue("B$fila", "Metros Cúbicos");
+        $sheet->setCellValue("C$fila", round($totalMetros, 2));
+        
+        
         $sheet->setCellValue("G$fila", "Subtotal");
         $sheet->setCellValue("I$fila", round($Subtotal,2));
 
         $fila++;
+         $sheet->setCellValue("B$fila", "Kilogramos");
+        $sheet->setCellValue("C$fila", round($totalPeso, 2));
+        
+        $fila++;
         $sheet->setCellValue("G$fila", "Recarga");
         $sheet->setCellValue("I$fila", round($ordenCompra->getTotalRecargo(),2));
-
+        
+        $sheet->setCellValue("B$fila", "Bultos");
+        $sheet->setCellValue("C$fila", round($totalCajas, 2));
+    $numberToLetterConverter = new NumberToLetterConverter();
+        $valor = $ordenCompra->getValorTotal();
+        $valor = Parametro::formato($valor, false);
+        $valor = str_replace(",", "", $valor);
+        $totalImprime = str_replace(".", ",", $valor);
+          $totalImprime = $numberToLetterConverter->to_word($totalImprime, $miMoneda = null);
         $fila++;
+          $sheet->setCellValue("C$fila", $totalImprime);
         $sheet->setCellValue("G$fila", "TOTAL");
         $sheet->setCellValue("I$fila", round($ordenCompra->getValorTotal(),2));
         $sheet->getStyle("G$fila:I$fila")->getFont()->setBold(true);
@@ -175,7 +192,7 @@ class reporte_excelActions extends sfActions {
         $xl = sfContext::getInstance()->getUser()->nuevoExcel($nombreempresa, $pestanas, $pestanas[0]);
         $sheet = $xl->setActiveSheetIndex(0);
 // ================= COLUMNAS =================
-        $widths = [5, 18, 45, 15, 10, 14, 22, 12, 14, 12, 14];
+        $widths = [20, 18, 45, 15, 10, 14, 22, 12, 14, 12, 14];
         $col = 'A';
         foreach ($widths as $w) {
             $sheet->getColumnDimension($col)->setWidth($w);
@@ -183,22 +200,82 @@ class reporte_excelActions extends sfActions {
         }
 
 // ================= ENCABEZADO =================
-        $sheet->mergeCells("A1:K1");
-        $sheet->setCellValue("A1", "PACKING LIST");
-        $sheet->getStyle("A1")->getFont()->setSize(18)->setBold(true);
-        $sheet->getStyle("A1")->getAlignment()
-                ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+// 
+// // ================= ENCABEZADO =================
 
-        $sheet->setCellValue("A3", $operacion->getEmpresa()->getNombre());
-        $sheet->setCellValue("A4", "FECHA:");
-        $sheet->setCellValue("B4", $operacion->getFecha('d/m/Y'));
-        $sheet->setCellValue("A5", "NOMBRE:");
-        $sheet->setCellValue("B5", $operacion->getNombre());
+// ---- COLUMNAS BASE ----
+// A:E  -> lado izquierdo
+// F:K  -> lado derecho
 
-        $sheet->setCellValue("H4", "No:");
-        $sheet->setCellValue("I4", $operacion->getId());
-        $sheet->setCellValue("H6", "PEDIDO:");
-        $sheet->setCellValue("I6", $operacion->getCodigo()) ;
+// ================= FILA TITULO =================
+$sheet->mergeCells("A8:K8");
+$sheet->setCellValue("A8", "PACKING LIST");
+
+$sheet->getStyle("A8")->getFont()
+      ->setSize(18)
+      ->setBold(true);
+
+$sheet->getStyle("A8")->getAlignment()
+      ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
+      ->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+
+// ================= LADO IZQUIERDO =================
+$sheet->mergeCells("A2:E2");
+$sheet->setCellValue("A2",$operacion->getEmpresa()->getNombre());
+$sheet->getStyle("A2")->getFont()->setBold(true);
+
+$sheet->setCellValue("A3", "FECHA:");
+$sheet->setCellValue("B3", $operacion->getFecha('d/m/Y'));
+
+$sheet->setCellValue("A4", "NOMBRE:");
+$sheet->setCellValue("B4", $operacion->getNombre());
+
+$sheet->setCellValue("A5", "OBSERVACIONES:");
+$sheet->setCellValue("B5", $operacion->getComentario());
+
+
+// ================= LADO DERECHO =================
+$sheet->setCellValue("G2", "No.");
+$sheet->setCellValue("H2", $operacion->getCodigo());
+
+
+$sheet->setCellValue("G6", "CÓDIGO DEL CLIENTE:");
+if ($operacion->getClienteId()) {
+$sheet->setCellValue("H6", $operacion->getCliente()->getCodigo());
+}
+$sheet->setCellValue("G7", "PEDIDO:");
+$sheet->setCellValue("H7", $operacion->getCodigo());
+
+
+// ================= ESTILO (opcionales) =================
+$sheet->getStyle("A2:K7")->getFont()->setSize(11);
+
+$sheet->getStyle("A2:K7")->getAlignment()
+      ->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+
+$sheet->getStyle("A2:A5")->getFont()->setBold(true);
+$sheet->getStyle("G2:G7")->getFont()->setBold(true);
+
+$sheet->getRowDimension(2)->setRowHeight(22);
+$sheet->getRowDimension(8)->setRowHeight(28);
+
+//        $sheet->mergeCells("A1:K1");
+//        $sheet->setCellValue("A1", "PACKING LIST");
+//        $sheet->getStyle("A1")->getFont()->setSize(18)->setBold(true);
+//        $sheet->getStyle("A1")->getAlignment()
+//                ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+//
+//        $sheet->setCellValue("A3", $operacion->getEmpresa()->getNombre());
+//        $sheet->setCellValue("A4", "FECHA:");
+//        $sheet->setCellValue("B4", $operacion->getFecha('d/m/Y'));
+//        $sheet->setCellValue("A5", "NOMBRE:");
+//        $sheet->setCellValue("B5", $operacion->getNombre());
+//
+//        $sheet->setCellValue("H4", "No:");
+//        $sheet->setCellValue("I4", $operacion->getId());
+//        $sheet->setCellValue("H6", "PEDIDO:");
+//        $sheet->setCellValue("I6", $operacion->getCodigo()) ;
 
 // ================= CABECERA TABLA =================
         $fila = 9;
@@ -297,7 +374,7 @@ class reporte_excelActions extends sfActions {
                 ->find();
         $nombreempresa = $registro->getEmpresa()->getNombre();
         $pestanas[] = 'FACTURA';
-        $filename = "PEDIDO " . $registro->getCodigo();
+        $filename = "FACTURA " . $registro->getCodigo();
         $xl = sfContext::getInstance()->getUser()->nuevoExcel($nombreempresa, $pestanas, $pestanas[0]);
         $sheet = $xl->setActiveSheetIndex(0);
 // ===== COLUMNAS =====
@@ -333,10 +410,10 @@ $ordenCompra=$registro;
         $sheet->setCellValue("C8", $ordenCompra->getDireccion());
         $sheet->setCellValue("B9", "Acuerdo de Pago:");
         $sheet->setCellValue("C9", $ordenCompra->getAcuerdoPago());
-        $sheet->setCellValue("B9", "Código Cliente:");
-        $sheet->setCellValue("C9", $ordenCompra->getCliente()->getCodigo());        
-        $sheet->setCellValue("B9", "RUC:");
-        $sheet->setCellValue("C9", $ordenCompra->getNit());
+        $sheet->setCellValue("B10", "Código Cliente:");
+        $sheet->setCellValue("C10", $ordenCompra->getCliente()->getCodigo());        
+        $sheet->setCellValue("B11", "RUC:");
+        $sheet->setCellValue("C11", $ordenCompra->getNit());
         
         $sheet->setCellValue("F6", "No Pedido:");
         $sheet->setCellValue("G6", $ordenCompra->getCodigo());
@@ -352,7 +429,7 @@ $ordenCompra=$registro;
         $sheet->setCellValue("G10", $ordenCompra->getNombreTransporte());
 
 // ===== CABECERA =====
-        $fila = 12;
+        $fila = 13;
         $headers = ["No", "Código", "Descripción", "Origen", "Marca", "Características", "Unidades", "Precio Unit", "Total"];
         $col = "A";
 
@@ -374,9 +451,21 @@ $ordenCompra=$registro;
 
         $pos = 0;
          $Subtotal = 0; 
+                 $totalPeso = 0;
+        $totalMetros = 0;
+        $totalUnidades = 0;
+        $Subtotal = 0;
+        $totalCajas = 0;
         foreach ($opreacionDetalle as $detalle) {
+            $regist=$detalle;
             $fila++;
             $pos++;
+                        $pro = $regist->getProducto();
+            $totalPeso = $totalPeso + $regist->getProducto()->getPeso();
+            $totalMetros = $totalMetros + ( ($pro->getAlto() * $pro->getAncho() * $pro->getLargo()) * $regist->getCantidad());
+            $totalUnidades = $totalUnidades + $regist->getCantidad();
+            $totalCajas = $totalCajas + $regist->getCantidadCaja();
+
             $Subtotal = $Subtotal + $detalle->getValorTotal(); 
             $sheet->setCellValue("A$fila", $pos);
             $sheet->setCellValue("B$fila", $detalle->getCodigo());
@@ -394,19 +483,37 @@ $ordenCompra=$registro;
         }
 
 // ===== TOTALES =====
+// ================= TOTALES =================
         $fila += 3;
 
-        $sheet->setCellValue("H$fila", "Subtotal");
-        $sheet->setCellValue("I$fila", $Subtotal);
+        $sheet->setCellValue("B$fila", "Metros Cúbicos");
+        $sheet->setCellValue("C$fila", round($totalMetros, 2));
+        
+        
+        $sheet->setCellValue("G$fila", "Subtotal");
+        $sheet->setCellValue("I$fila", round($Subtotal,2));
 
         $fila++;
-        $sheet->setCellValue("H$fila", "Recarga");
-        $sheet->setCellValue("I$fila", $ordenCompra->getTotalRecargo());
-
+         $sheet->setCellValue("B$fila", "Kilogramos");
+        $sheet->setCellValue("C$fila", round($totalPeso, 2));
+        
         $fila++;
-        $sheet->setCellValue("H$fila", "TOTAL");
-        $sheet->setCellValue("I$fila", $ordenCompra->getValorTotal());
-        $sheet->getStyle("H$fila:I$fila")->getFont()->setBold(true);
+        $sheet->setCellValue("G$fila", "Recarga");
+        $sheet->setCellValue("I$fila", round($ordenCompra->getTotalRecargo(),2));
+        
+        $sheet->setCellValue("B$fila", "Bultos");
+        $sheet->setCellValue("C$fila", round($totalCajas, 2));
+    $numberToLetterConverter = new NumberToLetterConverter();
+        $valor = $ordenCompra->getValorTotal();
+        $valor = Parametro::formato($valor, false);
+        $valor = str_replace(",", "", $valor);
+        $totalImprime = str_replace(".", ",", $valor);
+          $totalImprime = $numberToLetterConverter->to_word($totalImprime, $miMoneda = null);
+        $fila++;
+          $sheet->setCellValue("C$fila", $totalImprime);
+        $sheet->setCellValue("G$fila", "TOTAL");
+        $sheet->setCellValue("I$fila", round($ordenCompra->getValorTotal(),2));
+        $sheet->getStyle("G$fila:I$fila")->getFont()->setBold(true);
 
 // ===== SALIDA =====
         header('Content-Type: application/vnd.ms-excel');

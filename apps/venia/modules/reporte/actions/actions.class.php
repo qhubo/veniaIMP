@@ -31,7 +31,8 @@ class reporteActions extends sfActions {
 
         $logo = $operacion->getEmpresa()->getLogo();
         $html = $this->getPartial('reporte/empaque', array('operacion' => $operacion, 'detalle' => $detalle, 'logo' => $logo));
-  $img_file = "uploads/images/" . $logo;
+
+        $img_file = "uploads/images/" . $logo;
 
         $pdf = new sfTCPDF("P", "mm", "Letter");
         $this->id = $request->getParameter("id");
