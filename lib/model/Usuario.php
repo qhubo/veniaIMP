@@ -16,7 +16,15 @@
  * @package    propel.generator.lib.model
  */
 class Usuario extends BaseUsuario {
-
+ public function getTipoUsuarioNombre() {
+$retorna=$this->getTipoUsuario();
+     $Tipo = PerfilQuery::create()->findOneById($this->getTipoUsuario());
+     if ($Tipo) {
+         $retorna=$$Tipo->getDescripcion();
+     }
+     return $retorna;
+     
+ }
     
        static public function formato($valor, $moneda) {
         $valor = number_format((float) ($valor), 2, '.', ',');
