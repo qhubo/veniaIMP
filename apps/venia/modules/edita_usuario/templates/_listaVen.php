@@ -22,9 +22,8 @@
                 <th  align="center"><font size="-1"> Tienda</font></th>
                 <th  align="center"><font size="-1"> Tipo</font></th>
                 <th  width="10px" align="center"><font size="-2"> Activo</font></th>
+                 <th width="40px" colspan="2" align="center"><font size="-1">Claves</font></th>
                 <th width="20px"><font size="-1">Acción</font> </th>
-                <th width="20px"><font size="-1">Tiendas</font> </th>
-                <th width="40px" colspan="2" align="center"><font size="-1">Claves</font></th>
                 <th width="10px">Elimina</th>
             </tr>
         </thead>
@@ -49,26 +48,23 @@
                     <tr>
                         <td><font size="-1"><?php echo $lis->getUsuario() ?></font></td>
                         <td><font size="-1"><?php echo $lis->getNombreCompleto() ?></font></td>
-          
-                        <td><font size="-1"><?php echo $nombre ?></font></td>
-                             <td><?php echo $lis->getTipoUsuarioNombre()?></td>
-                        <td><font size="-1"><?php echo $lis->getTipoUsuario() ?></font></td>
+                        <td> <a class="btn btn-xs btn-block  yellow-crusta"  href="<?php echo url_for($modulo . '/tienda?id=' . $lis->getId()) ?>" > <i class="fa fa-list-ol"></i> <font size="-1"><?php echo $nombre ?></font></a></td>
+                        <td><?php echo $lis->getTipoUsuarioNombre()?></td>
                         <td align="center"><?php if ($lis->getActivo()) { ?>
-                    <li class="fa flaticon2-arrow-up kt-font-info "></li>
-                <?php } else { ?>
+                        <li class="fa flaticon2-arrow-up kt-font-info "></li>
+                    <?php } else { ?>
                     <li class="fa flaticon2-arrow-down kt-font-danger "></li> 
-                <?php } ?>
+                    <?php } ?>
+                 </td>
+                   <td width="20px">
+                    <a class="btn btn-xs  blue-hoki btn-outline  "  href="<?php echo url_for($modulo . '/cambioClave?id=' . $lis->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $lis->getId() ?> ">
+                        <i class="fa fa-lock"></i> Cambiar </a>    
                 </td>
                 <td>
                     <a class="btn btn-xs btn-block  blue-steel"  href="<?php echo url_for($modulo . '/muestra?id=' . $lis->getId()) ?>" > <li class="fa fa-edit"></li> Editar&nbsp;&nbsp;&nbsp;&nbsp;</a>  
                 </td>
-                <td width="5px">
-                    <a class="btn btn-xs btn-block  yellow-crusta"  href="<?php echo url_for($modulo . '/tienda?id=' . $lis->getId()) ?>" > <i class="fa fa-list-ol"></i> Tiendas</a>    
-                </td>
-                <td width="20px">
-                    <a class="btn btn-xs  blue-hoki btn-outline  "  href="<?php echo url_for($modulo . '/cambioClave?id=' . $lis->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $lis->getId() ?> ">
-                        <i class="fa fa-lock"></i> Cambiar </a>    
-                </td>
+ 
+              
                 <td>
                     <?php if ($usuarioId <> $lis->getId()) { ?>
                         <a class="btn btn-block  btn-xs btn-danger" data-toggle="modal" href="#static<?php echo $lis->getId() ?>"><i class="fa fa-trash"></i>   </a>
