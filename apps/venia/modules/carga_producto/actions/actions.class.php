@@ -463,13 +463,14 @@ class carga_productoActions extends sfActions {
                     $nuevo->setNombreIngles($valores['NOMBRE_INGLES']); // => silver rock
                     $nuevo->setTercero(false);
                     $nuevo->setPrecio($valores['PRECIO']);
-                    $nuevo->setCostoProveedor($valores['COSTO']);
+         
                     $nuevo->setAlto($valores['ALTO']);
                     $nuevo->setAncho($valores['ANCHO']); // => 5
                     $nuevo->setPeso($valores['PESO']);
                     $nuevo->setLargo($valores['LARGO']); // => 5
                     $nuevo->setCostoFabrica($valores['COSTO_FABRICA']); // => 5
-                    $nuevo->setCostoCif($valores['COSTO_CIF']); // => 5
+                    $nuevo->setCostoCif($valores['COSTO']); // => 5
+                    $nuevo->setCostoProveedor($valores['COSTO_CIF']);
                     $nuevo->save();
 //                echo "<pre>";
 //                print_r($nuevo);

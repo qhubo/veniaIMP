@@ -203,7 +203,7 @@
                     <?php echo $form['precio']->renderError() ?>  
                 </span>
             </div>
-            <div class="col-lg-1 ">Costo </div>
+            <div class="col-lg-1 ">Costo CIF</div>
             <div class="col-lg-1 <?php if ($form['costo']->hasError()) echo "has-error" ?>">
                 <?php echo $form['costo'] ?>           
                 <span class="help-block form-error"> 
@@ -217,7 +217,7 @@
                     <?php echo $form['costo_fabrica']->renderError() ?>  
                 </span>
             </div>
-                                  <div class="col-lg-1 ">Costo Cif </div>
+                                  <div class="col-lg-1 ">Costo  </div>
             <div class="col-lg-1 <?php if ($form['costo_cif']->hasError()) echo "has-error" ?>">
                 <?php echo $form['costo_cif'] ?>           
                 <span class="help-block form-error"> 
