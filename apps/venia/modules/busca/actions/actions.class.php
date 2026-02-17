@@ -471,6 +471,7 @@ $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 
                     $exit = $productoQ->getExistencia();
                 }
                 $precio = $productoQ->getPrecio();
+                $costo= $productoQ->getCostoProveedor();
                 $row = array();
                 $regid = $reg['id'];
                 $nombre = $reg['nombre'];
