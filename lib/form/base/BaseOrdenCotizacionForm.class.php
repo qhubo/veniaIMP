@@ -50,6 +50,7 @@ abstract class BaseOrdenCotizacionForm extends BaseFormPropel
       'transporte'          => new sfWidgetFormInputText(),
       'empacado'            => new sfWidgetFormInputCheckbox(),
       'acuerdo_pago'        => new sfWidgetFormInputText(),
+      'prefijo'             => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -89,6 +90,7 @@ abstract class BaseOrdenCotizacionForm extends BaseFormPropel
       'transporte'          => new sfValidatorString(array('max_length' => 200, 'required' => false)),
       'empacado'            => new sfValidatorBoolean(array('required' => false)),
       'acuerdo_pago'        => new sfValidatorString(array('max_length' => 150, 'required' => false)),
+      'prefijo'             => new sfValidatorString(array('max_length' => 50, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('orden_cotizacion[%s]');

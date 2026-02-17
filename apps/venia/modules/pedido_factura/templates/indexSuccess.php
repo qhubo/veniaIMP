@@ -116,9 +116,9 @@
             <div class="modal-content">
                  <?php include_partial('soporte/avisos') ?>
                   <?php $val = explode('-', $operacion->getFaceFirma()) ?>
-                                <?php $numero ="FACTIRA"; // $val[0]; ?>
+                                <?php $numero ="FACTURA"; // $val[0]; ?>
                 <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel6">Factura <?php echo $operacion->getCodigo(); ?>   </h4>
+                    <h4 class="modal-title" id="myModalLabel6">Factura <?php echo $operacion->getCodigoFactura(); ?>   </h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

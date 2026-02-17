@@ -111,7 +111,7 @@ class consulta_reciboActions extends sfActions
             $datos = null;
             $datos[] = array("tipo" => 3, "valor" => "'".$reg->getCodigo());  // ENTERO   
             $datos[] = array("tipo" => 3, "valor" => $reg->getFechaCreo('d/m/Y'));  // ENTERO
-            $datos[] = array("tipo" => 3, "valor" => $reg->getOperacion()->getCodigo());
+            $datos[] = array("tipo" => 3, "valor" => $reg->getOperacion()->getCodigoFactura());
             $datos[] = array("tipo" => 3, "valor" => substr($reg->getOperacion()->getTienda()->getNombre(), 0, 30));  // ENTERO
             $datos[] = array("tipo" => 3, "valor" => $reg->getOperacion()->getNombre());
             $datos[] = array("tipo" => 3, "valor" => $reg->getTipo());

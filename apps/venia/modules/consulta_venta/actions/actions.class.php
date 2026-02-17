@@ -76,7 +76,7 @@ class consulta_ventaActions extends sfActions {
                 $vende = $lista->getVendedor()->getNombre();
             }
             $datos[] = array("tipo" => 3, "valor" => substr($lista->getTienda(), 0, 20));  // ENTERO
-            $datos[] = array("tipo" => 3, "valor" => $lista->getCodigo());  // ENTERO
+            $datos[] = array("tipo" => 3, "valor" => $lista->getCodigoFactura());  // ENTERO
             $datos[] = array("tipo" => 3, "valor" => $lista->getFecha('d/m/Y H:i'));  // ENTERO
             $datos[] = array("tipo" => 3, "valor" => $lista->getUsuario());
             $datos[] = array("tipo" => 3, "valor" => $codigCli);

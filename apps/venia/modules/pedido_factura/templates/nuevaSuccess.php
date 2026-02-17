@@ -20,7 +20,7 @@
 
     <div class="kt-portlet__body">
 
-        <?php include_partial($modulo . '/cabecera', array('transportes'=>$transportes, 'operacion' => $operacion, 'modulo' => $modulo)) ?>
+        <?php include_partial($modulo . '/cabecera', array('transportes' => $transportes, 'operacion' => $operacion, 'modulo' => $modulo)) ?>
         <div class="row" style="padding-top:10px;">
             <div class="col-lg-2">
                 <a class="btn btn-sm btn-warning btn-block" data-toggle="modal" href="#staticB"> <li class="fa fa-plus"></li>  Servicios</a>
@@ -34,9 +34,9 @@
         <div class="row">
             <div class="col-lg-9" style="text-align: right;"> CONFIRMAR DESEA FACTURAR PEDIDO</div>
             <div class="col-lg-3">       <a data-toggle="modal" href="#staticCONFIRMA" class="btn btn-block btn-sm  btn-secondary btn-dark" > <i class="flaticon-lock"></i> PROCESAR FACTURA </a>
-</div>     
+            </div>     
         </div>
- 
+
     </div>
 </div>
 
@@ -107,48 +107,87 @@
 
 <?php foreach ($detalle as $registro) { ?>
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $("#valor<?php echo $registro->getId(); ?>").on('change', function () {
-            var id = <?php echo $registro->getId(); ?>;
-            var val = $("#valor<?php echo $registro->getId(); ?>").val();
-            $.get('<?php echo url_for("pedido_factura/cambia") ?>', {id: id, val: val}, function (response) {
-                 $("#linea<?php echo $registro->getId(); ?>").val(response.linea);
-                $("#total").html(response.total);
-            },
-       'json'        
-    );
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#valor<?php echo $registro->getId(); ?>").on('change', function () {
+                var id = <?php echo $registro->getId(); ?>;
+                var val = $("#valor<?php echo $registro->getId(); ?>").val();
+                $.get('<?php echo url_for("pedido_factura/cambia") ?>', {id: id, val: val}, function (response) {
+                    $("#linea<?php echo $registro->getId(); ?>").val(response.linea);
+                    $("#total").html(response.total);
+                },
+                        'json'
+                        );
+            });
         });
-    });
-</script>
+    </script>
 
 <?php } ?>
 
 
 <div id="staticCONFIRMA" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Confirmación de Proceso</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p> Confirma Procesar Documento
-                                    <strong>FACTURA</strong>
-                                    <span class="caption-subject font-green bold uppercase"> 
-                                        <?php echo $operacion->getCodigo() ?>
-                                    </span> ?
-                                </p>
-                            </div>
-
-                            <div class="modal-footer">
-                                <a class="btn  btn-success " href="<?php echo url_for($modulo . '/confirmar?id='.$operacion->getId()."&token=". sha1($operacion->getCodigo())) ?>" >
-                                    <i class="flaticon2-lock "></i> Confirmar </a> 
-                                <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancelar </button>
-
-                            </div>
-
-                        </div>
-                    </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmación de Proceso</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <p> Confirma Procesar Documento
+                    <strong>FACTURA</strong>
+                    <span class="caption-subject font-green bold uppercase" style="font-weight: bold; font-size: 13px;"> 
+                        <?php echo $operacion->getCodigo() ?>
+                    </span> ?
+                </p>
+            </div>
+            <?php $CAMPOuSUARIO = CampoUsuarioQuery::create()->findOneByNombre("SERIEFAC"); ?>
+            <?php if ($CAMPOuSUARIO) { ?>
+                <?php $lista = $CAMPOuSUARIO->getValores(); ?>
+                <?php $lista = explode(",", $lista); ?>
+                <?php $lista[trim($operacion->getPrefijo())] = trim($operacion->getPrefijo()); ?>
+                <div class="row">
+                    <div class="col-lg-1"></div>
+                    <div class="col-lg-2" style="font-weight:bold; font-size: 14px">Tipo Serie</div>
+                    <div class="col-lg-3">  
+                        <select id="tipoSerie" class="form-control">
+                            <?php foreach ($lista as $de) { ?>
+                                <option <?php if ($operacion->getPrefijo() == $de) { ?> selected="" <?Php } ?> value="<?php echo trim($de); ?>"> <?php echo $de; ?> </option>
+                            <?php } ?>
+                        </select>
+                    </div> 
                 </div>
+            <?PHP } ?>
+            <div class="modal-footer">
+              <a class="btn btn-success" id="btnConfirmar">
+    <i class="flaticon2-lock"></i> Confirmar
+</a>
+                <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancelar </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+    
+    <script>
+document.getElementById("btnConfirmar").addEventListener("click", function () {
+
+    // capturar valor del select
+    var tipoSerie = document.getElementById("tipoSerie").value;
+
+    if (!tipoSerie) {
+        alert("Seleccione el tipo de serie");
+        return;
+    }
+
+    // construir URL Symfony
+    var url = "<?php echo url_for($modulo . '/confirmar') ?>?id=<?php echo $operacion->getId() ?>";
+
+    // agregar parámetro
+    url += "&tipoSerie=" + encodeURIComponent(tipoSerie);
+
+    // redireccionar
+    window.location.href = url;
+});
+</script>

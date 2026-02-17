@@ -101,7 +101,7 @@
                         <tr>     
                             <td> <?php if ($lista->getCodigo()) { ?>
                                     <a class="btn btn-sm  btn-warning btn-block "   href="<?php echo url_for('reporte_venta/muestra?id=' . $lista->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $lista->getId() ?>">
-                                        <font size="-2"> <?php echo $lista->getCodigo() ?>   </font>
+                                        <font size="-2"> <?php echo $lista->getCodigoFactura() ?>   </font>
                                     </a>
                                 <?php } else { ?>
                                     <a class="btn  btn-small  btn-info btn-block "   href="<?php echo url_for('reporte_venta/muestra?id=' . $lista->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $lista->getId() ?>">

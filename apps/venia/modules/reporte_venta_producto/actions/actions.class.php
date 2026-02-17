@@ -80,7 +80,7 @@ class reporte_venta_productoActions extends sfActions {
         $valores['inicio'] = '01:00';
         $valores['fin'] = '23:00';
 
-        $query = "select tt.nombre tienda, op.codigo codigo_factura,  cli.codigo cliente, op.nombre, op.estatus, DATE_FORMAT(op.fecha, '%d/%m/%y')  fecha, ve.nombre vendedor, ";
+        $query = "select tt.nombre tienda, op.codigo_factura codigo_factura,  cli.codigo cliente, op.nombre, op.estatus, DATE_FORMAT(op.fecha, '%d/%m/%y')  fecha, ve.nombre vendedor, ";
         $query .= " op.usuario, op.valor_total, op.valor_pagado, de.codigo codigo_producto, de.detalle, de.cantidad, de.valor_unitario, ";
         $query .= " de.valor_total, pro.costo_proveedor   from operacion  op left join operacion_detalle de  on op.id= de.operacion_id  left join ";
         $query .= "vendedor ve on ve.id = op.vendedor_id  left join cliente cli on cli.id= op.cliente_id ";
@@ -252,7 +252,7 @@ class reporte_venta_productoActions extends sfActions {
         $valores['inicio'] = '01:00';
         $valores['fin'] = '23:00';
 
-        $query = "select tt.nombre tienda, op.codigo codigo_factura,  cli.codigo cliente, op.nombre, op.estatus, DATE_FORMAT(op.fecha, '%d/%m/%y')  fecha, ve.nombre vendedor, ";
+        $query = "select tt.nombre tienda, op.codigo_factura codigo_factura,  cli.codigo cliente, op.nombre, op.estatus, DATE_FORMAT(op.fecha, '%d/%m/%y')  fecha, ve.nombre vendedor, ";
         $query .= " op.usuario, op.valor_total, op.valor_pagado, de.codigo codigo_producto, de.detalle, de.cantidad, de.valor_unitario, ";
         $query .= " de.valor_total, pro.costo_proveedor   from operacion  op left join operacion_detalle de  on op.id= de.operacion_id  left join ";
         $query .= "vendedor ve on ve.id = op.vendedor_id  left join cliente cli on cli.id= op.cliente_id ";

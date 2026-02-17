@@ -100,7 +100,7 @@
                         <td>
 
                       <div id="resultadoFA<?php echo $lista->getId() ?>" class="resultadoFA<?php echo $lista->getId() ?>"><?Php echo $lista->getFaceFirma(); ?></div>
-                       <a class="btn btn-sm  btn-block  "   href="#"  data-toggle="modal" data-target="#ajaxmodalCEFA<?php echo $lista->getId() ?>"> <?php echo $lista->getCodigo() ?>  </a>                         
+                       <a class="btn btn-sm  btn-block  "   href="#"  data-toggle="modal" data-target="#ajaxmodalCEFA<?php echo $lista->getId() ?>"> <?php echo $lista->getCodigoFactura() ?>  </a>                         
                                                 
 
  <?php echo substr($lista->getTienda(), 0, 5) ?>  

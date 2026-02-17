@@ -49,7 +49,7 @@ class pdfActions extends sfActions {
         $this->id = $request->getParameter("id");
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Venia Link');
-        $pdf->SetTitle("FACTURA  " . $ordenCompra->getCodigo());
+        $pdf->SetTitle("FACTURA  " . $ordenCompra->getCodigoFactura());
         $pdf->SetSubject('Documento Orden Compra');
         $pdf->SetKeywords('Documento,Orden,Cuenta'); // set default header data
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED); // set margins
@@ -72,7 +72,7 @@ class pdfActions extends sfActions {
 
 
         $pdf->writeHTML($html);
-        $pdf->Output('Pedido ' . $ordenCompra->getCodigo() . '.pdf', 'I');
+        $pdf->Output('Pedido ' . $ordenCompra->getCodigoFactura() . '.pdf', 'I');
         die();
         echo $html;
         die();

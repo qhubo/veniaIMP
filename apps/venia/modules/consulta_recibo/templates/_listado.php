@@ -42,7 +42,7 @@
                        </td>
                 <td><?php echo $reg->getFechaCreo('d/m/Y'); ?></td>
              
-                   <td><?php echo $reg->getOperacion()->getCodigo(); ?></td>
+                   <td><?php echo $reg->getOperacion()->getCodigoFactura(); ?></td>
                 <td><?php echo $reg->getOperacion()->getTienda()->getNombre(); ?></td>
                 <td><?php echo $reg->getOperacion()->getNombre(); ?> </td>
                 <td><?php echo $reg->getTipo(); ?></td>

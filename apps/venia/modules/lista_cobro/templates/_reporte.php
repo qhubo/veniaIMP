@@ -54,7 +54,7 @@
       </tr>
       <tr>
         <td class="label">Número de factura:</td>
-        <td><?php echo $operacionPago->getOperacion()->getCodigo(); ?></td>
+        <td><?php echo $operacionPago->getOperacion()->getCodigoFactura(); ?></td>
         <td class="label">Fecha factura:</td>
         <td><?php echo $operacionPago->getOperacion()->getFecha('d/m/Y'); ?></td>
       </tr>

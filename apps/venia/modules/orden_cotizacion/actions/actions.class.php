@@ -486,6 +486,34 @@ class orden_cotizacionActions extends sfActions {
     }
 
     public function executeNueva(sfWebRequest $request) {
+        $tipoSerie = $request->getParameter('tipo_serie');
+             error_reporting(-1);
+        $query="select IFNULL(MAX(op.codigo),0) codigo  from orden_cotizacion_detalle de inner join orden_cotizacion op on op.id=de.orden_cotizacion_id where prefijo ='".$tipoSerie."'";
+  
+        $con = Propel::getConnection();
+        $stmt = $con->prepare($query);
+        $resource = $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if ($result) {
+            $codigo = $result[0]['codigo'];
+            $numero =(int) str_replace($tipoSerie, "", $codigo)+1;
+        }
+  
+        
+            $prefijo = $tipoSerie . $numero;
+            if (strlen($numero) == 1) {
+                 $prefijo = $tipoSerie . '000' . $numero;
+            }
+            if (strlen($numero) == 2) {
+                 $prefijo = $tipoSerie . '00' . $numero;
+            }
+            if (strlen($numero) == 3) {
+                 $prefijo = $tipoSerie . '0' . $numero;
+            }
+                
+        
+   
+       
         date_default_timezone_set("America/Guatemala");
         $fecha_actual = date("Y-m-d");
 //        die('-------');
@@ -512,7 +540,18 @@ class orden_cotizacionActions extends sfActions {
         if ($codigo) {
             $operacion = OrdenCotizacionQuery::create()->findOneByCodigo($codigo);
         }
-
+             $id = $request->getParameter('id');
+           
+                $operacion = OrdenCotizacionQuery::create()->findOneById($id);
+        if ($operacion) {
+                
+                    $operacion->setCodigo($prefijo);
+            $operacion->setPrefijo($tipoSerie);
+            $operacion->save();
+        }
+//echo "<pre>";
+//print_r($operacion);
+//die();
         $tIENDAid = sfContext::getInstance()->getUser()->getAttribute("tienda", null, 'seguridad');
         if (!$tIENDAid) {
            
@@ -521,6 +560,8 @@ class orden_cotizacionActions extends sfActions {
         }
         if (!$operacion) {
             $operacion = new OrdenCotizacion();
+            $operacion->setCodigo($prefijo);
+            $operacion->setPrefijo($tipoSerie);
             $operacion->setTiendaId($tIENDAid);
             $operacion->setUsuario($usuarioQ->getUsuario());
             $operacion->setEstatus('Proceso');
@@ -553,7 +594,8 @@ class orden_cotizacionActions extends sfActions {
     }
 
     public function executeIndex(sfWebRequest $request) {
-
+ 
+     
         date_default_timezone_set("America/Guatemala");
         $this->edit = $request->getParameter('edit');
         sfContext::getInstance()->getUser()->setAttribute("lista", false, 'seguridad');

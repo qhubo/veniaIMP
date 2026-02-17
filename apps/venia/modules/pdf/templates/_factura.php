@@ -67,7 +67,7 @@
                     <td class="negrita" >FACTURA COMERCIAL</td>
                 </tr>
                 <tr>
-                    <td class="centrado titulo" ><?php echo $orden->getCodigo(); ?></td>
+                    <td class="centrado titulo" ><?php echo $orden->getCodigoFactura(); ?></td>
                 </tr>
             </table>
         </td>

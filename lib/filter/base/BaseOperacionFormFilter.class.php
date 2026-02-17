@@ -63,6 +63,7 @@ abstract class BaseOperacionFormFilter extends BaseFormFilterPropel
       'transporte'                => new sfWidgetFormFilterInput(),
       'direccion'                 => new sfWidgetFormFilterInput(),
       'acuerdo_pago'              => new sfWidgetFormFilterInput(),
+      'prefijo'                   => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -117,6 +118,7 @@ abstract class BaseOperacionFormFilter extends BaseFormFilterPropel
       'transporte'                => new sfValidatorPass(array('required' => false)),
       'direccion'                 => new sfValidatorPass(array('required' => false)),
       'acuerdo_pago'              => new sfValidatorPass(array('required' => false)),
+      'prefijo'                   => new sfValidatorPass(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('operacion_filters[%s]');
@@ -186,6 +188,7 @@ abstract class BaseOperacionFormFilter extends BaseFormFilterPropel
       'transporte'                => 'Text',
       'direccion'                 => 'Text',
       'acuerdo_pago'              => 'Text',
+      'prefijo'                   => 'Text',
     );
   }
 }

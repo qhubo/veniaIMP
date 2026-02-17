@@ -374,7 +374,7 @@ $sheet->getRowDimension(8)->setRowHeight(28);
                 ->find();
         $nombreempresa = $registro->getEmpresa()->getNombre();
         $pestanas[] = 'FACTURA';
-        $filename = "FACTURA " . $registro->getCodigo();
+        $filename = "FACTURA " . $registro->getCodigoFactura();
         $xl = sfContext::getInstance()->getUser()->nuevoExcel($nombreempresa, $pestanas, $pestanas[0]);
         $sheet = $xl->setActiveSheetIndex(0);
 // ===== COLUMNAS =====
@@ -389,10 +389,14 @@ $sheet->getRowDimension(8)->setRowHeight(28);
         $sheet->getColumnDimension('I')->setWidth(15);
 $ordenCompra=$registro;
 // ===== ENCABEZADO =====
-        $sheet->mergeCells("A1:I1");
+        $sheet->mergeCells("A1:F1");
         $sheet->setCellValue("A1", $registro->getEmpresa()->getNombre());
         $sheet->getStyle("A1")->getFont()->setBold(true)->setSize(18);
         $sheet->getStyle("A1")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        
+        $sheet->setCellValue("G1", "FACTURA ".$registro->getCodigoFactura());
+        $sheet->getStyle("G1")->getFont()->setBold(true)->setSize(14);
+        $sheet->getStyle("G1")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
       $sheet->mergeCells("A2:G2")->setCellValue("A2", "RUC: " . $ordenCompra->getEmpresa()->getTelefono());
         $sheet->getStyle("A2")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);

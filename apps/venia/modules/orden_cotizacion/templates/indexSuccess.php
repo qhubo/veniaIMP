@@ -51,8 +51,12 @@
                 </div>
 
                 <div class="col-lg-2">                     
-                    <a href="<?php echo url_for($modulo . '/nueva') ?>" class="btn btn-block btn-small btn-success btn-secondary" >  <i class="flaticon2-plus"></i> Nuevo </a>
-                  
+                   <a href="#"
+   class="btn btn-block btn-small btn-success btn-secondary"
+   data-toggle="modal"
+   data-target="#modalSerie">
+   <i class="flaticon2-plus"></i> Nuevo
+</a>
                          <?php if ($id) { ?>
                             <a class="btn btn-block btn-outline-success "   href="<?php echo url_for('busca/indexCliente?id=1') ?>"  data-toggle="modal" data-target="#ajaxmodalv">
                                 <li class="fa fa-search"></li> Cliente
@@ -341,6 +345,66 @@
 })(jQuery);
 </script>
 
+<div id="modalSerie" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Seleccionar Tipo Serie Documento</h4>
+      </div>
+        <?php $idOp=0; ?>
+        <?php if ($orden)  { ?> 
+           <?php $idOp=$orden->getId(); ?>
+        <?php } ?>
+        <input type="hidden" value="<?php  echo $idOp ?>" id="ope" name="ope" > 
+<?php    $CAMPOuSUARIO = CampoUsuarioQuery::create()->findOneByNombre("SERIECOTI"); ?>
+        <?php if ($CAMPOuSUARIO) { ?>
+<?php          $lista=$CAMPOuSUARIO->getValores(); ?>
+<?php          $lista = explode(",", $lista); ?>
+     
+      <div class="modal-body">
+          <div class="row">
+              <div class="col-lg-1"></div>
+              <div class="col-lg-2" style="font-weight:bold; font-size: 14px">Tipo Serie</div>
+             <div class="col-lg-3">  
+                 <select id="tipoSerie" class="form-control">
+            <option value="">-- Seleccione --</option>
+            <?php foreach($lista as $de) { ?>
+            <option value="<?php echo $de; ?>"> <?php echo $de; ?> </option>
+            <?php } ?>
+
+        </select>
+             </div> 
+          </div>
+      </div>
+        <?php } ?>
+
+      <div class="modal-footer">
+        <button class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button class="btn btn-success" id="btnContinuar">Continuar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<script>
+document.getElementById("btnContinuar").addEventListener("click", function () {
+
+    var tipo = document.getElementById("tipoSerie").value;
+var ope=document.getElementById("ope").value;
+    if (tipo === "") {
+        alert("Seleccione un tipo de serie");
+        return;
+    }
+
+    // redirigir enviando parámetro
+    window.location.href =
+        "<?php echo url_for($modulo . '/nueva') ?>?tipo_serie=" + tipo+ "&id=" + ope;
+});
+</script>
 
 <!--<script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>

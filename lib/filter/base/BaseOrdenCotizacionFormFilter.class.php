@@ -47,6 +47,7 @@ abstract class BaseOrdenCotizacionFormFilter extends BaseFormFilterPropel
       'transporte'          => new sfWidgetFormFilterInput(),
       'empacado'            => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
       'acuerdo_pago'        => new sfWidgetFormFilterInput(),
+      'prefijo'             => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -85,6 +86,7 @@ abstract class BaseOrdenCotizacionFormFilter extends BaseFormFilterPropel
       'transporte'          => new sfValidatorPass(array('required' => false)),
       'empacado'            => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
       'acuerdo_pago'        => new sfValidatorPass(array('required' => false)),
+      'prefijo'             => new sfValidatorPass(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('orden_cotizacion_filters[%s]');
@@ -138,6 +140,7 @@ abstract class BaseOrdenCotizacionFormFilter extends BaseFormFilterPropel
       'transporte'          => 'Text',
       'empacado'            => 'Boolean',
       'acuerdo_pago'        => 'Text',
+      'prefijo'             => 'Text',
     );
   }
 }

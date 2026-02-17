@@ -17,7 +17,7 @@
  */
 class OrdenCotizacionPeer extends BaseOrdenCotizacionPeer {
 
-    static public function ProcesaAutoUbicacion($cotizacion) {
+    static public function ProcesaAutoUbicacion($cotizacion, $codigo, $prefijo) {
         error_reporting(-1);
         date_default_timezone_set("America/Guatemala");
         // **** CREACION DE OPERACION 
@@ -27,6 +27,8 @@ class OrdenCotizacionPeer extends BaseOrdenCotizacionPeer {
             $operacion->setCodigo($cotizacion->getCodigo());
             $operacion->save();
         }
+        $operacion->setPrefijo($prefijo);
+        $operacion->setCodigoFactura($codigo);
         $tiendaQ = TiendaQuery::create()->findOneById($cotizacion->getTiendaId());
         if (!$tiendaQ) {
             $tiendaQ = TiendaQuery::create()->findOne();

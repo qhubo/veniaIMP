@@ -57,7 +57,7 @@
                         <td  colspan="3" style="height:15px;">
                             
                             <?php if ($operacionPago->getOperacion()->getPagado()) { ?>
-                       Pago  Factura <?php echo $operacionPago->getOperacion()->getCodigo(); ?>
+                       Pago  Factura <?php echo $operacionPago->getOperacion()->getCodigoFactura(); ?>
                             <?php } ?>
                              <?php if (!$operacionPago->getOperacion()->getPagado()) { ?>
                        Abono Pago  Factura Saldo Pendiente <?php echo ($operacionPago->getOperacion()->getValorTotal() -$operacionPago->getOperacion()->getValorPagado()); ?>

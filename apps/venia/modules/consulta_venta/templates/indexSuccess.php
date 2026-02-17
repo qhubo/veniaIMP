@@ -128,7 +128,7 @@
                     <?php $numero ="Fact"; // $val[0]; ?>
                     <tr>
                         <td>
-                            <a class="btn btn-warning btn-sm btn-block" href="<?php echo url_for('reporte_venta/muestra?id=' . $id) ?>" data-toggle="modal" data-target="#ajaxmodal<?php echo $id ?>">  <?php echo $lista->getCodigo() ?> </a>
+                            <a class="btn btn-warning btn-sm btn-block" href="<?php echo url_for('reporte_venta/muestra?id=' . $id) ?>" data-toggle="modal" data-target="#ajaxmodal<?php echo $id ?>">  <?php echo $lista->getCodigoFactura() ?> </a>
                         </td>
                         <td> <?php echo substr($lista->getTienda(), 0, 20) ?>  </td>
                         <td><?php echo $lista->getFecha('d/m/Y H:i') ?></td>

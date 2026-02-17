@@ -66,6 +66,7 @@ abstract class BaseOperacionForm extends BaseFormPropel
       'transporte'                => new sfWidgetFormInputText(),
       'direccion'                 => new sfWidgetFormInputText(),
       'acuerdo_pago'              => new sfWidgetFormInputText(),
+      'prefijo'                   => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -121,6 +122,7 @@ abstract class BaseOperacionForm extends BaseFormPropel
       'transporte'                => new sfValidatorString(array('max_length' => 350, 'required' => false)),
       'direccion'                 => new sfValidatorString(array('max_length' => 350, 'required' => false)),
       'acuerdo_pago'              => new sfValidatorString(array('max_length' => 150, 'required' => false)),
+      'prefijo'                   => new sfValidatorString(array('max_length' => 50, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('operacion[%s]');

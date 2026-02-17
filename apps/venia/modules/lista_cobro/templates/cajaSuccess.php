@@ -26,7 +26,7 @@
             <div class="col-lg-6" >
                 <div class="row" style="padding-top:3PX; padding-bottom:3PX; ;">
                     <div class="col-lg-2"><strong> <font size="+1">Código</font></strong></div>
-                    <div class="col-lg-4"><font size="+1"><?php echo $operacion->getCodigo(); ?></font></div>
+                    <div class="col-lg-4"><font size="+1"><?php echo $operacion->getCodigoFactura(); ?></font></div>
                     <div class="col-lg-2"><strong><font size="+1">RUC</font></strong></div>
                     <div class="col-lg-4"><font size="+1"><?php echo $operacion->getNit(); ?></font></div>
                 </div>
@@ -203,7 +203,7 @@
                                 <p> Confirma Enviar a Cuentas por Cobrar
                                     <strong><?php echo $operacion->getNombre(); ?></strong>
                                     <span class="caption-subject font-green bold uppercase"> 
-                                        <?php echo $operacion->getCodigo() ?>
+                                        <?php echo $operacion->getCodigoFactura() ?>
                                     </span> ?
                                 </p>
                             </div>

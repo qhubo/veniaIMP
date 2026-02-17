@@ -12,9 +12,36 @@ class pedido_facturaActions extends sfActions {
 
     public function executeConfirmar(sfWebRequest $request) {
         $id = $request->getParameter('id');
-        $ordenQ= OrdenCotizacionQuery::create()->findOneById($id);
+          $tipoSerie = $request->getParameter('tipoSerie');
+             error_reporting(-1);
+        $query="select IFNULL(MAX(op.codigo_factura),0) codigo  from operacion_detalle de inner join operacion op on op.id=de.operacion_id where prefijo ='".$tipoSerie."'";
+  
+        $con = Propel::getConnection();
+        $stmt = $con->prepare($query);
+        $resource = $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if ($result) {
+            $codigo = $result[0]['codigo'];
+            $numero =(int) str_replace($tipoSerie, "", $codigo)+1;
+        }
+  
         
-        OrdenCotizacionPeer::ProcesaAutoUbicacion($ordenQ);
+            $prefijo = $tipoSerie . $numero;
+            if (strlen($numero) == 1) {
+                 $prefijo = $tipoSerie . '000' . $numero;
+            }
+            if (strlen($numero) == 2) {
+                 $prefijo = $tipoSerie . '00' . $numero;
+            }
+            if (strlen($numero) == 3) {
+                 $prefijo = $tipoSerie . '0' . $numero;
+            }
+                
+//            echo $prefijo;
+//            die();
+        
+        $ordenQ= OrdenCotizacionQuery::create()->findOneById($id);
+        OrdenCotizacionPeer::ProcesaAutoUbicacion($ordenQ, $prefijo, $tipoSerie);
         $ordenQ->setEstatus('Facturada');
         $ordenQ->save();
 //        $operaicon = OperacionQuery::create()->findOneById($id);

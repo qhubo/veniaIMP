@@ -50,7 +50,7 @@
 
 
                                         <a class="btn btn-sm  btn-warning btn-block "   href="<?php echo url_for('reporte_venta/muestra?id=' . $lista->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $lista->getId() ?>">
-                                            <?php echo $lista->getCodigo() ?>  
+                                            <?php echo $lista->getCodigoFactura() ?>  
                                         </a>
                                     <?php } else { ?>
 
@@ -163,7 +163,7 @@
                     <p> Confirma Enviar a Cuentas por Cobrar
                         <strong><?php echo $lista->getNombre(); ?></strong>
                         <span class="caption-subject font-green bold uppercase"> 
-    <?php echo $lista->getCodigo() ?>
+    <?php echo $lista->getCodigoFactura() ?>
                         </span> ?
                     </p>
                 </div>
