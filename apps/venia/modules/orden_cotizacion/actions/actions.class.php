@@ -486,8 +486,11 @@ class orden_cotizacionActions extends sfActions {
     }
 
     public function executeNueva(sfWebRequest $request) {
+        
+        error_reporting(-1);
+        
         $tipoSerie = $request->getParameter('tipo_serie');
-             error_reporting(-1);
+       if ($tipoSerie <> "") {
         $query="select IFNULL(MAX(op.codigo),0) codigo  from orden_cotizacion_detalle de inner join orden_cotizacion op on op.id=de.orden_cotizacion_id where prefijo ='".$tipoSerie."'";
   
         $con = Propel::getConnection();
@@ -511,7 +514,7 @@ class orden_cotizacionActions extends sfActions {
                  $prefijo = $tipoSerie . '0' . $numero;
             }
                 
-        
+       }
    
        
         date_default_timezone_set("America/Guatemala");
@@ -537,12 +540,14 @@ class orden_cotizacionActions extends sfActions {
             }
         }
 
+        echo $codigo;
+        die();
         if ($codigo) {
             $operacion = OrdenCotizacionQuery::create()->findOneByCodigo($codigo);
         }
              $id = $request->getParameter('id');
            
-                $operacion = OrdenCotizacionQuery::create()->findOneById($id);
+        $operacion = OrdenCotizacionQuery::create()->findOneById($id);
         if ($operacion) {
                 
                     $operacion->setCodigo($prefijo);
