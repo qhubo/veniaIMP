@@ -540,13 +540,15 @@ class orden_cotizacionActions extends sfActions {
             }
         }
 
-        echo $codigo;
-        die();
+//        echo $codigo;
+//        die();
         if ($codigo) {
             $operacion = OrdenCotizacionQuery::create()->findOneByCodigo($codigo);
         }
-             $id = $request->getParameter('id');
-           
+    
+        
+           if ($request->getParameter('id')) {
+                        $id = $request->getParameter('id');
         $operacion = OrdenCotizacionQuery::create()->findOneById($id);
         if ($operacion) {
                 
@@ -554,6 +556,7 @@ class orden_cotizacionActions extends sfActions {
             $operacion->setPrefijo($tipoSerie);
             $operacion->save();
         }
+           }
 //echo "<pre>";
 //print_r($operacion);
 //die();
