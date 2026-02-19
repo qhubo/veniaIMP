@@ -258,6 +258,7 @@ class edita_productoActions extends sfActions {
             $valores['codigo_barras'] = $producto->getCodigoBarras(); //
             $valores['modelo'] = $producto->getModeloId(); //
             $valores['codigo_proveedor'] = $producto->getCodigoProveedor(); //
+            $valores['proveedor'] = $producto->getProveedorId(); //
             $valores['costo'] = $producto->getCostoProveedor();
             $valores['precio'] = $producto->getPrecio(); // 2233
             //   $valores['peso'] = $producto->getCargoPesoLibraProducto(); //
@@ -370,6 +371,7 @@ class edita_productoActions extends sfActions {
                     $nuevo->setAlto($valores['alto']);
                     $nuevo->setAncho($valores['ancho']);
                     $nuevo->setLargo($valores['largo']);
+                    $nuevo->setProveedorId($valores['proveedor']);; //
                     
                     $nuevo->save();
                     $con->commit();
