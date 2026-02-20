@@ -487,9 +487,21 @@ class orden_cotizacionActions extends sfActions {
 
     public function executeNueva(sfWebRequest $request) {
         
-        error_reporting(-1);
         
-        $tipoSerie = $request->getParameter('tipo_serie');
+    error_reporting(-1);
+
+    $tipoSerieV = $request->getParameter('tipo_serie');
+    $idV        = $request->getParameter('id');
+    $codigoV    = $request->getParameter('codigo');
+
+    // Si las tres vienen vacías
+    if (empty($tipoSerieV) && empty($idV) && empty($codigoV)) {
+
+        $this->getUser()->setFlash('error', 'Debe seleccionar Serie');
+        return $this->redirect('inicio/index');
+    }
+        
+ 
        if ($tipoSerie <> "") {
         $query="select IFNULL(MAX(op.codigo),0) codigo  from orden_cotizacion_detalle de inner join orden_cotizacion op on op.id=de.orden_cotizacion_id where prefijo ='".$tipoSerie."'";
   
