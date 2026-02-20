@@ -1,4 +1,5 @@
- <?php      $tipoPrecios = ListaPrecioQuery::create()->orderByNombre()->filterByActivo(true)->find(); ?>
+<?php $tipoPrecios = ListaPrecioQuery::create()->orderByNombre()->filterByActivo(true)->find(); ?>
+<?php $tipoUsua = strtoupper(sfContext::getInstance()->getUser()->getAttribute("tipoUsuario", null, 'seguridad')); ?>
 <div class="table-scrollable">
     <table class="table table-bordered  dataTable table-condensed flip-content" >
         <thead class="flip-content">
@@ -9,20 +10,21 @@
                 <th  align="center"> Código Sku</th>
                 <th  align="center"> Nombre</th>
                 <th  align="center">Marca  </th>  
-<!--                            <th  align="center"><?php //echo TipoAparatoQuery::Marca();    ?>  </th>  
-                <th  align="center"> Proveedor</th>-->
-<!--                            <th  align="center"> Descripción</th>-->
+
                 <?php foreach ($bodegas as $data) { ?>
-                <?php if ($data->getTiendaId()) { ?>
-                    <?php $bode = $data->getTienda(); ?>
-                    <th  align="center"><span class="font-blue sbold"> <?php echo $bode->getNombre() ?> </span></th>
+                    <?php if ($data->getTiendaId()) { ?>
+                        <?php $bode = $data->getTienda(); ?>
+                        <th  align="center"><span class="font-blue sbold"> <?php echo $bode->getNombre() ?> </span></th>
+                    <?php } ?>
                 <?php } ?>
-                        <?php } ?>
                 <th  align="center"> Precio</th>
                 <?php foreach ($tipoPrecios as $datad) { ?>
                     <th  align="center"><span class="font-blue sbold"> <?php echo $datad->getNombre() ?> </span></th>
+                <?php } ?>
+                <?php if ($tipoUsua == "ADMINISTRADOR") { ?>
+                    <th  align="center"> Costo
                     <?php } ?>
-                <th  align="center"> Costo</th>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -43,17 +45,22 @@
                             <td><?php echo $lista->getNombre() ?></td>
                             <td><?php echo $lista->getMarcaProducto(); ?> </td>
                             <?php foreach ($bodegas as $data) { ?>
-                                            <?php if ($data->getTiendaId()) { ?>
-                                <?php $bode = $data->getTienda(); ?>
-                                <td  align="right"><span class="font-blue "> 
-                                        <?php echo $cant = $lista->getExistenciaBodega($bode->getId()) ?> </span></td>
+                                <?php if ($data->getTiendaId()) { ?>
+                                    <?php $bode = $data->getTienda(); ?>
+                                    <td  align="right"><span class="font-blue "> 
+                                            <?php echo $cant = $lista->getExistenciaBodega($bode->getId()) ?> </span></td>
+                                        <?php } ?>
                                     <?php } ?>
-                                   <?php } ?>
                             <td  align="right"><?php echo number_format($lista->getPrecio(), 2); ?> </td>
-                                <?php foreach ($tipoPrecios as $datad) { ?>
- <td  align="right"><?php echo number_format($lista->getPrecioLista($datad->getId()), 2); ?> </td>                           
-     <?php } ?>
-                            <td  align="right"><?php echo number_format($lista->getCostoProveedor(), 2); ?> </td>
+                            <?php foreach ($tipoPrecios as $datad) { ?>
+                                <td  align="right"><?php echo number_format($lista->getPrecioLista($datad->getId()), 2); ?> </td>                           
+                            <?php } ?>
+
+                            <td  align="right">
+                                <?php if ($tipoUsua == "ADMINISTRADOR") { ?>
+                                    <?php echo number_format($lista->getCostoProveedor(), 2); ?> 
+                                <?php } ?>
+                            </td>
                         </tr>
                     <?php } ?>
                 <?php } ?>
