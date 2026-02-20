@@ -6,13 +6,13 @@ class reporte_venta_productoActions extends sfActions {
         date_default_timezone_set("America/Guatemala");
             $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
                 
-        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datosConsultaRecibo', null, 'consulta'));
+        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datosConsultVenta', null, 'consulta'));
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
         $usuarioQue = UsuarioQuery::create()->findOneById($usuarioId);
         if (!$valores) {
             $valores['fechaInicio'] = date('d/m/Y');
             $valores['fechaFin'] = date('d/m/Y');
-            sfContext::getInstance()->getUser()->setAttribute('datosConsultaRecibo', serialize($valores), 'consulta');
+            sfContext::getInstance()->getUser()->setAttribute('datosConsultVenta', serialize($valores), 'consulta');
         }
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
         $usuarioQue = UsuarioQuery::create()->findOneById($usuarioId);
@@ -215,7 +215,7 @@ class reporte_venta_productoActions extends sfActions {
             $this->redirect('inicio/index');
         }
         date_default_timezone_set("America/Guatemala");
-        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datosConsultaRecibo', null, 'consulta'));
+        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datosConsultVenta', null, 'consulta'));
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
         $usuarioQue = UsuarioQuery::create()->findOneById($usuarioId);
         if (!$valores) {
@@ -227,7 +227,7 @@ class reporte_venta_productoActions extends sfActions {
             $valores['medio_pago'] = null;
             $valores['producto'] = null;
             $valores['bodega'] = null;
-            sfContext::getInstance()->getUser()->setAttribute('datosConsultaRecibo', serialize($valores), 'consulta');
+            sfContext::getInstance()->getUser()->setAttribute('datosConsultVenta', serialize($valores), 'consulta');
         }
 
 //        echo "<pre>";
@@ -238,8 +238,8 @@ class reporte_venta_productoActions extends sfActions {
             $this->form->bind($request->getParameter('consulta'));
             if ($this->form->isValid()) {
                 $valores = $this->form->getValues();
-                sfContext::getInstance()->getUser()->setAttribute('datosConsultaRecibo', serialize($valores), 'consulta');
-                $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datosConsultaRecibo', null, 'consulta'));
+                sfContext::getInstance()->getUser()->setAttribute('datosConsultVenta', serialize($valores), 'consulta');
+                $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datosConsultVenta', null, 'consulta'));
                 $this->redirect('reporte_venta_producto/index?id=1');
             }
         }
