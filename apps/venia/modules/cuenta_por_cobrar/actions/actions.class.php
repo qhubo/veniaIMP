@@ -220,10 +220,7 @@ class cuenta_por_cobrarActions extends sfActions {
     public function executeIndex(sfWebRequest $request) {
         error_reporting(-1);
         $this->id = $request->getParameter('id'); //=155555&$dirh =
-        $acceso = MenuSeguridad::Acceso('lista_cobro');
-        if (!$acceso) {
-            $this->redirect('inicio/index');
-        }
+     
         $this->prover = $request->getParameter('prover');
         $this->operacionPago = OperacionPagoQuery::create()->findOneById($this->id);
         $registros = OperacionQuery::create()
