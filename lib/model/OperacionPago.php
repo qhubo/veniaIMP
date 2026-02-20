@@ -22,9 +22,9 @@ class OperacionPago extends BaseOperacionPago
     
     static public function Codigo($id) {
     
-        $operacionPafre = OperacionPagoQuery::create()->findOneById($id);
+         $operacionPafre = OperacionPagoQuery::create()->findOneById($id);
         if ($operacionPafre->getOperacionPagoPadreNo()>0) {
-            $id= "P".$operacionPafre->getOperacionPagoPadreNo();
+            $id= $operacionPafre->getOperacionPagoPadreNo();
         }
    
         
@@ -38,6 +38,9 @@ class OperacionPago extends BaseOperacionPago
         if (strlen($id)==3) {
          $codigo = "00".$id;    
        }
+          if ($operacionPafre->getOperacionPagoPadreNo()>0) {
+        $codigo="P".$codigo; 
+     }
        return $codigo;
     }
     public function getCodigo() {

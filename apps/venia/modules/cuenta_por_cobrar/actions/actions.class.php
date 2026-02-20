@@ -238,7 +238,7 @@ class cuenta_por_cobrarActions extends sfActions {
         }
         $this->bancos = BancoQuery::create()->find();
         $registros = new OperacionQuery();
-        $registros->setLimit(3);
+       // $registros->setLimit(3);
         $registros->filterByEstatus('Cuenta Cobrar');
         $registros->filterByPagado(false);
         if ($this->prover) {

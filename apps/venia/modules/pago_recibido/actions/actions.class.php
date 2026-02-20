@@ -11,12 +11,28 @@
 class pago_recibidoActions extends sfActions {
 
     public function executeElimina(sfWebRequest $request) {
-               date_default_timezone_set("America/Guatemala");
+        date_default_timezone_set("America/Guatemala");
         $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datosConsultaRecibo', null, 'consulta'));
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
         $usuarioQue = UsuarioQuery::create()->findOneById($usuarioId);
         $id = $request->getParameter("id");
         $operacionPago = OperacionPagoQuery::create()->findOneById($id);
+        $OPERACIONES = OperacionPagoQuery::create()
+                    ->filterById($id)
+                    ->find();
+        $OPERACION_PADRE = OperacionPagoPadreQuery::create()->findOneById($operacionPago->getOperacionPagoPadreNo());
+        if ($OPERACION_PADRE) {
+                $OPERACIONES = OperacionPagoQuery::create()
+                    ->filterByOperacionPagoPadreNo($OPERACION_PADRE->getId())
+                    ->find();
+        }
+        
+//        echo "<pre>";
+//        print_r($OPERACIONES);
+//        die();
+                
+       foreach ($OPERACIONES as $operacionPago) {
+//        
         $operacion = OperacionQuery::create()->findOneById($operacionPago->getOperacionId());
         $partida = PartidaQuery::create()->findOneById($operacionPago->getPartidaNo());
         if ($partida) {
@@ -38,7 +54,7 @@ class pago_recibidoActions extends sfActions {
         $operacionPago->setFechaCreo(null);
         $operacionPago->setDocumento('Anulo '.$usuarioQue->getUsuario(). " ".date('d/m/Y'));
         $operacionPago->save();
-        
+       }
         $this->getUser()->setFlash('exito', 'Recibo eliminado con exito ');
         $this->redirect('pago_recibido/index?id=' . $operacionPago->getId());
         die();
