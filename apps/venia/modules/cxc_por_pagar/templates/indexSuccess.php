@@ -82,7 +82,7 @@
                             <?php $estiloDos = ''; ?>
                             <?php $estiloUno = 'style="display:none;"'; ?>
                         <?php } ?>
-<?php //if ($deta->getOrdenProveedorId()) { ?>
+
                         <tr>
                             <td><?php echo $deta->getCodigo(); ?></td>
                             <td><?php echo $deta->getProveedor()->getNombre(); ?></td>
@@ -132,9 +132,9 @@
                 </tbody>
                 <?php if ($prover) { ?>
                 <tfoot>
-                <td></td>
+       
                 <td colspan="7" style="text-align: right"> <strong>Totales</strong></td>
-                <td></td>
+         
                 <td  style="text-align: right"><font size='+2'> <?php echo Parametro::formato($total); ?></font></td>
                 <td colspan="2">
                     <input class="form-control" value="<?php echo Parametro::formato($totalSuma, false); ?>" style="background-color:#F9FBFE ;" readonly="true" name="totalselec" id="totalselec">

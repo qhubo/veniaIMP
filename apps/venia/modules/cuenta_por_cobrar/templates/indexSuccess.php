@@ -68,111 +68,244 @@
         </div>
 
 
-        <?php if ($prover) { ?>
-            <table class="table table-striped- table-bordered table-hover table-checkable XXdataTable no-footer dtr-inlin XXkt-datatable" id="html_table" width="100%">
-            <?php } ?>
-            <?php if (!$prover) { ?>
-                <table class="table table-striped- table-bordered table-hover table-checkable  no-footer dtr-inlin kt-datatable" id="html_table" width="100%">
-                <?php } ?>
 
-                <thead class="flip-content">
-                    <tr class="active">
-                        <th align="center" width="20px"> Código</th>
-                        <th align="center" width="20px">Fecha / Usuario</th>
+        <table class="table table-striped- table-bordered table-hover table-checkable  no-footer dtr-inlin <?php if (!$prover) { ?> kt-datatable   <?php } ?>" id="html_table" width="100%">
+            <thead class="flip-content">
+                <tr class="active">
+                    <th align="center" width="20px"> Código</th>
+                    <th align="center" width="20px">Fecha / Usuario</th>
+                    <th  align="center">Vendedor </th>
+                    <th  align="center"> Cliente / RUC</th>
+                    <th  align="center"> Observaciones</th>    
+                    <th  align="center"> Valor</th>    
+                    <?php if ($prover) { ?>
+                        <th  align="center"> Valor  Pagar</th>  
+                    <?php } ?>
+                    <th  align="center"> Valor Pagado</th>     
+                    <th  align="center"> Saldo</th>     
+                    <th  align="center"> Estado </th>
+                    <th  align="center"> #</th>    
+                </tr>
+            </thead>
+            <tbody>
+                <?php $total = 0; ?>
+                <?php foreach ($operaciones as $lista) { ?>
+                    <?php $total = $lista->getValorTotal() + $total; ?>
+                    <?php $detalleProducto = OperacionDetalleQuery::create()->filterByOperacionId($lista->getId())->count(); ?>    
+                    <tr>     
+                        <td> <?php if ($lista->getCodigo()) { ?>
+                                <a class="btn btn-sm  btn-warning btn-block "   href="<?php echo url_for('reporte_venta/muestra?id=' . $lista->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $lista->getId() ?>">
+                                    <font size="-2"> <?php echo $lista->getCodigoFactura() ?>   </font>
+                                </a>
+                            <?php } else { ?>
+                                <a class="btn  btn-small  btn-info btn-block "   href="<?php echo url_for('reporte_venta/muestra?id=' . $lista->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $lista->getId() ?>">
+                                    <?php echo $lista->getCodigoFactura() ?>  
+                                </a>   
+                                <font size="-2"> <?php echo $lista->getCodigoFactura() ?>  </font>
+                            <?php } ?>
+                            <font size="-2"> <?php echo substr($lista->getTienda(), 0, 5) ?> </font>  
+                        </td>
+                        <td><font size="-2"><?php echo $lista->getFecha('d/m/Y H:i') ?></font>  
+                            <br><font size="-1"><?php echo $lista->getUsuario() ?></font>  </td>
+                        <td><?php if ($lista->getVendedorId()) echo $lista->getVendedor()->getNombre(); ?></td>
+                        <td> <strong><?php
+                                if ($lista->getClienteId()) {
+                                    echo $lista->getCliente()->getCodigoCli();
+                                }
+                                ?></strong>  <br>
+                            <?php if ($lista->getCliente()->getNombre() <> $lista->getNombre()) { ?>
+                                <?php echo $lista->getCliente()->getNombre() . "   " . $lista->getNombre(); ?>
+                            <?php } else { ?>
+                                <?php echo $lista->getCliente()->getNombre(); ?>
+                            <?php } ?>
+                            <br> <font size="-1"><?php echo $lista->getNit() ?></font>  
+                        </td>
+                        <td>  <font size="-1"><?php echo $lista->getObservaciones() ?></font>  </td>
 
-                        <th  align="center">Vendedor </th>
-                        <th  align="center"> Cliente / RUC</th>
-                        <th  align="center"> Observaciones</th>    
 
-                        <th  align="center"> Valor</th>    
-                  
-                        <th  align="center"> Valor Pagado</th>     
-                        <th  align="center"> Saldo</th>     
-                        <th  align="center"> Estado </th>
-                        <th  align="center"> #</th>    
+                        <td>  <font size="-1"><?php echo number_format($lista->getValorTotal(), 2) ?>  </font>  </td>
+
+                        <?php if ($prover) { ?>
+                            <td style="background-color:#eeeeee">
+                                <?php
+                                $saldo = $lista->getValorTotal() - $lista->getValorPagado();
+                                ?>
+                                <input  datoid="<?php echo $lista->getId(); ?>" class="form-control valor-pagar"  type="text"  placeholder="0.00" value="0.00" data-max="<?php echo $saldo; ?>"   >
+                            </td>
+                            </td>
+                        <?php } ?>
+
+                        <td>
+
+                            <font size="-1"><?php echo number_format($lista->getValorPagado(), 2) ?>  </font>  </td>
+                        <td style="text-align:right">  
+                            <a class="btn btn-sm btn-block btn-success btn-outline  "  href="<?php echo url_for($modulo . '/caja?id=' . $lista->getId()) ?>"  >
+                                <i class="fa flaticon-signs"></i> Pago <font size="-1"><?php echo number_format($lista->getValorTotal() - $lista->getValorPagado(), 2) ?>  </font>  
+                            </a>
+                        </td>
+
+                        <td>  <font size="-1"><?php echo $lista->getEstatus() ?>  </font>  </td>
+                        <td><?php echo $lista->getId(); ?></td>
 
                     </tr>
-                </thead>
-                <tbody>
-                    <?php $total = 0; ?>
-                    <?php foreach ($operaciones as $lista) { ?>
-                        <?php $total = $lista->getValorTotal() + $total; ?>
-                        <?php $detalleProducto = OperacionDetalleQuery::create()->filterByOperacionId($lista->getId())->count(); ?>    
-                        <tr>     
-                            <td> <?php if ($lista->getCodigo()) { ?>
-                                    <a class="btn btn-sm  btn-warning btn-block "   href="<?php echo url_for('reporte_venta/muestra?id=' . $lista->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $lista->getId() ?>">
-                                        <font size="-2"> <?php echo $lista->getCodigoFactura() ?>   </font>
-                                    </a>
-                                <?php } else { ?>
-                                    <a class="btn  btn-small  btn-info btn-block "   href="<?php echo url_for('reporte_venta/muestra?id=' . $lista->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $lista->getId() ?>">
-                                        <?php echo $lista->getCodigoFactura() ?>  
-                                    </a>   
-                                    <font size="-2"> <?php echo $lista->getCodigoFactura() ?>  </font>
-                                <?php } ?>
-                                <font size="-2"> <?php echo substr($lista->getTienda(), 0, 5) ?> </font>  
-                            </td>
-                            <td><font size="-2"><?php echo $lista->getFecha('d/m/Y H:i') ?></font>  
-                                <br><font size="-1"><?php echo $lista->getUsuario() ?></font>  </td>
-                            <td><?php if ($lista->getVendedorId()) echo $lista->getVendedor()->getNombre(); ?></td>
-                            <td> <strong><?php if ($lista->getClienteId()) {
-                                echo $lista->getCliente()->getCodigoCli();
-                            } ?></strong>  <br>
-                                <?php if ($lista->getCliente()->getNombre() <> $lista->getNombre()) { ?>
-                                    <?php echo $lista->getCliente()->getNombre() . "   " . $lista->getNombre(); ?>
-                                <?php } else { ?>
-        <?php echo $lista->getCliente()->getNombre(); ?>
-    <?php } ?>
-                                <br> <font size="-1"><?php echo $lista->getNit() ?></font>  
-                            </td>
-                            <td>  <font size="-1"><?php echo $lista->getObservaciones() ?></font>  </td>
-
-
-                            <td>  <font size="-1"><?php echo number_format($lista->getValorTotal(), 2) ?>  </font>  </td>
-
-                            <td>  <font size="-1"><?php echo number_format($lista->getValorPagado(), 2) ?>  </font>  </td>
-                            <td style="text-align:right">  
-                                <a class="btn btn-sm btn-block btn-success btn-outline  "  href="<?php echo url_for($modulo . '/caja?id=' . $lista->getId()) ?>"  >
-                                    <i class="fa flaticon-signs"></i> Pago <font size="-1"><?php echo number_format($lista->getValorTotal() - $lista->getValorPagado(), 2) ?>  </font>  
-                                </a>
-                            </td>
-
-                            <td>  <font size="-1"><?php echo $lista->getEstatus() ?>  </font>  </td>
-                            <td><?php echo $lista->getId(); ?></td>
-
-                        </tr>
 
 
 
                 <?php } ?>
-                </tbody>
-<?php if ($prover) { ?>
-                    <tfoot>
-                    <td></td>
-                    <td colspan="4" style="text-align: right"> <strong>Totales</strong></td>
+            </tbody>
+         
+            <?php if ($prover) { ?>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td colspan="4" style="text-align: right"> <strong>Totales</strong></td>
 
-                    <td  style="text-align: right"><font size='-1'> <?php echo Parametro::formato($total); ?></font></td>
-                    <td></td>
-                    <td style="text-align: right" colspan="1">
-                        <font size='+1'> <?php echo Parametro::formato($totalSuma); ?></font></td>
+                        <td style="text-align: right">
+                            <font size='-1'><?php echo Parametro::formato($total); ?></font>
+                        </td>
 
-                <!--                    <input class="form-control" value="<?php echo Parametro::formato($totalSuma, false); ?>" style="background-color:#F9FBFE ;" readonly="true" name="totalselec" id="totalselec">-->
-                    <!--                    <div style="padding-top:3px; padding-bottom:3px;">
-                                            
-                                            <a href="<?php echo url_for("proceso/confirma?tipo=cuentapagar&token=" . $prover) ?>" class="btn btn-sm btn-block btn-success" data-toggle="modal" data-target="#ajaxmodalCONFIRMA"> <li class="fa flaticon2-checkmark"></li>&nbsp;&nbsp;Pagos Seleccionados    </a>
-                    
-                                        </div>-->
-                    </td>
-                    </tfoot>
-<?php } ?>
+                        <td style="text-align: right">
+                            <font size='+1' id="total_pagar_sumado">0.00</font>
+                        </td>
 
-            </table>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            <?php } ?>
 
+        </table>
+        <?php if ($prover) { ?>
+            <div style="margin-top:15px; text-align:right;">
+<a id="btnProcesarPago"
+   class="btn btn-sm btn-warning"
+   href="#">
+   Procesar Pago
+</a>
+            </div>
+        <?php } ?>
     </div>
 </div>
-</div>
-</div>
 
 
+ <div class="modal fade" id="ajaxmodalPago" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
+         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width: 750px">
+            <div class="modal-content" style=" width: 750px">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="ti-close"></span></button>
+                    <h4 class="modal-title" id="myModalLabel6">Cargando...</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    
+<script>
+$(document).ready(function () {
+
+    function recalcularTotal() {
+        let total = 0;
+        $('.valor-pagar').each(function () {
+            let valor = parseFloat($(this).val()) || 0;
+            total += valor;
+        });
+
+        $('#total_pagar_sumado').text(total.toFixed(2));
+        return total;
+    }
+
+    // 🔹 Validación en tiempo real
+    $(document).on('input', '.valor-pagar', function () {
+
+        let valor = $(this).val().replace(/[^0-9.]/g, '');
+
+        let partes = valor.split('.');
+        if (partes.length > 2) {
+            valor = partes[0] + '.' + partes[1];
+        }
+
+        let numero = parseFloat(valor) || 0;
+
+        if (numero < 0) numero = 0;
+
+        let maximo = parseFloat($(this).data('max'));
+        if (numero > maximo) numero = maximo;
+
+        $(this).val(numero);
+        recalcularTotal();
+    });
+
+    $(document).on('blur', '.valor-pagar', function () {
+        let numero = parseFloat($(this).val()) || 0;
+        $(this).val(numero.toFixed(2));
+        recalcularTotal();
+    });
+
+    // 🔥 PROCESAR PAGO
+// 🔥 PROCESAR PAGO
+$('#btnProcesarPago').on('click', function (e) {
+
+    e.preventDefault();
+
+    let total = recalcularTotal();
+
+    if (total <= 0) {
+        alert('Debe ingresar un monto a pagar');
+        return false;
+    }
+
+    // 🔹 Construir lista de seleccionados
+    let lista = [];
+
+    $('.valor-pagar').each(function () {
+
+        let valor = parseFloat($(this).val()) || 0;
+
+        if (valor > 0) {
+
+            lista.push({
+                id: $(this).attr('datoid'),
+                valor: valor.toFixed(2)
+            });
+
+        }
+
+    });
+
+    // Convertir a JSON y codificar
+    let jsonList = encodeURIComponent(JSON.stringify(lista));
+
+    let baseUrl = "<?php echo url_for('cuenta_por_cobrar/pagoMasiva') ?>?id=<?php echo $prover; ?>";
+
+    let nuevaUrl = baseUrl
+        + "&total=" + total.toFixed(2)
+        + "&list=" + jsonList;
+
+    $('#ajaxmodalPago .modal-content').load(nuevaUrl, function () {
+        $('#ajaxmodalPago').modal('show');
+    });
+
+});
+
+});
+</script>
+
+       
+
+ <div class="modal fade" id="ajaxmodalPago" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
+         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width: 750px">
+            <div class="modal-content" style=" width: 750px">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="ti-close"></span></button>
+                    <h4 class="modal-title" id="myModalLabel6">Cargando...</h4>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 <?php foreach ($operaciones as $reg) { ?>
@@ -192,7 +325,7 @@
 
 
 <?php } ?>
-<script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+
 <?php if ($operacionPago) { ?>
     <div id="ajaxmodalP" class="modal " tabindex="-1" data-backdrop="static" data-keyboard="false">
         <div class="modal-lg"  role="document">
@@ -219,54 +352,11 @@
         </div>
     </div>
     <script>
-                        $(document).ready(function () {
-                            $("#ajaxmodalP").modal();
-                        });
-    </script>
-<?php } ?>
-
-
-
-<?php
-$partidaPen = PartidaQuery::create()
-        ->filterByConfirmada(false)
-        ->filterByTipo('PagoVentaCobrar')
-        ->findOne();
-?>
-<?php if ($partidaPen) { ?>
-    <div id="ajaxmodalPartida" class="modal " tabindex="-1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-lg"  role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel6">Partida <?php echo $partidaPen->getTipo(); ?>  <?php echo $partidaPen->getCodigo(); ?>  </h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-
-
-
-    <?php include_partial('proceso/partidaCambia', array('partidaPen' => $partidaPen)) ?>  
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <?php foreach ($partidaPen->getListDetalle() as $cta) { ?>
-        <script>
-            $(document).ready(function () {
-                $("#cuenta<?php echo $cta; ?>").select2({
-                    dropdownParent: $("#ajaxmodalPartida")
-                });
-            });
-        </script>
-    <?php } ?>
-    <script>
         $(document).ready(function () {
-            $("#ajaxmodalPartida").modal();
+            $("#ajaxmodalP").modal();
         });
     </script>
 <?php } ?>
-
 
 
 

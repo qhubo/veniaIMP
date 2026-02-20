@@ -212,6 +212,15 @@ propel:
     _uniques:
        llave:                         [ linea_no ]     
     
+
+  operacion_pago_padre:
+    _attributes: { phpName: OperacionPagoPadre, idMethod: native }
+    id:                               ~
+    valor:                            { type: double }
+    documento:                        { type: varchar(50) }
+    fecha_documento:                  { type: date } 
+    banco_id:                         ~
+    tipo:                             { type: varchar(50) } 
    
   operacion_pago:
     _attributes: { phpName: OperacionPago, idMethod: native }
@@ -230,6 +239,7 @@ propel:
     cxc_cobrar:                       { type: varchar(50) } 
     comision:                         { type: double } 
     vuelto:                           { type: double }
+    operacion_pago_padre_no:          { type: integer, default: 0 }  
 
   pais:
     _attributes: { phpName: Pais, idMethod: native }

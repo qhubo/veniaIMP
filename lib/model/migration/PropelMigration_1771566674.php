@@ -2,10 +2,10 @@
 
 /**
  * Data object containing the SQL and PHP code to migrate the database
- * up to version 1769749033.
- * Generated on 2026-01-30 05:57:13 
+ * up to version 1771566674.
+ * Generated on 2026-02-20 06:51:14 
  */
-class PropelMigration_1769749033
+class PropelMigration_1771566674
 {
 
     public function preUp($manager)
@@ -42,17 +42,8 @@ class PropelMigration_1769749033
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `cliente` CHANGE `tipo_cliente` `tipo_cliente` VARCHAR(120);
-
-ALTER TABLE `cuenta_banco` CHANGE `documento` `documento` VARCHAR(250);
-
-ALTER TABLE `gasto` CHANGE `documento` `documento` VARCHAR(250);
-
-ALTER TABLE `gasto_pago` CHANGE `documento` `documento` VARCHAR(250);
-
-ALTER TABLE `orden_cotizacion_detalle` CHANGE `bulto_inicio` `bulto_inicio` INTEGER;
-
-ALTER TABLE `orden_proveedor` CHANGE `no_documento` `no_documento` VARCHAR(250);
+ALTER TABLE `operacion_pago`
+    ADD `operacion_pago_padre_no` INTEGER DEFAULT 0 AFTER `vuelto`;
 
 ALTER TABLE `partida` CHANGE `ano` `ano` INTEGER DEFAULT false;
 
@@ -61,6 +52,20 @@ ALTER TABLE `partida` CHANGE `mes` `mes` INTEGER DEFAULT false;
 ALTER TABLE `partida_agrupa` CHANGE `ano` `ano` INTEGER DEFAULT false;
 
 ALTER TABLE `partida_agrupa` CHANGE `mes` `mes` INTEGER DEFAULT false;
+
+CREATE TABLE `operacion_pago_padre`
+(
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `valor` DOUBLE,
+    `documento` VARCHAR(50),
+    `fecha_documento` DATE,
+    `banco_id` INTEGER,
+    PRIMARY KEY (`id`),
+    INDEX `operacion_pago_padre_FI_1` (`banco_id`),
+    CONSTRAINT `operacion_pago_padre_FK_1`
+        FOREIGN KEY (`banco_id`)
+        REFERENCES `banco` (`id`)
+) ENGINE=InnoDB;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
@@ -82,17 +87,9 @@ SET FOREIGN_KEY_CHECKS = 1;
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-ALTER TABLE `cliente` CHANGE `tipo_cliente` `tipo_cliente` VARCHAR(200);
+DROP TABLE IF EXISTS `operacion_pago_padre`;
 
-ALTER TABLE `cuenta_banco` CHANGE `documento` `documento` VARCHAR(50);
-
-ALTER TABLE `gasto` CHANGE `documento` `documento` VARCHAR(150);
-
-ALTER TABLE `gasto_pago` CHANGE `documento` `documento` VARCHAR(150);
-
-ALTER TABLE `orden_cotizacion_detalle` CHANGE `bulto_inicio` `bulto_inicio` VARCHAR(10);
-
-ALTER TABLE `orden_proveedor` CHANGE `no_documento` `no_documento` VARCHAR(50);
+ALTER TABLE `operacion_pago` DROP `operacion_pago_padre_no`;
 
 ALTER TABLE `partida` CHANGE `ano` `ano` INTEGER DEFAULT 0;
 

@@ -11,17 +11,31 @@
 class lista_cobroActions extends sfActions {
 
     public function executeReporte(sfWebRequest $request) {
+                 error_reporting(-1);
+
         $this->id = $request->getParameter("id");
         $operacionPago = OperacionPagoQuery::create()->findOneById($this->id);
 
         $numberToLetterConverter = new NumberToLetterConverter();
-        $valor = $operacionPago->getValor() + $operacionPago->getComision();
+        
+         $valorTOTAL=$operacionPago->getValor();
+         $operacionPagoPad= OperacionPagoPadreQuery::create()->findOneById($operacionPago->getOperacionPagoPadreNo());
+         $Pagos=null;
+         if ($operacionPagoPad) {
+             $valorTOTAL=$operacionPagoPad->getValor();
+         $Pagos = OperacionPagoQuery::create()->filterByOperacionPagoPadreNo($operacionPagoPad->getId())->find();
+             
+             
+         }
+         
+     
+        $valor = $valorTOTAL;
         $valor = Parametro::formato($valor, false);
         $valor = str_replace(",", "", $valor);
         $totalImprime = str_replace(".", ",", $valor);
+  
         $TOTAL_LETRAS = $numberToLetterConverter->to_word($totalImprime, $miMoneda = null);
-
-
+      
         $NOMBRE_EMPRESA = $operacionPago->getEmpresa()->getNombre();
         $DIRECCION = $operacionPago->getEmpresa()->getDireccion();
         $TELEFONO = $operacionPago->getEmpresa()->getTelefono();
@@ -42,7 +56,9 @@ class lista_cobroActions extends sfActions {
             "logo" => $logo, 'NOMBRE_EMPRESA' => $NOMBRE_EMPRESA,
             'DIRECCION' => $DIRECCION, 'TELEFONO' => $TELEFONO,
             'TOTAL_LETRAS' => $TOTAL_LETRAS,
-            'CODIGO_CLIENTE' => $CODIGO_CLIENTE
+            'CODIGO_CLIENTE' => $CODIGO_CLIENTE,
+            'valorTOTAL'=>$valorTOTAL,
+            'Pagos'=>$Pagos,
         ));
         $pdf = new sfTCPDF("P", "mm", "Letter");
 

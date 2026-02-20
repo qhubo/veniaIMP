@@ -21,6 +21,13 @@ class OperacionPago extends BaseOperacionPago
 {
     
     static public function Codigo($id) {
+    
+        $operacionPafre = OperacionPagoQuery::create()->findOneById($id);
+        if ($operacionPafre->getOperacionPagoPadreNo()>0) {
+            $id= "P".$operacionPafre->getOperacionPagoPadreNo();
+        }
+   
+        
        $codigo = $id;
        if (strlen($id)==1) {
          $codigo = "000".$id;    
@@ -35,15 +42,25 @@ class OperacionPago extends BaseOperacionPago
     }
     public function getCodigo() {
        $codigo = $this->getId();
-       if (strlen($this->getId())==1) {
-         $codigo = "000".$this->getId();    
+       $id= $this->getId();
+       $operacionPafre = OperacionPagoQuery::create()->findOneById($id);
+        if ($operacionPafre->getOperacionPagoPadreNo()>0) {
+            $id= $operacionPafre->getOperacionPagoPadreNo();
+        }
+   
+       
+       if (strlen($id)==1) {
+         $codigo = "000".$id;    
        }
-      if (strlen($this->getId())==2) {
-         $codigo = "00".$this->getId();    
+      if (strlen($id)==2) {
+         $codigo = "00".$id;    
        }
-        if (strlen($this->getId())==3) {
-         $codigo = "00".$this->getId();    
+        if (strlen($id)==3) {
+         $codigo = "00".$id;    
        }
+     if ($operacionPafre->getOperacionPagoPadreNo()>0) {
+        $codigo="P".$codigo; 
+     }
        return $codigo;
     }
          public function save(PropelPDO $con = null) {

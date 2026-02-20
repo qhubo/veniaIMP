@@ -52,12 +52,28 @@
         <td class="label">Recibimos de:</td>
         <td colspan="3"><?php echo $operacionPago->getOperacion()->getNombre(); ?></td>
       </tr>
+      <?php if (!$Pagos) { ?>
       <tr>
         <td class="label">Número de factura:</td>
         <td><?php echo $operacionPago->getOperacion()->getCodigoFactura(); ?></td>
         <td class="label">Fecha factura:</td>
         <td><?php echo $operacionPago->getOperacion()->getFecha('d/m/Y'); ?></td>
       </tr>
+      <?php } ?>
+      <?php if ($Pagos) { ?>
+      <?php $in=0; ?>
+      <?php foreach($Pagos as $regp) { ?>
+       <?php $in++; ?>
+      <tr>
+        <td class="label"><?php if ($in==1) { ?>Número de factura:<?php } ?></td>
+        <td><?php echo trim($regp->getOperacion()->getCodigoFactura()); ?></td>
+        <td class="label"><?php if ($in==1) { ?>Fecha factura: <?php } ?></td>
+        <td><?php echo trim($regp->getOperacion()->getFecha('d/m/Y')); ?> <strong> VALOR </strong>  <?php echo Parametro::formato($regp->getValor(),false); ?></td>
+      </tr>
+      <?php } ?>
+
+      <?php } ?>
+
     </table>
 
     <br>
@@ -74,7 +90,7 @@
         <tr>
           <td style="width:200px; height: 25px;" > <?php echo $operacionPago->getTipo(); ?></td>
           <td style="width:300px;"> <?php if ($operacionPago->getBancoId()) { ?><?php echo $operacionPago->getBanco()->getNombre(); ?> <?php } ?> <?php echo $operacionPago->getDocumento(); ?> </td>
-          <td style="width:220px;"> <?php echo Parametro::formato($operacionPago->getValor(),2); ?></td>
+          <td style="width:220px;"> <?php echo Parametro::formato($valorTOTAL,2); ?></td>
         </tr>
         <?php if ($operacionPago->getComision()) { ?>
            <tr>
@@ -92,7 +108,7 @@
     <table class="info" role="presentation">
       <tr>
         <td class="label">TOTAL RECIBO:</td>
-        <td><?php echo Parametro::formato($operacionPago->getValor()+$operacionPago->getComision(),2); ?></td>
+        <td><?php echo Parametro::formato($valorTOTAL,2); ?></td>
       </tr><!-- comment -->
         <tr>
         <td class="label">Cantidad en Letras:</td>
