@@ -329,10 +329,10 @@ $sheet->getRowDimension(8)->setRowHeight(28);
                  } 
         
         $sheet->setCellValue("G$fila",$bultodes);
-        $sheet->setCellValue("H$fila", $detra->getProducto()->getPeso());
-        $sheet->setCellValue("I$fila", $detra->getProducto()->getPeso() * $detra->getCantidad());
-        $sheet->setCellValue("J$fila", $detra->getProducto()->getCMB());
-        $sheet->setCellValue("K$fila", $detra->getProducto()->getCMB() * $detra->getCantidad());
+        $sheet->setCellValue("H$fila", round( $detra->getProducto()->getPeso(),2));
+        $sheet->setCellValue("I$fila", round($detra->getProducto()->getPeso() * $detra->getCantidad(),2));
+        $sheet->setCellValue("J$fila", round($detra->getProducto()->getCMB(),2));
+        $sheet->setCellValue("K$fila", round($detra->getProducto()->getCMB() * $detra->getCantidad(),2));
 }
         foreach (range('A', 'K') as $c) {
             $sheet->getStyle($c . $fila)->getBorders()->getAllBorders()
@@ -346,9 +346,9 @@ $sheet->getRowDimension(8)->setRowHeight(28);
         $sheet->setCellValue("D$fila", "Totales");
         $sheet->setCellValue("E$fila", $totalUni);
         $sheet->mergeCells("F$fila:G$fila");
-        $sheet->setCellValue("F$fila", $totalBulto);
-        $sheet->setCellValue("I$fila", $totalPeso);
-        $sheet->setCellValue("K$fila", $totalCmb);
+        $sheet->setCellValue("F$fila", round($totalBulto,2));
+        $sheet->setCellValue("I$fila", round($totalPeso,2));
+        $sheet->setCellValue("K$fila", round($totalCmb,2));
 
         foreach (range('A', 'K') as $c) {
             $sheet->getStyle($c . $fila)->getBorders()->getAllBorders()

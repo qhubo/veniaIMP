@@ -1,7 +1,9 @@
 <script src='/assets/global/plugins/jquery.min.js'></script>
 <?php $modulo = $sf_params->get('module'); ?>
 <?php $proveedor_id = sfContext::getInstance()->getUser()->getAttribute('proveedor_id', null, 'seguridad'); ?>
-<?php ?>
+<?php  $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
+        $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
+        $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario()); ?>
 <div class="kt-portlet kt-portlet--responsive-mobile">
     <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
@@ -139,8 +141,10 @@
                             </a>  
                             <a target="_blank" href="<?php echo url_for('reporte_excel/factura?id=' . $lista->getId()) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"> <i class="flaticon2-printer"></i>Factura </a>
                          <?php if (!$lista->getAnulado()) { ?>
+                            <?php if ($TIPO_USUARIO=='ADMINISTRADOR') { ?>
                                 <a class="btn  btn-danger btn-sm btn-block" style="padding-top: 1px !important; height:15px !important; font-size: 10px !important;"   href="<?php echo url_for('reporte_venta/anula?id=' . $lista->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodalC<?php echo $lista->getId() ?>">Anular </a>
                             <?php } ?>
+                                                            <?php } ?>
                         </td>
                         <td>
                             <div id="resultado<?php echo $lista->getId() ?>" class="resultado<?php echo $lista->getId() ?>"><?Php echo $lista->getObservaciones(); ?></div>

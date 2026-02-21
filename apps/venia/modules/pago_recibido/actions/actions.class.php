@@ -51,9 +51,17 @@ class pago_recibidoActions extends sfActions {
         }
         $operacion->save();
         $operacionPago->setTipo('Anulado');
-        $operacionPago->setFechaCreo(null);
+       // $operacionPago->setFechaCreo(null);
         $operacionPago->setDocumento('Anulo '.$usuarioQue->getUsuario(). " ".date('d/m/Y'));
         $operacionPago->save();
+        $movimeintoBanco= MovimientoBancoQuery::create()->findOneByPartidaNo($operacionPago->getId());
+        if ($movimeintoBanco) {
+            $movimeintoBanco->delete();
+        }
+        $cuentaBanco = CuentaBancoQuery::create()->findOneByOperacionPagoId($operacionPago->getId());
+        if ($cuentaBanco) {
+            $cuentaBanco->delete();
+        }
        }
         $this->getUser()->setFlash('exito', 'Recibo eliminado con exito ');
         $this->redirect('pago_recibido/index?id=' . $operacionPago->getId());
@@ -105,7 +113,7 @@ class pago_recibidoActions extends sfActions {
         $query = "select pp.id recibo, op.codigo factura,DATE_FORMAT(op.fecha,'%d/%m/%Y') fechaFactura, face_firma,   DATE_FORMAT(fecha_creo,'%d/%m/%Y %H:%i') fecha_creo, cl.codigo codigo_cliente, op.nit, op.nombre, op.estatus,";
         $query .= " pp.tipo tipoPago, valor, DATE_FORMAT(fecha_documento,'%d/%m/%Y')  fecha_documento, ban.nombre banco,ban.cuenta, documento ,  comision, ven.nombre vendedor, op.usuario, op.valor_total ";
         $query .= " valor_factura   from  operacion_pago  pp inner join operacion op on op.id = pp.operacion_id  left join vendedor ven on ven.id = vendedor_id left join";
-        $query .= " banco ban on ban.id= banco_id left join cliente cl on cl.id = op.cliente_id where pp.tipo not in ('CONTRA ENTREGA', 'CXC COBRAR','CHEQUE PREFECHADO', 'CONTRAENTREGA')  ";
+        $query .= " banco ban on ban.id= banco_id left join cliente cl on cl.id = op.cliente_id where pp.tipo not in ('CONTRA ENTREGA', 'CXC COBRAR','CHEQUE PREFECHADO', 'CONTRAENTREGA' , 'Anulado')  ";
         $query .= " and op.anulado=0  and   fecha_creo  >= '" . $fechaInicio . " 01:00' and fecha_creo <= '" . $fechaFin . " 23:59' ";
         $query .= "  and  op.empresa_id = " . $empresaId;
         if ($valores['vendedor']) {

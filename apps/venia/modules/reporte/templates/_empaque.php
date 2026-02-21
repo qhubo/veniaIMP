@@ -131,21 +131,21 @@
                            
                                 <?php } ?>                   
                 </td>
-                <td style="width:50px; font-size:26px;" class="right"><?php echo $detra->getProducto()->getPeso(); ?></td>
-                <td style="width:50px; font-size:26px;" class="right"><?php echo $detra->getProducto()->getPeso() * $detra->getCantidad(); ?></td>
-                <td style="width:50px; font-size:26px;" class="right"><?php echo $detra->getProducto()->getCMB(); ?></td>
-                <td style="width:50px; font-size:26px;" class="right"><?php echo $detra->getProducto()->getCMB() * $detra->getCantidad(); ?></td>
+                <td style="width:50px; font-size:26px;" class="right"><?php echo Parametro::formato($detra->getProducto()->getPeso(),false); ?></td>
+                <td style="width:50px; font-size:26px;" class="right"><?php echo Parametro::formato($detra->getProducto()->getPeso() * $detra->getCantidad(),false); ?></td>
+                <td style="width:50px; font-size:26px;" class="right"><?php echo Parametro::formato($detra->getProducto()->getCMB(),false); ?></td>
+                <td style="width:50px; font-size:26px;" class="right"><?php echo Parametro::formato($detra->getProducto()->getCMB() * $detra->getCantidad(),false); ?></td>
             </tr>
         <?php } ?>
         <tr>
             <td colspan="3" style="width:310px; "></td>
             <td style="width:60px;  font-size:26px;" class="center">Totales</td>
             <td style="width:50px; font-size:26px;" class="center"><?php echo $totalUni; ?></td>
-            <td colspan="2" style=" width:130px; font-size:26px;" class="center"><?php echo $totalBulto; ?></td>
+            <td colspan="2" style=" width:130px; font-size:26px;" class="center"><?php echo Parametro::formato($totalBulto,false); ?></td>
             <td style="width:50px; font-size:26px;" class="right"></td>
-            <td style="width:50px; font-size:26px;" class="right"><?php echo $totalPeso; ?></td>
+            <td style="width:50px; font-size:26px;" class="right"><?php echo Parametro::formato($totalPeso,false); ?></td>
             <td style="width:50px; font-size:26px;" class="right"></td>
-            <td style="width:50px; font-size:26px;" class="right"><?php echo $totalCmb; ?></td>
+            <td style="width:50px; font-size:26px;" class="right"><?php echo Parametro::formato($totalCmb,false); ?></td>
         </tr>
 
         <!-- Puedes seguir agregando filas aquí -->

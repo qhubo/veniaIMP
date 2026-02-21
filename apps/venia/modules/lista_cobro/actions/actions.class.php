@@ -325,6 +325,7 @@ class lista_cobroActions extends sfActions {
                     $movimiento->setObservaciones("Pago Operacion " . $operacion->getCodigo());
                     $movimiento->setEstatus("Confirmado");
                     $movimiento->setUsuario($OperaPgo->getUsuario());
+                    $movimiento->setPartidaNo($OperaPgo->getId());
                     $movimiento->save();
 //                    $cxc = New CuentaBanco();
 //                    $cxc->setBancoId($movimiento->getBancoId());

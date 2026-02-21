@@ -31,15 +31,23 @@
                     <?php echo $form['fechaFin']->renderError() ?>  
                 </span>
             </div>
-            <div class="col-lg-2">
+             <div class="col-lg-1 control-label right ">Estatus  </div>
+            <div class="col-lg-2 <?php if ($form['estatus_op']->hasError()) echo "has-error" ?>">
+                <?php echo $form['estatus_op'] ?>           
+                <span class="help-block form-error"> 
+                    <?php echo $form['estatus_op']->renderError() ?>  
+                </span>
+            </div>
+            
+            
+            <div class="col-lg-1">
                 <button class="btn btn-outline-success" type="submit">
                     <i class="fa fa-search "></i>
                     <span>Buscar</span>
                 </button>
             </div>
 
-            <div class="col-lg-1">     
-            </div>
+      
               <div class="col-lg-1">
                 <a target="_blank" href="<?php echo url_for($modulo.'/reporteExcel') ?>" class="btn  btn-sm btn-warning" > <i class="flaticon2-printer"></i>Reporte </a>
             </div>

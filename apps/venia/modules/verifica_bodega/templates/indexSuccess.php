@@ -126,10 +126,10 @@
                                     <?php $pendiente = true; ?>
                                 <?php } ?>
                             </td>
-                            <td style="text-align:right"><?php echo $reg->getProducto()->getPeso(); ?></td>
-                            <td style="text-align:right"><?php echo $reg->getProducto()->getPeso() * $reg->getCantidad(); ?></td>
-                            <td style="text-align:right"><?php echo $reg->getProducto()->getCMB(); ?></td>
-                            <td style="text-align:right"><?php echo $reg->getProducto()->getCMB() * $reg->getCantidad(); ?></td>
+                            <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getPeso(),false); ?></td>
+                            <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getPeso() * $reg->getCantidad(),false); ?></td>
+                            <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getCMB(),false); ?></td>
+                            <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getCMB() * $reg->getCantidad(),false); ?></td>
                             <td><a class="btn btn-sm btn-success" href="#" data-toggle="modal" data-target="#ajaxmodalCE<?php echo $reg->getId() ?>">..</a>  </td>
                             <td><a class="btn btn-sm btn-danger" style="width:10px !important;" data-toggle="modal" href="#static<?php echo $reg->getId() ?>"></a> </td>                     
   <?php } ?>

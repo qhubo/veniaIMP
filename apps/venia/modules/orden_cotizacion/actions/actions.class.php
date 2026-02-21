@@ -783,6 +783,7 @@ class orden_cotizacionActions extends sfActions {
         }
         $this->listado = OrdenCotizacionDetalleQuery::create()
                 ->filterByOrdenCotizacionId($id)
+                ->orderById("Desc")
                 ->find();
         $this->servicios = ServicioQuery::create()
                 ->filterByActivo(true)

@@ -125,7 +125,7 @@ class pedido_pendienteActions extends sfActions {
         $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
         $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
 
-        if ($TIPO_USUARIO == 'ADMINISTRADOR') {
+        if (($TIPO_USUARIO == 'ADMINISTRADOR') or (strtolower($usuarioQ->getUsuario())=="jonathanc")) {
             $this->detalles = OrdenCotizacionDetalleQuery::create()
                     ->useOrdenCotizacionQuery()
                     ->filterBySolicitarBodega(true)

@@ -18,21 +18,22 @@ class consulta_reciboActions extends sfActions
             $this->redirect('inicio/index');
         }
         date_default_timezone_set("America/Guatemala");
-        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datoconsultaGasto', null, 'consulta'));
+        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datoconsultaREcibo', null, 'consulta'));
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
         $usuarioQue = UsuarioQuery::create()->findOneById($usuarioId);
         if (!$valores) {
+            $valores['estatus_op']='Procesados';
             $valores['fechaInicio'] = date('d/m/Y');
             $valores['fechaFin'] = date('d/m/Y');
-            sfContext::getInstance()->getUser()->setAttribute('datoconsultaGasto', serialize($valores), 'consulta');
+            sfContext::getInstance()->getUser()->setAttribute('datoconsultaREcibo', serialize($valores), 'consulta');
         }
         $this->form = new ConsultaFechaForm($valores);
         if ($request->isMethod('post')) {
             $this->form->bind($request->getParameter('consulta'));
             if ($this->form->isValid()) {
                 $valores = $this->form->getValues();
-                sfContext::getInstance()->getUser()->setAttribute('datoconsultaGasto', serialize($valores), 'consulta');
-                $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datoconsultaGasto', null, 'consulta'));
+                sfContext::getInstance()->getUser()->setAttribute('datoconsultaREcibo', serialize($valores), 'consulta');
+                $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datoconsultaREcibo', null, 'consulta'));
                 $this->redirect('consulta_recibo/index?id=1');
             }
         }
@@ -44,21 +45,32 @@ class consulta_reciboActions extends sfActions
         $fechaFin = $fechaFin[2] . '-' . $fechaFin[1] . '-' . $fechaFin[0];
         $valores['inicio'] = '01:00';
         $valores['fin'] = '23:00';
-        $this->registros = OperacionPagoQuery::create()
-                ->filterByTipo('CXC COBRAR', Criteria::NOT_EQUAL)
-                ->where("OperacionPago.FechaCreo >= '" . $fechaInicio . " 00:00:00" . "'")
-                ->where("OperacionPago.FechaCreo <=  '" . $fechaFin . " 23:59:00" . "'")
-                ->orderById('Asc')
-                ->find();
+//        if ($valores['estatus_op']==)
+        $registros =new OperacionPagoQuery();
+               $registros->filterByTipo('CXC COBRAR', Criteria::NOT_EQUAL);
+               $registros->where("OperacionPago.FechaCreo >= '" . $fechaInicio . " 00:00:00" . "'");
+               $registros ->where("OperacionPago.FechaCreo <=  '" . $fechaFin . " 23:59:00" . "'");
+               if ($valores['estatus_op']=='Procesados') {
+                   $ls[]='CXC COBRAR';
+                   $ls[]='Anulado';
+                   $registros->filterByTipo($ls, Criteria::NOT_IN);
+                   
+               }
+                if ($valores['estatus_op']=='Anulados') {
+                   $registros->filterByTipo('Anulado');
+                   
+               }
+              $registros->orderById('Asc');
+        $this->registros=$registros->find();
    }
    
     public function executeReporteExcel(sfWebRequest $request) {
-        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datoconsultaGasto', null, 'consulta'));
+        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datoconsultaREcibo', null, 'consulta'));
          if (!$valores) {
             $valores['fechaInicio'] = date('d/m/Y');
             $valores['fechaFin'] = date('d/m/Y');
       
-            sfContext::getInstance()->getUser()->setAttribute('datoconsultaGasto', serialize($valores), 'consulta');
+            sfContext::getInstance()->getUser()->setAttribute('datoconsultaREcibo', serialize($valores), 'consulta');
         }
         $this->getResponse()->setContentType('text/html;charset=utf-8');
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
