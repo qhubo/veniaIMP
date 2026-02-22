@@ -306,6 +306,6 @@ var ope=document.getElementById("ope").value;
 
     // redirigir enviando parámetro
     window.location.href =
-        "<?php echo url_for($modulo . '/nueva') ?>?tipo_serie=" + tipo+ "&id=" + ope;
+        "<?php echo url_for( 'orden_cotizacion/nueva') ?>?tipo_serie=" + tipo+ "&id=" + ope;
 });
 </script>

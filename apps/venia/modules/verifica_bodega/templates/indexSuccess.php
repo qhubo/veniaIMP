@@ -140,8 +140,13 @@
 
             <?php if ($muestraBoton) { ?>  
                 <div class="row" style="padding-top:2px;padding-bottom:5px;">
-                    <div class="col-lg-6" ></div>
+                    <div class="col-lg-4" ></div>
            
+                      <div class="col-lg-2" >
+                          <?php if (count($productoBorrado) >0) { ?>
+                          <a class="btn btn-block  btn-xs btn-danger" data-toggle="modal" href="#staticPendiente">Recuperar Producto  </a>
+                          <?php } ?>
+                      </div>
                     <div class="col-lg-2" >
                         <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $idp) ?>" class="btn btn-block btn-sm btn-warning" > <i class="flaticon2-print"></i> Reporte </a>
                     </div>
@@ -513,3 +518,53 @@
     });
 </script>
 
+
+
+
+  <div id="staticPendiente" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                <li class="fa fa-cogs"></li>
+                                <span class="caption-subject bold font-yellow-casablanca uppercase"> Lista Producto Eliminados</span>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-lg-12"><h3>Procede a recuperar un producto eliminado</h3></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <table class="table table-bordedered">
+                                            <tr>
+                                                <th>Codigo</th>
+                                                <th>Detalle</th>
+                                                <th>Cantidad</th>
+                                                <td>Recuperar</td>
+                                            </tr>
+                                            <?php foreach($productoBorrado as $Product) { ?>
+                                            <tr>
+                                                <td><?php echo $Product->getCodigo(); ?></td>
+                                                <td><?php echo $Product->getDetalle(); ?></td>
+                                                <td><?php echo $Product->getCantidad(); ?></td>
+                                                <td>
+                              <a href="<?php echo url_for($modulo . '/recuperar') ?>?id=<?php echo $Product->getId(); ?>&coti=<?php echo $idp; ?>" class="btn btn-sm btn-warning" > Recuperar </a>
+ 
+                                                </td>
+
+                                            </tr>
+                                            <?php } ?>
+                                        </table>
+                                        
+                                    </div>
+                                </div>
+                                
+                                
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancelar</button>
+                   
+                            </div>
+                        </div>
+                    </div>
+                </div> 
