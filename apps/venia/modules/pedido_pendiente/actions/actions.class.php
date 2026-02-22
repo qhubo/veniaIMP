@@ -1,15 +1,5 @@
 <?php
-
-/**
- * pedido_pendiente actions.
- *
- * @package    plan
- * @subpackage pedido_pendiente
- * @author     Via
- * @version    SVN: $Id: actions.class.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
- */
 class pedido_pendienteActions extends sfActions {
-
     public function executeConfirmar(sfWebRequest $request) {
         sfContext::getInstance()->getUser()->setAttribute('CotizacionIPendie', null, 'seguridad');
         date_default_timezone_set("America/Guatemala");
@@ -32,7 +22,6 @@ class pedido_pendienteActions extends sfActions {
 //                  $this->getUser()->setFlash('error', 'No hay existencia de ' . $cantidaSOlicita . ' para el producto seleccionado ' . $detalle->getDetalle());
 //                  $this->redirect('pedido_pendiente/index?id=');
                 }
-
                 if ($existencia <= 0) {
                     $this->getUser()->setFlash('error', 'No hay existencia para el producto seleccionado ' . $detalle->getDetalle());
                     $this->redirect('pedido_pendiente/index?id=');
@@ -48,15 +37,48 @@ class pedido_pendienteActions extends sfActions {
         }
 
         sfContext::getInstance()->getUser()->setAttribute('CotizacionId', null, 'seguridad');
+        
+        $RENUEVA = new OrdenCotizacion;
+        $RENUEVA->setCodigo("LIST-".$ordenQ->getCodigo());              
+ $RENUEVA->setEmpresaId($ordenQ->getEmpresaId());           
+ $RENUEVA->setClienteId($ordenQ->getClienteId());           
+ $RENUEVA->setNit($ordenQ->getNit());                  
+ $RENUEVA->setNombre($ordenQ->getNombre());               
+ $RENUEVA->setFechaDocumento($ordenQ->getFechaDocumento());      
+ $RENUEVA->setFechaVencimiento($ordenQ->getFechaVencimiento());    
+ $RENUEVA->setFecha($ordenQ->getFecha());                
+ $RENUEVA->setDiaCredito($ordenQ->getDiaCredito());          
+ $RENUEVA->setUsuario($ordenQ->getUsuario());              
+ $RENUEVA->setEstatus($ordenQ->getEstatus());              
+ $RENUEVA->setComentario($ordenQ->getComentario());           
+ $RENUEVA->setSubTotal($ordenQ->getSubTotal());           
+ $RENUEVA->setIva($ordenQ->getIva());                 
+ $RENUEVA->setValorTotal($ordenQ->getValorTotal());          
+ $RENUEVA->setTiendaId($ordenQ->getTiendaId());            
+ $RENUEVA->setToken($ordenQ->getToken());                
+ $RENUEVA->setTelefono($ordenQ->getTelefono());             
+ $RENUEVA->setDireccion($ordenQ->getDireccion());           
+ $RENUEVA->setCorreo($ordenQ->getCorreo());               
+ $RENUEVA->setUsuarioConfirmo($ordenQ->getUsuarioConfirmo());     
+ $RENUEVA->setFechaConfirmo($ordenQ->getFechaConfirmo());       
+ $RENUEVA->setSolicitarBodega($ordenQ->getSolicitarBodega());     
+ $RENUEVA->setCantidadTotalCaja($ordenQ->getCantidadTotalCaja());  
+ $RENUEVA->setPesoTotal($ordenQ->getPesoTotal());           
+ $RENUEVA->setVendedorId($ordenQ->getVendedorId());          
+ $RENUEVA->setPaisId($ordenQ->getPaisId());              
+ $RENUEVA->setTransporte($ordenQ->getTransporte());           
+ $RENUEVA->setEmpacado($ordenQ->getEmpacado());             
+ $RENUEVA->setAcuerdoPago($ordenQ->getAcuerdoPago()); 
+ $RENUEVA->setPrefijo('LISTA');
+ $RENUEVA->save();       
         //****
         $ordenDetalle= OrdenCotizacionDetalleQuery::create()
                 ->filterByProductoId(null, Criteria::NOT_EQUAL)
                 ->filterByOrdenCotizacionId($ordenQ->getId())
-                ->find();
-        
+                ->find();        
         foreach($ordenDetalle as $detalle) {
             $new = new OrdenCotizacionDetalle();
-            $new->setOrdenCotizacionId( $detalle->getOrdenCotizacionId());
+            $new->setOrdenCotizacionId($RENUEVA->getId());
             $new->setConfirmado(true);
             $new->setProductoId( $detalle->getProductoId());
             $new->setDetalle( $detalle->getDetalle());
@@ -66,17 +88,24 @@ class pedido_pendienteActions extends sfActions {
             $new->setCantidad( $detalle->getCantidad());
             $new->setCostoUnitario( $detalle->getCostoUnitario());
             $new->save();
-        }
-        
-           $ordenDetalle= OrdenCotizacionDetalleQuery::create()
+        }        
+        $ordenDetalle= OrdenCotizacionDetalleQuery::create()
                 ->filterByServicioId(null, Criteria::NOT_EQUAL)
                 ->filterByOrdenCotizacionId($ordenQ->getId())
                 ->find();
-        foreach($ordenDetalle as $reg) {
-            $reg->setConfirmado(true);
-            $reg->save();
-        }
-           
+        foreach($ordenDetalle as $detalle) {
+            $new = new OrdenCotizacionDetalle();
+            $new->setOrdenCotizacionId($RENUEVA->getId());
+            $new->setConfirmado(true);
+            $new->setProductoId( $detalle->getProductoId());
+            $new->setDetalle( $detalle->getDetalle());
+            $new->setCodigo( $detalle->getCodigo());
+            $new->setValorUnitario( $detalle->getValorUnitario());
+            $new->setValorTotal( $detalle->getValorTotal());
+            $new->setCantidad( $detalle->getCantidad());
+            $new->setCostoUnitario( $detalle->getCostoUnitario());
+            $new->save();
+        }           
         
         if ($ordenQ) {
             $tokenGuardado = sha1($ordenQ->getCodigo());
@@ -85,9 +114,14 @@ class pedido_pendienteActions extends sfActions {
                 $ordenQ->setEstatus("Confirmada");
                 //$ordenQ->setFecha(date('Y-m-d H:i:s'));
                 $ordenQ->setToken(sha1($ordenQ->getCodigo()));
-                $ordenQ->save();
+                $ordenQ->save();               
+                $RENUEVA->setSolicitarBodega(false);
+                $RENUEVA->setEstatus("Confirmada");
+                //$ordenQ->setFecha(date('Y-m-d H:i:s'));
+                $RENUEVA->setToken(sha1($RENUEVA->getCodigo()));
+                $RENUEVA->save();                
                 $this->getUser()->setFlash('exito', 'Registro actualizado   con exito ');
-                $this->redirect('pedido_pendiente/index?id=' . $idv);
+                $this->redirect('pedido_pendiente/index?id=' . $RENUEVA->getId());
             }
         }
         $this->redirect('pedido_pendiente/index');

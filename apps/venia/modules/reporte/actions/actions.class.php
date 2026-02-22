@@ -16,17 +16,17 @@ class reporteActions extends sfActions {
         error_reporting(-1);
         $id = $request->getParameter('id');
         $operacion = OrdenCotizacionQuery::create()->findOneById($id);
-    $detalle = OrdenCotizacionDetalleQuery::create()
-    ->filterByConfirmado(true)
-    ->filterByProductoId(null, Criteria::NOT_EQUAL)
-    ->filterByOrdenCotizacionId($id)
-    ->withColumn('CAST(orden_cotizacion_detalle.bulto_inicio AS UNSIGNED)', 'BultoOrden')
-    ->orderBy('BultoOrden', Criteria::ASC)
-    ->find();
-        
-        
-        
-        
+        $detalle = OrdenCotizacionDetalleQuery::create()
+                ->filterByConfirmado(true)
+                ->filterByProductoId(null, Criteria::NOT_EQUAL)
+                ->filterByOrdenCotizacionId($id)
+                ->withColumn('CAST(orden_cotizacion_detalle.bulto_inicio AS UNSIGNED)', 'BultoOrden')
+                ->orderBy('BultoOrden', Criteria::ASC)
+                ->find();
+
+
+
+
         $html = '';
 
         $logo = $operacion->getEmpresa()->getLogo();
@@ -38,7 +38,7 @@ class reporteActions extends sfActions {
         $this->id = $request->getParameter("id");
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Venia Link');
-        $pdf->SetTitle(" Lista Empaque ".$operacion->getCodigo());
+        $pdf->SetTitle(" Lista Empaque " . $operacion->getCodigo());
         $pdf->SetSubject('Lista Empaque');
         $pdf->SetKeywords('Concilia,Banco,Cuenta'); // set default header data
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED); // set margins
@@ -58,9 +58,9 @@ class reporteActions extends sfActions {
         $pdf->SetFont('dejavusans', '', 9);
         $pdf->AddPage();
         $pdf->writeHTML($html);
-            $pdf->Image($img_file, 18, -8, 40); //, 50, '', '', '', '300', false, 0);
+        $pdf->Image($img_file, 18, -8, 40); //, 50, '', '', '', '300', false, 0);
 
-        
+
 
         $pdf->Output('Lista Empaque ' . $operacion->getCodigo() . '.pdf', 'I');
     }
@@ -255,6 +255,14 @@ class reporteActions extends sfActions {
         error_reporting(-1);
         $token = $request->getParameter('token');
         $ordenCompra = OrdenCotizacionQuery::create()->findOneByToken($token);
+   
+       if ($ordenCompra->getPrefijo()=='LISTA') {
+           $codigo = str_replace("LIST-","", $ordenCompra->getCodigo());
+           $hija= OrdenCotizacionQuery::create()->findOneByCodigo($codigo);
+           if ($hija) {
+               $ordenCompra=$hija;
+           }
+       }
         $lista = OrdenCotizacionDetalleQuery::create()
                 ->filterByConfirmado(true, Criteria::NOT_EQUAL)
                 ->filterByProductoId(null, Criteria::NOT_EQUAL)
@@ -319,7 +327,7 @@ class reporteActions extends sfActions {
 
 
         $pdf->writeHTML($html);
-     
+
         $pdf->Output('Pedido ' . $ordenCompra->getCodigo() . '.pdf', 'I');
         die();
         echo $html;
@@ -379,11 +387,11 @@ class reporteActions extends sfActions {
         $pdf->setPrintFooter(false);
         $pdf->SetFont('dejavusans', '', 9);
         $pdf->AddPage();
-    if (strtoupper($ordenCompra->getEstatus()) != "CONFIRMADA") {
-                            $pdf->Image($img_file, 140, 5, 50, '', '', '', '300', false, 0);
-                }
+        if (strtoupper($ordenCompra->getEstatus()) != "CONFIRMADA") {
+            $pdf->Image($img_file, 140, 5, 50, '', '', '', '300', false, 0);
+        }
         $pdf->writeHTML($html);
-            
+
         $pdf->Output('OrdenCompra' . $ordenCompra->getCodigo() . '.pdf', 'I');
         die();
         echo $html;

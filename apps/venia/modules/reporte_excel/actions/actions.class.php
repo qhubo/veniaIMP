@@ -14,6 +14,13 @@ class reporte_excelActions extends sfActions {
         error_reporting(-1);
         $id = $request->getParameter('id');
         $ordenCompra = OrdenCotizacionQuery::create()->findOneById($id);
+           if ($ordenCompra->getPrefijo()=='LISTA') {
+           $codigo = str_replace("LIST-","", $ordenCompra->getCodigo());
+           $hija= OrdenCotizacionQuery::create()->findOneByCodigo($codigo);
+           if ($hija) {
+               $ordenCompra=$hija;
+           }
+       }
         $lista = OrdenCotizacionDetalleQuery::create()
                 ->filterByConfirmado(true, Criteria::NOT_EQUAL)
                 ->filterByProductoId(null, Criteria::NOT_EQUAL)
@@ -68,7 +75,7 @@ class reporte_excelActions extends sfActions {
         $sheet->setCellValue("C11", $ordenCompra->getNit());
         
         $sheet->setCellValue("F6", "No Pedido:");
-        $sheet->setCellValue("G6", $ordenCompra->getCodigo());
+        $sheet->setCellValue("G6",  $ordenCompra->getCodigo());
         $sheet->setCellValue("F7", "Vendedor:");
         if ($ordenCompra->getVendedorId()) {
         $sheet->setCellValue("G7", $ordenCompra->getVendedor()->getNombre());
@@ -245,7 +252,7 @@ if ($operacion->getClienteId()) {
 $sheet->setCellValue("H6", $operacion->getCliente()->getCodigo());
 }
 $sheet->setCellValue("G7", "PEDIDO:");
-$sheet->setCellValue("H7", $operacion->getCodigo());
+$sheet->setCellValue("H7", str_replace("LIST-","", $operacion->getCodigo()));
 
 
 // ================= ESTILO (opcionales) =================
@@ -420,7 +427,7 @@ $ordenCompra=$registro;
         $sheet->setCellValue("C11", $ordenCompra->getNit());
         
         $sheet->setCellValue("F6", "No Pedido:");
-        $sheet->setCellValue("G6", $ordenCompra->getCodigo());
+        $sheet->setCellValue("G6", str_replace("LIST-","", $ordenCompra->getCodigo()));
         $sheet->setCellValue("F7", "Vendedor:");
         if ($ordenCompra->getVendedorId()) {
         $sheet->setCellValue("G7", $ordenCompra->getVendedor()->getNombre());

@@ -52,6 +52,7 @@ class bodega_confirmoActions extends sfActions {
        if ($TIPO_USUARIO=='ADMINISTRADOR') {
         $this->detalles = OrdenCotizacionDetalleQuery::create()
                 ->useOrdenCotizacionQuery()
+         
                 ->filterByEstatus('Confirmada')
                 ->endUse()
                 ->groupByOrdenCotizacionId()
@@ -82,6 +83,7 @@ class bodega_confirmoActions extends sfActions {
         $usuario = $valores['usuario'];
      
         $operaciones = OrdenCotizacionQuery::create();
+        $operaciones->where("COALESCE(OrdenCotizacion.Prefijo, '') <> 'LISTA'");
         $operaciones->filterByEstatus('Confirmada');
         $listab = TiendaQuery::TiendaActivas(); // ctivas();
         $operaciones->where("OrdenCotizacion.Fecha >= '" . $fechaInicio . " 00:00:00" . "'");
