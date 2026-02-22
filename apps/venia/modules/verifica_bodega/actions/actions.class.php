@@ -344,9 +344,9 @@ class verifica_bodegaActions extends sfActions {
                         ->find();
                 
               
-             
+                     $this->productoBorrado =$listaPedido; 
         }
-         $this->productoBorrado =$listaPedido;
+
     }
 
 }

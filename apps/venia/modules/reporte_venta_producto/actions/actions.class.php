@@ -4,8 +4,7 @@ class reporte_venta_productoActions extends sfActions {
 
     public function executeReporteExcel(sfWebRequest $request) {
         date_default_timezone_set("America/Guatemala");
-            $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
-                
+        $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
         $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datosConsultVenta', null, 'consulta'));
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
         $usuarioQue = UsuarioQuery::create()->findOneById($usuarioId);
@@ -59,7 +58,7 @@ class reporte_venta_productoActions extends sfActions {
         $encabezados[] = array("Nombre" => strtoupper("Valor Unitario"), "width" => 16, "align" => "left", "format" => "#,##0.00");
         $encabezados[] = array("Nombre" => strtoupper("Cantidad"), "width" => 14, "align" => "left", "format" => "#,##0.00");
         $encabezados[] = array("Nombre" => strtoupper("Valor Total"), "width" => 18, "align" => "left", "format" => "#,##0.00");
-        $encabezados[] = array("Nombre" => strtoupper("Valor Neto"), "width" => 18, "align" => "left", "format" => "#,##0.00");
+  //      $encabezados[] = array("Nombre" => strtoupper("Valor Neto"), "width" => 18, "align" => "left", "format" => "#,##0.00");
         $encabezados[] = array("Nombre" => strtoupper("Costo Total"), "width" => 17, "align" => "left", "format" => "#,##0.00");
         $encabezados[] = array("Nombre" => strtoupper("Margen"), "width" => 17, "align" => "left", "format" => "#,##0.00");
 
@@ -133,10 +132,10 @@ class reporte_venta_productoActions extends sfActions {
             $datos[] = array("tipo" => 2, "valor" => round($registro['valor_unitario'], 2));  // ENTERO
             $datos[] = array("tipo" => 3, "valor" => $registro['cantidad']);  // ENTERO
             $valor_neto = $registro['cantidad'] * $registro['valor_unitario'];
-            $valor_neto = $valor_neto / 1.12;
+            $valor_neto = $valor_neto;  // / 1.12;
           
             $datos[] = array("tipo" => 2, "valor" => round($registro['cantidad'] * $registro['valor_unitario'], 2));  // ENTERO
-            $datos[] = array("tipo" => 2, "valor" => round($valor_neto, 2));  // ENTERO
+//            $datos[] = array("tipo" => 2, "valor" => round($valor_neto, 2));  // ENTERO
 
             $valorCosto = round($registro['cantidad'] * $registro['costo_proveedor'], 1);
             $datos[] = array("tipo" => 2, "valor" => round($registro['cantidad'] * $registro['costo_proveedor'], 2));  // ENTERO

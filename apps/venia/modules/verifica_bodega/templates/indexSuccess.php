@@ -131,7 +131,8 @@
                             <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getCMB(),false); ?></td>
                             <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getCMB() * $reg->getCantidad(),false); ?></td>
                             <td><a class="btn btn-sm btn-success" href="#" data-toggle="modal" data-target="#ajaxmodalCE<?php echo $reg->getId() ?>">..</a>  </td>
-                            <td><a class="btn btn-sm btn-danger" style="width:10px !important;" data-toggle="modal" href="#static<?php echo $reg->getId() ?>"></a> </td>                     
+                            <?php $token= sha1($reg->getId()); ?>
+                            <td><a class="btn btn-sm btn-danger" style="width:10px !important;"  href="<?php echo url_for($modulo . '/elimina?token=' . $token . '&id=' . $reg->getId()) ?>"></a> </td>                     
   <?php } ?>
                     </tr>
                 <?php } ?>
