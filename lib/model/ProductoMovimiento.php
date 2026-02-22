@@ -189,8 +189,8 @@ class ProductoMovimiento extends BaseProductoMovimiento {
         $nombre = '';
         if (($tipo == "SALIDA") && ($motivo == 'VENTA')) {
             $query = "select valor_unitario from operacion op inner join operacion_detalle de on op.id=de.operacion_id where op.codigo ='" . $documento . "' and producto_id='".$this->getProductoId()."'";
-           echo $query;
-           die();
+//           echo $query;
+//           die();
             $con = Propel::getConnection();
             $stmt = $con->prepare($query);
             $resource = $stmt->execute();
