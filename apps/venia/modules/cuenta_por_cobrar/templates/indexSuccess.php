@@ -1,5 +1,9 @@
 
 <?php $modulo = $sf_params->get('module'); ?>
+<?php $proveedor_id = sfContext::getInstance()->getUser()->getAttribute('proveedor_id', null, 'seguridad'); ?>
+<?php  $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
+        $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
+        $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario()); ?>
 <script src='/assets/global/plugins/jquery.min.js'></script>
 <script src='/assets/global/plugins/select2.min.js'></script>
 <div class="kt-portlet kt-portlet--responsive-mobile">
@@ -130,7 +134,9 @@
                                 <?php
                                 $saldo = $lista->getValorTotal() - $lista->getValorPagado();
                                 ?>
+                                <?php if ($TIPO_USUARIO=='ADMINISTRADOR') { ?>
                                 <input  datoid="<?php echo $lista->getId(); ?>" class="form-control valor-pagar"  type="text"  placeholder="0.00" value="0.00" data-max="<?php echo $saldo; ?>"   >
+                            <?php } ?>
                             </td>
                             </td>
                         <?php } ?>
@@ -139,9 +145,13 @@
 
                             <font size="-1"><?php echo number_format($lista->getValorPagado(), 2) ?>  </font>  </td>
                         <td style="text-align:right">  
-                            <a class="btn btn-sm btn-block btn-success btn-outline  "  href="<?php echo url_for($modulo . '/caja?id=' . $lista->getId()) ?>"  >
+                          <?php if ($TIPO_USUARIO=='ADMINISTRADOR') { ?>
+                             <a class="btn btn-sm btn-block btn-success btn-outline  "  href="<?php echo url_for($modulo . '/caja?id=' . $lista->getId()) ?>"  >
                                 <i class="fa flaticon-signs"></i> Pago <font size="-1"><?php echo number_format($lista->getValorTotal() - $lista->getValorPagado(), 2) ?>  </font>  
                             </a>
+                             <?php } else { ?>
+                               <?php echo number_format($lista->getValorTotal() - $lista->getValorPagado(), 2) ?>  </font>  
+                             <?php } ?>
                         </td>
 
                         <td>  <font size="-1"><?php echo $lista->getEstatus() ?>  </font>  </td>
@@ -174,6 +184,7 @@
             <?php } ?>
 
         </table>
+            <?php if ($TIPO_USUARIO=='ADMINISTRADOR') { ?>
         <?php if ($prover) { ?>
             <div style="margin-top:15px; text-align:right;">
 <a id="btnProcesarPago"
@@ -182,6 +193,7 @@
    Procesar Pago
 </a>
             </div>
+          <?php } ?>
         <?php } ?>
     </div>
 </div>

@@ -1,4 +1,7 @@
-        
+    <?php $proveedor_id = sfContext::getInstance()->getUser()->getAttribute('proveedor_id', null, 'seguridad'); ?>
+<?php  $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
+        $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
+        $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario()); ?>    
 <div class="row" style="padding-top: 20px; padding-bottom: 20px;">
     <div class="col-lg-12"> 
         <div class="table-scroll-container" style="width: 100%;">
@@ -66,8 +69,9 @@
                 <td><?php echo Parametro::formato($reg['valor_factura'],2); ?></td>
                 <td><?php echo $reg['vendedor']; ?></td>
    <td><?php echo $reg['usuario']; ?>
+         <?php if ($TIPO_USUARIO=='ADMINISTRADOR') { ?>
                            <a class="btn  btn-sm btn-danger" data-toggle="modal" href="#static<?php echo $reg['recibo'] ?>">   </a>
-
+<?php } ?>
    </td>
             </tr>
             <?php } ?>

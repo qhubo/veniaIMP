@@ -175,7 +175,6 @@ class ProductoMovimiento extends BaseProductoMovimiento {
 
         return $nombre;
     }
-
     public function getVenta() {
         $tipo = strtoupper(trim($this->getTipo()));
         $motivo = strtoupper(trim($this->getMotivo()));
