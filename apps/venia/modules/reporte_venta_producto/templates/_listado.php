@@ -43,7 +43,7 @@
                             <?php $conta++; ?>
                             <?php $valor_neto = $reg['cantidad'] * $reg['valor_unitario']; ?>
                             <?php $valor_neto = $valor_neto; // / 1.12; ?>
-                            <?php $valorCosto = round($reg['cantidad'] * $reg['costo_proveedor'], 1); ?>
+                            <?php $valorCosto = round($reg['cantidad'] * $reg['costo_proveedor'], 2); ?>
                             <?php $valorMargen = $valor_neto - $valorCosto; ?>
                             <tr>
                                 <td><?php echo $reg['fecha']; ?></td>

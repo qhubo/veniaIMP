@@ -137,9 +137,11 @@ class reporte_venta_productoActions extends sfActions {
             $datos[] = array("tipo" => 2, "valor" => round($registro['cantidad'] * $registro['valor_unitario'], 2));  // ENTERO
 //            $datos[] = array("tipo" => 2, "valor" => round($valor_neto, 2));  // ENTERO
 
-            $valorCosto = round($registro['cantidad'] * $registro['costo_proveedor'], 1);
+            $valorCosto = round($registro['cantidad'] * $registro['costo_proveedor'], 2);
             $datos[] = array("tipo" => 2, "valor" => round($registro['cantidad'] * $registro['costo_proveedor'], 2));  // ENTERO
             $valorMargen = $valor_neto - $valorCosto;
+            
+            
             $datos[] = array("tipo" => 2, "valor" => round($valorMargen, 2));  // ENTERO
   $totalNETO= $totalNETO+$valor_neto;
             $totalCOSTO= $totalCOSTO +$valorCosto;
