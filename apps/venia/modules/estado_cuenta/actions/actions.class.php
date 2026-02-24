@@ -85,7 +85,7 @@ class estado_cuentaActions extends sfActions {
         $SUMAS = 0;
         $RESTAR = 0;
         $sumatorias = OperacionQuery::create()
-                 ->filterById(237, Criteria::GREATER_THAN)
+               //  ->filterById(237, Criteria::GREATER_THAN)
                 ->where("Operacion.Fecha < '" . $fechaInicial . " 01:01:01'")
                 ->withColumn('sum(Operacion.ValorTotal)', 'TotalTotal')
                 ->filterByEstatus('Anulado', Criteria::NOT_EQUAL)
@@ -94,7 +94,7 @@ class estado_cuentaActions extends sfActions {
         if ($sumatorias) {
             $SUMAS = $sumatorias->getTotalTotal();
         }
-        $listab[] ='CXC COBRAR';
+       // $listab[] ='CXC COBRAR';
 $listab[] ='CONTRA ENTREGA';
 $listab[] ='CONTRAENTREGA';
 $listab[] ='CHEQUE PREFECHADO';
@@ -118,7 +118,7 @@ $listab[] ='CHEQUE PREFECHADO';
 //        die();
         
         $operaciones = OperacionQuery::create()
-                     ->filterById(237, Criteria::GREATER_THAN)
+             //        ->filterById(237, Criteria::GREATER_THAN)
                 ->where("Operacion.Fecha >= '" . $fechaInicial . " 00:00:00'")
                 ->filterByEstatus('Anulado', Criteria::NOT_EQUAL)
                 ->filterByClienteId($clientev)
@@ -167,7 +167,7 @@ $listab[] ='CHEQUE PREFECHADO';
 
         
         $opeacionesPago = OperacionPagoQuery::create()
-                     ->filterById(237, Criteria::GREATER_THAN)
+                  //   ->filterById(237, Criteria::GREATER_THAN)
                 ->where("OperacionPago.FechaCreo >= '" . $fechaInicial . " 01:01:01'")
               //  ->filterByTipo('CXC COBRAR', Criteria::NOT_EQUAL)
                 ->filterByTipo($listab, Criteria::NOT_IN)
