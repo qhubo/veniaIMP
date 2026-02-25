@@ -18,6 +18,30 @@
 class OrdenCotizacion extends BaseOrdenCotizacion {
     
     
+        public function getMedidas() {
+
+        $can = 0;
+        $totalUni = 0;
+        $totalBulto = 0;
+        $totalPeso = 0;
+        $totalCmb = 0;
+       
+            $detalle = OrdenCotizacionDetalleQuery::create()->filterByProductoId(null, Criteria::NOT_EQUAL) ->filterByOrdenCotizacionId($this->getId())->find();
+            foreach ($detalle as $detra) {
+                $can++;
+                $totalUni = $detra->getCantidad() + $totalUni;
+                $totalBulto = $detra->getCantidadCaja() + $totalBulto;
+                $totalPeso = ($detra->getProducto()->getPeso() * $detra->getCantidad()) + $totalPeso;
+                $totalCmb = ($detra->getProducto()->getCMB() * $detra->getCantidad()) + $totalCmb;
+            }
+        
+        $datos['totaluni']=$totalUni;
+        $datos['totalbulto']=$totalBulto;
+        $datos['totalpeso']=$totalPeso;
+        $datos['totalcmb']=$totalCmb;
+        return $datos;
+    }
+    
     public function getNombreTransporte() {
         $retorna = $this->getTransporte();
         $queryTi = TipoTransporteQuery::create()->findOneById($this->getTransporte());

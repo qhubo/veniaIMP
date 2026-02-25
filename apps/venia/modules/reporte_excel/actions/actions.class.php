@@ -492,13 +492,15 @@ $ordenCompra=$registro;
             $sheet->getStyle($c . $fila)->getBorders()->getAllBorders()
                     ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
         }
+        
+        $medidas = $ordenCompra->getMedidas(); 
 
 // ===== TOTALES =====
 // ================= TOTALES =================
         $fila += 3;
 
         $sheet->setCellValue("B$fila", "Metros Cúbicos");
-        $sheet->setCellValue("C$fila", round($totalMetros, 2));
+        $sheet->setCellValue("C$fila", round($medidas['totalcmb'], 2));
         
         
         $sheet->setCellValue("G$fila", "Subtotal");
@@ -506,14 +508,14 @@ $ordenCompra=$registro;
 
         $fila++;
          $sheet->setCellValue("B$fila", "Kilogramos");
-        $sheet->setCellValue("C$fila", round($totalPeso, 2));
+        $sheet->setCellValue("C$fila", round($medidas['totalpeso'], 2));
         
         $fila++;
         $sheet->setCellValue("G$fila", "Recarga");
         $sheet->setCellValue("I$fila", round($ordenCompra->getTotalRecargo(),2));
         
         $sheet->setCellValue("B$fila", "Bultos");
-        $sheet->setCellValue("C$fila", round($totalCajas, 2));
+        $sheet->setCellValue("C$fila", round($medidas['totalbulto'], 2));
     $numberToLetterConverter = new NumberToLetterConverter();
         $valor = $ordenCompra->getValorTotal();
         $valor = Parametro::formato($valor, false);
