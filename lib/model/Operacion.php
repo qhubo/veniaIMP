@@ -16,15 +16,40 @@
  * @package    propel.generator.lib.model
  */
 class Operacion extends BaseOperacion {
-   public function getOrdenCotizacionId() {
-       $ordenCotizacion = OrdenCotizacionQuery::create()->findOneByCodigo($this->getCodigo());
-       $retorna=0;
-       if ($ordenCotizacion) {
-           $retorna = $ordenCotizacion->getId();
-       }
-       return $retorna;
-   }
-    
+
+    public function getMedidas() {
+        $ordenCotizacion = OrdenCotizacionQuery::create()->findOneByCodigo($this->getCodigo());
+        $can = 0;
+        $totalUni = 0;
+        $totalBulto = 0;
+        $totalPeso = 0;
+        $totalCmb = 0;
+        if ($ordenCotizacion) {
+            $detalle = OrdenCotizacionDetalleQuery::create()->filterByOrdenCotizacionId($ordenCotizacion->getId())->find();
+            foreach ($detalle as $detra) {
+                $can++;
+                $totalUni = $detra->getCantidad() + $totalUni;
+                $totalBulto = $detra->getCantidadCaja() + $totalBulto;
+                $totalPeso = ($detra->getProducto()->getPeso() * $detra->getCantidad()) + $totalPeso;
+                $totalCmb = ($detra->getProducto()->getCMB() * $detra->getCantidad()) + $totalCmb;
+            }
+        }
+        $datos['totaluni']=$totalUni;
+        $datos['totalbulto']=$totalBulto;
+        $datos['totalpeso']=$totalPeso;
+        $datos['totalcmb']=$totalCmb;
+        return $datos;
+    }
+
+    public function getOrdenCotizacionId() {
+        $ordenCotizacion = OrdenCotizacionQuery::create()->findOneByCodigo($this->getCodigo());
+        $retorna = 0;
+        if ($ordenCotizacion) {
+            $retorna = $ordenCotizacion->getId();
+        }
+        return $retorna;
+    }
+
     public function getNombreTransporte() {
         $retorna = $this->getTransporte();
         $queryTi = TipoTransporteQuery::create()->findOneById($this->getTransporte());
@@ -33,90 +58,85 @@ class Operacion extends BaseOperacion {
         }
         return $retorna;
     }
-       public function getTotalRecargo() {
-         $LISTA = OperacionDetalleQuery::create()
-             ->filterByOperacionId($this->getId())
-             ->filterByServicioId(null, Criteria::NOT_EQUAL)
-             ->withColumn('sum(OperacionDetalle.ValorTotal)', 'CantidadTotal')
-             ->findOne();
-         if ($LISTA) {
-             $retorna = $LISTA->getCantidadTotal();
-         }
-         return $retorna;
-          }
-          
-          
-          
-    
-    
-        public function getTotalProductos() {
-         $LISTA = OperacionDetalleQuery::create()
-             ->filterByOperacionId($this->getId())
-             ->filterByProductoId(null, Criteria::NOT_EQUAL)
-             ->withColumn('sum(OperacionDetalle.Cantidad)', 'CantidadTotal')
-             ->findOne();
-         if ($LISTA) {
-             $retorna = $LISTA->getCantidadTotal();
-         }
-         return $retorna;
-          }
-          
-    
 
-      public function getRecibo() {
-        $listablack[]='CONTRA ENTREGA';
-        $listablack[]='CXC COBRAR';
-        $listablack[]='CHEQUE PREFECHADO';
-        $listablack[]='CONTRAENTREGA'; 
-                  
-          $operacionPago = OperacionPagoQuery::create()
-                  ->filterByTipo($listablack, Criteria::NOT_IN)
-                 ->filterByOperacionId($this->getId())
-                  ->orderByFechaCreo('Desc')
-                  ->findOne();
-          $retorna='';
-      if ($operacionPago) {
-          $retorna = $operacionPago->getCodigo();
-      }
-          return $retorna;
-      }
-      
-      
-            public function getFechaRecibo() {
-               $listablack[]='CONTRA ENTREGA';
-        $listablack[]='CXC COBRAR';
-        $listablack[]='CHEQUE PREFECHADO';
-        $listablack[]='CONTRAENTREGA'; 
-          $operacionPago = OperacionPagoQuery::create()
-                 ->filterByOperacionId($this->getId())
- ->filterByTipo($listablack, Criteria::NOT_IN)
-                  ->orderByFechaCreo('Desc')
-                  ->findOne();
-          $retorna='';
-      if ($operacionPago) {
-          $retorna = $operacionPago->getFechaCreo('d/m/Y');
-      }
-          return $retorna;
-      }
-    
-      public function getNota() {
-          $retorna ="";
-          $notaCredito = NotaCreditoQuery::create()
-                  ->filterByTipoNota('CLIENTE')
-                  ->filterByDocumento($this->getCodigo())
-                  ->findOne();
-          if ($notaCredito) {
-              $retorna = $notaCredito->getCodigo();
-          }
-          return $retorna;
-      }   
-      public function getVuelto() {
+    public function getTotalRecargo() {
+        $LISTA = OperacionDetalleQuery::create()
+                ->filterByOperacionId($this->getId())
+                ->filterByServicioId(null, Criteria::NOT_EQUAL)
+                ->withColumn('sum(OperacionDetalle.ValorTotal)', 'CantidadTotal')
+                ->findOne();
+        if ($LISTA) {
+            $retorna = $LISTA->getCantidadTotal();
+        }
+        return $retorna;
+    }
+
+    public function getTotalProductos() {
+        $LISTA = OperacionDetalleQuery::create()
+                ->filterByOperacionId($this->getId())
+                ->filterByProductoId(null, Criteria::NOT_EQUAL)
+                ->withColumn('sum(OperacionDetalle.Cantidad)', 'CantidadTotal')
+                ->findOne();
+        if ($LISTA) {
+            $retorna = $LISTA->getCantidadTotal();
+        }
+        return $retorna;
+    }
+
+    public function getRecibo() {
+        $listablack[] = 'CONTRA ENTREGA';
+        $listablack[] = 'CXC COBRAR';
+        $listablack[] = 'CHEQUE PREFECHADO';
+        $listablack[] = 'CONTRAENTREGA';
+
+        $operacionPago = OperacionPagoQuery::create()
+                ->filterByTipo($listablack, Criteria::NOT_IN)
+                ->filterByOperacionId($this->getId())
+                ->orderByFechaCreo('Desc')
+                ->findOne();
+        $retorna = '';
+        if ($operacionPago) {
+            $retorna = $operacionPago->getCodigo();
+        }
+        return $retorna;
+    }
+
+    public function getFechaRecibo() {
+        $listablack[] = 'CONTRA ENTREGA';
+        $listablack[] = 'CXC COBRAR';
+        $listablack[] = 'CHEQUE PREFECHADO';
+        $listablack[] = 'CONTRAENTREGA';
+        $operacionPago = OperacionPagoQuery::create()
+                ->filterByOperacionId($this->getId())
+                ->filterByTipo($listablack, Criteria::NOT_IN)
+                ->orderByFechaCreo('Desc')
+                ->findOne();
+        $retorna = '';
+        if ($operacionPago) {
+            $retorna = $operacionPago->getFechaCreo('d/m/Y');
+        }
+        return $retorna;
+    }
+
+    public function getNota() {
+        $retorna = "";
+        $notaCredito = NotaCreditoQuery::create()
+                ->filterByTipoNota('CLIENTE')
+                ->filterByDocumento($this->getCodigo())
+                ->findOne();
+        if ($notaCredito) {
+            $retorna = $notaCredito->getCodigo();
+        }
+        return $retorna;
+    }
+
+    public function getVuelto() {
         $operacionDetalle = OperacionPagoQuery::create()
-                     ->filterByOperacionId($this->getId())
+                ->filterByOperacionId($this->getId())
                 ->find();
         $total = 0;
         foreach ($operacionDetalle as $detalle) {
-                $total = $total + $detalle->getVuelto();
+            $total = $total + $detalle->getVuelto();
         }
 
         return $total;
@@ -176,36 +196,36 @@ class Operacion extends BaseOperacion {
 //echo        $OPERACION->getTienda()->getCodigo();
 //die();
         //**  INICIO TEST
-       // if ($OPERACION->getTienda()->getCodigo() == 'TEST') {
-            $ERROR = '';
-            $CONTIGENCIA = '';
-            $FECHA = date('Y-m-d');
-            $SERIE = '';
-            $UUID = sha1($OPERACION->getCodigo()); // substr(sha1($SERIE . date('Ymdis')), 0, 20);
-            $NUMERO = $OPERACION->getCodigo(); //rand(999, 9999);
+        // if ($OPERACION->getTienda()->getCodigo() == 'TEST') {
+        $ERROR = '';
+        $CONTIGENCIA = '';
+        $FECHA = date('Y-m-d');
+        $SERIE = '';
+        $UUID = sha1($OPERACION->getCodigo()); // substr(sha1($SERIE . date('Ymdis')), 0, 20);
+        $NUMERO = $OPERACION->getCodigo(); //rand(999, 9999);
 
-            $returna['ERROR'] = $ERROR; // = '';
-            $returna['CONTIGENCIA'] = $CONTIGENCIA; // = '';
-            $returna['FECHA'] = $FECHA; // = '';
-            $returna['SERIE'] = $SERIE; // = '';
-            $returna['NUMERO'] = $NUMERO; // = '';
-            $returna['UUID'] = $UUID; // = ''
+        $returna['ERROR'] = $ERROR; // = '';
+        $returna['CONTIGENCIA'] = $CONTIGENCIA; // = '';
+        $returna['FECHA'] = $FECHA; // = '';
+        $returna['SERIE'] = $SERIE; // = '';
+        $returna['NUMERO'] = $NUMERO; // = '';
+        $returna['UUID'] = $UUID; // = ''
 
-            $OPERACION->setFaceError($ERROR);
-            $OPERACION->setFaceReferencia($CONTIGENCIA);
-            $OPERACION->setFaceSerieFactura($SERIE);
-          //  $OPERACION->setFaceFirma($UUID);
-            $OPERACION->setFaceNumeroFactura($NUMERO);
+        $OPERACION->setFaceError($ERROR);
+        $OPERACION->setFaceReferencia($CONTIGENCIA);
+        $OPERACION->setFaceSerieFactura($SERIE);
+        //  $OPERACION->setFaceFirma($UUID);
+        $OPERACION->setFaceNumeroFactura($NUMERO);
 
 
-            $returna['CONTIGENCIA'] = '';
-            $returna['ERROR'] = '';
-            $OPERACION->setFaceEstado("FIRMADO");
-            $OPERACION->setFaceError('');
-            $OPERACION->setFaceReferencia('');
-            $OPERACION->save();
-            return $returna;
-    //    }
+        $returna['CONTIGENCIA'] = '';
+        $returna['ERROR'] = '';
+        $OPERACION->setFaceEstado("FIRMADO");
+        $OPERACION->setFaceError('');
+        $OPERACION->setFaceReferencia('');
+        $OPERACION->save();
+        return $returna;
+        //    }
 // * FOM TEST
 
         $NIT = $OPERACION->getNit();
@@ -391,7 +411,7 @@ class Operacion extends BaseOperacion {
 
         $orden = 1;
 
-        $GRAN_TOTAL=0;
+        $GRAN_TOTAL = 0;
         foreach ($operacionDetalle as $detalle) {
             $codigoPr = $orden . "_" . $detalle->getCodigo();
             //        $codigoPr='1000087922';
@@ -449,8 +469,8 @@ class Operacion extends BaseOperacion {
             $data["KitchenOrder"] = "Y";
             $data["LineNum"] = $orden;
             $data["LineStatus"] = "NORMAL";
-            $data["LineTotal"] = round($detalle->getValorUnitario(),2) * $detalle->getCantidad();//$detalle->getValorTotal();
-    $GRAN_TOTAL=(round($detalle->getValorUnitario(),2) * $detalle->getCantidad()) +$GRAN_TOTAL;
+            $data["LineTotal"] = round($detalle->getValorUnitario(), 2) * $detalle->getCantidad(); //$detalle->getValorTotal();
+            $GRAN_TOTAL = (round($detalle->getValorUnitario(), 2) * $detalle->getCantidad()) + $GRAN_TOTAL;
             $data["ManSerNum"] = "N";
             $data["MonitorId"] = 1;
             $data["NumPerSale"] = 1.0;
@@ -459,7 +479,7 @@ class Operacion extends BaseOperacion {
             $data["OrderIndex"] = 0;
             $data["PrdStdCst"] = null;
             $data["Price"] = 0.0;
-            $data["PriceAfVAT"] = round($detalle->getValorUnitario(),2);
+            $data["PriceAfVAT"] = round($detalle->getValorUnitario(), 2);
             $data["Quantity"] = $detalle->getCantidad();
             $data["Ref1"] = "";
             $data["SUomCode"] = "UNIDAD";
@@ -491,11 +511,9 @@ class Operacion extends BaseOperacion {
         $TEXTLOG = "usuario " . $username . " pass " . $password;
         $TEXTLOG .= " -----   END POINT  http://23.99.129.238/Dev/Document/UploadDocumentExt ";
 
-       $dataH["DocTotal"] = 
-                 
-//        echo $TEXTLOG;
+        $dataH["DocTotal"] =//        echo $TEXTLOG;
 //        die();
-        $json['Header'] = $dataH;
+                $json['Header'] = $dataH;
         $json_code = json_encode($json);
         $texto = $TEXTLOG . "  ---------------------- ";
         $texto .= $json_code;
@@ -524,15 +542,15 @@ class Operacion extends BaseOperacion {
 
         $response = curl_exec($curl);
         $texto .= "<BR> > ESTA ES LA RESPUESTA " . $response . " ESTE ES EL LOG DE CONSUMO  -->> -------------------- " . $info;
-  
+
         $ruta = sfConfig::get("sf_upload_dir") . DIRECTORY_SEPARATOR . "logj.txt";
         $fh = fopen($ruta, 'w');
         fwrite($fh, $json_code);
         fclose($fh);
 
-        
-        
-        
+
+
+
         $ruta = sfConfig::get("sf_upload_dir") . DIRECTORY_SEPARATOR . "logf.txt";
         $fh = fopen($ruta, 'w');
         fwrite($fh, $texto);
@@ -605,7 +623,7 @@ class Operacion extends BaseOperacion {
         $OPERACION->setFaceError($ERROR);
         $OPERACION->setFaceReferencia($CONTIGENCIA);
         $OPERACION->setFaceSerieFactura($SERIE);
-     //   $OPERACION->setFaceFirma($UUID);
+        //   $OPERACION->setFaceFirma($UUID);
         $OPERACION->setFaceNumeroFactura($NUMERO);
         $OPERACION->setCodigoFactura($Fecha_Cert);
 
@@ -821,7 +839,7 @@ class Operacion extends BaseOperacion {
             $data["OrderIndex"] = 0;
             $data["PrdStdCst"] = null;
             $data["Price"] = 0.0;
-            $data["PriceAfVAT"] =round( $detalle->getValorUnitario(),2);
+            $data["PriceAfVAT"] = round($detalle->getValorUnitario(), 2);
             $data["Quantity"] = $detalle->getCantidad();
             $data["Ref1"] = $OPERACION->getDocentry();
             $data["SUomCode"] = "UNIDAD";
