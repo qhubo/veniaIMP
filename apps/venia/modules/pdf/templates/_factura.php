@@ -159,7 +159,7 @@
     </tbody>
 </table>
 <br>
-
+<?php $medidas = $operacion->getMedidas(); ?>
 
 <table class="sin-borde" >
     <tr>
@@ -168,16 +168,16 @@
             <table>
                 <tr>
                     <td class="negrita" style="width:130px;"> Metros Cúbicos</td>
-                    <td style="text-align: right;width:100px;"><?php echo round($totalMetros, 2); ?></td>
+                    <td style="text-align: right;width:100px;"><?php echo round($medidas['totalcmb'], 2); ?></td>
                 </tr>
                 <tr>
                     <td class="negrita"> Kilogramos</td>
-                    <td style="text-align: right;"><?php echo round($totalPeso, 2); ?></td>
+                    <td style="text-align: right;"><?php echo round($medidas['totalpeso'], 2); ?></td>
 
                 </tr>
                 <tr>
                     <td class="negrita"> Bultos</td>
-                    <td style="text-align: right;"><?php echo round($totalCajas, 2); ?></td>
+                    <td style="text-align: right;"><?php echo round($medidas['totalbulto'], 2); ?></td>
                 </tr>
             </table>
             <BR>
