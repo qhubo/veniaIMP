@@ -25,7 +25,7 @@ class Operacion extends BaseOperacion {
         $totalPeso = 0;
         $totalCmb = 0;
         if ($ordenCotizacion) {
-            $detalle = OrdenCotizacionDetalleQuery::create()->filterByOrdenCotizacionId($ordenCotizacion->getId())->find();
+            $detalle = OrdenCotizacionDetalleQuery::create()->filterByProductoId(null, Criteria::NOT_EQUAL) ->filterByOrdenCotizacionId($ordenCotizacion->getId())->find();
             foreach ($detalle as $detra) {
                 $can++;
                 $totalUni = $detra->getCantidad() + $totalUni;
