@@ -1,14 +1,108 @@
 <?php
 
-/**
- * traslado_ubica actions.
- *
- * @package    plan
- * @subpackage traslado_ubica
- * @author     Via
- * @version    SVN: $Id: actions.class.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
- */
 class traslado_ubicaActions extends sfActions {
+
+    public function executeIndex(sfWebRequest $request) {
+        error_reporting(-1);
+        date_default_timezone_set("America/Guatemala");
+        $acceso = MenuSeguridad::Acceso('traslado_ubica');
+        if (!$acceso) {
+            $this->redirect('inicio/index');
+        }
+        $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
+        $usuarioq = UsuarioQuery::create()->findOneById($usuarioId);
+        $trasladoBu = TrasladoUbicacionQuery::create()
+                ->filterByEstado('Proceso')
+                ->filterByUsuario($usuarioq->getUsuario())
+                ->findOne();
+        $default = null;
+        $tiendaAnteior = null;
+        $idTra = null;
+        if ($trasladoBu) {
+            $idTra = $trasladoBu->getId();
+            $default['observaciones'] = $trasladoBu->getObservaciones();
+            $default['tienda_id'] = $trasladoBu->getTiendaId();
+            $tiendaAnteior = $trasladoBu->getTiendaId();
+        }
+        $this->form = new TrasladoUbicacionForm($default);
+        if ($request->isMethod('post')) {
+            $this->form->bind($request->getParameter("consulta"), $request->getFiles("consulta"));
+            if ($this->form->isValid()) {
+                $valores = $this->form->getValues();
+                if (!$trasladoBu) {
+                    $trasladoBu = new TrasladoUbicacion();
+                    $trasladoBu->setEstado('Proceso');
+                    $trasladoBu->setUsuario($usuarioq->getUsuario());
+                    $trasladoBu->save();
+                }
+                $trasladoBu->setFecha(date('Y-m-d H:i'));
+                $trasladoBu->setObservaciones($valores['observaciones']);
+                $trasladoBu->setTiendaId($valores['tienda_id']);
+                $trasladoBu->save();
+                if ($trasladoBu <> $valores['tienda_id']) {
+                    $traDetalle = TrasladoUbicacionDetalleQuery::create()
+                            ->filterByTrasladoUbicacionId($trasladoBu->getId())
+                            ->findOne();
+                    if ($traDetalle) {
+                        $traDetalle->delete();
+                    }
+                }
+                $this->getUser()->setFlash('exito', ' Informacion actualizada ');
+                $this->redirect('traslado_ubica/index');
+            }
+        }
+        $this->trasladoBu = $trasladoBu;
+        $this->bodegas = TiendaQuery::create()->orderByNombre()->find();
+        $this->listado = TrasladoUbicacionDetalleQuery::create()->filterByTrasladoUbicacionId($idTra)->find();
+    }
+
+    public function executeProducto(sfWebRequest $request) {
+        error_reporting(-1);
+        date_default_timezone_set("America/Guatemala");
+        $id = $request->getParameter('movi');
+        $trasladoProducto = TrasladoUbicacionQuery::create()->findOneById($id);
+        $tiendaId = $trasladoProducto->getTiendaId();
+        $productoid = $request->getParameter('id');
+        $producto = ProductoExistenciaQuery::create()->filterByProductoId($productoid)->filterByTiendaId($tiendaId)->findOne();
+        if (!$producto) {
+            $this->getUser()->setFlash('error', 'No existe existencia de ese producto');
+            $this->redirect('traslado_ubica/index?movi=' . $id);
+        }
+        if ($producto) {
+            if ($producto->getCantidad() <= 0) {
+                $this->getUser()->setFlash('error', 'No existe existencia de ese producto');
+                $this->redirect('traslado_ubica/index?movi=' . $id);
+            }
+        }
+        if ($producto) {
+//            $ubicaciones = ProductoUbicacionQuery::create()
+//                    ->filterByProductoId($productoid)
+//                    ->filterByTiendaId($tiendaId)
+//                    ->find();
+//            foreach ($ubicaciones as $registro) {
+            $ordenQ = new TrasladoUbicacionDetalle();
+            $ordenQ->setCantidad($producto->getCantidad());
+            $ordenQ->setProductoId($productoid);
+            $ordenQ->setTrasladoUbicacionId($id);
+            $ordenQ->setUbicacionOriginal('');
+            $ordenQ->save();
+            //  }
+            $this->getUser()->setFlash('exito', 'Registro actualizado  con exito ');
+        }
+        $this->redirect('traslado_ubica/index?movi=' . $id);
+    }
+
+    public function executeCantidad(sfWebRequest $request) {
+        date_default_timezone_set("America/Guatemala");
+        $id = $request->getParameter('id');
+        $valor = $request->getParameter('valor');
+        $ordenDetalle = TrasladoUbicacionDetalleQuery::create()
+                ->filterById($id)
+                ->findOne();
+        $ordenDetalle->setCantidad($valor);
+        $ordenDetalle->save();
+        die();
+    }
 
     public function executeHistorial(sfWebRequest $request) {
 
@@ -68,7 +162,7 @@ class traslado_ubicaActions extends sfActions {
         $pdf = new sfTCPDF("P", "mm", "Letter");
 //echo $html;
 //die();
-        
+
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Venia Link');
         $pdf->SetTitle('Traslado  Ubicacion Producto ' . $pedidoVendedor->getCodigo());
@@ -101,30 +195,6 @@ class traslado_ubicaActions extends sfActions {
         die();
     }
 
-    public function executeUbicacion(sfWebRequest $request) {
-        date_default_timezone_set("America/Guatemala");
-        $id = $request->getParameter('id');
-        $valor = $request->getParameter('valor');
-        $ordenDetalle = TrasladoUbicacionDetalleQuery::create()
-                ->filterById($id)
-                ->findOne();
-        $ordenDetalle->setNuevaUbicacion($valor);
-        $ordenDetalle->save();
-        die();
-    }
-
-    public function executeCantidad(sfWebRequest $request) {
-        date_default_timezone_set("America/Guatemala");
-        $id = $request->getParameter('id');
-        $valor = $request->getParameter('valor');
-        $ordenDetalle = TrasladoUbicacionDetalleQuery::create()
-                ->filterById($id)
-                ->findOne();
-        $ordenDetalle->setCantidad($valor);
-        $ordenDetalle->save();
-        die();
-    }
-
     public function executeTienda(sfWebRequest $request) {
         date_default_timezone_set("America/Guatemala");
         $id = $request->getParameter('id');
@@ -154,94 +224,94 @@ class traslado_ubicaActions extends sfActions {
                 $this->getUser()->setFlash('error', 'Debe ingresar cantidad Linea #' . $linea);
                 $this->redirect('traslado_ubica/index?movi=' . $id);
             }
-            if ((!$tiendaId) or ($ubicacion == "")) {
+            if ((!$tiendaId)) {
                 $this->getUser()->setFlash('error', 'Debe seleccionar tienda/ubicacion Linea #' . $linea);
                 $this->redirect('traslado_ubica/index?movi=' . $id);
             }
         }
-        foreach ($ordenDetalle as $detalle) {
-            $linea++;
-            $Cantidad = $request->getParameter('numero' . $detalle->getId());
-            $tiendaId = $request->getParameter('tienda' . $detalle->getId());
-            $ubicacion = $request->getParameter('ubicacion' . $detalle->getId());
-            if ($Cantidad <= 0) {
-                $this->getUser()->setFlash('error', 'Debe ingresar cantidad Linea #' . $linea);
-                $this->redirect('traslado_ubica/index?movi=' . $id);
-            }
-            if ((!$tiendaId) or ($ubicacion == "")) {
-                $this->getUser()->setFlash('error', 'Debe seleccionar tienda/ubicacion Linea #' . $linea);
-                $this->redirect('traslado_ubica/index?movi=' . $id);
-            }
-        }
-        foreach ($ordenDetalle as $registro) {
-            $productoId = $registro->getProductoId();
-            $cantida = $registro->getCantidad();
-            $empresaId = $trasladoBu->getEmpresaId();
-            $UbicacionOrginal = ProductoUbicacionQuery::create()
-                    ->filterByUbicacion($registro->getUbicacionOriginal())
-                    ->filterByTiendaId($registro->getTrasladoUbicacion()->getTiendaId())
-                    ->filterByProductoId($registro->getProductoId())
-                    ->findOne();
-            $productoExistencia = ProductoExistenciaQuery::create()
-                    ->filterByTiendaId($registro->getTrasladoUbicacion()->getTiendaId())
-                    ->filterByProductoId($productoId)
-                    ->findOne();
-            $inicial = $productoExistencia->getCantidad();
-            $nuevoValor = $inicial - $cantida;
-            $UbicacionOrginal->setCantidad($nuevoValor);
-            $UbicacionOrginal->save();
-            $movimienoto = new ProductoMovimiento();
-            $movimienoto->setTiendaId($registro->getTrasladoUbicacion()->getTiendaId());
-            $movimienoto->setProductoId($productoId);
-            $movimienoto->setCantidad($cantida);
-            $movimienoto->setIdentificador("TRASLADO " . $id);
-            $movimienoto->setTipo('TRASLADO SALIDA');
-            $movimienoto->setFecha(date('Y-m-d H:i:s'));
-            $movimienoto->setMotivo(substr($trasladoBu->getObservaciones(), 0, 90));
-            $movimienoto->setInicio($inicial);
-            $movimienoto->setEmpresaId($empresaId);
-            $movimienoto->setFin($nuevoValor);
-            $movimienoto->save();
-            $UbicacionFinal = ProductoUbicacionQuery::create()
-                    ->filterByUbicacion($registro->getNuevaUbicacion())
-                    ->filterByTiendaId($registro->getTiendaId())
-                    ->filterByProductoId($registro->getProductoId())
-                    ->findOne();
-            if (!$UbicacionFinal) {
-                $UbicacionFinal = new ProductoUbicacion();
-                $UbicacionFinal->setCantidad(0);
-                $UbicacionFinal->setUbicacion($registro->getNuevaUbicacion());
-                $UbicacionFinal->setTiendaId($registro->getTiendaId());
-                $UbicacionFinal->setProductoId($registro->getProductoId());
-                $UbicacionFinal->save();
-            }
-            $inicial = 0;
-            $productoExistencia = ProductoExistenciaQuery::create()
-                    ->filterByTiendaId($registro->getTiendaId())
-                    ->filterByProductoId($productoId)
-                    ->findOne();
-            IF ($productoExistencia) {
+
+        $con = Propel::getConnection();
+        $con->beginTransaction();
+        try {
+            foreach ($ordenDetalle as $registro) {
+                $productoId = $registro->getProductoId();
+                $cantidad = $registro->getCantidad();
+                $empresaId = $trasladoBu->getEmpresaId();
+                // ============================
+                // ======= SALIDA ============
+                // ============================
+                $tiendaOrigen = $registro->getTrasladoUbicacion()->getTiendaId();
+                $productoExistencia = ProductoExistenciaQuery::create()
+                        ->filterByTiendaId($tiendaOrigen)
+                        ->filterByProductoId($productoId)
+                        ->findOne();
                 $inicial = $productoExistencia->getCantidad();
+                if ($inicial < $cantidad) {
+                       $this->getUser()->setFlash('exito', "Stock insuficiente para el producto ID: " . $productoId);
+                        $this->redirect('traslado_ubica/index?movi=' . $id);
+                }
+                $nuevoValor = $inicial - $cantidad;
+               // Movimiento Kardex Salida
+                $movimiento = new ProductoMovimiento();
+                $movimiento->setTiendaId($tiendaOrigen);
+                $movimiento->setProductoId($productoId);
+                $movimiento->setCantidad($cantidad);
+                $movimiento->setIdentificador("TRASLADO " . $id);
+                $movimiento->setTipo('TRASLADO SALIDA');
+                $movimiento->setFecha(date('Y-m-d H:i:s'));
+                $movimiento->setMotivo(substr($trasladoBu->getObservaciones(), 0, 90));
+                $movimiento->setInicio($inicial);
+                $movimiento->setEmpresaId($empresaId);
+                $movimiento->setFin($nuevoValor);
+                $movimiento->setLineaNo("TRASA" . $registro->getId());
+                $movimiento->save();
+                $productoExistencia->setCantidad($nuevoValor);
+                $productoExistencia->save();
+
+                // ============================
+                // ======= INGRESO ===========
+                // ============================
+                $tiendaDestino = $registro->getTiendaId();
+                $productoExistenciaDestino = ProductoExistenciaQuery::create()
+                        ->filterByTiendaId($tiendaDestino)
+                        ->filterByProductoId($productoId)
+                        ->findOne();
+                if (!$productoExistenciaDestino) {
+                    $productoExistenciaDestino = new ProductoExistencia();
+                    $productoExistenciaDestino->setCantidad(0);
+                    $productoExistenciaDestino->setTiendaId($tiendaDestino);
+                    $productoExistenciaDestino->setProductoId($productoId);
+                    $productoExistenciaDestino->save();
+                }
+                $inicialDestino = $productoExistenciaDestino->getCantidad();
+                $nuevoValorDestino = $inicialDestino + $cantidad;
+                // Movimiento Kardex Ingreso
+                $movimiento = new ProductoMovimiento();
+                $movimiento->setTiendaId($tiendaDestino);
+                $movimiento->setProductoId($productoId);
+                $movimiento->setCantidad($cantidad);
+                $movimiento->setIdentificador("TRASLADO " . $id);
+                $movimiento->setTipo('TRASLADO INGRESO');
+                $movimiento->setFecha(date('Y-m-d H:i:s'));
+                $movimiento->setMotivo(substr($trasladoBu->getObservaciones(), 0, 90));
+                $movimiento->setInicio($inicialDestino);
+                $movimiento->setEmpresaId($empresaId);
+                $movimiento->setFin($nuevoValorDestino);
+                $movimiento->setLineaNo("TRAIN" . $registro->getId());
+                $movimiento->save();
+                $productoExistenciaDestino->setCantidad($nuevoValorDestino);
+                $productoExistenciaDestino->save();
             }
-            $nuevoValor = $inicial + $cantida;
-            $UbicacionFinal->setCantidad($nuevoValor);
-            $UbicacionFinal->save();
-            $movimienoto = new ProductoMovimiento();
-            $movimienoto->setTiendaId($registro->getTiendaId());
-            $movimienoto->setProductoId($productoId);
-            $movimienoto->setCantidad($cantida);
-            $movimienoto->setIdentificador("TRASLADO " . $id);
-            $movimienoto->setTipo('TRASLADO INGRESO');
-            $movimienoto->setFecha(date('Y-m-d H:i:s'));
-            $movimienoto->setMotivo(substr($trasladoBu->getObservaciones(), 0, 90));
-            $movimienoto->setInicio($inicial);
-            $movimienoto->setEmpresaId($empresaId);
-            $movimienoto->setFin($nuevoValor);
-            $movimienoto->save();
+            $con->commit();
+        } catch (Exception $e) {
+            $con->rollBack();
+            $this->getUser()->setFlash('error', $e->getMessage());
+            return $this->redirect('traslado_ubica/index');
         }
+// Confirmar traslado
         $trasladoBu->setEstado('Confirmada');
         $trasladoBu->save();
-        $this->getUser()->setFlash('exito', ' Traslado Realizado con exito ');
+        $this->getUser()->setFlash('exito', 'Traslado realizado con éxito');
         $this->redirect('traslado_ubica/index?movi=' . $id);
         die();
     }
@@ -256,103 +326,6 @@ class traslado_ubicaActions extends sfActions {
         $ordenDetalle->delete();
         $this->getUser()->setFlash('error', 'Registro eliminado  con exito ');
         $this->redirect('traslado_ubica/index?movi=' . $vendedorIr);
-    }
-
-    public function executeProducto(sfWebRequest $request) {
-        error_reporting(-1);
-        date_default_timezone_set("America/Guatemala");
-        $id = $request->getParameter('movi');
-        $trasladoProducto = TrasladoUbicacionQuery::create()->findOneById($id);
-        $tiendaId = $trasladoProducto->getTiendaId();
-        $productoid = $request->getParameter('id');
-
-        $producto = ProductoExistenciaQuery::create()->filterByProductoId($productoid)->filterByTiendaId($tiendaId)->findOne();
-        if (!$producto) {
-            $this->getUser()->setFlash('error', 'No existe existencia de ese producto');
-            $this->redirect('traslado_ubica/index?movi=' . $id);
-        }
-
-        if ($producto) {
-            if ($producto->getCantidad() <= 0) {
-                $this->getUser()->setFlash('error', 'No existe existencia de ese producto');
-                $this->redirect('traslado_ubica/index?movi=' . $id);
-            }
-        }
-
-
-
-        if ($producto) {
-            $ubicaciones = ProductoUbicacionQuery::create()
-                    ->filterByProductoId($productoid)
-                    ->filterByTiendaId($tiendaId)
-                    ->find();
-            foreach ($ubicaciones as $registro) {
-                $ordenQ = new TrasladoUbicacionDetalle();
-                $ordenQ->setCantidad($registro->getCantidad());
-                $ordenQ->setProductoId($productoid);
-                $ordenQ->setTrasladoUbicacionId($id);
-                $ordenQ->setUbicacionOriginal($registro->getUbicacion());
-                $ordenQ->save();
-            }
-            $this->getUser()->setFlash('exito', 'Registro actualizado  con exito ');
-        }
-        $this->redirect('traslado_ubica/index?movi=' . $id);
-    }
-
-    public function executeIndex(sfWebRequest $request) {
-        error_reporting(-1);
-        date_default_timezone_set("America/Guatemala");
-        $acceso = MenuSeguridad::Acceso('actualiza_inventario');
-        if (!$acceso) {
-          //  $this->redirect('inicio/index');
-        }
-        $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
-        $usuarioq = UsuarioQuery::create()->findOneById($usuarioId);
-
-        $trasladoBu = TrasladoUbicacionQuery::create()
-                ->filterByEstado('Proceso')
-                ->filterByUsuario($usuarioq->getUsuario())
-                ->findOne();
-        $default = null;
-        $tiendaAnteior = null;
-        $idTra = null;
-        if ($trasladoBu) {
-            $idTra = $trasladoBu->getId();
-            $default['observaciones'] = $trasladoBu->getObservaciones();
-            $default['tienda_id'] = $trasladoBu->getTiendaId();
-            $tiendaAnteior = $trasladoBu->getTiendaId();
-        }
-        $this->form = new TrasladoUbicacionForm($default);
-        if ($request->isMethod('post')) {
-            $this->form->bind($request->getParameter("consulta"), $request->getFiles("consulta"));
-            if ($this->form->isValid()) {
-                $valores = $this->form->getValues();
-                if (!$trasladoBu) {
-                    $trasladoBu = new TrasladoUbicacion();
-                    $trasladoBu->setEstado('Proceso');
-                    $trasladoBu->setUsuario($usuarioq->getUsuario());
-
-                    $trasladoBu->save();
-                }
-                $trasladoBu->setFecha(date('Y-m-d H:i'));
-                $trasladoBu->setObservaciones($valores['observaciones']);
-                $trasladoBu->setTiendaId($valores['tienda_id']);
-                $trasladoBu->save();
-                if ($trasladoBu <> $valores['tienda_id']) {
-                    $traDetalle = TrasladoUbicacionDetalleQuery::create()
-                            ->filterByTrasladoUbicacionId($trasladoBu->getId())
-                            ->findOne();
-                    if ($traDetalle) {
-                        $traDetalle->delete();
-                    }
-                }
-                $this->getUser()->setFlash('exito', ' Informacion actualizada ');
-                $this->redirect('traslado_ubica/index');
-            }
-        }
-        $this->trasladoBu = $trasladoBu;
-        $this->bodegas = TiendaQuery::create()->orderByNombre()->find();
-        $this->listado = TrasladoUbicacionDetalleQuery::create()->filterByTrasladoUbicacionId($idTra)->find();
     }
 
 }

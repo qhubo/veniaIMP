@@ -6,8 +6,7 @@
             <tr class="active">
                 <th  align="center"><span class="kt-font-success">Producto  </span></th>
                 <th  align="center"><span class="kt-font-success">Descripción </span></th>
-                <th  align="center"><span class="kt-font-success">Ubicación Actual</span></th>
-
+            
                 <th  align="center"><span class="kt-font-success">Cantidad </span></th>
                 <th  align="center"><span class="kt-font-success">Nueva Ubicación</span></th>
 
@@ -21,8 +20,7 @@
                 <?php foreach ($listado as $registro) { ?>
                     <?php
                     $max = 1;
-                    $pproductoU = ProductoUbicacionQuery::create()
-                            ->filterByUbicacion($registro->getUbicacionOriginal())
+                    $pproductoU = ProductoExistenciaQuery::create()
                             ->filterByTiendaId($registro->getTrasladoUbicacion()->getTiendaId())
                             ->filterByProductoId($registro->getProductoId())
                             ->findOne();
@@ -40,19 +38,20 @@
                             <a href="<?php echo url_for($modulo . '/eliminaLinea?id=' . $lista->getId()) ?>" class="btn btn-sm  btn-danger" >   </a>
                         </td>    
                         <td style="font-size:12px"><?php echo $registro->getProducto()->getNombre(); ?></td>    
-                        <td style="font-size:12px"><?php echo $registro->getUbicacionOriginal(); ?></td>
                         <td>
                             <input min="1"  type="number"  class="form-control cantidad" value="<?php echo $can ?>"  id="numero<?php echo $pid ?>" name="numero<?php echo $pid ?>"   
                                    max="<?php echo $max; ?>" >
                         </td>    
                         <td>         
                             <select  class="form-control" id="tienda<?php echo $pid ?>" name="tienda<?php echo $pid ?>">
-                                <option  value=""> Seleccione </option>
+                                <option  value=""> Seleccione <?php //echo $trasladoBu->getTiendaId(); ?> </option>
                                 <?php foreach ($bodegas as $data) { ?>
+                                <?php if ($trasladoBu->getTiendaId() <> $data->getId()) { ?>
                                     <option <?php if ($data->getId() == $registro->getTiendaId()) { ?> selected="selected"  <?php } ?>  value="<?php echo $data->getId() ?>"><?php echo $data->getNombre(); ?></option>
                                 <?php } ?>
+                                <?php } ?>
                             </select>
-                            <input type="text" class="form-control"  id="ubicacion<?php echo $pid ?>" name="ubicacion<?php echo $pid ?>" value="<?php echo $lista->getNuevaUbicacion(); ?>"><!-- comment -->      </td>    
+     </td>    
                     </tr>
                 <?php } ?>
             </tbody>

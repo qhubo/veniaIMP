@@ -11,12 +11,11 @@
                 <i class="flaticon2-tag  kt-font-info"></i>
             </span>
             <h3 class="kt-portlet__head-title kt-font-success">
-                Traslado de Ubicación <small>     <strong> </strong>    </small>
+                Traslado de Producto <small>     <strong> </strong>    </small>
             </h3>
         </div>
         <div class="kt-portlet__head-toolbar">
-             <a href="<?php echo url_for('actualiza_inventario_ubica/reporteF') ?>" class="btn btn-dark" > <li class="fa fa-cloud-upload"></li> Archivo Modelo Carga  </a>
- 
+     
         </div>
     </div>
     <div class="kt-portlet__body">
@@ -73,7 +72,7 @@
                 </div>
                 <div class="col-lg-8">
                     <h3>Listado de Producto</h3>
-                    <?php include_partial($modulo . '/lista', array('bodegas'=>$bodegas, 'id' => $trasladoBu->getId(), 'listado' => $listado)) ?>      
+                    <?php include_partial($modulo . '/lista', array('bodegas'=>$bodegas, 'id' => $trasladoBu->getId(), 'listado' => $listado, 'trasladoBu'=>$trasladoBu)) ?>      
                 </div>
             </div>
         <?php } ?>
