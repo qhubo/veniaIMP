@@ -17,25 +17,6 @@
  */
 class Cliente extends BaseCliente {
 
-    
-//    public function getTipoCliente () {
-//     //   $campo
-//        $datoQ = ValorUsuarioQuery::create()
-//                
-//                 ->filterByTipoDocumento('Cliente')
-//                 ->filterByNoDocumento($this->getId())
-//                ->useCampoUsuarioQuery()
-//                ->filterByNombre('TIPO_CLIENTE')
-//                ->endUse()
-//                ->findOne();
-//        $valor ='';
-//        if ($datoQ) {
-//            $valor=$datoQ->getValor();
-//        }
-//        
-//       return $valor;
-//    }
-    
     public function getCodigoCli() {
         $rerun = $this->getCodigo();
         $rerun = str_replace("CONTRAENTREGA", "", $rerun);
@@ -65,12 +46,12 @@ class Cliente extends BaseCliente {
             }
         }
         $operacion = OperacionQuery::create()
-                                        ->filterByPermiteFacturar(true, Criteria::NOT_EQUAL)
+                ->filterByPermiteFacturar(true, Criteria::NOT_EQUAL)
                 ->useClienteQuery()
                 ->filterByCodigo($this->getCodigo())
                 ->endUse()
-                 ->filterByPagado(false)
-               ->where("Operacion.Fecha < DATE_SUB(NOW(), INTERVAL 6 MONTH)")
+                ->filterByPagado(false)
+                ->where("Operacion.Fecha < DATE_SUB(NOW(), INTERVAL 6 MONTH)")
                 ->findOne();
         if ($operacion) {
             $CODIGO = $operacion->getCodigo();
@@ -355,6 +336,42 @@ class Cliente extends BaseCliente {
             $this->setEmpresaId($empresaId);
         }
 
+        if (trim($this->getCodigo()) == "") {
+            $tipo = "CLI";
+            $pre = "CLI";
+            if ($this->getPaisId()) {
+                $tipo = $this->getPais()->getCodigoIso();
+                $pre = $this->getPais()->getCodigoIso();
+            }
+            $numero = 1;
+            $busca = CorrelativoCodigoQuery::create()
+                    ->filterByTipo($tipo)
+                    ->findOne();
+            if (!$busca) {
+                $busca = New CorrelativoCodigo();
+                $busca->setTipo($tipo);
+                $busca->setPrefijo($pre);
+                $busca->setNumeroAsginar($numero);
+                $busca->save();
+            }
+            $numero = $busca->getNumeroAsginar();
+            $numero = $busca->getNumeroAsginar();
+            $prefijo = $pre . $numero;
+            $prefijo = $pre . $numero;
+            if (strlen($numero) == 3) {
+                $prefijo = $pre . '0' . $numero;
+            }
+            if (strlen($numero) == 2) {
+                $prefijo = $pre . '00' . $numero;
+            }
+
+            if (strlen($numero) == 1) {
+                $prefijo = $pre . '000' . $numero;
+            }
+            $this->setCodigo($prefijo);
+            $busca->setNumeroAsginar($numero + 1);
+            $busca->save();
+        }
 
 
         parent::save($con);

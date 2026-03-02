@@ -139,7 +139,7 @@
             <?php echo $form['acuerdo_pago']->renderError() ?>  
         </span>
     </div><!-- comment -->
-<div class="col-lg-2" >  <div style="text-align:right"> Tipo Transporte</div> </div>
+<div class="col-lg-1" >  <div style="text-align:right"> Tipo Transporte</div> </div>
 
     <div class="col-lg-2 <?php if ($form['transporte']->hasError()) echo "has-error" ?>">
         <?php echo $form['transporte'] ?>           
@@ -155,6 +155,10 @@
                 <i class="fa fa-save "></i>Actualizar
             </button>
         </div>
+      <div class="col-lg-2" style="padding-top:10px;"> 
+
+<a href="<?php echo url_for($modulo . '/reporte') ?>" class="btn btn-sm btn-dark" > <li class="fa fa-cloud-upload"></li> Archivo Modelo Carga  </a>
+      </div>  
     <?php } ?>
 </div>
 

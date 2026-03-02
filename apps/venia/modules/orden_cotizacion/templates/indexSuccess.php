@@ -128,11 +128,13 @@
                                         Servicios
                                     </a>
                                 </li>
-<!--                                <li class="nav-item">
-                                    <a class="nav-link   <?php if ($tablista == 3) { ?> active <?php } ?>" data-toggle="tab" href="#kt_portlet_base_demo_2_6_tab_content" role="tab" aria-selected="false">
-                                        Combos
-                                    </a>
-                                </li>-->
+                                <li class="nav-item">
+              <a href="<?php echo url_for("carga/index?tipo=pedido") ?>" class="btn btn-secondary btn-hover-brand" data-toggle="modal" data-target="#ajaxmodal"> 
+                  Importar archivo 
+                             </a>
+
+              
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -171,7 +173,7 @@
 
             </div>
             <div class="col-lg-7">                
-                <?php include_partial($modulo . '/lista', array('edit' => $edit, 'id' => $id, 'listado' => $listado)) ?>      
+                <?php include_partial($modulo . '/lista', array('ListaDetalle'=>$ListaDetalle, 'edit' => $edit, 'id' => $id, 'listado' => $listado)) ?>      
             </div>
         </div>
         <?php include_partial($modulo . '/total', array('listado' => $listado, 'modulo' => $modulo, 'orden' => $orden, 'cliente' => $cliente, 'id' => $id, 'form' => $form)) ?>
