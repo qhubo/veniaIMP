@@ -174,6 +174,9 @@ License: You must have a valid license purchased only from themeforest(the above
                         <?php $contiene = false; ?>
                     <?php } ?>
 
+                        <?php if ($modulo == 'verifica_bodega') { ?>
+                        <?php $contiene = false; ?>
+                    <?php } ?>
                     <?php if ($modulo == 'consulta_venta') { ?>
                         <?php $contiene = false; ?>
                     <?php } ?>

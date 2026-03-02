@@ -2,6 +2,43 @@
 
 class verifica_bodegaActions extends sfActions {
 
+ public function executeEliminarMultipleEmpaque(sfWebRequest $request){
+    $ids = $request->getParameter('eli');
+    $em  = $request->getParameter('id');
+     $ids = $request->getParameter('eli');
+        if ($ids && is_array($ids)) {
+            foreach ($ids as $id) {
+                $detalle = OrdenCotizacionDetalleQuery::create()->findOneById($id);
+                $ordenId = $detalle->getOrdenCotizacionId();
+                if ($detalle) {
+                    $detalle->delete();
+                }
+            }
+            $this->getUser()->setFlash('error', count($ids) . ' registros eliminados correctamente');
+        } else {
+            $this->getUser()->setFlash('error', 'No se seleccionaron registros');
+        }
+         $ordenQ = OrdenCotizacionQuery::create()->findOneById($ordenId);
+        $lista = OrdenCotizacionDetalleQuery::create()
+                ->filterByConfirmado(true)
+                ->withColumn('sum(OrdenCotizacionDetalle.ValorTotal)', 'TotalGeneral')
+                ->filterByOrdenCotizacionId($OrdenID)
+                ->findOne();
+        $suma = $lista->getTotalGeneral();
+        $valores = ParametroQuery::ObtenerIva($suma, false);
+        $iva = $valores['IVA'];
+        $valorSInIVa = $valores['VALOR_SIN_IVA'];
+        $ordenQ->setSubTotal($valorSInIVa);
+        $ordenQ->setValorTotal($suma);
+        $ordenQ->setIva($iva);
+        $ordenQ->save();
+        $this->getUser()->setFlash('error', 'Linea eliminada con exito');
+        $this->redirect('verifica_bodega/index');
+
+}
+
+    
+    
       public function executeRecuperar(sfWebRequest $request) {
        error_reporting(-1);
         $id = $request->getParameter('id');
