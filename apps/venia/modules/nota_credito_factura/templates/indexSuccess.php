@@ -47,7 +47,7 @@
             </div>
         </div>
         <div class="row" style="padding-top:5px;">
-            <div class="col-lg-2 control-label right "> Busca por Nombre Nit </div>
+            <div class="col-lg-2 control-label right "> Busca por Nombre RUC </div>
             <div class="col-lg-5 <?php if ($form['busqueda']->hasError()) echo "has-error" ?>">
                 <?php echo $form['busqueda'] ?>           
                 <span class="help-block form-error"> 
@@ -88,7 +88,7 @@
                     <tr>
                         <td>
                             <a target="_blank" href="<?php echo url_for('pdf/factura?tok=' . $registro->getCodigo()) ?>" class="btn btn-block btn-xs btn-info " target = "_blank">
-                                <?php echo $registro->getFaceNumeroFactura(); ?>
+                             <li class="fa fa-print"></li>    <?php echo $registro->getFaceNumeroFactura(); ?>
                             </a>
                         </td>     
                         <td>
@@ -146,7 +146,7 @@
                         </div>
                         <div class="col-lg-2">
                             <a target="_blank" href="<?php echo url_for('pdf/factura?tok=' . $operacion->getCodigo()) ?>" class="btn btn-block btn-xs btn-info " target = "_blank">
-                              <?php echo $operacion->getAnulaFaceNumeroFactura(); ?> 
+                             <li class="fa fa-print"></li>  <?php echo $operacion->getAnulaFaceNumeroFactura(); ?> 
                             </a>
                         </div>
                     </div>

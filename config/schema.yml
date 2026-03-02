@@ -1517,7 +1517,8 @@ propel:
      tipo_nota:                        { type: varchar(50) } 
      face_firma:                       { type: varchar(150) } 
      valor_pagado:                     { type: double } 
-     documento_canje:                        { type: varchar(50) } 
+     documento_canje:                  { type: varchar(50) } 
+     json_retorna:                     { type: varchar(450) }  
   
   nota_credito_detalle:
      _attributes: { phpName: NotaCreditoDetalle, idMethod: native }

@@ -40,34 +40,11 @@
         <?php echo $form->renderFormTag(url_for($modulo . '/nueva?id=' . $operacion->getId()), array('class' => 'form-horizontal"')) ?>
         <?php echo $form->renderHiddenFields() ?>
 
-           <div class="row" style="padding-top:5px;">
-            <div class="col-lg-2 control-label right ">Observaciones </div>
-            <div class="col-lg-5 <?php if ($form['observaciones']->hasError()) echo "has-error" ?>">
-                <?php echo $form['observaciones'] ?>           
-                <span class="help-block form-error"> 
-                    <?php echo $form['observaciones']->renderError() ?>  
-                </span>
-            </div>
-           </div>
-          <div class="row" style="padding-top:5px; padding-bottom:5px;">
-            <div class="col-lg-2 control-label right ">Valor Nota </div>
-            <div class="col-lg-2 <?php if ($form['valor']->hasError()) echo "has-error" ?>">
-                <?php echo $form['valor'] ?>           
-                <span class="help-block form-error"> 
-                    <?php echo $form['valor']->renderError() ?>  
-                </span>
-            </div>
-            <div class="col-lg-1"></div>
-            <div class="col-lg-2">
-                <button class="btn btn-primary " type="submit">
-                    <i class="fa fa-save "></i>
-                  Crear Nota
-                </button>
-            </div>
-        </div>
-        <?php echo '</form>'; ?>
+       
+ 
 
-        <?php include_partial($modulo . '/detalle', array('operacion' => $operacion, 'detalle' => $detalle, 'pagos' => $pagos)) ?>  
+        <?php include_partial($modulo . '/detalle', array( 'form'=> $form, 'operacion' => $operacion, 'detalle' => $detalle, 'pagos' => $pagos)) ?>  
+           <?php echo '</form>'; ?>
     </div>
 </div>
 

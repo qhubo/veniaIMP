@@ -120,6 +120,8 @@ class nota_credito_facturaActions extends sfActions {
         $valores['inicio'] = '00:00';
         $valores['fin'] = '23:00';
         $operaciones = new OperacionQuery();
+        $operaciones->filterByPrefijo('', Criteria::NOT_EQUAL);
+        //  $operaciones->setLimit(20);
         $operaciones->where("Operacion.Fecha  >= '" . $fechaInicio . " " . $valores['inicio'] . ":00" . "'");
         $operaciones->where("Operacion.Fecha  <= '" . $fechaFin . " " . $valores['fin'] . ":00" . "'");
         if ($valores['busqueda'] <> "") {
@@ -143,6 +145,7 @@ class nota_credito_facturaActions extends sfActions {
     }
 
     public function executeNueva(sfWebRequest $request) {
+        error_reporting(-1);
         date_default_timezone_set("America/Guatemala");
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
         $usuarioq = UsuarioQuery::create()->findOneById($usuarioId);
@@ -156,35 +159,117 @@ class nota_credito_facturaActions extends sfActions {
             $this->form->bind($request->getParameter('consulta'));
             if ($this->form->isValid()) {
                 $valores = $this->form->getValues();
-                $nuevo = new NotaCredito();
-                $nuevo->setTipoDocumento('FACTURA');
-                $nuevo->setFecha(date('Y-m-d H:i:s'));
-                $nuevo->setClienteId($operacion->getClienteId());
-                $ClienteQ = ClienteQuery::create()->findOneById($operacion->getClienteId());
-                $nuevo->setNombre($operacion->getNombre());
-                if ($ClienteQ) {
-                    $nuevo->setNombre($ClienteQ->getNombre());
+                $json = $request->getParameter('jsonRetorno');
+//                echo "<pre>";
+//                print_r($json);
+//                die();
+                $items = json_decode($json, true);
+                if (empty($items)) {
+                    $this->getUser()->setFlash('error', 'Debe seleccionar productos  ');
+                    $this->redirect('nota_credito_factura/nueva?id=' . $OperacionId);
                 }
-                $nuevo->setDocumento($operacion->getCodigo());  // => 5458488
-                $excento = false;
-                $valoresIva = ParametroQuery::ObtenerIva($valores['valor']);
-                $nuevo->setValorTotal($valores['valor']); // => 390
-                $nuevo->setSubTotal($valoresIva['VALOR_SIN_IVA']);
-                $nuevo->setIva($valoresIva['IVA']);
-                $nuevo->setConcepto($valores['observaciones']);  // => Devolucion en repuesto fact xela 102-1230
-                $nuevo->setEstatus('Nueva');
-                $nuevo->setUsuario($usuarioq->getUsuario());
-                $nuevo->setCreatedBy($usuarioq->getUsuario());
-                $nuevo->setCreatedAt(date('Y-m-d H:i:s'));
-                $nuevo->setTipoNota('CLIENTE');
-                $nuevo->save();
+                $con = Propel::getConnection();
+                $con->beginTransaction();
+                try {
+                    /// grabacion de nota
+                    $nuevo = new NotaCredito();
+                    $nuevo->setTipoDocumento('FACTURA');
+                    $nuevo->setFecha(date('Y-m-d H:i:s'));
+                    $nuevo->setClienteId($operacion->getClienteId());
+                    $ClienteQ = ClienteQuery::create()->findOneById($operacion->getClienteId());
+                    $nuevo->setNombre($operacion->getNombre());
+                    if ($ClienteQ) {
+                        $nuevo->setNombre($ClienteQ->getNombre());
+                    }
+                    $nuevo->setDocumento($operacion->getCodigo());  // => 5458488
+                    $excento = false;
+                    $valoresIva = ParametroQuery::ObtenerIva($valores['valor']);
+                    $nuevo->setValorTotal($valores['valor']); // => 390
+                    $nuevo->setSubTotal($valoresIva['VALOR_SIN_IVA']);
+                    $nuevo->setIva($valoresIva['IVA']);
+                    $nuevo->setConcepto($valores['observaciones']);  // => Devolucion en repuesto fact xela 102-1230
+                    $nuevo->setEstatus('Nueva');
+                    $nuevo->setUsuario($usuarioq->getUsuario());
+                    $nuevo->setCreatedBy($usuarioq->getUsuario());
+                    $nuevo->setCreatedAt(date('Y-m-d H:i:s'));
+                    $nuevo->setTipoNota('CLIENTE');
+                    $nuevo->setJsonRetorna($json);
+                    $nuevo->save();
+                    //*** fin grabacion nota
+                    // retorno de prudoctos
+                    foreach ($items as $item) {
+                        $detalle = OperacionDetalleQuery::create()->findOneById($item['id']);
+
+                        if ($detalle) {
+                            $cantidad = (int) $item['cantidad'];
+                            if ($cantidad > 0 && $cantidad <= $detalle->getCantidad()) {
+                                if ($item['retornar_inventario'] == 1) {
+
+                                    $productoId = $detalle->getProductoId();
+                                    $cantidad = $item['cantidad'];
+                                    $tiendaId = $detalle->getOperacion()->getTiendaId();
+
+                                    // ============================
+                                    // BUSCAR O CREAR EXISTENCIA
+                                    // ============================
+                                    $productoExistencia = ProductoExistenciaQuery::create()
+                                            ->filterByTiendaId($tiendaId)
+                                            ->filterByProductoId($productoId)
+                                            ->findOne();
+                                    if (!$productoExistencia) {
+                                        $productoExistencia = new ProductoExistencia();
+                                        $productoExistencia->setCantidad(0);
+                                        $productoExistencia->setTiendaId($tiendaId);
+                                        $productoExistencia->setProductoId($productoId);
+                                        $productoExistencia->save();
+                                    }
+
+                                    $inicial = $productoExistencia->getCantidad();
+                                    $nuevoValor = $inicial + $cantidad;
+                                    // ============================
+                                    // MOVIMIENTO KARDEX
+                                    // ============================
+                                    $movimiento = new ProductoMovimiento();
+                                    $movimiento->setTiendaId($tiendaId);
+                                    $movimiento->setProductoId($productoId);
+                                    $movimiento->setCantidad($cantidad);
+                                    $movimiento->setIdentificador("NOTA " . $nuevo->getCodigo());
+                                    $movimiento->setTipo('INGRESO');
+                                    $movimiento->setFecha(date('Y-m-d H:i:s'));
+                                    $movimiento->setMotivo("NOTA CREDITO");
+                                    $movimiento->setInicio($inicial);
+                                    $movimiento->setEmpresaId($detalle->getOperacion()->getEmpresaId());
+                                    $movimiento->setFin($nuevoValor);
+                                    $movimiento->setLineaNo("NOTAA" . $item['id']);
+                                    $movimiento->save();
+
+                                    // ============================
+                                    // ACTUALIZAR STOCK
+                                    // ============================
+
+                                    $productoExistencia->setCantidad($nuevoValor);
+                                    $productoExistencia->save();
+                                }
+                            }
+                        }
+                    }
+                    $con->commit();
+                } catch (Exception $e) {
+                    $con->rollBack();
+                    $this->getUser()->setFlash('error', $e->getMessage());
+                    $this->redirect('nota_credito_factura/nueva?id=' . $OperacionId);
+                }
+                //  fin retorno
                 //* AQUI MOVIMIENTO_BANCO
                 $this->partida($nuevo);
-                $resultado = Operacion::NotaFel($OperacionId);
-                $firma = $operacion->getAnulaFaceFirma();
-              //  $nuevo->setFaceFirma($firma);
-                if ($firma) {
-                    $nuevo->setEstatus("Procesada");
+                $certifica = $request->getParameter('certifica');
+                if ($certifica) {
+                    $resultado = Operacion::NotaFel($OperacionId, $valores['valor'], $nuevo->getCodigo());
+                    $firma = $operacion->getAnulaFaceFirma();
+                    $nuevo->setFaceFirma($firma);
+                    if ($firma) {
+                        $nuevo->setEstatus("Procesada");
+                    }
                 }
                 $nuevo->save();
                 $this->getUser()->setFlash('exito', 'Nota Credito  realizada con exito  # ' . $nuevo->getCodigo());
@@ -229,22 +314,8 @@ class nota_credito_facturaActions extends sfActions {
         $cuentaPartida = Partida::busca("IVA%NOTA%", 0, 1);
         $cuentaContable = $cuentaPartida['cuenta'];
         $nombreCuenta = $cuentaPartida['nombre'];
-        
-               $cuentaPartida = Partida::busca("DEVOLUCION NOTA", 0, 1);
-        $cuentaContable = $cuentaPartida['cuenta'];
-        $nombreCuenta = $cuentaPartida['nombre'];
-        $partidaLinea = new PartidaDetalle();
-        $partidaLinea->setPartidaId($partidaQ->getId());
-        $partidaLinea->setDetalle($nombreCuenta);
-        $partidaLinea->setCuentaContable($cuentaContable);
-        $partidaLinea->setDebe($VALORSINIVA);
-        $partidaLinea->setHaber(0);
-        $partidaLinea->setGrupo("DEVOLUCION NOTA");
-        $partidaLinea->setAdicional($tienda);
-        $partidaLinea->setTipo(0);
-        $partidaLinea->save();
-        $nota->setPartidaNo($partidaQ->getId());
-        $nota->save();
+
+
         $cuentaPartida = Partida::busca("IVA%NOTA%", 0, 1);
         $cuentaContable = $cuentaPartida['cuenta'];
         $nombreCuenta = $cuentaPartida['nombre'];

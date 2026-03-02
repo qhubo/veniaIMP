@@ -69,7 +69,7 @@ class SelePagoCxcCobrarForm extends sfForm {
 
         $NotaCreditoPe = NotaCreditoQuery::create()
                 ->filterByEstatus("Nuevo")
-               ->filterByProveedorId($proveedorId)
+             //  ->filterByProveedorId($proveedorId)
                 ->find();
         foreach($NotaCreditoPe as $regi) {
                      $listaP[$regi->getId()] ="Nota Crédito ".$regi->getCodigo();

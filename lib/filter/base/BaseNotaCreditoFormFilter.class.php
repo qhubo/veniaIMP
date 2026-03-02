@@ -39,6 +39,7 @@ abstract class BaseNotaCreditoFormFilter extends BaseFormFilterPropel
       'face_firma'            => new sfWidgetFormFilterInput(),
       'valor_pagado'          => new sfWidgetFormFilterInput(),
       'documento_canje'       => new sfWidgetFormFilterInput(),
+      'json_retorna'          => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -69,6 +70,7 @@ abstract class BaseNotaCreditoFormFilter extends BaseFormFilterPropel
       'face_firma'            => new sfValidatorPass(array('required' => false)),
       'valor_pagado'          => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'documento_canje'       => new sfValidatorPass(array('required' => false)),
+      'json_retorna'          => new sfValidatorPass(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('nota_credito_filters[%s]');
@@ -114,6 +116,7 @@ abstract class BaseNotaCreditoFormFilter extends BaseFormFilterPropel
       'face_firma'            => 'Text',
       'valor_pagado'          => 'Number',
       'documento_canje'       => 'Text',
+      'json_retorna'          => 'Text',
     );
   }
 }

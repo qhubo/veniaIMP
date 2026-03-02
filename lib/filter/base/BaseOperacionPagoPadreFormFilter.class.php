@@ -16,6 +16,7 @@ abstract class BaseOperacionPagoPadreFormFilter extends BaseFormFilterPropel
       'documento'       => new sfWidgetFormFilterInput(),
       'fecha_documento' => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate())),
       'banco_id'        => new sfWidgetFormPropelChoice(array('model' => 'Banco', 'add_empty' => true)),
+      'tipo'            => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -23,6 +24,7 @@ abstract class BaseOperacionPagoPadreFormFilter extends BaseFormFilterPropel
       'documento'       => new sfValidatorPass(array('required' => false)),
       'fecha_documento' => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'banco_id'        => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Banco', 'column' => 'id')),
+      'tipo'            => new sfValidatorPass(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('operacion_pago_padre_filters[%s]');
@@ -45,6 +47,7 @@ abstract class BaseOperacionPagoPadreFormFilter extends BaseFormFilterPropel
       'documento'       => 'Text',
       'fecha_documento' => 'Date',
       'banco_id'        => 'ForeignKey',
+      'tipo'            => 'Text',
     );
   }
 }

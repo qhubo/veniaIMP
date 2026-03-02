@@ -10,7 +10,6 @@
             </h3>
         </div>
         <div class="kt-portlet__head-toolbar">
-            <a href="<?php echo url_for($modulo . '/nueva') ?>" class="btn btn-success btn-secondary" > <i class="flaticon2-plus"></i> Nuevo </a>
         </div>
     </div>
     <div class="kt-portlet__body">
@@ -138,9 +137,9 @@
                                     <?php if ($lista) { ?>
 
 
-                                        <a target="_blank" href="<?php echo url_for('pdf/factura?tok=' . $lista->getCodigo()) ?>" class="btn btn-block btn-xs btn-info " target = "_blank">
+                                        <a target="_blank" href="<?php echo url_for('pdf/factura?tok=' . $lista->getCodigo()) ?>" class="btn btn-block btn-sm btn-info " target = "_blank">
                                             <?php if ($lista->getFaceEstado() == "FIRMADONOTA") { ?> <?php echo "NOTA "; ?> <?php } ?>
-                                            <font size='-2'>   <?php echo $registro->getFaceFirma(); ?></font>
+                                           <li class="fa fa-print"></li>  <font size='-2'>   <?php echo $registro->getFaceFirma(); ?></font>
                                         </a>
                                         <?php if ($lista->getFaceError() <> "") { ?>
                                             <font color="red">    <?php echo $lista->getFaceError(); ?> </font>

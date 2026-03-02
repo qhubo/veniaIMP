@@ -42,6 +42,7 @@ abstract class BaseNotaCreditoForm extends BaseFormPropel
       'face_firma'            => new sfWidgetFormInputText(),
       'valor_pagado'          => new sfWidgetFormInputText(),
       'documento_canje'       => new sfWidgetFormInputText(),
+      'json_retorna'          => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -73,6 +74,7 @@ abstract class BaseNotaCreditoForm extends BaseFormPropel
       'face_firma'            => new sfValidatorString(array('max_length' => 150, 'required' => false)),
       'valor_pagado'          => new sfValidatorNumber(array('required' => false)),
       'documento_canje'       => new sfValidatorString(array('max_length' => 50, 'required' => false)),
+      'json_retorna'          => new sfValidatorString(array('max_length' => 450, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('nota_credito[%s]');
