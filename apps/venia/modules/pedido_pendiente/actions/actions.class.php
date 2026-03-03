@@ -23,8 +23,8 @@ class pedido_pendienteActions extends sfActions {
 //                  $this->redirect('pedido_pendiente/index?id=');
                 }
                 if ($existencia <= 0) {
-                    $this->getUser()->setFlash('error', 'No hay existencia para el producto seleccionado ' . $detalle->getDetalle());
-                    $this->redirect('pedido_pendiente/index?id=');
+//                    $this->getUser()->setFlash('error', 'No hay existencia para el producto seleccionado ' . $detalle->getDetalle());
+//                    $this->redirect('pedido_pendiente/index?id=');
                 }
             }
         }
@@ -32,8 +32,8 @@ class pedido_pendienteActions extends sfActions {
         if ($listaPendi) {
             $detallePen = implode(",", $listaPendi);
             sfContext::getInstance()->getUser()->setAttribute('CotizacionIPendie', $detallePen, 'seguridad');
-            $this->getUser()->setFlash('error', 'No hay existencia para los producto(s) ' . $detallePen);
-            $this->redirect('orden_cotizacion/nueva?codigo=' . $ordenQ->getCodigo());
+//            $this->getUser()->setFlash('error', 'No hay existencia para los producto(s) ' . $detallePen);
+//            $this->redirect('orden_cotizacion/nueva?codigo=' . $ordenQ->getCodigo());
         }
 
         sfContext::getInstance()->getUser()->setAttribute('CotizacionId', null, 'seguridad');
