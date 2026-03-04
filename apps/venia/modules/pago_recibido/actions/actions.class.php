@@ -72,10 +72,10 @@ class pago_recibidoActions extends sfActions {
                    $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
                 
         error_reporting(-1);
-        $acceso = MenuSeguridad::Acceso('pagos_realizado');
-        if (!$acceso) {
-            $this->redirect('inicio/index');
-        }
+//        $acceso = MenuSeguridad::Acceso('pagos_realizado');
+//        if (!$acceso) {
+//            $this->redirect('inicio/index');
+//        }
         date_default_timezone_set("America/Guatemala");
         $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datosConsultaRecibo', null, 'consulta'));
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');

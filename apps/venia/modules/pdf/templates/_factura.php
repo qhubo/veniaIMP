@@ -95,7 +95,7 @@
         </td>
         <td  style="width:35%">  
             <div class="header-right">
-                <strong>No Pedido.</strong> <?php echo str_replace("LIST-","", $operacion->getCodigo()); ?><br>
+                <strong>No Pedido.</strong> <?php echo $operacion->getPedidos(); ?><br>
                 <strong>Vendedor:</strong> <?php if ($operacion->getVendedorId()) {
     echo $operacion->getVendedor()->getNombre();
 } ?> <br>

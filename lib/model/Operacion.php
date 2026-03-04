@@ -17,6 +17,23 @@
  */
 class Operacion extends BaseOperacion {
 
+        public function getPedidos() {
+            $codigo =str_replace("LIST-","", $this->getCodigo());
+            
+            $LIST[]=$codigo;
+            $ordenCotizacion = OrdenCotizacionEmpaqueQuery::create()
+                    ->useOrdenCotizacionQuery()
+                   ->filterByCodigo($this->getCodigo())
+                    ->endUse()
+                    ->find();
+            foreach ($ordenCotizacion as $registro) {
+                $empaque = OrdenCotizacionQuery::create()->findOneById($registro->getOrdenEmpaque());
+                $LIST[]= str_replace("LIST-","", $empaque->getCodigo()); ;
+            }
+            $pedidos = implode(",", $LIST);
+            return $pedidos;
+        }
+    
     public function getMedidas() {
         $ordenCotizacion = OrdenCotizacionQuery::create()->findOneByCodigo($this->getCodigo());
         $can = 0;

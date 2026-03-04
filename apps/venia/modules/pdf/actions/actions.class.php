@@ -16,7 +16,20 @@ class pdfActions extends sfActions {
         $tok = $request->getParameter('tok');
         $descarga = $request->getParameter('descarga');
         $ordenCompra = OperacionQuery::create()->findOneByCodigo($tok);
-
+        
+        $total= 0;
+        $lista = OperacionDetalleQuery::create()
+              //  ->filterByServicioId(null, Criteria::NOT_EQUAL)
+                ->filterByCantidad(0, Criteria::GREATER_THAN)
+                ->filterByOperacionId($ordenCompra->getId())
+                ->find();
+        foreach ( $lista as $reg) {
+            $total = $total+$reg->getValorTotal();
+        }
+        $ordenCompra->setValorTotal($total);
+        $ordenCompra->save();
+        
+        
         $lista = OperacionDetalleQuery::create()
                 ->filterByProductoId(null, Criteria::NOT_EQUAL)
                 ->filterByCantidad(0, Criteria::GREATER_THAN)

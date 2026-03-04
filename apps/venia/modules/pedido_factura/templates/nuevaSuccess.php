@@ -1,4 +1,29 @@
 <?php $modulo = $sf_params->get('module'); ?>
+<style>
+    .box-empaque {
+        background-color: #f8f9fa;       /* fondo suave */
+        border: 2px solid #dee2e6;       /* borde gris claro */
+        border-radius: 6px;              /* 🔥 pequeño rounded */
+        padding: 12px 10px;
+    }
+
+    .select-empaque {
+        background-color: #ffffff;       
+        border: 1px solid #0d6efd;       /* borde azul */
+        border-radius: 5px;              /* pequeño rounded */
+        height: 38px;
+    }
+
+    .select-empaque:focus {
+        border-color: #084298;
+        box-shadow: 0 0 0 0.15rem rgba(13,110,253,.25);
+    }
+
+    .btn-empaque {
+        border-radius: 5px;              /* pequeño rounded */
+    }
+</style>
+
 <div class="kt-portlet kt-portlet--responsive-mobile">
     <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
@@ -21,6 +46,31 @@
     <div class="kt-portlet__body">
 
         <?php include_partial($modulo . '/cabecera', array('transportes' => $transportes, 'operacion' => $operacion, 'modulo' => $modulo)) ?>
+      
+            <form action="<?php echo url_for('pedido_factura/agregarEmpa') ?>" method="GET">
+        <div class="row box-empaque"  style="padding-top:5px;">
+          <div class="col-lg-2"></div>
+          <div class="col-lg-2" style="font-size: 16px; font-weight: bold;">Agregar Lista Empaque </div>
+          <div class="col-lg-4">
+              <input  type="hidden" id="pedido" value="<?php echo $operacion->getCodigo() ?>" name="pedido">
+              <select class="form-control select-empaque" name="em" id="em">
+                <option selected="selected" >Seleccione</option>
+    
+                <?php foreach($empaques as $preci) { ?>
+                <?php  $ordenCoti= OrdenCotizacionEmpaqueQuery::create()->findOneByOrdenEmpaque($preci->getId());  ?>
+                <?php if (!$ordenCoti) { ?>
+                <option value="<?php echo $preci->getId(); ?>"     > <?php echo $preci->getCodigo(); ?> <?php echo $preci->getNombre(); ?></option>
+                <?php } ?>
+                 <?php } ?>
+            </select>              
+          </div>
+           <div class="col-lg-2">
+               <button class="btn btn-xs btn-primary " type="submit">
+                    <i class="fa fa-plus"></i> Agregar
+                </button>
+            </div>
+      </div>
+            </form>        
         <div class="row" style="padding-top:10px;">
             <div class="col-lg-2">
                 <a class="btn btn-sm btn-warning btn-block" data-toggle="modal" href="#staticB"> <li class="fa fa-plus"></li>  Servicios</a>
@@ -28,7 +78,9 @@
 
             </div>
 
-            <div class="col-lg-10">        <?php include_partial($modulo . '/lista', array('detalle' => $detalle, 'operacion' => $operacion, 'modulo' => $modulo)) ?></div>
+            <div class="col-lg-10">  
+
+      <?php include_partial($modulo . '/lista', array('detalle' => $detalle,'cargos'=>$cargos, 'operacion' => $operacion, 'modulo' => $modulo)) ?></div>
 
         </div>
         <div class="row">

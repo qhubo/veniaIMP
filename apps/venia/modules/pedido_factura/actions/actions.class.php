@@ -1,22 +1,41 @@
 <?php
 
-/**
- * pedido_factura actions.
- *
- * @package    plan
- * @subpackage pedido_factura
- * @author     Via
- * @version    SVN: $Id: actions.class.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
- */
-class pedido_facturaActions extends sfActions {
 
+class pedido_facturaActions extends sfActions {
+    
+    public function executeEliminaPedido(sfWebRequest $request) {
+        error_reporting(-1);
+        $id =$request->getParameter('id');
+        $ordenCotizacion = OrdenCotizacionDetalleQuery::create()->findOneById($id);
+        $ordenCoti= OrdenCotizacionEmpaqueQuery::create()->findOneByOrdenEmpaque($ordenCotizacion->getOrdenCotizacionId());
+        $codigo=$ordenCoti->getOrdenCotizacion()->getCodigo();
+        $ordenCoti->delete();
+        $this->redirect('pedido_factura/nueva?codigo=' .$codigo);
+    }       
+    public function executeAgregarEmpa(sfWebRequest $request) {
+        $pedido = $request->getParameter('pedido');
+        $em =$request->getParameter('em');
+        $ordenCo= OrdenCotizacionQuery::create()->findOneByCodigo($pedido);
+       
+        $ordenCoti= OrdenCotizacionEmpaqueQuery::create()
+                ->filterByOrdenCotizacionId($ordenCo->getId())
+                ->filterByOrdenEmpaque($em)
+                ->findOne();
+        if (!$ordenCoti) {
+          $ordenCoti = new OrdenCotizacionEmpaque();
+          $ordenCoti->setOrdenCotizacionId($ordenCo->getId());
+          $ordenCoti->setOrdenEmpaque($em);
+          $ordenCoti->save();
+        }
+                $this->getUser()->setFlash('exito', 'Lista de Empaque agregada');
+        $this->redirect('pedido_factura/nueva?codigo=' . $ordenCo->getCodigo());
+    }
     public function executeConfirmar(sfWebRequest $request) {
         $id = $request->getParameter('id');
           $tipoSerie = $request->getParameter('tipoSerie');
              error_reporting(-1);
         $query="select IFNULL(MAX(op.codigo_factura),0) codigo  from operacion_detalle de inner join operacion op on op.id=de.operacion_id where prefijo ='".$tipoSerie."'";
-  
-        $con = Propel::getConnection();
+          $con = Propel::getConnection();
         $stmt = $con->prepare($query);
         $resource = $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -42,6 +61,14 @@ class pedido_facturaActions extends sfActions {
         
         $ordenQ= OrdenCotizacionQuery::create()->findOneById($id);
         OrdenCotizacionPeer::ProcesaAutoUbicacion($ordenQ, $prefijo, $tipoSerie);
+        $ordenEMpaque = OrdenCotizacionEmpaqueQuery::create()
+              ->filterByOrdenCotizacionId($ordenQ->getId())
+              ->find();
+      foreach ($ordenEMpaque as $registro) {
+          $cotis = OrdenCotizacionQuery::create()->findOneById($registro->getOrdenEmpaque());
+          $cotis->setEstatus('Facturada');
+          $cotis->save();
+      }
         $ordenQ->setEstatus('Facturada');
         $ordenQ->save();
 //        $operaicon = OperacionQuery::create()->findOneById($id);
@@ -51,7 +78,6 @@ class pedido_facturaActions extends sfActions {
         $this->getUser()->setFlash('exito', 'Pedido facturado  con exito');
         $this->redirect('pedido_factura/index?codigo=' . $ordenQ->getCodigo());
     }
-
     public function executeEliminaLinea(sfWebRequest $request) {
         $id = $request->getParameter('id');
         $operacionDetalle = OrdenCotizacionDetalleQuery::create()->findOneById($id);
@@ -68,7 +94,6 @@ class pedido_facturaActions extends sfActions {
         $this->getUser()->setFlash('error', 'Servicio eliminado con exito');
         $this->redirect('pedido_factura/nueva?codigo=' . $codigo);
     }
-
     public function executeCambia(sfWebRequest $request) {
         $id = $request->getParameter('id');
         $val = $request->getParameter('val');
@@ -92,7 +117,6 @@ class pedido_facturaActions extends sfActions {
         $returna['linea'] = round($val * $operacionDetalle->getCantidad(), 2);
         return $this->renderText(json_encode($returna));
     }
-
     public function executeTransporte(sfWebRequest $request) {
         $id = $request->getParameter('id');
         $val = $request->getParameter('val');
@@ -102,7 +126,6 @@ class pedido_facturaActions extends sfActions {
         echo "actualizado";
         die();
     }
-
     public function executeAgrega(sfWebRequest $request) {
         $id = $request->getParameter('id');
         $servicio = $request->getParameter('servicio');
@@ -129,20 +152,38 @@ class pedido_facturaActions extends sfActions {
         $this->getUser()->setFlash('exito', 'Servicio agregado con exito ' . $servicioQ->getNombre());
         $this->redirect('pedido_factura/nueva?codigo=' . $operacion->getCodigo());
     }
-
     public function executeNueva(sfWebRequest $request) {
         $codigo = $request->getParameter('codigo');
+           error_reporting(-1);
         $this->operacion = OrdenCotizacionQuery::create()->findOneByCodigo($codigo);
+      $ordenEMpaque = OrdenCotizacionEmpaqueQuery::create()
+              ->filterByOrdenCotizacionId( $this->operacion->getId())
+              ->find();
+      $list[]=$this->operacion->getId();
+      foreach ($ordenEMpaque as $reg) {
+          $list[]=$reg->getOrdenEmpaque();
+      }
+        
         $this->detalle = OrdenCotizacionDetalleQuery::create()
                       ->filterByConfirmado(true)
+                ->filterByOrdenCotizacionId($list, Criteria::IN)
+                ->find();
+          $this->cargos = OrdenCotizacionDetalleQuery::create()
+                     ->filterByProductoId(null)
                 ->filterByOrdenCotizacionId($this->operacion->getId())
                 ->find();
         $this->servicios = ServicioQuery::create()
                 ->orderByNombre()
                 ->find();
         $this->transportes = TipoTransporteQuery::create()->orderByNombre()->find();
+        $this->empaques = OrdenCotizacionQuery::create()
+                  ->filterByCodigo($codigo, Criteria::NOT_EQUAL)
+                ->filterByEstatus('Confirmada')
+                ->filterByEmpacado(true)
+                ->find();
+          
+          
     }
-
     public function executeIndex(sfWebRequest $request) {
         $this->registros = OrdenCotizacionQuery::create()
                 ->filterByEstatus('Confirmada')

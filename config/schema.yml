@@ -1466,7 +1466,15 @@ propel:
       bulto_fin:                        { type: varchar(10) }
       bulto_superior:                   { type: integer }
       confirmado:                       { type: boolean, default: false}
+  
     
+  orden_cotizacion_empaque:
+      _attributes: { phpName: OrdenCotizacionEmpaque, idMethod: native }
+      id:  
+      orden_cotizacion_id:                ~
+      orden_empaque:                      { type: integer }
+     
+         
     
   moneda:
      _attributes: { phpName: Moneda, idMethod: native }

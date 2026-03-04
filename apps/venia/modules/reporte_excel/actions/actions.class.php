@@ -427,7 +427,7 @@ $ordenCompra=$registro;
         $sheet->setCellValue("C11", $ordenCompra->getNit());
         
         $sheet->setCellValue("F6", "No Pedido:");
-        $sheet->setCellValue("G6", str_replace("LIST-","", $ordenCompra->getCodigo()));
+        $sheet->setCellValue("G6", str_replace("LIST-","", $ordenCompra->getPedidos()));
         $sheet->setCellValue("F7", "Vendedor:");
         if ($ordenCompra->getVendedorId()) {
         $sheet->setCellValue("G7", $ordenCompra->getVendedor()->getNombre());
