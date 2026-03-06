@@ -46,31 +46,35 @@
     <div class="kt-portlet__body">
 
         <?php include_partial($modulo . '/cabecera', array('transportes' => $transportes, 'operacion' => $operacion, 'modulo' => $modulo)) ?>
-      
-            <form action="<?php echo url_for('pedido_factura/agregarEmpa') ?>" method="GET">
-        <div class="row box-empaque"  style="padding-top:5px;">
-          <div class="col-lg-2"></div>
-          <div class="col-lg-2" style="font-size: 16px; font-weight: bold;">Agregar Lista Empaque </div>
-          <div class="col-lg-4">
-              <input  type="hidden" id="pedido" value="<?php echo $operacion->getCodigo() ?>" name="pedido">
-              <select class="form-control select-empaque" name="em" id="em">
-                <option selected="selected" >Seleccione</option>
-    
-                <?php foreach($empaques as $preci) { ?>
-                <?php  $ordenCoti= OrdenCotizacionEmpaqueQuery::create()->findOneByOrdenEmpaque($preci->getId());  ?>
-                <?php if (!$ordenCoti) { ?>
-                <option value="<?php echo $preci->getId(); ?>"     > <?php echo $preci->getCodigo(); ?> <?php echo $preci->getNombre(); ?></option>
-                <?php } ?>
-                 <?php } ?>
-            </select>              
-          </div>
-           <div class="col-lg-2">
-               <button class="btn btn-xs btn-primary " type="submit">
-                    <i class="fa fa-plus"></i> Agregar
-                </button>
+
+        <form action="<?php echo url_for('pedido_factura/agregarEmpa') ?>" method="GET">
+            <div class="row box-empaque"  style="padding-top:5px;">
+                <div class="col-lg-2"></div>
+                <div class="col-lg-2" style="font-size: 16px; font-weight: bold;">Agregar Lista Empaque </div>
+                <div class="col-lg-4">
+                    <input  type="hidden" id="pedido" value="<?php echo $operacion->getCodigo() ?>" name="pedido">
+                    <select class="form-control select-empaque" name="em" id="em">
+                        <option selected="selected" >Seleccione</option>
+
+                        <?php foreach ($empaques as $preci) { ?>
+                            <?php $ordenCoti = OrdenCotizacionEmpaqueQuery::create()->findOneByOrdenEmpaque($preci->getId()); ?>
+                            <?php if (!$ordenCoti) { ?>
+                                <option value="<?php echo $preci->getId(); ?>"     > <?php echo $preci->getCodigo(); ?> <?php echo $preci->getNombre(); ?></option>
+                            <?php } ?>
+                        <?php } ?>
+                    </select>              
+                </div>
+                <div class="col-lg-2">
+                    <button class="btn btn-xs btn-primary " type="submit">
+                        <i class="fa fa-plus"></i> Agregar
+                    </button>
+                </div>
+                       <div class="col-lg-2">
+  
             </div>
-      </div>
-            </form>        
+                
+            </div>
+        </form>        
         <div class="row" style="padding-top:10px;">
             <div class="col-lg-2">
                 <a class="btn btn-sm btn-warning btn-block" data-toggle="modal" href="#staticB"> <li class="fa fa-plus"></li>  Servicios</a>
@@ -80,7 +84,7 @@
 
             <div class="col-lg-10">  
 
-      <?php include_partial($modulo . '/lista', array('detalle' => $detalle,'cargos'=>$cargos, 'operacion' => $operacion, 'modulo' => $modulo)) ?></div>
+                <?php include_partial($modulo . '/lista', array('detalle' => $detalle,  'operacion' => $operacion, 'modulo' => $modulo)) ?></div>
 
         </div>
         <div class="row">
@@ -165,8 +169,9 @@
                 var id = <?php echo $registro->getId(); ?>;
                 var val = $("#valor<?php echo $registro->getId(); ?>").val();
                 $.get('<?php echo url_for("pedido_factura/cambia") ?>', {id: id, val: val}, function (response) {
-                    $("#linea<?php echo $registro->getId(); ?>").val(response.linea);
-                    $("#total").html(response.total);
+     
+        $("#linea<?php echo $registro->getId(); ?>").val(response.linea);
+                   $("#total").html(response.total);
                 },
                         'json'
                         );
@@ -211,9 +216,9 @@
                 </div>
             <?PHP } ?>
             <div class="modal-footer">
-              <a class="btn btn-success" id="btnConfirmar">
-    <i class="flaticon2-lock"></i> Confirmar
-</a>
+                <a class="btn btn-success" id="btnConfirmar">
+                    <i class="flaticon2-lock"></i> Confirmar
+                </a>
                 <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancelar </button>
 
             </div>
@@ -221,25 +226,25 @@
         </div>
     </div>
 </div>
-    
-    <script>
-document.getElementById("btnConfirmar").addEventListener("click", function () {
 
-    // capturar valor del select
-    var tipoSerie = document.getElementById("tipoSerie").value;
+<script>
+    document.getElementById("btnConfirmar").addEventListener("click", function () {
 
-    if (!tipoSerie) {
-        alert("Seleccione el tipo de serie");
-        return;
-    }
+        // capturar valor del select
+        var tipoSerie = document.getElementById("tipoSerie").value;
 
-    // construir URL Symfony
-    var url = "<?php echo url_for($modulo . '/confirmar') ?>?id=<?php echo $operacion->getId() ?>";
+        if (!tipoSerie) {
+            alert("Seleccione el tipo de serie");
+            return;
+        }
 
-    // agregar parámetro
-    url += "&tipoSerie=" + encodeURIComponent(tipoSerie);
+        // construir URL Symfony
+        var url = "<?php echo url_for($modulo . '/confirmar') ?>?id=<?php echo $operacion->getId() ?>";
 
-    // redireccionar
-    window.location.href = url;
-});
+                // agregar parámetro
+                url += "&tipoSerie=" + encodeURIComponent(tipoSerie);
+
+                // redireccionar
+                window.location.href = url;
+            });
 </script>
