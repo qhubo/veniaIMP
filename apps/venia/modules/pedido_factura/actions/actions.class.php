@@ -100,8 +100,10 @@ class pedido_facturaActions extends sfActions {
                 ->find();
         foreach ($ordenEMpaque as $registro) {
             $cotis = OrdenCotizacionQuery::create()->findOneById($registro->getOrdenEmpaque());
+            if ($cotis) {
             $cotis->setEstatus('Facturada');
             $cotis->save();
+            }
         }
         $ordenQ->setEstatus('Facturada');
         $ordenQ->save();

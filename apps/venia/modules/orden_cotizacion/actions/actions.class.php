@@ -572,8 +572,9 @@ class orden_cotizacionActions extends sfActions {
         }
 
 
-        if ($tipoSerie <> "") {
-            $query = "select IFNULL(MAX(op.codigo),0) codigo  from orden_cotizacion_detalle de inner join orden_cotizacion op on op.id=de.orden_cotizacion_id where prefijo ='" . $tipoSerie . "'";
+        if ($tipoSerieV <> "") {
+            $tipoSerie=$tipoSerieV;
+            $query = "select IFNULL(MAX(op.codigo),0) codigo  from orden_cotizacion_detalle de inner join orden_cotizacion op on op.id=de.orden_cotizacion_id where prefijo ='" . $tipoSerieV . "'";
 
             $con = Propel::getConnection();
             $stmt = $con->prepare($query);
@@ -581,7 +582,7 @@ class orden_cotizacionActions extends sfActions {
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($result) {
                 $codigo = $result[0]['codigo'];
-                $numero = (int) str_replace($tipoSerie, "", $codigo) + 1;
+                $numero = (int) str_replace($tipoSerieV, "", $codigo) + 1;
             }
 
 
