@@ -83,7 +83,6 @@
             </div>
 
             <div class="col-lg-10">  
-
                 <?php include_partial($modulo . '/lista', array('detalle' => $detalle,  'operacion' => $operacion, 'modulo' => $modulo)) ?></div>
 
         </div>

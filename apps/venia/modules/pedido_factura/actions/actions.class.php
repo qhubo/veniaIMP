@@ -239,8 +239,7 @@ class pedido_facturaActions extends sfActions {
                 $regi->delete();
             }
         }
-        
-           $LISTA = OrdenCotizacionDetalleQuery::create()
+         $LISTA = OrdenCotizacionDetalleQuery::create()
                 ->filterByOrdenCotizacionId($list, Criteria::IN)
                 ->withColumn('sum(OrdenCotizacionDetalle.ValorTotal)', 'TotalValorTotal')
                 ->findOne();
