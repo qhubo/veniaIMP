@@ -169,9 +169,9 @@
                     <div class="col-lg-3" ></div>
 
                     <div class="col-lg-2" >
-                        <?php if (count($productoBorrado) > 0) { ?>
+                        
                             <a class="btn btn-block  btn-xs btn-danger" data-toggle="modal" href="#staticPendiente">Recuperar Producto  </a>
-                        <?php } ?>
+                        
                     </div>
                     <div class="col-lg-2" >
                         <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $idp) ?>" class="btn btn-block btn-sm btn-warning" > <i class="flaticon2-print"></i> Reporte </a>
@@ -651,4 +651,5 @@ $(document).ready(function(){
             <div class="modal-footer"><button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancelar</button>            </div>
         </div>
     </div>
+
 </div> 

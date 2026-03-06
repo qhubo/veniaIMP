@@ -366,14 +366,14 @@ class verifica_bodegaActions extends sfActions {
                 // ==============================
                 //OBTENER CODIGO DEL PEDIDO
                 // ==============================
-                $codigoPedido = str_replace("LIST-", "", $CotizacionEmpaque->getCodigo());
+                $codigoPedido =trim( str_replace("LIST-", "", $CotizacionEmpaque->getCodigo()));
                 // ==============================
                 // PRODUCTOS DEL PEDIDO ORIGINAL
                 // ==============================
     
        
                 $listaPedido = OrdenCotizacionDetalleQuery::create()
-                      ->filterByProductoId($productosEmpaque, Criteria::NOT_IN)
+                      // ->filterByProductoId($productosEmpaque, Criteria::NOT_IN)
                         ->useOrdenCotizacionQuery()
                         ->filterByCodigo($codigoPedido)
                         ->endUse()
