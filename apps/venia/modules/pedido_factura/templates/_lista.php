@@ -62,7 +62,6 @@
                 </td>
             </tr>
         <?php } ?>
-
     </tbody>
     <tfoot>
         <tr>
