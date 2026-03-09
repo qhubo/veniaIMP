@@ -1,4 +1,4 @@
-<?php
+2<?php
 
 /**
  * estado_cuenta actions.
@@ -178,7 +178,7 @@ $listab[] ='CHEQUE PREFECHADO';
         foreach ($opeacionesPago as $pago) {
             $saldoINcial = $saldoINcial - $pago->getValor();
             $Key = $pago->getFechaCreo('YmdHis') . "_C";
-            $data['codigo'] = "RECIBO " . $pago->getCodigo();
+            $data['codigo'] = "RECIBO " . $pago->getCodigo()."  -".$pago->getId();
             $data['fecha'] = $pago->getFechaCreo('d/m/Y H:i');
             $data['abono'] = $pago->getValor();
             $data['cargo'] = 0;
