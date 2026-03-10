@@ -34,7 +34,7 @@ class OrdenCotizacionPeer extends BaseOrdenCotizacionPeer {
             $tiendaQ = TiendaQuery::create()->findOne();
         }
         $operacion->setCodigoEstablecimiento($tiendaQ->getCodigoEstablecimiento());
-        $operacion->setFecha($cotizacion->getFecha('Y-m-d'));
+        $operacion->setFecha(date('Y-m-d'));
         $operacion->setTipo("Cotizacion");
         $operacion->setEstatus('Facturado');
         $operacion->setTransporte($cotizacion->getTransporte());
