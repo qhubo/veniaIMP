@@ -77,6 +77,10 @@ class OrdenCotizacionPeer extends BaseOrdenCotizacionPeer {
         $empresaId = $operacion->getEmpresaId();
         $totalVal = 0;
         $totalIva = 0;
+        $operacionDetalle  = OperacionDetalleQuery::create()->filterByOperacionId($operacion->getId())->find();
+        if ($operacionDetalle) {
+            $operacionDetalle->delete();
+        }
         foreach ($ordenDetalle as $regi) {
             //** CREACION DE LINEA
             $valorlineaTOTAL = $regi->getValorUnitario() * $regi->getCantidad();
