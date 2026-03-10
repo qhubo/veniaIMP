@@ -93,7 +93,7 @@ class OrdenCotizacionPeer extends BaseOrdenCotizacionPeer {
             $detalle->setTotalIva($IVA);
             $detalle->setCantidad($regi->getCantidad());
             $detalle->setCostoUnitario($regi->getCostoUnitario());
-            $detalle->setLineaNo($regi->getId());
+            $detalle->setLineaNo("P".$regi->getId());
 
             $con = Propel::getConnection();
             $con->beginTransaction();
@@ -162,7 +162,7 @@ class OrdenCotizacionPeer extends BaseOrdenCotizacionPeer {
             $detalle->setTotalIva($IVA);
             $detalle->setCantidad($regi->getCantidad());
             $detalle->setCostoUnitario($regi->getCostoUnitario());
-            $detalle->setLineaNo($regi->getId());
+            $detalle->setLineaNo("ser".$regi->getId());
             $detalle->save();
 
         }

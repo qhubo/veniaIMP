@@ -529,6 +529,13 @@ class orden_cotizacionActions extends sfActions {
             if ($ordenQ) {
 
 
+                $cleinteQ = ClienteQuery::create()->findOneById($id);
+                if ($cleinteQ) {
+//                    echo $cleinteQ->getVendedorId();
+//                    die();
+                    $ordenQ->setVendedorId($cleinteQ->getVendedorId());
+                }
+                
                 $ordenQ->setClienteId($id);
                 $ordenQ->setPaisId($provpe->getPaisId());
                 $ordenQ->setNombre($provpe->getNombreFacturar());
@@ -814,7 +821,7 @@ class orden_cotizacionActions extends sfActions {
 //                if ($valores['exenta']) {
 //                    $orden->setExcento(true);
 //                }
-                $orden->setVendedorId(null);
+               // $orden->setVendedorId(null);
                 if ($valores['vendedor_id']) {
                     $orden->setVendedorId($valores['vendedor_id']);
                 }

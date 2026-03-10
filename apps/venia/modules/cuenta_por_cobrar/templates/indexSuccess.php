@@ -220,6 +220,7 @@ $(document).ready(function () {
 
     function recalcularTotal() {
         let total = 0;
+
         $('.valor-pagar').each(function () {
             let valor = parseFloat($(this).val()) || 0;
             total += valor;
@@ -229,83 +230,93 @@ $(document).ready(function () {
         return total;
     }
 
-    // 🔹 Validación en tiempo real
+    // 🔹 Validación mientras escribe
     $(document).on('input', '.valor-pagar', function () {
 
-        let valor = $(this).val().replace(/[^0-9.]/g, '');
+        let valor = $(this).val();
 
+        // permitir solo números y punto
+        valor = valor.replace(/[^0-9.]/g, '');
+
+        // permitir solo un punto decimal
         let partes = valor.split('.');
         if (partes.length > 2) {
             valor = partes[0] + '.' + partes[1];
         }
 
+        $(this).val(valor);
+
         let numero = parseFloat(valor) || 0;
-
-        if (numero < 0) numero = 0;
-
         let maximo = parseFloat($(this).data('max'));
-        if (numero > maximo) numero = maximo;
 
-        $(this).val(numero);
+        if (numero > maximo) {
+            $(this).val(maximo.toFixed(2));
+        }
+
         recalcularTotal();
     });
 
+    // 🔹 Formatear al salir del campo
     $(document).on('blur', '.valor-pagar', function () {
+
         let numero = parseFloat($(this).val()) || 0;
+        let maximo = parseFloat($(this).data('max'));
+
+        if (numero < 0) numero = 0;
+        if (numero > maximo) numero = maximo;
+
         $(this).val(numero.toFixed(2));
+
         recalcularTotal();
     });
 
     // 🔥 PROCESAR PAGO
-// 🔥 PROCESAR PAGO
-$('#btnProcesarPago').on('click', function (e) {
+    $('#btnProcesarPago').on('click', function (e) {
 
-    e.preventDefault();
+        e.preventDefault();
 
-    let total = recalcularTotal();
+        let total = recalcularTotal();
 
-    if (total <= 0) {
-        alert('Debe ingresar un monto a pagar');
-        return false;
-    }
-
-    // 🔹 Construir lista de seleccionados
-    let lista = [];
-
-    $('.valor-pagar').each(function () {
-
-        let valor = parseFloat($(this).val()) || 0;
-
-        if (valor > 0) {
-
-            lista.push({
-                id: $(this).attr('datoid'),
-                valor: valor.toFixed(2)
-            });
-
+        if (total <= 0) {
+            alert('Debe ingresar un monto a pagar');
+            return false;
         }
 
+        // 🔹 Construir lista de pagos
+        let lista = [];
+
+        $('.valor-pagar').each(function () {
+
+            let valor = parseFloat($(this).val()) || 0;
+
+            if (valor > 0) {
+
+                lista.push({
+                    id: $(this).attr('datoid'),
+                    valor: valor.toFixed(2)
+                });
+
+            }
+
+        });
+
+        // convertir a JSON
+        let jsonList = encodeURIComponent(JSON.stringify(lista));
+
+        let baseUrl = "<?php echo url_for('cuenta_por_cobrar/pagoMasiva') ?>?id=<?php echo $prover; ?>";
+
+        let nuevaUrl = baseUrl
+                + "&total=" + total.toFixed(2)
+                + "&list=" + jsonList;
+
+        $('#ajaxmodalPago .modal-content').load(nuevaUrl, function () {
+            $('#ajaxmodalPago').modal('show');
+        });
+
     });
-
-    // Convertir a JSON y codificar
-    let jsonList = encodeURIComponent(JSON.stringify(lista));
-
-    let baseUrl = "<?php echo url_for('cuenta_por_cobrar/pagoMasiva') ?>?id=<?php echo $prover; ?>";
-
-    let nuevaUrl = baseUrl
-        + "&total=" + total.toFixed(2)
-        + "&list=" + jsonList;
-
-    $('#ajaxmodalPago .modal-content').load(nuevaUrl, function () {
-        $('#ajaxmodalPago').modal('show');
-    });
-
-});
 
 });
 </script>
-
-       
 
  <div class="modal fade" id="ajaxmodalPago" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
          role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

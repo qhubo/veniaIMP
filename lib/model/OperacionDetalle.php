@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * Skeleton subclass for representing a row from the 'operacion_detalle' table.
  *
@@ -17,36 +15,37 @@
  *
  * @package    propel.generator.lib.model
  */
-class OperacionDetalle extends BaseOperacionDetalle
-{
-    
-         public function save(PropelPDO $con = null) {
+class OperacionDetalle extends BaseOperacionDetalle {
+
+    public function save(PropelPDO $con = null) {
         $empresaId = UsuarioQuery::getEmpresaSeleccionada('OperacionDetalle');
-       
+
         if ($this->isNew()) {
-             if ($empresaId) {
-            $this->setEmpresaId($empresaId);
+            if ($empresaId) {
+                $this->setEmpresaId($empresaId);
+            }
         }
-                  
+        if (!$this->getProductoId()) {
+            if (!$this->getServicioId()){
+                $this->setServicioId(1);  
+            }
         }
-     
+
         parent::save($con);
     }
-    
-    
-    public function getDetallePro(){
-        $return=null;
+
+    public function getDetallePro() {
+        $return = null;
         if ($this->getProductoId()) {
-            $return= InventarioVenceQuery::create()
+            $return = InventarioVenceQuery::create()
                     ->filterByProductoId($this->getProductoId())
                     ->filterByDespachado(false)
                     ->groupByFechaVence()
                     ->filterByTiendaId($this->getOperacion()->getTiendaId())
-                     ->withColumn('count(InventarioVence.Id)', 'TotalGeneral')
+                    ->withColumn('count(InventarioVence.Id)', 'TotalGeneral')
                     ->find();
-            
         }
         return $return;
     }
-    
+
 }
