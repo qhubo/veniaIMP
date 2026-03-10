@@ -109,7 +109,7 @@
                                         <a target="_blank" href="<?php echo url_for('reporte/ordenCotizacion?token='.$orden->getToken()) ?>" class="btn btn-sm btn-block btn-warning" > 
       <i class="flaticon2-printer"></i>
                                         </a>
-                                 <a target="_blank" href="<?php echo url_for('reporte_excel/pedido?id=' . $reg->getId()) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"> <i class="flaticon2-printer"></i>Reporte </a>
+                                 <a target="_blank" href="<?php echo url_for('reporte_excel/pedido?id=' . $reg->getOrdenCotizacionId()) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"> <i class="flaticon2-printer"></i>Reporte </a>
         
                             <a href="<?php echo url_for('orden_cotizacion/nueva?codigo=' . $reg->getOrdenCotizacion()->getCodigo()) ?>" class="btn btn-sm  btn-block btn-dark btn-secondary" > Editar  </a></td>
                     </tr>
