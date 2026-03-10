@@ -9,6 +9,17 @@
  * @version    SVN: $Id: actions.class.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
  */
 class reporte_kardexActions extends sfActions {
+    
+        public function executeElimina(sfWebRequest $request) {
+        $movimiento = ProductoMovimientoQuery::create()->findOneById($request->getParameter('id'));
+        $movimiento->setMotivo("ELIMINADO");
+        $movimiento->setIdentificador($movimiento->getProductoId());
+        $movimiento->setProductoId(null);
+        $movimiento->save();
+        $this->getUser()->setFlash('error', 'Linea Eliminada ');
+        $this->redirect('reporte_kardex/index');
+    }
+
 
     public function executeActualizaCosto(sfWebRequest $request) {
         error_reporting(-1);
@@ -61,14 +72,24 @@ class reporte_kardexActions extends sfActions {
         $this->registro = ProductoMovimientoQuery::create()->findOneById($id);
     }
 
-    public function executeAjusta(sfWebRequest $request) {
+   public function executeAjusta(sfWebRequest $request) {
+             error_reporting(-1);
+              $product= ProductoExistenciaQuery::create()
+                      ->filterByTransito(null)
+                      ->find();
+              foreach($product as $reg) {
+                  $reg->setTransito(0);
+                  $reg->save();
+              }
         $id = $request->getParameter('id');
         $actua = $request->getParameter('actua');
+
         $productoMovimiento = ProductoMovimientoQuery::create()
-             //   ->filterByTiendaId(21)
+                ->filterByTiendaId(16, Criteria::NOT_EQUAL)
+                //   ->filterByTiendaId(21)
                 ->filterByProductoId($id)
                 ->orderById('Asc')
-                ->filterByCantidad(0, Criteria::GREATER_THAN)
+                //  ->filterByCantidad(0, Criteria::GREATER_THAN)
                 ->find();
         $can = 0;
         foreach ($productoMovimiento as $reg) {
@@ -79,12 +100,17 @@ class reporte_kardexActions extends sfActions {
             }
             if ($can > 0) {
                 $cantidad = $reg->getCantidad();
+                if (($cantidad == 0)) {
+                    echo "<br>--------------- REINICIOOOOOOOOOOOOO " . $reg->getInicio() . "------------------------<br>";
+                    $inicio = 0;
+                }
                 if (($reg->getTipo() == "INGRESO") or ($reg->getTipo() == "TRANSITO INGRESO")) {
                     $fin = $inicio + $cantidad;
                 } else {
                     $fin = $inicio - $cantidad;
                 }
-                echo $reg->getIdentificador() . " <font color='red'>" . $reg->getId() . "</font> " . $reg->getFecha() . " " . $inicio . " " . $reg->getTipo() . " <font color='blue'> " . $cantidad . "  </font> " . $fin . "";
+
+                echo $reg->getIdentificador() . " <font color='red'>" . $reg->getId() . "</font> " . $reg->getFecha() . " " . $inicio . " " . $reg->getTipo() . " <font color='blue'> " . $cantidad . "  </font> ---> " . $fin . "";
                 echo "<br>";
                 if ($actua) {
                     $reg->setInicio($inicio);
@@ -95,16 +121,52 @@ class reporte_kardexActions extends sfActions {
             }
             $can++;
         }
+        echo "<hr>";
+        echo "EXISTENCIA FINAL  <font size='18px;'>" . $fin . "</font>";
+        $productoUbicaciones = ProductoUbicacionQuery::create()
+                ->filterByProductoId($id)
+               ->where("(ProductoUbicacion.Cantidad >0 and ProductoUbicacion.Transito =0  )")
+                ->count();
+        if ($productoUbicaciones > 1) {
+            echo "<br> CANTIDAD DE UBICACIONES <font size='14px;'>" . $productoUbicaciones . "</font>";
+        }
+        
+            if (!$actua) {
+
+            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+            $host = $_SERVER['HTTP_HOST'];
+            $uri = $_SERVER['REQUEST_URI'];
+            $url_actual = $protocol . $host . $uri;
+
+            $url_actual = $url_actual . "/actua/1";
+            echo '<br> <br>  <a href="' . htmlspecialchars($url_actual) . '">CONFIRMAR ACTUALIZAR </a>';
+            }
+     //       die('aki');
+      //  if ($actua==1) {
+            $productoExistencia = ProductoExistenciaQuery::create()
+                  ->filterByTiendaId(16, Criteria::NOT_EQUAL)
+                //   ->where("(ProductoExistencia.Transito =0  )")
+                  ->filterByProductoId($id)
+                  ->findOne();
+            
+            $productoExistencia->setCantidad($fin);
+            $productoExistencia->save();
+     
+                 
+            
+            echo '<br> <br> **************************ACTUALIZADO****************';
+            
+    //    }
+        
         die();
     }
-
     /**
      * Executes index action
      *
      * @param sfRequest $request A request object
      */
     public function executeIndex(sfWebRequest $request) {
-
+        error_reporting(-1);
         $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaKa'));
         if (!$valores) {
             $valores['fechaInicio'] = date('d/m/Y');
@@ -172,6 +234,13 @@ class reporte_kardexActions extends sfActions {
         $operaciones->orderByProductoId('Desc');
         $operaciones->orderById('Desc');
         $this->movimiento = $operaciones->find();
+        
+        
+        $productoId = 0;
+        if (count($this->movimiento) > 0) {
+            $productoId = $this->movimiento[0]->getProductoId();
+        }
+        $this->productoId = $productoId;
     }
 
     public function executeReporte(sfWebRequest $request) {

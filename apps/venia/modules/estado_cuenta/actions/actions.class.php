@@ -1,4 +1,4 @@
-2<?php
+<?php
 
 /**
  * estado_cuenta actions.

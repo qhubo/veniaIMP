@@ -91,10 +91,13 @@
                     <i class="fa fa-search "></i> Consultar
                 </button>
             </div>
-
+ <div class="col-lg-1">
+                        <?php  if ($usuarioId==1) {  ?>
+           <a class="btn btn-sm btn-dark" target="_blank" href="<?php echo url_for($modulo . '/ajusta?id='.$productoId) ?>" >..</a>
+        <?PHP } ?>
         </div>
   
-        
+            </div>
 
 
 
@@ -147,9 +150,40 @@
                               <?php echo Parametro::formato($reg->getVenta()); ?>
                                 
                                    <?php } ?>
+                                
+                                  <?php if ($usuarioId == '1') { ?>
+                                    <a  style="height:15px !important; font-size: 10px !important;" class="btn btn-sm btn-danger" data-toggle="modal" href="#static<?php echo $reg->getId() ?>"> </a>
+                    <?php  echo $reg->getId(); ?> 
+                                          <?php } ?>
                                </td> 
 
                         </tr>
+                        
+                          <div id="static<?php echo $reg->getId() ?>" class="modal fade" tabindex="-1" data-backdrop="static" data-keyboard="false">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Confirmación Kadex</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p> Esta seguro de eliminar Linea Kardex
+                                        <span class="caption-subject font-green bold uppercase"> 
+                                            <?php echo $reg->getIdentificador() ?>
+                                        </span> ?
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <a class="btn  btn-danger " href="<?php echo url_for($modulo . '/elimina?id=' . $reg->getId()) ?>" >
+                                        <i class="fa fa-trash-o "></i> Confirmar</a> 
+                                    <button type="button" data-dismiss="modal" class="btn dark btn-outline">Cancelar</button>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div> 
                     <?php } ?>
                 </tbody>
             </table>
@@ -176,4 +210,6 @@
     </div>
 
 <?php } ?>
+
+
 
