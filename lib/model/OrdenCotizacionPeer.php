@@ -69,7 +69,7 @@ class OrdenCotizacionPeer extends BaseOrdenCotizacionPeer {
         /// ** FIN CREACION
         $ordenDetalle = OrdenCotizacionDetalleQuery::create()
                 ->orderByBultoInicio('Asc')
-                 ->filterByConfirmado(true)
+               //  ->filterByConfirmado(true)
                 ->filterByCantidad(0, Criteria::GREATER_THAN)
                 ->filterByOrdenCotizacionId($list, Criteria::IN)
                 ->find();
@@ -93,7 +93,7 @@ class OrdenCotizacionPeer extends BaseOrdenCotizacionPeer {
             $detalle->setTotalIva($IVA);
             $detalle->setCantidad($regi->getCantidad());
             $detalle->setCostoUnitario($regi->getCostoUnitario());
-            $detalle->setLineaNo("P".$regi->getId());
+            $detalle->setLineaNo("Pp".$regi->getId());
 
             $con = Propel::getConnection();
             $con->beginTransaction();
@@ -138,34 +138,34 @@ class OrdenCotizacionPeer extends BaseOrdenCotizacionPeer {
         }
         
         
-        $ordenDetalle = OrdenCotizacionDetalleQuery::create()
-                ->filterByProductoId(null)
-                ->filterByCantidad(0, Criteria::GREATER_THAN)
-                ->filterByOrdenCotizacionId($cotizacion->getId())
-                ->find();
-        $bodegaId = $operacion->getTiendaId();
-        $empresaId = $operacion->getEmpresaId();
-        $totalVal = 0;
-        $totalIva = 0;
-        foreach ($ordenDetalle as $regi) {
-                   $valorlineaTOTAL = $regi->getValorUnitario() * $regi->getCantidad();
-            $valorlineaTOTAL = round($valorlineaTOTAL, 2);
-            $IVA = round($valorlineaTOTAL - ($valorlineaTOTAL / 1.12), 2);
-            $detalle = new OperacionDetalle();
-            $detalle->setServicioId($regi->getServicioId());
-            $detalle->setCodigo($regi->getCodigo());
-            $detalle->setOperacionId($operacion->getId());
-            $detalle->setServicioId($regi->getServicioId());
-            $detalle->setDetalle($regi->getDetalle());
-            $detalle->setValorUnitario($regi->getValorUnitario());
-            $detalle->setValorTotal($valorlineaTOTAL);
-            $detalle->setTotalIva($IVA);
-            $detalle->setCantidad($regi->getCantidad());
-            $detalle->setCostoUnitario($regi->getCostoUnitario());
-            $detalle->setLineaNo("ser".$regi->getId());
-            $detalle->save();
-
-        }
+//        $ordenDetalle = OrdenCotizacionDetalleQuery::create()
+//                ->filterByProductoId(null)
+//                ->filterByCantidad(0, Criteria::GREATER_THAN)
+//                ->filterByOrdenCotizacionId($cotizacion->getId())
+//                ->find();
+//        $bodegaId = $operacion->getTiendaId();
+//        $empresaId = $operacion->getEmpresaId();
+//        $totalVal = 0;
+//        $totalIva = 0;
+//        foreach ($ordenDetalle as $regi) {
+//                   $valorlineaTOTAL = $regi->getValorUnitario() * $regi->getCantidad();
+//            $valorlineaTOTAL = round($valorlineaTOTAL, 2);
+//            $IVA = round($valorlineaTOTAL - ($valorlineaTOTAL / 1.12), 2);
+//            $detalle = new OperacionDetalle();
+//            $detalle->setServicioId($regi->getServicioId());
+//            $detalle->setCodigo($regi->getCodigo());
+//            $detalle->setOperacionId($operacion->getId());
+//            $detalle->setServicioId($regi->getServicioId());
+//            $detalle->setDetalle($regi->getDetalle());
+//            $detalle->setValorUnitario($regi->getValorUnitario());
+//            $detalle->setValorTotal($valorlineaTOTAL);
+//            $detalle->setTotalIva($IVA);
+//            $detalle->setCantidad($regi->getCantidad());
+//            $detalle->setCostoUnitario($regi->getCostoUnitario());
+//            $detalle->setLineaNo("ser".$regi->getId());
+//            $detalle->save();
+//
+//        }
         
         $operacion->setValorTotal($totalVal);
         $operacion->setIva($totalIva);
