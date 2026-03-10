@@ -2,7 +2,7 @@
 <div class="row"  style="background-color:#F9FBFE; padding: 10px">
     <div class="col-lg-1" ><div style="text-align:right">Fecha</div> </div>
     <div class="col-lg-2" >
-       <input class="form-control"  readonly="1"  type="text"  value="<?php echo $operacion->getFecha('d/m/Y'); ?>" >
+       <input class="form-control"  readonly="1"  type="text"  value="<?php echo date('d/m/Y'); ?>" >
     </div>
     <?php if ($cliente) { ?>
         <div class="col-lg-3"><strong>  Cliente</strong> 
