@@ -320,7 +320,7 @@ document.addEventListener("DOMContentLoaded", function () {
     /* ==========================================
        GENERAR JSON ANTES DE ENVIAR FORM
     ========================================== */
- function generarJsonRetorno() {
+function generarJsonRetorno() {
 
     let resultado = [];
 
@@ -328,19 +328,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let id = input.dataset.id;
         let cantidad = parseFloat(input.value) || 0;
+
         let check = document.querySelector(".checkRetorno[data-id='" + id + "']");
+        let retornarInventario = (check && check.checked) ? 1 : 0;
+
         let ubicacionInput = document.querySelector(".inputUbicacion[data-id='" + id + "']");
         let ubicacion = ubicacionInput ? ubicacionInput.value : "";
 
-        if (cantidad > 0 ) {
+        if (cantidad > 0) {
 
             resultado.push({
                 id: id,
                 cantidad: cantidad,
-                retornar_inventario: 1,
+                retornar_inventario: retornarInventario,
                 ubicacion: ubicacion
             });
+
         }
+
     });
 
     document.getElementById("jsonRetorno").value = JSON.stringify(resultado);
