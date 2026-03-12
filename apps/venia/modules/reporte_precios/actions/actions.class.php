@@ -2,21 +2,13 @@
 
 class reporte_preciosActions extends sfActions {
 
-    
-    
-    
-public function executeReporteCostos(sfWebRequest $request)
-{
-    error_reporting(E_ALL);
-
-    $this->setLayout(false);
-
-    $empresaId = $this->getUser()->getAttribute("usuario", null, 'empresa');
-
-    $fechaInicio = '2026-01-01 00:00:00';
-    $fechaFin    = '2026-03-01 23:59:59';
-
-    $query = " SELECT  
+    public function executeReporteCostos(sfWebRequest $request) {
+        error_reporting(E_ALL);
+        $this->setLayout(false);
+        $empresaId = $this->getUser()->getAttribute("usuario", null, 'empresa');
+        $fechaInicio = '2026-01-01 00:00:00';
+        $fechaFin = '2026-05-01 23:59:59';
+        $query = " SELECT  
                 usu.usuario,   
                 DATE_FORMAT(p.fecha, '%d/%m/%Y %H:%i') AS fecha,      
                 COALESCE(bb.tipo, 'CambiaPrecio') AS tipo, 
@@ -36,71 +28,72 @@ public function executeReporteCostos(sfWebRequest $request)
                 ON TRIM(bb.observaciones) = CAST(p.id AS CHAR)
             WHERE pro.empresa_id = ?
             AND p.fecha >= ? 
-            AND p.fecha <= ?
+            AND p.fecha <= ? AND COALESCE(bb.tipo, 'CambiaPrecio') = 'CambioCosto' 
             group by usu.usuario, p.fecha, det.producto_id";
 
-    $con = Propel::getConnection();
-    $stmt = $con->prepare($query);
+        //$query .= " AND COALESCE(bb.tipo, 'CambiaPrecio') = 'CambioCosto' ";
+        $con = Propel::getConnection();
+        $stmt = $con->prepare($query);
 
-    // ✅ Pasar parámetros correctamente
-    $stmt->execute(array(
-        $empresaId,
-        $fechaInicio,
-        $fechaFin
-    ));
+        // ✅ Pasar parámetros correctamente
+        $stmt->execute(array(
+            $empresaId,
+            $fechaInicio,
+            $fechaFin
+        ));
 
-    // 🔹 Headers
-    $response = $this->getResponse();
-    $response->clearHttpHeaders();
-    $response->setHttpHeader('Content-Type', 'text/csv; charset=UTF-8');
-    $response->setHttpHeader('Content-Disposition', 'attachment; filename=reporte_cambio_costos.csv');
-    $response->sendHttpHeaders();
+        // 🔹 Headers
+        $response = $this->getResponse();
+        $response->clearHttpHeaders();
+        $response->setHttpHeader('Content-Type', 'text/csv; charset=UTF-8');
+        $response->setHttpHeader('Content-Disposition', 'attachment; filename=reporte_cambio_costos.csv');
+        $response->sendHttpHeaders();
 
-    // 🔹 BOM UTF-8 para Excel
-    echo "\xEF\xBB\xBF";
+        // 🔹 BOM UTF-8 para Excel
+        echo "\xEF\xBB\xBF";
 
-    $output = fopen('php://output', 'w');
+        $output = fopen('php://output', 'w');
 
-    // Encabezados
-    fputcsv($output, array(
-        'Usuario',
-        'Fecha',
-        'Tipo',
-        'SKU',
-        'Producto',
-        'Producto ID',
-        'Precio',
-        'Precio Lista'
-    ), ';');
+        // Encabezados
+        fputcsv($output, array(
+            'Usuario',
+            'Fecha',
+            'Tipo',
+            'SKU',
+            'Producto',
+            'Producto ID',
+            'Precio',
+            'Precio Lista'
+                ), ';');
 
-    // ✅ Streaming correcto (sin fetchAll)
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        fputcsv($output, $row, ';');
+        // ✅ Streaming correcto (sin fetchAll)
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            fputcsv($output, $row, ';');
+        }
+
+        fclose($output);
+
+        return sfView::NONE;
     }
 
-    fclose($output);
-
-    return sfView::NONE;
-}
-    
     public function executeReporte(sfWebRequest $request) {
 
-          $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'reporte_precios'));
+        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'reporte_precios'));
         $fechaInicio = $valores['fechaInicio'];
         $fechaFin = $valores['fechaFin'];
         $fechaInicio = explode('/', $fechaInicio);
         $fechaInicio = $fechaInicio[2] . '-' . $fechaInicio[1] . '-' . $fechaInicio[0];
         $fechaFin = explode('/', $fechaFin);
         $fechaFin = $fechaFin[2] . '-' . $fechaFin[1] . '-' . $fechaFin[0];
-       
-        $fechaInicio='2026-01-01';
-        $fechaFin='2026-03-01';
-        
+
+        $fechaInicio = '2026-01-01';
+        $fechaFin = '2026-03-01';
+
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
-      
 
 
-$query = " SELECT  
+
+        $query = " SELECT  
             usu.usuario,   
             DATE_FORMAT(p.fecha, '%d/%m/%Y %H:%i') AS fecha,      
             COALESCE(bb.tipo, 'CambiaPrecio') AS tipo, 
@@ -111,27 +104,27 @@ $query = " SELECT
             0 AS precio_lista 
         FROM precio_producto p ";
 
-$query .= " INNER JOIN precio_producto_detalle det 
+        $query .= " INNER JOIN precio_producto_detalle det 
             ON p.id = det.precio_producto_id ";
 
-$query .= " INNER JOIN usuario usu 
+        $query .= " INNER JOIN usuario usu 
             ON p.usuario_id = usu.id ";
 
-$query .= " INNER JOIN producto pro  
+        $query .= " INNER JOIN producto pro  
             ON pro.id = det.producto_id ";
 
-$query .= " LEFT JOIN bitacora_cambio bb  
+        $query .= " LEFT JOIN bitacora_cambio bb  
             ON TRIM(bb.observaciones) = CAST(p.id AS CHAR) ";
 
-$query .= " WHERE pro.empresa_id = " . $empresaId;
+        $query .= " WHERE pro.empresa_id = " . $empresaId;
 
-$query .= " AND p.fecha >= '" . $fechaInicio . " 01:00' 
+        $query .= " AND p.fecha >= '" . $fechaInicio . " 01:00' 
             AND p.fecha < '" . $fechaFin . " 23:59' ";
 
- //$query .= " AND COALESCE(bb.tipo, 'CambiaPrecio') = 'CambioCosto' ";
+        //$query .= " AND COALESCE(bb.tipo, 'CambiaPrecio') = 'CambioCosto' ";
 
 
-        
+
         $query .= " order by codigo_sku, fecha";
         $con = Propel::getConnection();
         $stmt = $con->prepare($query);
@@ -168,14 +161,14 @@ $query .= " AND p.fecha >= '" . $fechaInicio . " 01:00'
             $sheet->setCellValueExplicit('D' . $rowNumber, $row['codigo_sku']);
             $sheet->setCellValue('E' . $rowNumber, $row['nombre']);
             $sheet->setCellValue('F' . $rowNumber, $row['precio']);
-            if ($row['precio_lista'] >0) {
-            $sheet->setCellValue('G' . $rowNumber, $row['precio_lista']);
+            if ($row['precio_lista'] > 0) {
+                $sheet->setCellValue('G' . $rowNumber, $row['precio_lista']);
             }
             $rowNumber++;
         }
         /* ===== AGREGAR FILTRO ===== */
-$lastRow = $rowNumber - 1; // última fila con datos
-$sheet->setAutoFilter("A1:G{$lastRow}");
+        $lastRow = $rowNumber - 1; // última fila con datos
+        $sheet->setAutoFilter("A1:G{$lastRow}");
 
         /* ===== ESTILO ENCABEZADO ===== */
         $sheet->getStyle('A1:G1')->getFont()->setBold(true);
@@ -264,7 +257,7 @@ $sheet->setAutoFilter("A1:G{$lastRow}");
 
 
 
-$query = " SELECT  
+        $query = " SELECT  
             usu.usuario,   
             DATE_FORMAT(p.fecha, '%d/%m/%Y %H:%i') AS fecha,      
             COALESCE(bb.tipo, 'CambiaPrecio') AS tipo, 
@@ -275,26 +268,26 @@ $query = " SELECT
             0 AS precio_lista 
         FROM precio_producto p ";
 
-$query .= " INNER JOIN precio_producto_detalle det 
+        $query .= " INNER JOIN precio_producto_detalle det 
             ON p.id = det.precio_producto_id ";
 
-$query .= " INNER JOIN usuario usu 
+        $query .= " INNER JOIN usuario usu 
             ON p.usuario_id = usu.id ";
 
-$query .= " INNER JOIN producto pro  
+        $query .= " INNER JOIN producto pro  
             ON pro.id = det.producto_id ";
 
-$query .= " LEFT JOIN bitacora_cambio bb  
+        $query .= " LEFT JOIN bitacora_cambio bb  
             ON TRIM(bb.observaciones) = CAST(p.id AS CHAR) ";
 
-$query .= " WHERE pro.empresa_id = " . $empresaId;
+        $query .= " WHERE pro.empresa_id = " . $empresaId;
 
-$query .= " AND p.fecha >= '" . $fechaInicio . " 01:00' 
+        $query .= " AND p.fecha >= '" . $fechaInicio . " 01:00' 
             AND p.fecha < '" . $fechaFin . " 23:59' ";
 
 // $query .= " AND COALESCE(bb.tipo, 'CambiaPrecio') = 'CambioCosto' ";
 
-        
+
         $query .= " order by codigo_sku, fecha";
         $con = Propel::getConnection();
         $stmt = $con->prepare($query);
