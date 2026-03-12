@@ -61,7 +61,10 @@ class ProductoMovimiento extends BaseProductoMovimiento {
         if ($PREFI == 'ANU') {
             $retorna = 'ANULACION FACTURA';
         }
-
+        if ($PREFI == 'NOT') {
+            $retorna = TRIM(str_replace("NOTA", "", $this->getIdentificador()));
+        }
+ 
         return $retorna;
     }
 
@@ -131,6 +134,24 @@ class ProductoMovimiento extends BaseProductoMovimiento {
         $documento = $valores[0];
         $documento = str_replace("ANU", "", $documento);
         $PREFI = substr($identificador, 0, 3);
+        
+        
+          if ($PREFI == 'NOT') {
+            $codigo = TRIM(str_replace("NOTA", "", $this->getIdentificador()));
+                $query="select nombre from nota_credito op  where codigo='".$codigo."'";
+
+        $con = Propel::getConnection();
+        $stmt = $con->prepare($query);
+        $resource = $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if ($result) {   
+            $factura = $result[0]['nombre'];
+            RETURN $factura;
+        }
+            
+        }
+ 
+        
         $nombre = '';
           if ($this->getMotivo()=="VENTA"){
            $partes = explode('-', $identificador);

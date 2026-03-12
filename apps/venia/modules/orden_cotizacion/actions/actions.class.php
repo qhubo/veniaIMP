@@ -1,17 +1,10 @@
 <?php
 
-/**
- * orden_cotizacion actions.
- *
- * @package    plan
- * @author     Via
- * @version    SVN: $Id: actions.class.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
- */
 class orden_cotizacionActions extends sfActions {
 
     public function executeEliminarMultiple(sfWebRequest $request) {
         error_reporting(-1);
-     $ids = $request->getParameter('eli');
+        $ids = $request->getParameter('eli');
         if ($ids && is_array($ids)) {
             foreach ($ids as $id) {
 //                echo $id;
@@ -535,7 +528,7 @@ class orden_cotizacionActions extends sfActions {
 //                    die();
                     $ordenQ->setVendedorId($cleinteQ->getVendedorId());
                 }
-                
+
                 $ordenQ->setClienteId($id);
                 $ordenQ->setPaisId($provpe->getPaisId());
                 $ordenQ->setNombre($provpe->getNombreFacturar());
@@ -580,9 +573,8 @@ class orden_cotizacionActions extends sfActions {
 
 
         if ($tipoSerieV <> "") {
-            $tipoSerie=$tipoSerieV;
+            $tipoSerie = $tipoSerieV;
             $query = "select IFNULL(MAX(op.codigo),0) codigo  from orden_cotizacion_detalle de inner join orden_cotizacion op on op.id=de.orden_cotizacion_id where prefijo ='" . $tipoSerieV . "'";
-
             $con = Propel::getConnection();
             $stmt = $con->prepare($query);
             $resource = $stmt->execute();
@@ -591,8 +583,6 @@ class orden_cotizacionActions extends sfActions {
                 $codigo = $result[0]['codigo'];
                 $numero = (int) str_replace($tipoSerieV, "", $codigo) + 1;
             }
-
-
             $prefijo = $tipoSerie . $numero;
             if (strlen($numero) == 1) {
                 $prefijo = $tipoSerie . '000' . $numero;
@@ -640,7 +630,6 @@ class orden_cotizacionActions extends sfActions {
             $id = $request->getParameter('id');
             $operacion = OrdenCotizacionQuery::create()->findOneById($id);
             if ($operacion) {
-
                 $operacion->setCodigo($prefijo);
                 $operacion->setPrefijo($tipoSerie);
                 $operacion->save();
@@ -656,6 +645,30 @@ class orden_cotizacionActions extends sfActions {
             $this->redirect('inicio/index');
         }
         if (!$operacion) {
+            
+            $query = "select IFNULL(MAX(op.codigo),0) codigo  from orden_cotizacion_detalle de inner join orden_cotizacion op on op.id=de.orden_cotizacion_id where prefijo ='" . $tipoSerie . "'";
+            $con = Propel::getConnection();
+            $stmt = $con->prepare($query);
+            $resource = $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($result) {
+                $codigo = $result[0]['codigo'];
+                $numero = (int) str_replace($tipoSerie, "", $codigo) + 1;
+            }
+            $prefijo = $tipoSerie . $numero;
+            if (strlen($numero) == 1) {
+                $prefijo = $tipoSerie . '000' . $numero;
+            }
+            if (strlen($numero) == 2) {
+                $prefijo = $tipoSerie . '00' . $numero;
+            }
+            if (strlen($numero) == 3) {
+                $prefijo = $tipoSerie . '0' . $numero;
+            }
+            
+            
+            
+            
             $operacion = new OrdenCotizacion();
             $operacion->setCodigo($prefijo);
             $operacion->setPrefijo($tipoSerie);
@@ -665,20 +678,14 @@ class orden_cotizacionActions extends sfActions {
             $operacion->setFecha(date('Y-m-d H:i:s'));
             $operacion->save();
         }
-
-        if ($tIENDAid <> 19) {
-            $operacion->setFechaDocumento(date('Y-m-d H:i:s'));
-            $operacion->setFecha(date('Y-m-d H:i:s'));
-        }
+        $operacion->setFechaDocumento(date('Y-m-d H:i:s'));
+        $operacion->setFecha(date('Y-m-d H:i:s'));
         $tokenGuardado = sha1($operacion->getCodigo());
         $operacion->setToken($tokenGuardado);
         $operacion->setUsuario($usuarioQ->getUsuario());
-
         $operacion->setFechaVencimiento($fecha_vencimiento);
         $operacion->save();
         sfContext::getInstance()->getUser()->setAttribute('CotizacionId', $operacion->getId(), 'seguridad');
-
-
         $listaPendi = sfContext::getInstance()->getUser()->getAttribute('CotizacionIPendie', null, 'seguridad');
         if ($listaPendi) {
             sfContext::getInstance()->getUser()->setAttribute('CotizacionIPendie', null, 'seguridad');
@@ -821,7 +828,7 @@ class orden_cotizacionActions extends sfActions {
 //                if ($valores['exenta']) {
 //                    $orden->setExcento(true);
 //                }
-               // $orden->setVendedorId(null);
+                // $orden->setVendedorId(null);
                 if ($valores['vendedor_id']) {
                     $orden->setVendedorId($valores['vendedor_id']);
                 }
