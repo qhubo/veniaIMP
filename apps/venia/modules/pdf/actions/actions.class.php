@@ -10,26 +10,125 @@
  */
 class pdfActions extends sfActions {
 
+    public function executeNota(sfWebRequest $request) {
+        error_reporting(-1);
+        date_default_timezone_set("America/Guatemala");
+        $tok = $request->getParameter('tok');
+        $descarga = $request->getParameter('descarga');
+        $ordenCompra = OperacionQuery::create()->findOneByCodigo($tok);
+        $total = 0;
+        $lista = OperacionDetalleQuery::create()
+                //  ->filterByServicioId(null, Criteria::NOT_EQUAL)
+                ->filterByCantidad(0, Criteria::GREATER_THAN)
+                ->filterByOperacionId($ordenCompra->getId())
+                ->find();
+        foreach ($lista as $reg) {
+            $total = $total + $reg->getValorTotal();
+        }
+        $ordenCompra->setValorTotal($total);
+        $ordenCompra->save();
+        $logo = $ordenCompra->getEmpresa()->getLogo();
+        $valor = $ordenCompra->getValorTotal();
+        $valor = Parametro::formato($valor, false);
+        $valor = str_replace(",", "", $valor);
+        $lista = null;
+        $notaCre = NotaCreditoQuery::create()->findOneByDocumento($ordenCompra->getCodigo());
+        $valor = $notaCre->getValorTotal();
+        $json_decode = json_decode($notaCre->getJsonRetorna());
+        $linea=0;
+       
+        foreach ($json_decode as $item) {
+            $opreaciD = OperacionDetalleQuery::create()->findOneById($item->id);
+            $valorUnitario = $opreaciD->getValorUnitario();
+            $cantidad = $item->cantidad;
+            $data = null;
+            $data['BienOServicio'] = 'B';
+            $data['ProductoId'] = $opreaciD->getProductoId();
+            $data['NumeroLinea'] = $linea;
+            $data['Cantidad'] = $cantidad;
+            $data['Descripcion'] = $opreaciD->getCodigo() . " " . $opreaciD->getDetalle();
+            $data['PrecioUnitario'] = $valorUnitario;
+            $data['Precio'] = round($valorUnitario * $cantidad, 2);
+            $data['Descuento'] = 0;
+            $data['OtrosDescuento'] = 0;
+            $lista[] = $data;
+       
+            $linea++;
+        }
+//                 echo "<pre>";
+//        print_r($lista);
+//        die();
+
+        $totalImprime = str_replace(".", ",", $valor);
+        $numberToLetterConverter = new NumberToLetterConverter();
+        $totalImprime = $numberToLetterConverter->to_word($totalImprime, $miMoneda = null);
+        $valoresImprime = explode("CON", $totalImprime);
+        if (count($valoresImprime) > 1) {
+            $totalImprime = str_replace("CON", " DOLARES  CON ", $totalImprime) . " CENTAVOS ";
+        } else {
+            $totalImprime .= " EXACTOS ";
+        }
+        $totalImprime = "**" . $totalImprime . "**";
+
+
+        $html = $this->getPartial('pdf/nota',
+                array('logo' => $logo, 'orden' => $ordenCompra, 'lista' => $lista,
+                    'totalImprime' => $totalImprime));
+        $img_file = "uploads/images/" . $logo;
+
+        $pdf = new sfTCPDF("P", "mm", "Letter");
+        $this->id = $request->getParameter("id");
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetAuthor('Venia Link');
+        $pdf->SetTitle("FACTURA  " . $ordenCompra->getCodigoFactura());
+        $pdf->SetSubject('Documento Orden Compra');
+        $pdf->SetKeywords('Documento,Orden,Cuenta'); // set default header data
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED); // set margins
+        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+        $pdf->SetMargins(3, 5, 0, true);
+        $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+        $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->SetHeaderMargin(0.1);
+        $pdf->SetFooterMargin(0);
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+        $pdf->SetFont('dejavusans', '', 9);
+        $pdf->AddPage();
+        $pdf->Image($img_file, 18, -8, 40); //, 50, '', '', '', '300', false, 0);
+
+
+        $pdf->writeHTML($html);
+        $pdf->Output('Pedido ' . $ordenCompra->getCodigoFactura() . '.pdf', 'I');
+        die();
+        echo $html;
+        die();
+    }
+
     public function executeFactura(sfWebRequest $request) {
         error_reporting(-1);
         date_default_timezone_set("America/Guatemala");
         $tok = $request->getParameter('tok');
         $descarga = $request->getParameter('descarga');
         $ordenCompra = OperacionQuery::create()->findOneByCodigo($tok);
-        
-        $total= 0;
+
+        $total = 0;
         $lista = OperacionDetalleQuery::create()
-              //  ->filterByServicioId(null, Criteria::NOT_EQUAL)
+                //  ->filterByServicioId(null, Criteria::NOT_EQUAL)
                 ->filterByCantidad(0, Criteria::GREATER_THAN)
                 ->filterByOperacionId($ordenCompra->getId())
                 ->find();
-        foreach ( $lista as $reg) {
-            $total = $total+$reg->getValorTotal();
+        foreach ($lista as $reg) {
+            $total = $total + $reg->getValorTotal();
         }
         $ordenCompra->setValorTotal($total);
         $ordenCompra->save();
-        
-        
+
+
         $lista = OperacionDetalleQuery::create()
                 ->filterByProductoId(null, Criteria::NOT_EQUAL)
                 ->filterByCantidad(0, Criteria::GREATER_THAN)
@@ -40,6 +139,9 @@ class pdfActions extends sfActions {
         $valor = Parametro::formato($valor, false);
         $valor = str_replace(",", "", $valor);
         $totalImprime = str_replace(".", ",", $valor);
+
+
+
 
 
         $numberToLetterConverter = new NumberToLetterConverter();
@@ -57,7 +159,7 @@ class pdfActions extends sfActions {
                 array('logo' => $logo, 'orden' => $ordenCompra, 'lista' => $lista,
                     'totalImprime' => $totalImprime));
         $img_file = "uploads/images/" . $logo;
-       
+
         $pdf = new sfTCPDF("P", "mm", "Letter");
         $this->id = $request->getParameter("id");
         $pdf->SetCreator(PDF_CREATOR);

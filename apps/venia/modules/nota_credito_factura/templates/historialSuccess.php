@@ -100,7 +100,7 @@
                             <th>Valor </th>
                               <th>Consumido </th>
                             <th>Documento </th>
-                            <th>Feel</th>
+                            <th>Reporte</th>
                             <th>Estatus</th>
                             <th>Usuario</th>
                         
@@ -134,21 +134,13 @@
                                 <td>
 
 
-                                    <?php if ($lista) { ?>
+                               
 
-
-                                        <a target="_blank" href="<?php echo url_for('pdf/factura?tok=' . $lista->getCodigo()) ?>" class="btn btn-block btn-sm btn-info " target = "_blank">
-                                            <?php if ($lista->getFaceEstado() == "FIRMADONOTA") { ?> <?php echo "NOTA "; ?> <?php } ?>
+                                        <a target="_blank" href="<?php echo url_for('pdf/nota?tok=' . $lista->getCodigo()) ?>" class="btn btn-block btn-sm btn-info " target = "_blank">
+                                  
                                            <li class="fa fa-print"></li>  <font size='-2'>   <?php echo $registro->getFaceFirma(); ?></font>
                                         </a>
-                                        <?php if ($lista->getFaceError() <> "") { ?>
-                                            <font color="red">    <?php echo $lista->getFaceError(); ?> </font>
-                                            <a href="<?php echo url_for($modulo . '/reenviar?id=' . $lista->getId()) ?>" class="btn  btn-block btn-dark btn-sm" > <i class="flaticon-refresh"></i>Reenviar</a>
-
-                                        <?php } ?>
-
-                                    <?php } ?>
-
+                               
 
                                 </td>
                                 <td><?php echo $registro->getEstatus(); ?>

@@ -92,7 +92,7 @@
                             </a>
                         </td>     
                         <td>
-                            <a class="btn  btn-warning "   href="<?php echo url_for('reporte_venta/muestra?id=' . $registro->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $registro->getId() ?>">
+                            <a class="btn  btn-warning btn-block "   href="<?php echo url_for('reporte_venta/muestra?id=' . $registro->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $registro->getId() ?>">
                                 <?php echo $registro->getCodigo(); ?>
                             </a>
                         </td>
@@ -145,7 +145,7 @@
                             Nota
                         </div>
                         <div class="col-lg-2">
-                            <a target="_blank" href="<?php echo url_for('pdf/factura?tok=' . $operacion->getCodigo()) ?>" class="btn btn-block btn-xs btn-info " target = "_blank">
+                            <a target="_blank" href="<?php echo url_for('pdf/nota?tok=' . $operacion->getCodigo()) ?>" class="btn btn-block btn-xs btn-info " target = "_blank">
                              <li class="fa fa-print"></li>  <?php echo $operacion->getAnulaFaceNumeroFactura(); ?> 
                             </a>
                         </div>

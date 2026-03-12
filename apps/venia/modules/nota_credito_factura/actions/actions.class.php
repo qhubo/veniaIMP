@@ -152,7 +152,7 @@ class nota_credito_facturaActions extends sfActions {
         $OperacionId = $request->getParameter('id'); //=155555&$dirh =
         $this->operacion = OperacionQuery::create()->findOneById($OperacionId);
         $operacion = OperacionQuery::create()->findOneById($OperacionId);
-        $this->detalle = OperacionDetalleQuery::create()->filterByOperacionId($OperacionId)->find();
+        $this->detalle = OperacionDetalleQuery::create()->filterByProductoId(null, Criteria::NOT_EQUAL) ->filterByOperacionId($OperacionId)->find();
         $this->pagos = OperacionPagoQuery::create()->filterByOperacionId($OperacionId)->find();
         $this->form = new CreaNotaFacturaForm(null);
         if ($request->isMethod('post')) {
