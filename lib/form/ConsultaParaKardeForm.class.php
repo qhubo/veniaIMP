@@ -11,6 +11,14 @@ class ConsultaParaKardexForm extends sfForm {
           $this->setWidget('transito', new sfWidgetFormChoice(array("choices" => $opcionesx,), array("class" => " form-control")));
         $this->setValidator('transito', new sfValidatorString(array('required' => false)));
 
+        
+              $opcio['COSTO']='COSTO';
+       $opcio['PRECIO']='PRECIO';
+         
+          $this->setWidget('tipoprecio', new sfWidgetFormChoice(array("choices" => $opcio,), array("class" => " form-control")));
+        $this->setValidator('tipoprecio', new sfValidatorString(array('required' => false)));
+
+
 
         
         

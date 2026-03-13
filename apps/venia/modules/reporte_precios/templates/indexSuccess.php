@@ -34,6 +34,13 @@
                     <?php echo $form['nombrebuscar']->renderError() ?>  
                 </span>
             </div>
+                             <label class="col-lg-1 control-label right ">Tipo Actualizacion  </label>
+            <div class="col-lg-2 <?php if ($form['tipoprecio']->hasError()) echo "has-error" ?>">
+                <?php echo $form['tipoprecio'] ?>           
+                <span class="help-block form-error"> 
+                    <?php echo $form['tipoprecio']->renderError() ?>  
+                </span>
+            </div>
            
         </div>
         
