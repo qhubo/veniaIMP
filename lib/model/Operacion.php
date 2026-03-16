@@ -34,6 +34,27 @@ class Operacion extends BaseOperacion {
             return $pedidos;
         }
     
+          public function getCotizacionesId() {
+              
+            $ordenCotitaconQ = OrdenCotizacionQuery::create()->findOneByCodigo($this->getCodigo());
+            if ($ordenCotitaconQ) {
+                $LIST[$ordenCotitaconQ->getId()]= $ordenCotitaconQ->getCodigo();   
+            }
+            $ordenCotizacion = OrdenCotizacionEmpaqueQuery::create()
+                    ->useOrdenCotizacionQuery()
+                   ->filterByCodigo($this->getCodigo())
+                    ->endUse()
+                    ->find();
+            foreach ($ordenCotizacion as $registro) {
+                $empaque = OrdenCotizacionQuery::create()->findOneById($registro->getOrdenEmpaque());
+                $orden= OrdenCotizacionQuery::create()->findOneById($empaque->getId());
+                $LIST[$empaque->getId()]= $orden->getCodigo(); 
+            }
+            
+            
+            return $LIST;
+          }
+        
     public function getMedidas() {
         $ordenCotizacion = OrdenCotizacionQuery::create()->findOneByCodigo($this->getCodigo());
         $can = 0;
