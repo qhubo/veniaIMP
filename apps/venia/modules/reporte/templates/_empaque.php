@@ -133,8 +133,8 @@
                 </td>
                 <td style="width:50px; font-size:26px;" class="right"><?php echo Parametro::formato($detra->getProducto()->getPeso(),false); ?></td>
                 <td style="width:50px; font-size:26px;" class="right"><?php echo Parametro::formato($detra->getProducto()->getPeso() * $detra->getCantidad(),false); ?></td>
-                <td style="width:50px; font-size:28px;" class="right"><?php echo $detra->getProducto()->getCMB();  //Parametro::formato($detra->getProducto()->getCMB(),false); ?></td>
-                <td style="width:50px; font-size:26px;" class="right"><?php echo $detra->getProducto()->getCMB() * $detra->getCantidad(); ?></td>
+                <td style="width:50px; font-size:24px;" class="right"><?php echo $detra->getProducto()->getCMB();  //Parametro::formato($detra->getProducto()->getCMB(),false); ?></td>
+                <td style="width:50px; font-size:24px;" class="right"><?php echo $detra->getProducto()->getCMB() * $detra->getCantidad(); ?></td>
             </tr>
         <?php } ?>
         <tr>
