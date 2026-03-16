@@ -289,7 +289,7 @@ $sheet->getRowDimension(8)->setRowHeight(28);
 
         $headers = [
             "ITEM", "CÓDIGO", "DESCRIPCIÓN", "MARCAS", "UNT",
-            "CANT. BULTOS", "NO. BULTOS", "PESO", "PESO TOTAL", "CBM", "TOTAL CBM"
+            "CANT. BULTOS", "NO. BULTOS", "PESO", "PESO TOTAL", "CBM", "TOTAL CBM", "ALTO", "ANCHO", "LARGO", "TOTAL", "TOTAL X CANTIDAD"
         ];
 
         $col = "A";
@@ -334,13 +334,23 @@ $sheet->getRowDimension(8)->setRowHeight(28);
                         $bultodes .= " A Bulto " . $detra->getBultoFin(); 
                      } 
                  } 
+                 
+                 $totalC =$detra->getProducto()->getAlto()*$detra->getProducto()->getAncho()*$detra->getProducto()->getLargo();
+                 $totalV = $totalC * $detra->getCantidad();
         
         $sheet->setCellValue("G$fila",$bultodes);
         $sheet->setCellValue("H$fila", round( $detra->getProducto()->getPeso(),2));
         $sheet->setCellValue("I$fila", round($detra->getProducto()->getPeso() * $detra->getCantidad(),2));
         $sheet->setCellValue("J$fila", round($detra->getProducto()->getCMB(),2));
         $sheet->setCellValue("K$fila", round($detra->getProducto()->getCMB() * $detra->getCantidad(),2));
-}
+    $sheet->setCellValue("L$fila", $detra->getProducto()->getAlto());
+        $sheet->setCellValue("M$fila", $detra->getProducto()->getAncho());
+            $sheet->setCellValue("N$fila", $detra->getProducto()->getLargo());
+                $sheet->setCellValue("O$fila", $totalC);
+                   $sheet->setCellValue("P$fila", $totalV);
+             }
+
+
         foreach (range('A', 'K') as $c) {
             $sheet->getStyle($c . $fila)->getBorders()->getAllBorders()
                     ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
