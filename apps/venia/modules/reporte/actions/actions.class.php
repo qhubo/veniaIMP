@@ -24,14 +24,9 @@ class reporteActions extends sfActions {
                 ->orderBy('BultoOrden', Criteria::ASC)
                 ->find();
 
-
-
-
         $html = '';
-
         $logo = $operacion->getEmpresa()->getLogo();
         $html = $this->getPartial('reporte/empaque', array('operacion' => $operacion, 'detalle' => $detalle, 'logo' => $logo));
-
         $img_file = "uploads/images/" . $logo;
 
         $pdf = new sfTCPDF("P", "mm", "Letter");
