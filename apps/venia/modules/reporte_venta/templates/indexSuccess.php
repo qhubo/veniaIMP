@@ -112,9 +112,14 @@
                         <td><?php echo $lista->getNit() ?> <br> <?php echo $lista->getNombre() ?></td>
 
                         <td>  <?php echo $lista->getEstatus() ?> 
-                                                     <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $lista->getOrdenCotizacionId()) ?>" class="btn btn-sm btn-warning btn-block" > <i class="flaticon2-print"></i> Empaque </a>
-                <a target="_blank" href="<?php echo url_for('reporte_excel/empaque?id=' . $lista->getOrdenCotizacionId()) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"><i class="flaticon2-print"></i> Empaque </a>
-
+                        
+                            <?php foreach($lista->getCotizacionesId() as $keyCO=>$value) { ?>
+                            <?php $value= str_replace("LIST-","", $value); ?>
+                           
+                            
+                 <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $keyCO) ?>" class="btn btn-sm btn-warning btn-block" >  <?php echo $value; ?> </a>
+                <a target="_blank" href="<?php echo url_for('reporte_excel/empaque?id=' . $keyCO) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"><?php echo $value; ?> </a>
+                            <?php } ?>
                             <?php if ($lista->getAnulado()) { ?>
                                 <?php echo $lista->getObservaciones() ?>  <br>  <strong> <?php echo $lista->getAnuloUsuario() ?>  </strong> <br>
                                 <?php echo $lista->getFechaAnulo('d/m/Y H:i:s') ?>   <br>
