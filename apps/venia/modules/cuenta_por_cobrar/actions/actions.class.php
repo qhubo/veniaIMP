@@ -308,15 +308,15 @@ class cuenta_por_cobrarActions extends sfActions {
 
                 $banco_id = $valores['banco_id'];
                 if ($banco_id) {
-                    $documento = $valores['no_documento'];
-                    $operacionPago = OperacionPagoQuery::create()
-                            ->filterByBancoId($banco_id)
-                            ->filterByDocumento($documento)
-                            ->findOne();
-                    if ($operacionPago) {
-                        $this->getUser()->setFlash('error', 'Numero de documento ya fue utilizado para este banco recibo  ' . $operacionPago->getCodigo());
-                        $this->redirect('cuenta_por_cobrar/caja?id=' . $OperacionId);
-                    }
+//                    $documento = $valores['no_documento'];
+//                    $operacionPago = OperacionPagoQuery::create()
+//                            ->filterByBancoId($banco_id)
+//                            ->filterByDocumento($documento)
+//                            ->findOne();
+//                    if ($operacionPago) {
+//                        $this->getUser()->setFlash('error', 'Numero de documento ya fue utilizado para este banco recibo  ' . $operacionPago->getCodigo());
+//                        $this->redirect('cuenta_por_cobrar/caja?id=' . $OperacionId);
+//                    }
                 }
 
 
