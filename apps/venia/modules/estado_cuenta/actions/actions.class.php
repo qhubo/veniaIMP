@@ -23,9 +23,9 @@ class estado_cuentaActions extends sfActions {
         $DIRECCION = $clienteQ->getEmpresa()->getDireccion();
         $TELEFONO = $clienteQ->getEmpresa()->getTelefono();
         $detalle = $this->DatosFactura($clientev, $fechaInicial);
-//        echo "<pre>";
-//        print_r($detalle);
-//        die();
+       // echo "<pre>";
+       // print_r($detalle);
+      //  die();
         
         $html = $this->getPartial('estado_cuenta/reporte', array("logo" => $logo, 'NOMBRE_EMPRESA' => $NOMBRE_EMPRESA,
             'DIRECCION' => $DIRECCION, 'TELEFONO' => $TELEFONO, 'detalle' => $detalle, 'clienteQ' => $clienteQ));
@@ -110,8 +110,19 @@ $listab[] ='CHEQUE PREFECHADO';
         if ($restas) {
             $RESTAR = $restas->getTotalTotal();
         }
-        $SALDO = $SUMAS + $RESTAR;
-        
+//        $SALDO = $SUMAS + $RESTAR;
+$notasCredito =  NotaCreditoQuery::create()
+                ->where("NotaCredito.Fecha < '" . $fechaInicial . " 01:01:01'")
+		->where("NotaCredito.Estatus  not like  '%Anul%'")
+                ->filterByClienteId($clientev)
+                ->find();
+ $RESTAN= 0;
+		 foreach ($notasCredito as $nota) {
+            $RESTAN = $RESTAN + ($nota->getValorTotal()-$nota->getValorPagado());
+		 }
+
+		$SALDO = $SUMAS - $RESTAR- $RESTAN;
+
 //        ECHO $SUMAS;
 //        echo "<br>";
 //        echo $RESTAR;
@@ -135,7 +146,8 @@ $listab[] ='CHEQUE PREFECHADO';
 //        die();
         
         $Key = '20210101246050_P';
-        $data['codigo'] = "Saldo a la fecha";
+$data['sumasaldo']=$saldoINcial;
+	$data['codigo'] = "Saldo a la fecha";
         $data['fecha'] = $fechaInic;
         $data['cargo'] = 0;
         $data['abono'] = 0;
@@ -153,7 +165,8 @@ $listab[] ='CHEQUE PREFECHADO';
             } else {
             $saldoINcial = $saldoINcial + $registr->getValorTotal();
             $Key = $registr->getFecha('YmdHis') . "_P".$registr->getId();
-            $data['codigo'] = "FACTURA " . $registr->getCodigo();
+	 $data['sumasaldo']=0;
+	    $data['codigo'] = "FACTURA " . $registr->getCodigo();
             $data['fecha'] = $registr->getFecha('d/m/Y H:i');
             $data['cargo'] = $registr->getValorTotal();
             $data['abono'] = 0;
@@ -190,8 +203,31 @@ $listab[] ='CHEQUE PREFECHADO';
             $data['descripcion'] = $pago->getTipo() . " " . $banco . " Documento " . $pago->getDocumento() . " " . $pago->getFechaDocumento('d/m/Y');
             $lista[$Key] = $data;
             $listaKey[] = $Key;
+	} 
+
+	$notasCredito =  NotaCreditoQuery::create()
+                ->where("NotaCredito.Fecha >= '" . $fechaInicial . " 01:01:01'")
+		->where("NotaCredito.Estatus  not like  '%Anul%'")
+                ->filterByClienteId($clientev)
+                ->find();
+
+	 foreach ($notasCredito as $nota) {
+            $saldoINcial = $saldoINcial - ($nota->getValorTotal()-$nota->getValorPagado());
+            $Key = $nota->getFecha('YmdHis') . "_N";
+            $data['codigo'] = "NOTA CREDITO " . $nota->getCodigo()."  -".$nota->getId();
+            $data['fecha'] = $nota->getFecha('d/m/Y H:i');
+            $data['abono'] = $nota->getValorTotal()-$nota->getValorPagado();
+            $data['cargo'] = 0;
+            $data['saldo'] = $saldoINcial;
+            $data['descripcion'] = $nota->getConcepto()." Documento " . $nota->getDocumento();
+            $lista[$Key] = $data;
+            $listaKey[] = $Key;
         }
-        sort($listaKey, SORT_NATURAL | SORT_FLAG_CASE);
+
+
+
+
+	sort($listaKey, SORT_NATURAL | SORT_FLAG_CASE);
         $registro = null;
         
        

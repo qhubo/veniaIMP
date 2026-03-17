@@ -35,24 +35,41 @@ class pdfActions extends sfActions {
         $notaCre = NotaCreditoQuery::create()->findOneByDocumento($ordenCompra->getCodigo());
         $valor = $notaCre->getValorTotal();
         $json_decode = json_decode($notaCre->getJsonRetorna());
-        $linea=0;
-       
+        $linea = 0;
+
         foreach ($json_decode as $item) {
-            $opreaciD = OperacionDetalleQuery::create()->findOneById($item->id);
-            $valorUnitario = $opreaciD->getValorUnitario();
-            $cantidad = $item->cantidad;
-            $data = null;
-            $data['BienOServicio'] = 'B';
-            $data['ProductoId'] = $opreaciD->getProductoId();
-            $data['NumeroLinea'] = $linea;
-            $data['Cantidad'] = $cantidad;
-            $data['Descripcion'] = $opreaciD->getCodigo() . " " . $opreaciD->getDetalle();
-            $data['PrecioUnitario'] = $valorUnitario;
-            $data['Precio'] = round($valorUnitario * $cantidad, 2);
-            $data['Descuento'] = 0;
-            $data['OtrosDescuento'] = 0;
-            $lista[] = $data;
        
+            if ($item->id > 0) {
+                $opreaciD = OperacionDetalleQuery::create()->findOneById($item->id);
+                $valorUnitario = $opreaciD->getValorUnitario();
+                $cantidad = $item->cantidad;
+                $data = null;
+                $data['BienOServicio'] = 'B';
+                $data['ProductoId'] = $opreaciD->getProductoId();
+                $data['NumeroLinea'] = $linea;
+                $data['Cantidad'] = $cantidad;
+                $data['Descripcion'] = $opreaciD->getCodigo() . " " . $opreaciD->getDetalle();
+                $data['PrecioUnitario'] = $valorUnitario;
+                $data['Precio'] = round($valorUnitario * $cantidad, 2);
+                $data['Descuento'] = 0;
+                $data['OtrosDescuento'] = 0;
+                $lista[] = $data;
+            }
+            if ($item->id == 0) {
+             
+                $data = null;
+                $data['BienOServicio'] = 'B';
+                $data['ProductoId'] = -99;
+                $data['NumeroLinea'] = $linea;
+                $data['Cantidad'] = 1;
+                $data['Descripcion'] =  "CDDEVOLUCION Devolución de Producto" ;
+                $data['PrecioUnitario'] = $valor;
+                $data['Precio'] = round($valor, 2);
+                $data['Descuento'] = 0;
+                $data['OtrosDescuento'] = 0;
+                $lista[] = $data;
+            }
+
             $linea++;
         }
 //                 echo "<pre>";

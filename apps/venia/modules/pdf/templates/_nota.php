@@ -135,7 +135,7 @@
         <?php $Subtotal = 0; ?>   
         <?php $totalCajas = 0; ?>   
         <?php foreach ($lista as $regist) { ?>
-          <?php if ($regist['ProductoId']) { ?>
+          <?php if ($regist['ProductoId'] >0) { ?>
         
             <?php $can++; ?>
             <?php $pro = ProductoQuery::create()->findOneById($regist['ProductoId']); ?>
@@ -157,6 +157,24 @@
                 <td style="width:60px;font-size: 25px; " class="derecha"><?php echo $regist['Precio']; ?></td>
             </tr>
 <?php } ?>
+            
+          <?php if ($regist['ProductoId'] =='-99') { ?>
+               <tr>
+                <td style="width:20px; font-size: 25px; " class="centrado">1</td>
+                <td style="width:80px;font-size: 24px; " >CDDEVOLUCION</td>
+                <td style="width:225px;font-size: 25px; ">Devolución de Producto</td>
+                <td class="centrado" style="width:85px;font-size: 25px; "></td>
+
+                <td class="centrado" style="width:90px;font-size: 25px; "></td>
+
+                <td style="width:85px;font-size: 25px; "></td>
+                <td style="width:50px;font-size: 25px; " class="centrado"><?php echo $regist['Cantidad']; ?></td>
+                <td style="width:60px;font-size: 25px; " class="derecha"><?php echo $regist['PrecioUnitario']; ?></td>
+                <td style="width:60px;font-size: 25px; " class="derecha"><?php echo $regist['Precio']; ?></td>
+            </tr>
+            <?PHP $Subtotal = $regist['Precio']; ?>
+          <?php } ?>
+            
             <?php } ?>
     </tbody>
 </table>

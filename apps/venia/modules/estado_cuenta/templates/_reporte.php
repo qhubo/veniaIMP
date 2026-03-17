@@ -1,6 +1,6 @@
 
   <style>
-    /* Estilos mínimos compatibles con TCPDF */
+    /* Estilos mÃ­nimos compatibles con TCPDF */
     body{font-family:helvetica, Arial, sans-serif; font-size:12px; color:#000;}
     .container{width:100%;padding:8px}
     .header{width:100%;margin-bottom:8px}
@@ -51,14 +51,14 @@
           <th style="text-align: right;width:80px;font-weight: bold;" class="text-right">Cargo</th>
           <th style="text-align: right;width:80px;font-weight: bold;" class="text-right">Abono</th>
           <th style="text-align: right;width:80px;font-weight: bold;" class="text-right">Saldo</th>
-          <th style="width:380px;font-weight: bold;">Descripción</th>
+          <th style="width:380px;font-weight: bold;">DescripciÃ³n</th>
         </tr>
       </thead>
 
       <tbody>
         <!--
           Reemplaza estas filas de ejemplo por tus datos.
-          Asegúrate de formatear números con dos decimales y fechas en el formato deseado.
+          AsegÃºrate de formatear nÃºmeros con dos decimales y fechas en el formato deseado.
         -->
         <?php $total1 =0; ?>
         <?php $total2 =0; ?>
@@ -66,22 +66,22 @@
 
         <?php foreach($detalle as $data) { ?>
         <?php $total1 =$total1+$data['cargo']; ?>
-        <?php $total2 =$total2+$data['abono']; ?>
-        <?php $total3 =$total3+$data['saldo']; ?>
+        <?php $total2 =$total2 +  $data['abono']; ?>
+        <?php $total3 =$total3    +$data['sumasaldo']  +   $data['cargo']- $data['abono'] ; ?>
 
         <tr>
           <td style="width:120px;"><?php echo $data['codigo']; ?></td>
           <td   style="width:110px; text-align: center;" class="text-center"><?php echo $data['fecha']; ?></td>
           <td style="width:80px; text-align: right;"  class="text-right"><?php echo Parametro::formato($data['cargo'], false); ?></td>
           <td style="width:80px; text-align: right;"  class="text-right"><?php echo Parametro::formato($data['abono'], false); ?></td>
-          <td style="width:80px; text-align: right;"  class="text-right"><?php echo Parametro::formato($data['saldo'], false); ?></td>
+          <td style="width:80px; text-align: right;"  class="text-right"><?php echo $saldov=  Parametro::formato($data['saldo'], false); ?></td>
           <td style="width:300px; font-size: 24px;" ><?php echo $data['descripcion']; ?></td>
         </tr>
         <?php } ?>
 
        
 
-        <!-- Añade más filas según necesites -->
+        <!-- AÃ±ade mÃ¡s filas segÃºn necesites -->
       </tbody>
 
       <tfoot>
@@ -89,7 +89,7 @@
           <td colspan="2">Totales</td>
         <td style="width:80px; text-align: right;"  class="text-right"><?php echo Parametro::formato($total1, false); ?></td>
           <td style="width:80px; text-align: right;"  class="text-right"><?php echo Parametro::formato($total2, false); ?></td>
-          <td style="width:80px; text-align: right;"  class="text-right"><?php echo Parametro::formato($total3, false); ?></td>
+          <td style="width:80px; text-align: right;"  class="text-right"><?php  echo Parametro::formato($total3, false); ?></td>
           <td></td>
         </tr>
       </tfoot>
@@ -99,4 +99,3 @@
       <div>Observaciones: ........................................................................................................</div>
       <div style="margin-top:8px;">Firma: ____________________________________________</div>
     </div>
-  </div>

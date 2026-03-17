@@ -43,7 +43,7 @@
        
  
 
-        <?php include_partial($modulo . '/detalle', array( 'form'=> $form, 'operacion' => $operacion, 'detalle' => $detalle, 'pagos' => $pagos)) ?>  
+        <?php include_partial($modulo . '/detalle', array( 'total'=>$operacion->getValorTotal(), 'form'=> $form, 'operacion' => $operacion, 'detalle' => $detalle, 'pagos' => $pagos)) ?>  
            <?php echo '</form>'; ?>
     </div>
 </div>

@@ -161,6 +161,10 @@ class nota_credito_facturaActions extends sfActions {
                 $valores = $this->form->getValues();
                 $json = $request->getParameter('jsonRetorno');
 //                echo "<pre>";
+//                print_r($valores);
+//               echo "</pre>";
+//               
+//                echo "<pre>";
 //                print_r($json);
 //                die();
                 $items = json_decode($json, true);
