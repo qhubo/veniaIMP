@@ -156,7 +156,7 @@
 
             </div>
             <div class="col-lg-9">                
-                <?php include_partial($modulo . '/lista', array('id'=>$id,'listado'=>$listado)) ?>      
+                <?php include_partial($modulo . '/lista', array('orden'=>$orden,'id'=>$id,'listado'=>$listado)) ?>      
             </div>
         </div>
              <?php  include_partial($modulo . '/total', array('formProducto'=>$formProducto, 'listado'=>$listado, 'modulo'=>$modulo, 'orden' => $orden, 'proveedor' => $proveedor, 'id' => $id, 'form'=>$form)) ?>

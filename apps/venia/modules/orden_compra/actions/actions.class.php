@@ -10,6 +10,18 @@
  */
 class orden_compraActions extends sfActions {
 
+        public function executeCosto(sfWebRequest $request) {
+        $valor = $request->getParameter('id');
+        $ListaId = $request->getParameter('idv');
+        $listaProducto = OrdenProveedorDetalleQuery::create()
+                ->filterById($ListaId)
+                ->findOne();
+        $listaProducto->setCostoPromedio($valor);
+        $listaProducto->save();
+        echo "actualizado " . $valor;
+        die();
+    }
+
     public function executeCarga(sfWebRequest $request) {
            error_reporting(-1);
         $ordenId = sfContext::getInstance()->getUser()->getAttribute('OrdenId', null, 'seguridad');
@@ -779,6 +791,12 @@ class orden_compraActions extends sfActions {
                             ->filterByProductoId(null, Criteria::NOT_EQUAL)
                             ->find();
                     foreach ($productos as $reg) {
+                        
+                           if (!$reg->getCostoPromedio()) {
+                            $reg->setCostoPromedio($reg->getCostoActual());
+                            $reg->save();
+                        }
+                        
                         $productoExistencia = ProductoExistenciaQuery::create()
                                 ->filterByTiendaId($tiendaId)
                                 ->filterByProductoId($reg->getProductoId())
@@ -805,9 +823,18 @@ class orden_compraActions extends sfActions {
                         $movimienoto->setEmpresaId($ordenQ->getEmpresaId());
                         $movimienoto->setFin($nuevoValor);
                         $movimienoto->setCosto($reg->getValorUnitario());
+                                  $movimienoto->setCosto($reg->getCostoPromedio());
                         $movimienoto->save();
                         $productoExistencia->setCantidad($nuevoValor);
                         $productoExistencia->save();
+                        
+                            $productoQ = ProductoQuery::create()->findOneById($reg->getProductoId());
+//                            $productoQ->setCostoProveedor($reg->getCostoActual());
+//                            if ($reg->getCostoPromedio() >0) {
+                            $productoQ->setCostoProveedor($reg->getCostoPromedio());
+                            //  }
+                            $productoQ->save();
+                            
                     }
 
 

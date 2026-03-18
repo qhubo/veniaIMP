@@ -383,6 +383,7 @@ propel:
      confrontado_sat:                  { type: boolean, default: false }
      no_sat:                           { type: integer, default: 0,index: true  }
      impuesto_gas:                     { type: double } 
+
          
   orden_proveedor_detalle:
       _attributes: { phpName: OrdenProveedorDetalle, idMethod: native }
@@ -400,6 +401,7 @@ propel:
       valor_isr:                        { type: double }  
       impuesto_gas:                     { type: double } 
       valor_retiene_iva:                { type: double }   
+      costo_promedio:                   { type: double } 
         
   cuenta_proveedor:
      _attributes: { phpName: CuentaProveedor, idMethod: native }

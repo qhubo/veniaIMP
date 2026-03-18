@@ -46,6 +46,7 @@ abstract class BaseOrdenProveedorFormFilter extends BaseFormFilterPropel
       'confrontado_sat'       => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
       'no_sat'                => new sfWidgetFormFilterInput(),
       'impuesto_gas'          => new sfWidgetFormFilterInput(),
+      'costo_promedio'        => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -83,6 +84,7 @@ abstract class BaseOrdenProveedorFormFilter extends BaseFormFilterPropel
       'confrontado_sat'       => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
       'no_sat'                => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'impuesto_gas'          => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
+      'costo_promedio'        => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('orden_proveedor_filters[%s]');
@@ -135,6 +137,7 @@ abstract class BaseOrdenProveedorFormFilter extends BaseFormFilterPropel
       'confrontado_sat'       => 'Boolean',
       'no_sat'                => 'Number',
       'impuesto_gas'          => 'Number',
+      'costo_promedio'        => 'Number',
     );
   }
 }

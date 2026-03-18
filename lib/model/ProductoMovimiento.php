@@ -255,6 +255,7 @@ class ProductoMovimiento extends BaseProductoMovimiento {
         return $nombre;
     }
     public function getVenta() {
+        $valor_unitario=0;
         $tipo = strtoupper(trim($this->getTipo()));
         $motivo = strtoupper(trim($this->getMotivo()));
         $motivo = str_replace(" ", "", $motivo);

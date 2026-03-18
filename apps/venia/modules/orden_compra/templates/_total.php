@@ -76,7 +76,7 @@
             <?php if ($orden) { ?>
                 <?php if ($orden->getProveedorId()) { ?>
             <!--        <a href="<?php echo url_for($modulo . '/confirmar?id=' . $orden->getId() . "&token=" . sha1($orden->getCodigo())) ?>" class="btn btn-secondary btn-dark" > <i class="flaticon-lock"></i> Procesar </a>-->
-                    <a data-toggle="modal" href="#staticCONFIRMA" class="btn btn-secondary btn-dark" > <i class="<?php echo $icon; ?>"></i> <?php echo $tituloBoton; ?> </a>
+                    <a id="btnConfirmarOrden" data-toggle="modal" href="#staticCONFIRMA" class="btn btn-secondary btn-dark"> <i class="<?php echo $icon; ?>"></i> <?php echo $tituloBoton; ?> </a>
         <?Php } else { ?>
                     <SPAN style='color:red; font-weight: bold;'>&nbsp;SELECCIONE<br> PROVEEDOR&nbsp;</span>
         <?Php } ?>
@@ -328,4 +328,56 @@
     }
 
 })();
+</script>
+
+
+
+<script>
+document.getElementById("btnConfirmarOrden").addEventListener("click", function (e) {
+
+    let errores = [];
+
+    document.querySelectorAll("input[id^='costo_']").forEach(function (costoInput) {
+
+        let pid = costoInput.id.replace("costo_", "");
+
+        let costo = parseFloat(costoInput.value) || 0;
+        let valorInput = document.getElementById("consulta_valor_" + pid);
+
+        if (valorInput) {
+            let valor = parseFloat(valorInput.value) || 0;
+
+            if (costo > valor) {
+
+                // obtenemos descripción del producto (columna 3)
+                let fila = costoInput.closest("tr");
+                let descripcion = "";
+
+                if (fila) {
+                    let celdas = fila.querySelectorAll("td");
+                    if (celdas.length > 2) {
+                        descripcion = celdas[2].innerText.trim();
+                    }
+                }
+
+                errores.push("• " + pid + " - " + descripcion + " (Costo: " + costo + " > Valor: " + valor + ")");
+            }
+        }
+    });
+
+    if (errores.length > 0) {
+
+        let mensaje = "⚠️ Los siguientes productos tienen costo mayor al valor:\n\n";
+        mensaje += errores.join("\n");
+        mensaje += "\n\n¿Está seguro que desea continuar?";
+
+        let confirmar = confirm(mensaje);
+
+        if (!confirmar) {
+            e.preventDefault();
+            return false;
+        }
+    }
+
+});
 </script>

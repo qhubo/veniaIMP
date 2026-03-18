@@ -19,4 +19,29 @@
  */
 class OrdenProveedorDetalle extends BaseOrdenProveedorDetalle
 {
+    
+    public function getCostoActual() {
+    $COSTO_PROMEDIO = 0;
+    if ($this->getProductoId()) {
+        $productoQ = $this->getProducto();
+        $existencia = $productoQ->getExistencia();
+        $costoActual = $productoQ->getCostoProveedor();
+        $cantidadIngreso = $this->getCantidad(); // importante
+        $costoIngreso = $this->getValorUnitario();
+        // condicion si tiene IVA
+//        if ($this->getOrdenProveedor()->getAplicaIva()) {
+//          $costoIngreso= $costoIngreso/1.12;  
+//         }
+         
+        if ($existencia > 0) {
+         //  SI TIENE EXISTENCIA SACAR COSTO PROMEDIO
+            $COSTO_PROMEDIO = (($existencia * $costoActual) +  ($cantidadIngreso * $costoIngreso)) 
+                    / ($existencia + $cantidadIngreso);
+        } else {
+            // SIN EXISTENCIA COSTO DE INGRESO
+            $COSTO_PROMEDIO = $costoIngreso;
+        }
+    }
+    return round($COSTO_PROMEDIO, 2);
+}
 }

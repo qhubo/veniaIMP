@@ -1,5 +1,8 @@
 <?php $modulo = 'orden_compra'; ?>
 <?php if ($id) { ?>
+<?php echo  $orden->getEstatus() ?>
+<?php } ?>
+<?php if ($id) { ?>
     <!--<div class="row">
                         <div class="col-lg-10"></div>
                             <div class="col-lg-2">				
@@ -21,7 +24,13 @@
             <th  align="center"><span class="kt-font-success">Cantidad </span></th>
             <th  align="center"><span class="kt-font-success">Valor Unitario </span></th>
 
-            <th  align="center"><span class="kt-font-success">Valor Total </span></th>
+            <th  align="center"><span class="kt-font-success">Valor Total <?php //echo $orden->getEstatus(); ?></span></th>
+               <?php if ($orden) { ?>
+            <?php  if ($orden->getEstatus()=="Autorizado") {  ?>
+ 
+            <th>Costo <br> Promedio</th>
+           <?php } ?> 
+            <?php } ?>
             <th></th>
 
         </tr>
@@ -66,7 +75,18 @@
                         <div  align="right" class="total_<?Php echo $pid ?>" id="total_<?Php echo $pid ?>"><?php echo number_format($total, 2); ?></div>
 
 
-                    </td>    
+                    </td>  
+                                         <?php if ($orden) { ?>
+            <?php  if ($orden->getEstatus() =="Autorizado") {  ?>
+     
+            
+               <th  style="background-color:#ebedf2">    
+                 <input  class="form-control" value="<?php echo $lista->getCostoPromedio(); ?>" data="<?php echo $pid ?>" placeholder="<?php echo $lista->getCostoActual(); ?>"  id="costo_<?php echo $pid ?>" name="costo_<?php echo $pid ?>"  > 
+                 <?php if ( $lista->getProducto()->getExistencia()) { ?> <span style="font-size:10px; display: block"> Existencia  <?php echo $lista->getProducto()->getExistencia(); ?> </span> <?php } ?>
+                    <span style="font-size:10px; display: block">  Costo Actual <?php echo $lista->getProducto()->getCostoProveedor(); ?> </span>
+               </th>
+           <?php } ?> 
+                <?php } ?> 
                     <td rowspan="2" style="padding-top:45px;">   <a href="<?php echo url_for($modulo . '/eliminaLinea?id=' . $pid) ?>" class="btn btn-sm  btn-danger" > <i class="fa fa-trash"></i>  </a></td>
 
                 </tr>
@@ -145,6 +165,17 @@
                 });
 
 
+            });
+        });
+    </script>
+
+         <script type="text/javascript">
+        $(document).ready(function () {
+            $("#costo_<?php echo $id ?>").on('change', function () {
+                var id = $("#costo_<?php echo $id ?>").val();
+                var idv = <?php echo $idv ?>;
+                $.get('<?php echo url_for($modulo . "/costo") ?>', {id: id, idv: idv}, function (response) {
+                });
             });
         });
     </script>
