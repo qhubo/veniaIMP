@@ -69,6 +69,11 @@
                     <td style="padding: 0.1rem !important;"><?php //echo $registro->getValorUnitario();   ?>
                         <input    class="form-control " value="<?php echo $val ?>" type="number" step="any" id="consulta_valor_<?php echo $lista->getId() ?>"  
                                   name="consulta[valor_<?php echo $lista->getId() ?>]" onkeypress='validateX<?php echo $lista->getId() ?>(event)' >
+   
+                                <?php  if ($orden->getEstatus() !="Autorizado") {  ?>
+                                 <span style="font-size:10px; display: block">  <?php echo $lista->getProducto()->getCostoProveedor(); ?> </span>
+          
+                                <?php } ?>
                     </td>    
                   
                     <td style="padding: 0.1rem !important;"><?php //echo $registro->getValorTotal();   ?>

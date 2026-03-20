@@ -76,7 +76,7 @@
             "bStateSave": false,
             "bLengthChange": false,
             "aLengthMenu": [[5, 25, 50, 100, - 1], [5, 25, 50, 100, "Todos"]],
-            "iDisplayStart": 5,
+            "iDisplayStart": 500,
             "sAjaxSource": "/index.php/busca/tabJsProductoBusca?id=1",
             "aoColumns": [
             {"bSearchable": true},

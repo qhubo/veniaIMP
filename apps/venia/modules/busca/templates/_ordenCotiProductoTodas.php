@@ -1,5 +1,19 @@
 
-<table class="table table-striped table-bordered table-hover order-column  tablaProductoIventario2"  >
+<style>
+.tabla-scroll {
+    max-height: 400px;   /* Ajusta la altura */
+    overflow-y: auto;
+}
+
+.tablaProductoIvent thead th {
+    position: sticky;
+    top: 0;
+    background: #dff0d8; /* color success */
+    z-index: 10;
+}
+</style>
+<div class="table-responsive tabla-scroll">
+<table class="table table-striped table-bordered table-hover order-column   tablaProductoIventario2"  >
     <thead>
         <tr class="success">
 <!--            <th>Imagen</th>-->
@@ -20,7 +34,7 @@
     <tfoot>
     </tfoot>
 </table> 
-
+</div>
 
 
 <!-- /.modal-dialog -->
@@ -38,9 +52,10 @@
         "bProcessing": true,
         "bServerSide": true,
         "bStateSave": false,
+ 
         "bLengthChange": false,
-        "aLengthMenu": [[5, 25, 50, 100, -1], [5, 25, 50, 100, "Todos"]],
-        "iDisplayStart": 5,
+        "aLengthMenu": [[5, 25, 50, 500, -1], [5, 25, 500, 100, "Todos"]],
+        "iDisplayStart": 500,
         "sAjaxSource": "/index.php/busca/tabJsProductoCotiTodas?id=1",
         "aoColumns": [
             {"bSearchable": true},

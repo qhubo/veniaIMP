@@ -186,6 +186,7 @@ class buscaActions extends sfActions {
         if ($r->getParameter('iDisplayStart')) {
             $ini = $r->getParameter('iDisplayStart');
         }
+        $ini=300;
         $sqlexp = "SELECT count(id) as cantidad FROM  producto where id=-1";
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("empresa", null, 'seguridad');
 
@@ -212,7 +213,7 @@ class buscaActions extends sfActions {
 //    $query = new ProductoQuery();
         if ($r->getParameter('sSearch') != "") {
             $sqlexp = "select vi.id,imagen, codigo_sku,nombre  from producto vi  where  (vi.nombre like  '%" . $busqueda . "%'
-                or vi.codigo_sku like '%" . $busqueda . "%') and  vi.empresa_id=" . $empresaId . " limit " . $ini . ", 5";
+                or vi.codigo_sku like '%" . $busqueda . "%') and  vi.empresa_id=" . $empresaId . " limit 0, 500";
         } else {
             $sqlexp = "select  id, '' as nombre, nit,  codigo   from proveedor  where id= -9";
         }

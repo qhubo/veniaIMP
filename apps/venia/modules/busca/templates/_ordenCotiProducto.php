@@ -1,4 +1,18 @@
 
+<style>
+.tabla-scroll {
+    max-height: 400px;   /* Ajusta la altura */
+    overflow-y: auto;
+}
+
+.tablaProductoIvent thead th {
+    position: sticky;
+    top: 0;
+    background: #dff0d8; /* color success */
+    z-index: 10;
+}
+</style>
+<div class="table-responsive tabla-scroll">
             <table class="table table-striped table-bordered table-hover order-column  tablaProductoIventario2"  >
                 <thead>
                     <tr class="success">
@@ -21,7 +35,7 @@
                 </tfoot>
             </table> 
     
-
+</div>
 
 <!-- /.modal-dialog -->
 
