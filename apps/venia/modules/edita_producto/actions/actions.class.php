@@ -10,6 +10,29 @@
  */
 class edita_productoActions extends sfActions {
 
+    
+    
+      public function executeEditarCodigo(sfWebRequest $request) {
+                    date_default_timezone_set("America/Guatemala");
+            $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
+$usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
+        $id = $request->getParameter('id');
+        $producto = ProductoQuery::create()->findOneById($id);
+        $codigOrig= $producto->getCodigoSku();
+        $producto->setCodigoSku($request->getParameter('codigo'));
+        $producto->save();
+        
+        $bitacora = new BitacoraCambio();
+        $bitacora->setTipo('ACTUALIZACION DE CODIGO');
+        $bitacora->setObservaciones("Producto id ".$id.".".$codigOrig."  ahora  codigo ".$producto->getCodigoSku());
+        $bitacora->setUsuario($usuarioQ->getUsuario());
+        $bitacora->setFecha(date('Y-m-d H:i:s'));
+        $bitacora->save();
+        
+          $this->getUser()->setFlash('exito', 'Producto  con  SKU ' . $producto->getCodigoSku() . ' actualizado con exito ');
+                $this->redirect('edita_producto/muestra?id=' . $producto->getId());
+        }
+    
     public function executeProveedor(sfWebRequest $request) {
         $id = $request->getParameter('id');
         $proveeor = ProveedorQuery::create()->findOneById($id);
@@ -371,8 +394,9 @@ class edita_productoActions extends sfActions {
                     $nuevo->setAlto($valores['alto']);
                     $nuevo->setAncho($valores['ancho']);
                     $nuevo->setLargo($valores['largo']);
+                    if ($valores['proveedor']) {
                     $nuevo->setProveedorId($valores['proveedor']);; //
-                    
+                    }
                     $nuevo->save();
                     $con->commit();
                 } catch (Exception $e) {

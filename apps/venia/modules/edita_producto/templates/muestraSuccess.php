@@ -4,6 +4,22 @@
 <?php //$areglo = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'producto'));       ?>
 <?php //echo  "<pre>";   print_r($areglo); die();        ?>
 <?php $ocultavd = false; ?> 
+<?php $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad'); ?>
+<?php $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId); ?>
+<?php
+$TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
+
+
+$usuarioa = sfContext::getInstance()->getUser()->getAttribute("usuarioNombre", null, 'seguridad');
+$tipoUsua = sfContext::getInstance()->getUser()->getAttribute("tipoUsuario", null, 'seguridad');
+$usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
+$usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
+$tipoUsuaId = $usuarioQ->getTipoUsuario();
+$pefilq = PerfilQuery::create()->findOneById($tipoUsuaId);
+if ($pefilq) {
+    $tipoUsua = $pefilq->getDescripcion();
+}
+?>
 <style>
     .required {
         color: red;
@@ -36,22 +52,42 @@
     <div class="kt-portlet__body">
         <?php echo $form->renderFormTag(url_for($modulo . '/muestra?id=' . $id), array('class' => 'form')) ?>
         <?php echo $form->renderHiddenFields() ?>
-        <?php if (!$producto) { ?>
-            <div class="row" style="padding-bottom:5px;">
-                <div class="col-lg-1"> </div>
-                <label class="col-lg-1 control-label">Código Sku</label>
-                <div class="col-lg-2 <?php if ($form['codigo_sku']->hasError()) echo "has-error" ?>">
-                    <?php echo $form['codigo_sku'] ?>           
+           <div class="row" style="padding-bottom:5px;">
+            <div class="col-lg-1"> </div>
+      <?php if ((!$producto)) { ?>
+                <label class="col-lg-2 control-label" style="font-weight:bold;">Código Sku</label>
+                <div  style="background-color:#646c9a;" class="col-lg-3 <?php if ($form['codigo_sku']->hasError()) echo "has-error" ?>">
+    <?php echo $form['codigo_sku'] ?>           
                     <span class="help-block form-error"> 
-                        <?php echo $form['codigo_sku']->renderError() ?>  
+                    <?php echo $form['codigo_sku']->renderError() ?>  
                     </span>
                 </div>
-                <div class="col-md-3" id="vali" style="display: none;"> <font color="red" size="-2"> Codigo Ya existe</font>
-                    <input id="te" name="te" readonly="" >
-                </div>
+<?php } ?>
+            <?php if (($TIPO_USUARIO == 'ADMINISTRADOR') OR (strtoupper($tipoUsua) == 'CONTABILIDAD')) { ?>
+                <?php if (($producto)) { ?>
+ <label class="col-lg-1 control-label" style="font-weight:bold;">Código Sku</label>
+            
+    <div class="col-lg-3 d-flex" >
+    <input type="hidden" id="producto_id_<?php echo $producto->getId(); ?>" 
+           value="<?php echo $producto->getId(); ?>">
 
-            </div>
-        <?php } ?>
+    <input readonly  style="background-color:whitesmoke"
+           class="form-control" 
+           id="codigo_<?php echo $producto->getId(); ?>"
+           value="<?php echo $producto->getCodigoSku(); ?>">
+
+    <button type="button"
+            class="btn btn-primary btn-sm mt-1"
+            onclick="abrirModalEditar(
+                <?php echo $producto->getId(); ?>,
+                '<?php echo $producto->getCodigoSku(); ?>'
+            )">
+        ..
+    </button>
+</div>
+    <?php } ?>
+            <?php } ?>
+  </div>
         <div class="row" style="padding-bottom:5px;">
             <div class="col-lg-1"> </div>
             <label class="col-lg-1 control-label">Nombre:<span class="required"> * </span>                                                                   </label>
@@ -451,4 +487,58 @@
         });
 
     });
+</script>
+
+
+
+
+<div class="modal fade" id="modalEditarCodigo" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title">Editar Código Producto</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <input type="hidden" id="modal_producto_id">
+
+        <div class="form-group">
+          <label>Nuevo Código</label>
+          <input type="text" class="form-control" id="modal_codigo">
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success" onclick="guardarCodigo()">Guardar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<script>
+function abrirModalEditar(id, codigo) {
+    document.getElementById('modal_producto_id').value = id;
+    document.getElementById('modal_codigo').value = codigo;
+    $('#modalEditarCodigo').modal('show');
+}
+
+function guardarCodigo() {
+
+    var id = document.getElementById('modal_producto_id').value;
+    var nuevoCodigo = document.getElementById('modal_codigo').value;
+
+    if(nuevoCodigo.trim() === ''){
+        alert('Debe ingresar un código');
+        return;
+    }
+
+    // Enviar por GET
+    window.location.href = "<?php echo url_for('edita_producto/editarCodigo'); ?>?id=" 
+        + id + "&codigo=" + encodeURIComponent(nuevoCodigo);
+}
 </script>
