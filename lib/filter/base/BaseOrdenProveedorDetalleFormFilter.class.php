@@ -25,6 +25,7 @@ abstract class BaseOrdenProveedorDetalleFormFilter extends BaseFormFilterPropel
       'valor_isr'          => new sfWidgetFormFilterInput(),
       'impuesto_gas'       => new sfWidgetFormFilterInput(),
       'valor_retiene_iva'  => new sfWidgetFormFilterInput(),
+      'costo_promedio'     => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -41,6 +42,7 @@ abstract class BaseOrdenProveedorDetalleFormFilter extends BaseFormFilterPropel
       'valor_isr'          => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'impuesto_gas'       => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'valor_retiene_iva'  => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
+      'costo_promedio'     => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('orden_proveedor_detalle_filters[%s]');
@@ -72,6 +74,7 @@ abstract class BaseOrdenProveedorDetalleFormFilter extends BaseFormFilterPropel
       'valor_isr'          => 'Number',
       'impuesto_gas'       => 'Number',
       'valor_retiene_iva'  => 'Number',
+      'costo_promedio'     => 'Number',
     );
   }
 }

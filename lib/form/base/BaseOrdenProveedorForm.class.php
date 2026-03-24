@@ -49,7 +49,6 @@ abstract class BaseOrdenProveedorForm extends BaseFormPropel
       'confrontado_sat'       => new sfWidgetFormInputCheckbox(),
       'no_sat'                => new sfWidgetFormInputText(),
       'impuesto_gas'          => new sfWidgetFormInputText(),
-      'costo_promedio'        => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -88,7 +87,6 @@ abstract class BaseOrdenProveedorForm extends BaseFormPropel
       'confrontado_sat'       => new sfValidatorBoolean(array('required' => false)),
       'no_sat'                => new sfValidatorInteger(array('min' => -2147483648, 'max' => 2147483647, 'required' => false)),
       'impuesto_gas'          => new sfValidatorNumber(array('required' => false)),
-      'costo_promedio'        => new sfValidatorNumber(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('orden_proveedor[%s]');

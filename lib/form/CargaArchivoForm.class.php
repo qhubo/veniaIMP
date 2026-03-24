@@ -13,6 +13,17 @@ class CargaArchivoForm extends sfForm {
       //      "class" => "file-upload", 
            )));
        
+      $precios = ListaPrecioQuery::create()->filterByActivo(true)->orderByNombre()->find();   
+      $lista[999]="Precio Venta";
+      foreach($precios as $reg) {
+          $lista[$reg->getId()]=$reg->getNombre();
+      }
+              
+          
+        $this->setWidget('precio', new sfWidgetFormChoice(array("choices" => $lista), array("class" => " form-control")));
+       $this->setValidator('precio', new sfValidatorString(array('required' => false)));
+    
+             
         $this->setValidator('archivo2',  new sfValidatorFile(array('required' => false), array()) );
 //        $this->validatorSchema->setPostValidator(new sfValidatorCallback(array(
 //            'callback' => array($this, "validaUsuario")

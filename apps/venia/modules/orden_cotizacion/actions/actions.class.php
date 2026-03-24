@@ -2,6 +2,38 @@
 
 class orden_cotizacionActions extends sfActions {
 
+  public function executeCargacancel(sfWebRequest $request) {
+         $ordenId = sfContext::getInstance()->getUser()->getAttribute('CotizacionId', null, 'seguridad'); 
+         $ordenDetalle = OrdenCotizacionDetalleQuery::create()
+                 ->filterByOrdenCotizacionId($ordenId)
+                 ->filterByArchivo(true)
+                 ->find();
+         if ($ordenDetalle) {
+             $ordenDetalle->delete();
+         }
+         
+         
+               $ordenQ = OrdenCotizacionQuery::create()->findOneById($ordenId);
+        $lista = OrdenCotizacionDetalleQuery::create()
+                ->withColumn('sum(OrdenCotizacionDetalle.ValorTotal)', 'TotalGeneral')
+                ->filterByOrdenCotizacionId($ordenId)
+                ->findOne();
+        $suma = $lista->getTotalGeneral();
+        $valores = ParametroQuery::ObtenerIva($suma, false);
+        $iva = $valores['IVA'];
+        $valorSInIVa = $valores['VALOR_SIN_IVA'];
+        $ordenQ->setSubTotal($valorSInIVa);
+        $ordenQ->setValorTotal($suma);
+        $ordenQ->setIva($iva);
+        $ordenQ->save();
+                  $this->getUser()->setFlash('error',  ' carga de archivo cancelada con exito');
+  
+        $this->redirect('orden_cotizacion/index');
+         
+  }  
+
+      
+    
     public function executeEliminarMultiple(sfWebRequest $request) {
         error_reporting(-1);
         $ids = $request->getParameter('eli');

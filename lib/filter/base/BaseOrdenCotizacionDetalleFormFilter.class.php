@@ -31,6 +31,7 @@ abstract class BaseOrdenCotizacionDetalleFormFilter extends BaseFormFilterPropel
       'bulto_fin'           => new sfWidgetFormFilterInput(),
       'bulto_superior'      => new sfWidgetFormFilterInput(),
       'confirmado'          => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
+      'archivo'             => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
     ));
 
     $this->setValidators(array(
@@ -53,6 +54,7 @@ abstract class BaseOrdenCotizacionDetalleFormFilter extends BaseFormFilterPropel
       'bulto_fin'           => new sfValidatorPass(array('required' => false)),
       'bulto_superior'      => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'confirmado'          => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
+      'archivo'             => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
     ));
 
     $this->widgetSchema->setNameFormat('orden_cotizacion_detalle_filters[%s]');
@@ -90,6 +92,7 @@ abstract class BaseOrdenCotizacionDetalleFormFilter extends BaseFormFilterPropel
       'bulto_fin'           => 'Text',
       'bulto_superior'      => 'Number',
       'confirmado'          => 'Boolean',
+      'archivo'             => 'Boolean',
     );
   }
 }

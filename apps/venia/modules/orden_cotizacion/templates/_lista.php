@@ -27,8 +27,10 @@
     <?php if ($id) { ?>
     <tbody>
         <?php $pos=0; ?>
+        <?php $archi=0; ?>
           <?php $grantotal=0; ?>
         <?php foreach ($listado  as $registro) { ?>
+        <?php if ($registro->getArchivo()) { ?>       <?php $archi++; ?>  <?php } ?>
         <?php $Max=999; ?>
         <?php if ($registro->getProductoId()) {  ?>
         <?php $Max=$registro->getProducto()->getExistencia()-$registro->getProducto()->getTransito();; //Bodega($registro->getOrdenCotizacion()->getTiendaId()); ?>
@@ -41,7 +43,7 @@
             <?php $total = $lista->getValorUnitario() * $can; ?>
         <?php $grantotal= $total+$grantotal; ?>
         
-        <tr>   
+        <tr <?php if ($registro->getArchivo()) { ?> style="color: #0924A9; font-weight:bold;"<?php } ?> >   
             <td><?php echo $pos; ?> </td>
             <td>
              <a class="btn btn-block  btn-xs " style=" font-size: 11px !important;" data-toggle="modal" href="#staticE<?php echo $registro->getId() ?>">
@@ -95,8 +97,14 @@
     <?php } ?>
 </table>
     <div class="row">
-        <div class="col-md-10"></div>
-        <div class="col-md-2">
+        <div class="col-md-5"></div>
+        <div class="col-md-3"> <?php if ($archi) { ?>
+ <a href="<?php echo url_for($modulo . '/cargacancel') ?>" 
+       class="btn btn-sm btn-info"> Cancelar Carga </a>
+
+ <?php } ?> </div>
+        
+        <div class="col-md-4">
             <button type="button" 
         id="btnEliminarSeleccionados" 
         class="btn btn-danger btn-sm">

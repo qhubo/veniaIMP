@@ -28,6 +28,7 @@ abstract class BaseOrdenProveedorDetalleForm extends BaseFormPropel
       'valor_isr'          => new sfWidgetFormInputText(),
       'impuesto_gas'       => new sfWidgetFormInputText(),
       'valor_retiene_iva'  => new sfWidgetFormInputText(),
+      'costo_promedio'     => new sfWidgetFormInputText(),
     ));
 
     $this->setValidators(array(
@@ -45,6 +46,7 @@ abstract class BaseOrdenProveedorDetalleForm extends BaseFormPropel
       'valor_isr'          => new sfValidatorNumber(array('required' => false)),
       'impuesto_gas'       => new sfValidatorNumber(array('required' => false)),
       'valor_retiene_iva'  => new sfValidatorNumber(array('required' => false)),
+      'costo_promedio'     => new sfValidatorNumber(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('orden_proveedor_detalle[%s]');

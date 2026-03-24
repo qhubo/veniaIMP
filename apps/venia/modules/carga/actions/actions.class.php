@@ -14,6 +14,9 @@ class cargaActions extends sfActions {
         error_reporting(-1);
         $ordenId = sfContext::getInstance()->getUser()->getAttribute('CotizacionId', null, 'seguridad');
         $id = $request->getParameter('id');
+        $precioId= sfContext::getInstance()->getUser()->getAttribute('PrecioID', null, 'seguridad');
+   
+        
         $bitacora = BitacoraArchivoQuery::create()->findOneById($id);
         sfContext::getInstance()->getUser()->setAttribute('muestrabusqueda', 0, 'busqueda');
         $filename = $bitacora->getNombre();
@@ -68,9 +71,11 @@ class cargaActions extends sfActions {
                 }
 
                 $codigo = isset($registro[$columnaCodigo]) ? trim($registro[$columnaCodigo]) : '';
+//              echo $codigo;
+//                die();
                 $cantidad = isset($registro[$columnaCantidad]) && is_numeric($registro[$columnaCantidad]) ? max(0, $registro[$columnaCantidad]) : 0;
                 $valorUnitario = isset($registro[$columnaValor]) && is_numeric($registro[$columnaValor]) ? max(0, $registro[$columnaValor]) : 0;
-                if ($cantidad <= 0 || $valorUnitario <= 0) {
+                if ($cantidad <= 0 || $valorUnitario < 0) {
                     continue;
                 }
                 $producto = ProductoQuery::create()
@@ -79,6 +84,7 @@ class cargaActions extends sfActions {
                 if (!$producto) {
                     continue;
                 }
+                
                 /// PRECIO MINIMO
                 $menor = $producto->getPrecio();
                 $precios = ListaPrecioQuery::create()
@@ -96,6 +102,19 @@ class cargaActions extends sfActions {
                 if ($valorUnitario < $menor) {
                     $valorUnitario = $menor;
                 }
+                if (!$valorUnitario) {
+                    if ($precioId==999) {
+                        $valorUnitario=$producto->getPrecio();
+                    }
+                    $precioq = ProductoPrecioQuery::create()
+                            ->filterByProductoId($producto->getId())
+                            ->filterByListaPrecioId($precioId)
+                            ->findOne();
+                    if ($precioq) {
+                        $valorUnitario= $precioq->getValor();
+                    }
+                    
+                }
                 /// CALCULAR IVA CORRECTAMENTE
                 $valoresIva = ParametroQuery::ObtenerIva($valorUnitario, false);
                 $ordenQD = new OrdenCotizacionDetalle();
@@ -108,6 +127,7 @@ class cargaActions extends sfActions {
                 $ordenQD->setTotalIva($valoresIva['IVA']);
                 $ordenQD->setOrdenCotizacionId($ordenId);
                 $ordenQD->setCostoUnitario($producto->getCostoProveedor());
+                $ordenQD->setArchivo(true);
                 $ordenQD->save();
             }
         }
@@ -162,8 +182,10 @@ class cargaActions extends sfActions {
             $this->form->bind($request->getParameter("consulta"), $request->getFiles("consulta"));
             if ($this->form->isValid()) {
                 $valores = $this->form->getValues();
-//                echo "<pre>";
-//                print_r($valores);
+               
+                
+                sfContext::getInstance()->getUser()->setAttribute('PrecioID', $valores['precio'], 'seguridad');
+                
                 sfContext::getInstance()->getUser()->setAttribute('valores', serialize($valores), 'busqueda');
                 $archivo = $valores["archivo"];
                 $filename = sha1($archivo->getOriginalName() . date("Ymdhis") . rand(111111, 999999)) . $archivo->getExtension($archivo->getOriginalExtension());
