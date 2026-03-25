@@ -20,6 +20,16 @@
 class OperacionPago extends BaseOperacionPago
 {
     
+    public function getValorTotal() {
+        $retun = $this->getValor();
+        if ($this->getOperacionPagoPadreNo()) {
+            $opreaciP= OperacionPagoPadreQuery::create()->findOneById($this->getOperacionPagoPadreNo());
+            if ($opreaciP) {
+                $retun= $opreaciP->getValor();
+            }
+        }
+        return $retun;
+    }
     static public function Codigo($id) {
     
          $operacionPafre = OperacionPagoQuery::create()->findOneById($id);
