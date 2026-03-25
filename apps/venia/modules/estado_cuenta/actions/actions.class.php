@@ -88,7 +88,7 @@ class estado_cuentaActions extends sfActions {
 
     // ================= SALDO INICIAL =================
     $sumatorias = OperacionQuery::create()
-        ->where("Operacion.Fecha < '" . $fechaInicial . " 00:00:00'")
+        ->where("Operacion.Fecha <= '" . $fechaInicial . " 00:01:00'")
         ->withColumn('sum(Operacion.ValorTotal)', 'TotalTotal')
         ->filterByEstatus('Anulado', Criteria::NOT_EQUAL)
         ->filterByClienteId($clientev)
@@ -149,7 +149,7 @@ class estado_cuentaActions extends sfActions {
 
     // FACTURAS
     $operaciones = OperacionQuery::create()
-        ->where("Operacion.Fecha > '" . $fechaInicial . " 00:00:00'")
+        ->where("Operacion.Fecha > '" . $fechaInicial . " 00:01:00'")
         ->filterByEstatus('Anulado', Criteria::NOT_EQUAL)
         ->filterByClienteId($clientev)
         ->find();
