@@ -190,7 +190,7 @@ $data['sumasaldo']=$saldoINcial;
                 ->find();
         foreach ($opeacionesPago as $pago) {
             $saldoINcial = $saldoINcial - $pago->getValor();
-            $Key = $pago->getFechaCreo('YmdHis') . "_C";
+            $Key = $pago->getFechaCreo('YmdHis') . "_C"."  -".$pago->getId();
             $data['codigo'] = "RECIBO " . $pago->getCodigo()."  -".$pago->getId();
             $data['fecha'] = $pago->getFechaCreo('d/m/Y H:i');
             $data['abono'] = $pago->getValor();
