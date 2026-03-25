@@ -226,7 +226,6 @@ $data['sumasaldo']=$saldoINcial;
 
 
 
-
 	sort($listaKey, SORT_NATURAL | SORT_FLAG_CASE);
         $registro = null;
         
