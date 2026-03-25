@@ -189,10 +189,10 @@ class estado_cuentaActions extends sfActions {
         $Key = $pago->getFechaCreo('YmdHis') . "_C" . $pago->getId();
 
         $lista[$Key] = [
-            'codigo' => "REC.  " . $pago->getCodigo(),
+            'codigo' => "REC.  " . $pago->getCodigo()."-". $pago->getId(),
             'fecha' => $pago->getFechaCreo('d/m/Y'),
             'cargo' => 0,
-            'abono' => $pago->getValorTotal(),
+            'abono' => $pago->getValor(),
             'descripcion' => $pago->getTipo() . " " . $banco . " Doc " . $pago->getDocumento(),
             'saldo' => 0
         ];
