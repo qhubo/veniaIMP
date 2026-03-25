@@ -88,7 +88,7 @@ class estado_cuentaActions extends sfActions {
 
     // ================= SALDO INICIAL =================
     $sumatorias = OperacionQuery::create()
-        ->where("Operacion.Fecha < '" . $fechaInicial . " 01:01:01'")
+        ->where("Operacion.Fecha < '" . $fechaInicial . " 00:00:00'")
         ->withColumn('sum(Operacion.ValorTotal)', 'TotalTotal')
         ->filterByEstatus('Anulado', Criteria::NOT_EQUAL)
         ->filterByClienteId($clientev)
@@ -104,7 +104,7 @@ class estado_cuentaActions extends sfActions {
 
     $restas = OperacionPagoQuery::create()
         ->filterByTipo($listab, Criteria::NOT_IN)
-        ->where("OperacionPago.FechaCreo < '" . $fechaInicial . " 01:01:01'")
+        ->where("OperacionPago.FechaCreo < '" . $fechaInicial . " 00:00:00'")
         ->withColumn('sum(OperacionPago.Valor)', 'TotalTotal')
         ->useOperacionQuery()
             ->filterByClienteId($clientev)
@@ -116,7 +116,7 @@ class estado_cuentaActions extends sfActions {
     }
 
     $notasCredito = NotaCreditoQuery::create()
-        ->where("NotaCredito.Fecha < '" . $fechaInicial . " 01:01:01'")
+        ->where("NotaCredito.Fecha < '" . $fechaInicial . " 00:00:00'")
         ->where("NotaCredito.Estatus not like '%Anul%'")
         ->filterByClienteId($clientev)
         ->find();
@@ -149,7 +149,7 @@ class estado_cuentaActions extends sfActions {
 
     // FACTURAS
     $operaciones = OperacionQuery::create()
-        ->where("Operacion.Fecha >= '" . $fechaInicial . " 00:00:00'")
+        ->where("Operacion.Fecha > '" . $fechaInicial . " 00:00:00'")
         ->filterByEstatus('Anulado', Criteria::NOT_EQUAL)
         ->filterByClienteId($clientev)
         ->find();
