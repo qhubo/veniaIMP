@@ -215,7 +215,7 @@ class estado_cuentaActions extends sfActions {
 
         $lista[$Key] = [
             'codigo' => "N.C. " . $nota->getCodigo(),
-            'fecha' => $nota->getFecha('d/m/Y H:i'),
+            'fecha' => $nota->getFecha('d/m/Y'),
             'cargo' => 0,
             'abono' => $valor,
             'descripcion' => $nota->getConcepto(),
