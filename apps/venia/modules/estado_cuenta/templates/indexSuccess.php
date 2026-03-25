@@ -67,7 +67,7 @@
             </div>
         </div>
 
-    </div>
+    </div>                                    
 </div>
 <script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
 
