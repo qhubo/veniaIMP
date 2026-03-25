@@ -67,7 +67,7 @@
         <?php foreach($detalle as $data) { ?>
         <?php $total1 =$total1+$data['cargo']; ?>
         <?php $total2 =$total2 +  $data['abono']; ?>
-        <?php $total3 =$total3    +$data['sumasaldo']  +   $data['cargo']- $data['abono'] ; ?>
+
 <?php $saldoU =$data['saldo']; ?>
         <tr>
           <td style="width:120px;"><?php echo $data['codigo']; ?></td>
@@ -85,11 +85,11 @@
       </tbody>
 
       <tfoot>
-        <tr class="totales">
-          <td colspan="2">Totales</td>
-        <td style="width:80px; text-align: right;"  class="text-right"><?php echo Parametro::formato($total1, false); ?></td>
-          <td style="width:80px; text-align: right;"  class="text-right"><?php echo Parametro::formato($total2, false); ?></td>
-          <td style="width:80px; text-align: right;"  class="text-right"><?php  echo Parametro::formato($saldoU, false); ?></td>
+          <tr class="totales" style="background-color:whitesmoke">
+            <td colspan="2" style="font-weight:bold;" >Totales</td>
+        <td style="width:80px; text-align: right; font-weight:bold;"  class="text-right"><?php echo Parametro::formato($total1, false); ?></td>
+          <td style="width:80px; text-align: right; font-weight:bold;"  class="text-right"><?php echo Parametro::formato($total2, false); ?></td>
+          <td style="width:80px; text-align: right; font-weight:bold;"  class="text-right"><?php  echo Parametro::formato($saldoU, false); ?></td>
           <td></td>
         </tr>
       </tfoot>

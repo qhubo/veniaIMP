@@ -159,7 +159,7 @@ class estado_cuentaActions extends sfActions {
         $Key = $registr->getFecha('YmdHis') . "_P" . $registr->getId();
 
         $lista[$Key] = [
-            'codigo' => "FACTURA " . $registr->getCodigo(),
+            'codigo' => "FACT. " . $registr->getCodigoFactura(),
             'fecha' => $registr->getFecha('d/m/Y'),
             'cargo' => $registr->getValorTotal(),
             'abono' => 0,
