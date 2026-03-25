@@ -160,7 +160,7 @@ class estado_cuentaActions extends sfActions {
 
         $lista[$Key] = [
             'codigo' => "FACTURA " . $registr->getCodigo(),
-            'fecha' => $registr->getFecha('d/m/Y H:i'),
+            'fecha' => $registr->getFecha('d/m/Y'),
             'cargo' => $registr->getValorTotal(),
             'abono' => 0,
             'descripcion' => '',
@@ -190,7 +190,7 @@ class estado_cuentaActions extends sfActions {
 
         $lista[$Key] = [
             'codigo' => "RECIBO " . $pago->getCodigo(),
-            'fecha' => $pago->getFechaCreo('d/m/Y H:i'),
+            'fecha' => $pago->getFechaCreo('d/m/Y'),
             'cargo' => 0,
             'abono' => $pago->getValor(),
             'descripcion' => $pago->getTipo() . " " . $banco . " Doc " . $pago->getDocumento(),
