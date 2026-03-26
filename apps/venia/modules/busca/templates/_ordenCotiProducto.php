@@ -53,6 +53,7 @@
         "bServerSide": true,
         "bStateSave": false,
         "bLengthChange": false,
+        "searchDelay": 1300,
         "aLengthMenu": [[5, 25, 50, 100, -1], [5, 25, 50, 100, "Todos"]],
         "iDisplayStart": 5,
         "sAjaxSource": "/index.php/busca/tabJsProductoCoti?id=1",

@@ -75,6 +75,7 @@
             "bServerSide": true,
             "bStateSave": false,
             "bLengthChange": false,
+            "searchDelay": 1300,
             "aLengthMenu": [[5, 25, 50, 100, - 1], [5, 25, 50, 100, "Todos"]],
             "iDisplayStart": 500,
             "sAjaxSource": "/index.php/busca/tabJsProductoBusca?id=1",

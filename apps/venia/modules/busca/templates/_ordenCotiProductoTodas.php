@@ -56,6 +56,7 @@
         "bLengthChange": false,
         "aLengthMenu": [[5, 25, 50, 500, -1], [5, 25, 500, 100, "Todos"]],
         "iDisplayStart": 500,
+        "searchDelay": 1300,
         "sAjaxSource": "/index.php/busca/tabJsProductoCotiTodas?id=1",
         "aoColumns": [
             {"bSearchable": true},
