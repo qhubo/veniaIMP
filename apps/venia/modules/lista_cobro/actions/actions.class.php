@@ -24,7 +24,11 @@ class lista_cobroActions extends sfActions {
          if ($operacionPagoPad) {
              $valorTOTAL=$operacionPagoPad->getValor();
          $Pagos = OperacionPagoQuery::create()->filterByOperacionPagoPadreNo($operacionPagoPad->getId())->find();
-             
+         $comisiones=0;
+         foreach($Pagos as $reg) {
+             $comisiones =$comisiones+$reg->getComision();
+         }
+             $valorTOTAL= $valorTOTAL+$comisiones;
              
          }
          

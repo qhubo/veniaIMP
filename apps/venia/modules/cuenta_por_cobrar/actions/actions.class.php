@@ -12,11 +12,15 @@ class cuenta_por_cobrarActions extends sfActions {
         $this->list = $list;
         $valores = json_decode($list);
         $lista = null;
+//               echo "<pre>";
+//        print_r($valores);
+//        die();
         foreach ($valores as $reg) {
             $operaicon = OperacionQuery::create()->findOneById($reg->id);
             $cliente = $operaicon->getCliente()->getNombre();
             $data = null;
             $data['valor'] = $reg->valor;
+             $data['comision'] = $reg->comision;
             $data['id'] = $reg->id;
             $data['codigo'] = $operaicon->getCodigoFactura();
             $data['fecha'] = $operaicon->getFecha('d/m/Y');
@@ -29,9 +33,14 @@ class cuenta_por_cobrarActions extends sfActions {
         $value['fecha'] = date('d/m/Y');
         $this->form = new SelePagoForm($value);
         if ($request->isMethod('post')) {
+      
+        
             $this->form->bind($request->getParameter("consulta"), $request->getFiles("consulta"));
             if ($this->form->isValid()) {
                 $valores = $this->form->getValues();
+//                       echo "<pre>";
+//        print_r($lista);
+//        die();
                 //*** IINICIO PAGO
                 if ($valores['fecha']) {
                     $fechaInicio = $valores['fecha'];
@@ -65,12 +74,12 @@ class cuenta_por_cobrarActions extends sfActions {
                     $OperaPgo->setUsuario($usuarioQ->getUsuario());
                     $OperaPgo->setFechaCreo(date('Y-m-d H:i:s'));
                     $OperaPgo->setValor($valor);
-                    $OperaPgo->setComision($valores['comision']);
+                    $OperaPgo->setComision($registro['comision']);
                     $OperaPgo->setVuelto($valores['vuelto']);
                     $OperaPgo->setCxcCobrar($operacion->getCodigo());
                     $OperaPgo->setOperacionPagoPadreNo($pago->getId());
                     $OperaPgo->save();
-                    $valorPagado = $operacion->getValorPagado() + $valor + $valores['comision'];
+                    $valorPagado = $operacion->getValorPagado() + $valor + $registro['comision'];
                     $OperaPgo->setFechaCreo(date('Y-m-d H:i:s'));
                     if ($valorPagado >= $operacion->getValorTotal()) {
                         $operacion->setPagado(true);
@@ -256,7 +265,7 @@ class cuenta_por_cobrarActions extends sfActions {
                 ->find();
         $seleccion = null;
         foreach ($proveedores as $registro) {
-            $seleccion[$registro->getClienteId()] = $registro->getCliente()->getNombre();
+            $seleccion[$registro->getClienteId()] =$registro->getCliente()->getCodigo()." ".$registro->getCliente()->getNombre();
         }
         $this->seleccion = $seleccion;
         $this->totalSuma = $this->suma($this->prover);

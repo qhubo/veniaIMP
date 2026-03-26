@@ -1,9 +1,11 @@
 
 <?php $modulo = $sf_params->get('module'); ?>
 <?php $proveedor_id = sfContext::getInstance()->getUser()->getAttribute('proveedor_id', null, 'seguridad'); ?>
-<?php  $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
-        $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
-        $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario()); ?>
+<?php
+$usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
+$usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
+$TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
+?>
 <script src='/assets/global/plugins/jquery.min.js'></script>
 <script src='/assets/global/plugins/select2.min.js'></script>
 <div class="kt-portlet kt-portlet--responsive-mobile">
@@ -21,26 +23,25 @@
         </div>
     </div>
     <div class="kt-portlet__body">
-        <?php $modulo = $sf_params->get('module'); ?>
+<?php $modulo = $sf_params->get('module'); ?>
         <form action="<?php echo url_for($modulo . '/index') ?>" method="get">
             <div class="row"  style="padding-bottom:10px;">
-                <div class="col-lg-1"></div>
-                <div class="col-lg-4">
+                <div class="col-lg-6">
                     <span style="display:block">Clientes</span>
                     <select  onchange="this.form.submit()" class="form-control mi-selector"  name="prover" id="prover">
                         <option value="0">[    Todos    ]</option>
                         <?php foreach ($seleccion as $key => $value) { ?>
                             <option <?php if ($prover == $key) { ?> selected="selected"  <?php } ?>  value="<?php echo $key; ?>"><?php echo $value; ?></option>
-                        <?php } ?>
+<?php } ?>
                     </select>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-3">
                     <span style="display:block">Vendedores</span>
                     <select  onchange="this.form.submit()" class="form-control mi-selector"  name="vende" id="vende">
                         <option value="0">[    Todos    ]</option>
                         <?php foreach ($vendedores as $vent) { ?>
                             <option <?php if ($vent->getId() == $vende) { ?> selected="selected"  <?php } ?>  value="<?php echo $vent->getId(); ?>"><?php echo $vent->getNombre(); ?></option>
-                        <?php } ?>
+<?php } ?>
                     </select>
                 </div>
                 <div class="col-lg-1"></div>
@@ -56,14 +57,14 @@
             <div class="col-lg-7"></div>
             <div class="col-lg-3"></div>
             <div class="col-lg-2">
-                <?php if (!$prover) { ?>
+<?php if (!$prover) { ?>
                     <div class="kt-input-icon kt-input-icon--left">
                         <input type="text" class="form-control" placeholder="Buscar ..." id="generalSearch">
                         <span class="kt-input-icon__icon kt-input-icon__icon--left">
                             <span><i class="la la-search"></i></span>
                         </span>
                     </div>
-                <?php } ?>
+<?php } ?>
             </div>
         </div>
         <div class="row">
@@ -84,7 +85,7 @@
                     <th  align="center"> Valor</th>    
                     <?php if ($prover) { ?>
                         <th  align="center"> Valor  Pagar</th>  
-                    <?php } ?>
+<?php } ?>
                     <th  align="center"> Valor Pagado</th>     
                     <th  align="center"> Saldo</th>     
                     <th  align="center"> Estado </th>
@@ -94,19 +95,19 @@
             <tbody>
                 <?php $total = 0; ?>
                 <?php foreach ($operaciones as $lista) { ?>
-                    <?php $total = $lista->getValorTotal() + $total; ?>
-                    <?php $detalleProducto = OperacionDetalleQuery::create()->filterByOperacionId($lista->getId())->count(); ?>    
+    <?php $total = $lista->getValorTotal() + $total; ?>
+    <?php $detalleProducto = OperacionDetalleQuery::create()->filterByOperacionId($lista->getId())->count(); ?>    
                     <tr>     
                         <td> <?php if ($lista->getCodigo()) { ?>
                                 <a class="btn btn-sm  btn-warning btn-block "   href="<?php echo url_for('reporte_venta/muestra?id=' . $lista->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $lista->getId() ?>">
                                     <font size="-2"> <?php echo $lista->getCodigoFactura() ?>   </font>
                                 </a>
-                            <?php } else { ?>
+                                <?php } else { ?>
                                 <a class="btn  btn-small  btn-info btn-block "   href="<?php echo url_for('reporte_venta/muestra?id=' . $lista->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $lista->getId() ?>">
-                                    <?php echo $lista->getCodigoFactura() ?>  
+                                <?php echo $lista->getCodigoFactura() ?>  
                                 </a>   
                                 <font size="-2"> <?php echo $lista->getCodigoFactura() ?>  </font>
-                            <?php } ?>
+    <?php } ?>
                             <font size="-2"> <?php echo substr($lista->getTienda(), 0, 5) ?> </font>  
                         </td>
                         <td><font size="-2"><?php echo $lista->getFecha('d/m/Y H:i') ?></font>  
@@ -120,8 +121,8 @@
                             <?php if ($lista->getCliente()->getNombre() <> $lista->getNombre()) { ?>
                                 <?php echo $lista->getCliente()->getNombre() . "   " . $lista->getNombre(); ?>
                             <?php } else { ?>
-                                <?php echo $lista->getCliente()->getNombre(); ?>
-                            <?php } ?>
+        <?php echo $lista->getCliente()->getNombre(); ?>
+    <?php } ?>
                             <br> <font size="-1"><?php echo $lista->getNit() ?></font>  
                         </td>
                         <td>  <font size="-1"><?php echo $lista->getObservaciones() ?></font>  </td>
@@ -129,29 +130,55 @@
 
                         <td>  <font size="-1"><?php echo number_format($lista->getValorTotal(), 2) ?>  </font>  </td>
 
-                        <?php if ($prover) { ?>
-                            <td style="background-color:#eeeeee">
-                                <?php
-                                $saldo = $lista->getValorTotal() - $lista->getValorPagado();
-                                ?>
-                                <?php if ($TIPO_USUARIO=='ADMINISTRADOR') { ?>
-                                <input  datoid="<?php echo $lista->getId(); ?>" class="form-control valor-pagar"  type="text"  placeholder="0.00" value="0.00" data-max="<?php echo $saldo; ?>"   >
-                            <?php } ?>
-                            </td>
-                            </td>
-                        <?php } ?>
+                            <?php if ($prover) { ?>
+             <td style="background-color:#eeeeee">
+    <?php $saldo = $lista->getValorTotal() - $lista->getValorPagado(); ?>
+
+    <?php if ($TIPO_USUARIO == 'ADMINISTRADOR') { ?>
+
+        <div style="display:flex; align-items:center; margin-bottom:5px;">
+            <label style="width:80px; margin:0;">Valor</label>
+            <input 
+                datoid="<?php echo $lista->getId(); ?>" 
+                name="valor[<?php echo $lista->getId(); ?>]"
+                class="form-control valor-pagar input-mini"  
+                type="text"  
+                placeholder="0.00" 
+                value="0.00" 
+                data-max="<?php echo $saldo; ?>"
+                autocomplete="off"
+                style="flex:1;">
+        </div>
+
+        <div style="display:flex; align-items:center;">
+            <label style="width:80px; margin:0;">Comisión</label>
+            <input 
+                datoid="<?php echo $lista->getId(); ?>" 
+                name="comision[<?php echo $lista->getId(); ?>]"
+                class="form-control valor-comision input-mini"  
+                type="text"  
+                placeholder="0.00" 
+                value="0.00" 
+                data-max="<?php echo $saldo; ?>"
+                autocomplete="off"
+                style="flex:1;">
+        </div>
+
+    <?php } ?>
+</td>
+    <?php } ?>
 
                         <td>
 
                             <font size="-1"><?php echo number_format($lista->getValorPagado(), 2) ?>  </font>  </td>
                         <td style="text-align:right">  
-                          <?php if ($TIPO_USUARIO=='ADMINISTRADOR') { ?>
-                             <a class="btn btn-sm btn-block btn-success btn-outline  "  href="<?php echo url_for($modulo . '/caja?id=' . $lista->getId()) ?>"  >
-                                <i class="fa flaticon-signs"></i> Pago <font size="-1"><?php echo number_format($lista->getValorTotal() - $lista->getValorPagado(), 2) ?>  </font>  
-                            </a>
-                             <?php } else { ?>
-                               <?php echo number_format($lista->getValorTotal() - $lista->getValorPagado(), 2) ?>  </font>  
-                             <?php } ?>
+    <?php if ($TIPO_USUARIO == 'ADMINISTRADOR') { ?>
+                                <a class="btn btn-sm btn-block btn-success btn-outline  "  href="<?php echo url_for($modulo . '/caja?id=' . $lista->getId()) ?>"  >
+                                    <i class="fa flaticon-signs"></i> Pago <font size="-1"><?php echo number_format($lista->getValorTotal() - $lista->getValorPagado(), 2) ?>  </font>  
+                                </a>
+                            <?php } else { ?>
+        <?php echo number_format($lista->getValorTotal() - $lista->getValorPagado(), 2) ?>  </font>  
+    <?php } ?>
                         </td>
 
                         <td>  <font size="-1"><?php echo $lista->getEstatus() ?>  </font>  </td>
@@ -161,10 +188,10 @@
 
 
 
-                <?php } ?>
+            <?php } ?>
             </tbody>
-         
-            <?php if ($prover) { ?>
+
+<?php if ($prover) { ?>
                 <tfoot>
                     <tr>
                         <td></td>
@@ -181,92 +208,117 @@
                         <td></td>
                     </tr>
                 </tfoot>
-            <?php } ?>
+        <?php } ?>
 
         </table>
-            <?php if ($TIPO_USUARIO=='ADMINISTRADOR') { ?>
-        <?php if ($prover) { ?>
-            <div style="margin-top:15px; text-align:right;">
-<a id="btnProcesarPago"
-   class="btn btn-sm btn-warning"
-   href="#">
-   Procesar Pago
-</a>
-            </div>
-          <?php } ?>
-        <?php } ?>
+<?php if ($TIPO_USUARIO == 'ADMINISTRADOR') { ?>
+    <?php if ($prover) { ?>
+                <div style="margin-top:15px; text-align:right;">
+                    <a id="btnProcesarPago"
+                       class="btn btn-sm btn-warning"
+                       href="#">
+                        Procesar Pago
+                    </a>
+                </div>
+    <?php } ?>
+<?php } ?>
     </div>
 </div>
 
 
- <div class="modal fade" id="ajaxmodalPago" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
-         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog" style="width: 750px">
-            <div class="modal-content" style=" width: 750px">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="ti-close"></span></button>
-                    <h4 class="modal-title" id="myModalLabel6">Cargando...</h4>
-                </div>
+<div class="modal fade" id="ajaxmodalPago" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
+     role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 750px">
+        <div class="modal-content" style=" width: 750px">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="ti-close"></span></button>
+                <h4 class="modal-title" id="myModalLabel6">Cargando...</h4>
             </div>
         </div>
     </div>
+</div>
 
 
 
 
-    
 <script>
 $(document).ready(function () {
+
+    function limpiarNumero(valor) {
+        valor = valor.replace(/[^0-9.]/g, '');
+        let partes = valor.split('.');
+        if (partes.length > 2) {
+            valor = partes[0] + '.' + partes[1];
+        }
+        return valor;
+    }
+
+    function recalcularFila(datoid) {
+
+        let inputValor = $('.valor-pagar[datoid="' + datoid + '"]');
+        let inputComision = $('.valor-comision[datoid="' + datoid + '"]');
+
+        let valor = parseFloat(inputValor.val()) || 0;
+        let comision = parseFloat(inputComision.val()) || 0;
+        let maximo = parseFloat(inputValor.data('max'));
+
+        let totalFila = valor + comision;
+
+        // 🔥 VALIDACIÓN: no mayor al saldo
+        if (totalFila > maximo) {
+
+            // ajustar automáticamente
+            if ($(document.activeElement).hasClass('valor-comision')) {
+                comision = maximo - valor;
+                inputComision.val(comision.toFixed(2));
+            } else {
+                valor = maximo - comision;
+                inputValor.val(valor.toFixed(2));
+            }
+
+            totalFila = maximo;
+        }
+
+        return totalFila;
+    }
 
     function recalcularTotal() {
         let total = 0;
 
         $('.valor-pagar').each(function () {
-            let valor = parseFloat($(this).val()) || 0;
-            total += valor;
+
+            let datoid = $(this).attr('datoid');
+            total += recalcularFila(datoid);
+
         });
 
         $('#total_pagar_sumado').text(total.toFixed(2));
         return total;
     }
 
-    // 🔹 Validación mientras escribe
-    $(document).on('input', '.valor-pagar', function () {
+    // 🔹 INPUT VALOR Y COMISION
+    $(document).on('input', '.valor-pagar, .valor-comision', function () {
 
-        let valor = $(this).val();
-
-        // permitir solo números y punto
-        valor = valor.replace(/[^0-9.]/g, '');
-
-        // permitir solo un punto decimal
-        let partes = valor.split('.');
-        if (partes.length > 2) {
-            valor = partes[0] + '.' + partes[1];
-        }
-
+        let valor = limpiarNumero($(this).val());
         $(this).val(valor);
 
-        let numero = parseFloat(valor) || 0;
-        let maximo = parseFloat($(this).data('max'));
+        let datoid = $(this).attr('datoid');
 
-        if (numero > maximo) {
-            $(this).val(maximo.toFixed(2));
-        }
-
+        recalcularFila(datoid);
         recalcularTotal();
     });
 
-    // 🔹 Formatear al salir del campo
-    $(document).on('blur', '.valor-pagar', function () {
+    $(document).on('blur', '.valor-pagar, .valor-comision', function () {
 
         let numero = parseFloat($(this).val()) || 0;
-        let maximo = parseFloat($(this).data('max'));
 
         if (numero < 0) numero = 0;
-        if (numero > maximo) numero = maximo;
 
         $(this).val(numero.toFixed(2));
 
+        let datoid = $(this).attr('datoid');
+
+        recalcularFila(datoid);
         recalcularTotal();
     });
 
@@ -278,36 +330,38 @@ $(document).ready(function () {
         let total = recalcularTotal();
 
         if (total <= 0) {
-            alert('Debe ingresar un monto a pagar');
+            alert('Debe ingresar un monto');
             return false;
         }
 
-        // 🔹 Construir lista de pagos
         let lista = [];
 
         $('.valor-pagar').each(function () {
 
-            let valor = parseFloat($(this).val()) || 0;
+            let datoid = $(this).attr('datoid');
 
-            if (valor > 0) {
+            let valor = parseFloat($(this).val()) || 0;
+            let comision = parseFloat($('.valor-comision[datoid="' + datoid + '"]').val()) || 0;
+
+            if (valor > 0 || comision > 0) {
 
                 lista.push({
-                    id: $(this).attr('datoid'),
-                    valor: valor.toFixed(2)
+                    id: datoid,
+                    valor: valor.toFixed(2),
+                    comision: comision.toFixed(2)
                 });
 
             }
 
         });
 
-        // convertir a JSON
         let jsonList = encodeURIComponent(JSON.stringify(lista));
 
         let baseUrl = "<?php echo url_for('cuenta_por_cobrar/pagoMasiva') ?>?id=<?php echo $prover; ?>";
 
         let nuevaUrl = baseUrl
-                + "&total=" + total.toFixed(2)
-                + "&list=" + jsonList;
+            + "&total=" + total.toFixed(2)
+            + "&list=" + jsonList;
 
         $('#ajaxmodalPago .modal-content').load(nuevaUrl, function () {
             $('#ajaxmodalPago').modal('show');
@@ -318,17 +372,17 @@ $(document).ready(function () {
 });
 </script>
 
- <div class="modal fade" id="ajaxmodalPago" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
-         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog" style="width: 750px">
-            <div class="modal-content" style=" width: 750px">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="ti-close"></span></button>
-                    <h4 class="modal-title" id="myModalLabel6">Cargando...</h4>
-                </div>
+<div class="modal fade" id="ajaxmodalPago" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
+     role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width: 750px">
+        <div class="modal-content" style=" width: 750px">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="ti-close"></span></button>
+                <h4 class="modal-title" id="myModalLabel6">Cargando...</h4>
             </div>
         </div>
     </div>
+</div>
 
 
 <?php foreach ($operaciones as $reg) { ?>

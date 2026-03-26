@@ -20,13 +20,20 @@
                 <th>Fecha</th>
                 <th>Valor Pago</th>
             </tr>
+            <?php $comi=0; ?>
             <?php foreach($lista as $reg) { ?>
+            <?php $comi=$comi+$reg['comision']; ?>       
             <tr>
                 <td><?php echo $reg['codigo'] ?></td>
                 <td><?php echo $reg['fecha'] ?></td>
                 <td><?php echo Parametro::formato($reg['valor'],false) ?></td>
             </tr>
             <?php } ?>
+            <tr>
+                <td>Total</td>
+                 <td>Comision</td>
+                <td><?php echo Parametro::formato($comi); ?></td>
+            </tr>
             <tr>
                 <td colspan="2"> Valor TOTAL</td>
                 <Th><?php echo Parametro::formato($total); ?></Th>

@@ -28,7 +28,7 @@
                     <select  onchange="this.form.submit()" class="form-control select2"  name="clientev" id="clientev">
                         <option value="0">[    Seleccione  ]</option>
                         <?php foreach ($clientes as $lista) { ?>
-                            <option <?php if ($clientev == $lista->getId()) { ?> selected="selected"  <?php } ?>  value="<?php echo $lista->getId(); ?>"><?php echo $lista->getNombre(); ?></option>
+                            <option <?php if ($clientev == $lista->getId()) { ?> selected="selected"  <?php } ?>  value="<?php echo $lista->getId(); ?>"><?php echo $lista->getCodigo(); ?> <?php echo $lista->getNombre(); ?></option>
                         <?php } ?>
                     </select>
                 </div>
