@@ -28,7 +28,7 @@
            </td>
            <td style="width:500px;">
               <strong>Estado de cuenta </strong><br>
-        Fecha: <span><?php //echo $operacionPago->getFechaCreo('d/m/Y'); ?></span><br>
+        Fecha: <span><?php  echo date('d/m/Y'); ?></span><br>
         Codigo Cliente: <br> <span style="font-weight:bold; font-size: 40px;" ><?php echo $clienteQ->getCodigo(); ?></span><br>
     
       </td>
