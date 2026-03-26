@@ -18,7 +18,7 @@ class lista_cobroActions extends sfActions {
 
         $numberToLetterConverter = new NumberToLetterConverter();
         
-         $valorTOTAL=$operacionPago->getValor();
+         $valorTOTAL=$operacionPago->getValor()+$operacionPago->getComision();
          $operacionPagoPad= OperacionPagoPadreQuery::create()->findOneById($operacionPago->getOperacionPagoPadreNo());
          $Pagos=null;
          if ($operacionPagoPad) {

@@ -60,11 +60,13 @@
         <td><?php echo $operacionPago->getOperacion()->getFecha('d/m/Y'); ?></td>
       </tr>
       <?php } ?>
-      <?php if ($Pagos) { ?>
+      <?php $comisiones=0; ?>
+          <?php if ($Pagos) { ?>
       <?php $in=0; ?>
       <?php foreach($Pagos as $regp) { ?>
        <?php $in++; ?>
       <tr>
+                <?php $comisiones=$comisiones+$regp->getComision(); ?>
         <td class="label"><?php if ($in==1) { ?>Número de factura:<?php } ?></td>
         <td><?php echo trim($regp->getOperacion()->getCodigoFactura()); ?></td>
         <td class="label"><?php if ($in==1) { ?>Fecha factura: <?php } ?></td>
@@ -90,7 +92,7 @@
         <tr>
           <td style="width:200px; height: 25px;" > <?php echo $operacionPago->getTipo(); ?></td>
           <td style="width:300px;"> <?php if ($operacionPago->getBancoId()) { ?><?php echo $operacionPago->getBanco()->getNombre(); ?> <?php } ?> <?php echo $operacionPago->getDocumento(); ?> </td>
-          <td style="width:220px;"> <?php echo Parametro::formato($valorTOTAL-$operacionPago->getComision(),2); ?></td>
+          <td style="width:220px;"> <?php echo Parametro::formato($valorTOTAL-$comisiones,2); ?></td>
         </tr>
         <?php if ($operacionPago->getComision()) { ?>
            <tr>
