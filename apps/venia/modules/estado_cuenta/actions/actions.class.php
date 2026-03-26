@@ -193,7 +193,7 @@ class estado_cuentaActions extends sfActions {
             'fecha' => $pago->getFechaCreo('d/m/Y'),
             'cargo' => 0,
             'abono' => $pago->getValor(),
-            'descripcion' => $pago->getTipo() . " " . $banco . " Doc " . $pago->getDocumento(),
+            'descripcion' => $pago->getTipo() . " " . $banco . " Doc " . $pago->getDocumento()." Fact ".$pago->getOperacion()->getCodigoFactura(),
             'saldo' => 0
         ];
 
