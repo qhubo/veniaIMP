@@ -700,15 +700,34 @@ class orden_cotizacionActions extends sfActions {
             
             
             
+            $con = Propel::getConnection();
+
+try {
+    $con->beginTransaction();
+    $operacion = new OrdenCotizacion();
+    $operacion->setCodigo($prefijo);
+    $operacion->setPrefijo($tipoSerie);
+    $operacion->setTiendaId($tIENDAid);
+    $operacion->setUsuario($usuarioQ->getUsuario());
+    $operacion->setEstatus('Proceso');
+    $operacion->setFecha(date('Y-m-d H:i:s'));
+    $operacion->save();
+    $con->commit();
+} catch (Exception $e) {
+    $con->rollBack();
+    $this->getUser()->setFlash('error', 'Código duplicado, intente de nuevo');
+   $this->redirect('orden_cotizacion/index');
+}
             
-            $operacion = new OrdenCotizacion();
-            $operacion->setCodigo($prefijo);
-            $operacion->setPrefijo($tipoSerie);
-            $operacion->setTiendaId($tIENDAid);
-            $operacion->setUsuario($usuarioQ->getUsuario());
-            $operacion->setEstatus('Proceso');
-            $operacion->setFecha(date('Y-m-d H:i:s'));
-            $operacion->save();
+            
+//            $operacion = new OrdenCotizacion();
+//            $operacion->setCodigo($prefijo);
+//            $operacion->setPrefijo($tipoSerie);
+//            $operacion->setTiendaId($tIENDAid);
+//            $operacion->setUsuario($usuarioQ->getUsuario());
+//            $operacion->setEstatus('Proceso');
+//            $operacion->setFecha(date('Y-m-d H:i:s'));
+//            $operacion->save();
         }
         $operacion->setFechaDocumento(date('Y-m-d H:i:s'));
         $operacion->setFecha(date('Y-m-d H:i:s'));

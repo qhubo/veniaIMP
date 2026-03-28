@@ -179,95 +179,253 @@ class buscaActions extends sfActions {
         $this->id = $id;
     }
 
-    public function executeTabJsProductoCotiTodas(sfWebRequest $r) {
-        $ini = 0;
-        $empresaId = sfContext::getInstance()->getUser()->getAttribute("empresa", null, 'seguridad');
+        public function executeTabJsProductoBusca(sfWebRequest $r) {
+   $empresaId = sfContext::getInstance()->getUser()->getAttribute("empresa", null, 'seguridad');
+    $ini = (int)$r->getParameter('iDisplayStart', 0);
+    $busqueda = trim($r->getParameter('sSearch', ''));
 
-        if ($r->getParameter('iDisplayStart')) {
-            $ini = $r->getParameter('iDisplayStart');
-        }
-        $ini=300;
-        $sqlexp = "SELECT count(id) as cantidad FROM  producto where id=-1";
-        $empresaId = sfContext::getInstance()->getUser()->getAttribute("empresa", null, 'seguridad');
+    $con = Propel::getConnection();
 
-        if ($r->getParameter('sSearch') != "") {
-            $busqueda = $r->getParameter('sSearch');
-            $busqueda = str_replace(" ", "%", $busqueda);
-            $sqlexp = "select count(vi.id) as cantidad from producto vi  where  (vi.nombre like  '%" . $busqueda . "%'
-                or vi.codigo_sku like '%" . $busqueda . "%') and  vi.empresa_id=" . $empresaId;
-        }
+    // 🔐 WHERE dinámico
+    $where = "vi.activo = 1 AND vi.empresa_id = :empresa";
+    $params = [':empresa' => $empresaId];
 
-
-        $OperacionId = sfContext::getInstance()->getUser()->getAttribute('CotizacionId', null, 'seguridad');
-        $tiendaId = 0;
-        $Cotizacion = OrdenCotizacionQuery::create()->findOneById($OperacionId);
-        if ($Cotizacion) {
-            $tiendaId = $Cotizacion->getTiendaId();
-        }
-//         
-        $con = Propel::getConnection();
-        $stmt = $con->prepare($sqlexp);
-        $resource = $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $iTotal = $result[0]["cantidad"];
-//    $query = new ProductoQuery();
-        if ($r->getParameter('sSearch') != "") {
-            $sqlexp = "select vi.id,imagen, codigo_sku,nombre  from producto vi  where  (vi.nombre like  '%" . $busqueda . "%'
-                or vi.codigo_sku like '%" . $busqueda . "%') and  vi.empresa_id=" . $empresaId . " limit 0, 500";
-        } else {
-            $sqlexp = "select  id, '' as nombre, nit,  codigo   from proveedor  where id= -9";
-        }
-//                echo $sqlexp;
-//        die();
-        $con = Propel::getConnection();
-        $stmt = $con->prepare($sqlexp);
-        $resource = $stmt->execute();
-        $rResult = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $output = array(
-            "sEcho" => intval($r->getParameter('sEcho')),
-            "iTotalRecords" => $iTotal,
-            "iTotalDisplayRecords" => $iTotal,
-            "aaData" => array()
-        );
-//        $bodegaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'bodega');
-        foreach ($rResult as $reg) {
-            $exit = 0;
-            $productoQ = ProductoQuery::create()->findOneById($reg['id']);
-            if (trim($productoQ->getComboProductoId()) == "") {
-                if ($productoQ) {
-                    $exit = $productoQ->getExistencia() - $productoQ->getTransito();
-                }
-                $row = array();
-                $regid = $reg['id'];
-                $nombre = $reg['nombre'];
-                $imagen = $reg['imagen'];
-                $codigo = $reg['codigo_sku'];
-                $rutaimage = "/uploads/nofoto.jpg";
-                if ($reg['imagen']) {
-                    $rutaimage = $reg['imagen'];
-                }
-
-
-
-
-                $url = '/index.php/orden_cotizacion/producto?id=' . $regid;
-              //  $url = '/index.php/ubicacion/vista?id=' . $regid;
-                if ($_SERVER['SERVER_NAME'] == "veniaimp") {
-                    $url = '/venia_dev.php/orden_cotizacion/producto?id=' . $regid;
-                 //   $url = '/venia_dev.php/ubicacion/vista?id=' . $regid;
-                }
-//                $row[] = ' <button class="open-producto btn" data-url="' . $url . '">' . '<img src="' . $rutaimage . '" height="45px" >' . '</button>';
-                $row[] = '<a href="' . $url . '"><font size="-1">' . $codigo . '<font></a>';
-                $row[] = '<a href="' . $url . '"><font size="-1">' . $nombre . '<font></a>';
-//            $row[] = '<a href="' . $url . '"><font size="-1"><i class="  flaticon2-next"></i><i class="  flaticon2-next"></i><font></a>';
-                $row[] = '<a href="' . $url . '"><font size="-1">' . $exit . '<font></a>';
-
-                $output["aaData"][] = $row;
-            }
-        }
-        $this->renderText(json_encode($output));
-        return sfView::NONE;
+    if ($busqueda != "") {
+        $busquedaLike = "%" . str_replace(" ", "%", $busqueda) . "%";
+        $where .= " AND (vi.nombre LIKE :busqueda 
+                    OR vi.codigo_sku LIKE :busqueda 
+                    OR vi.codigo_barras LIKE :busqueda)";
+        $params[':busqueda'] = $busquedaLike;
     }
+    
+      // 🔢 COUNT
+    $stmt = $con->prepare("SELECT COUNT(vi.id) FROM producto vi WHERE $where");
+    $stmt->execute($params);
+    $iTotal = $stmt->fetchColumn();
+
+    // 📦 DATA BASE (YA TRAE TODO → elimina ProductoQuery)
+    $sql = "
+        SELECT 
+            vi.id,
+            vi.nombre,
+            vi.codigo_barras,
+            vi.codigo_sku,
+            vi.imagen,
+            vi.precio,
+            vi.costo_proveedor,
+            vi.combo_producto_id
+        FROM producto vi
+        WHERE $where
+        LIMIT :ini, 125
+    ";
+
+    $stmt = $con->prepare($sql);
+    foreach ($params as $k => $v) {
+        $stmt->bindValue($k, $v);
+    }
+    $stmt->bindValue(':ini', $ini, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // 🏬 TIENDAS (1 sola vez)
+    $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
+    $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
+    $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
+
+    $tiendaQuery = TiendaQuery::create()->filterByActivo(true);
+    if ($TIPO_USUARIO != 'ADMINISTRADOR') {
+        $tiendaQuery->filterByActivaBuscador(true);
+    }
+    $tiendas = $tiendaQuery->find();
+
+    // 💰 LISTAS DE PRECIO
+    $tipoPrecios = ListaPrecioQuery::create()
+        ->filterByActivo(true)
+        ->orderByNombre()
+        ->find();
+
+    // ⚡ IDS
+    $ids = array_column($productos, 'id');
+
+    // ⚡ EXISTENCIA POR BODEGA (ANTES: getExistenciaBodega = N queries)
+    $existencias = [];
+    if (!empty($ids)) {
+        $sqlExist = "
+            SELECT producto_id, tienda_id, cantidad 
+            FROM producto_existencia
+            WHERE producto_id IN (" . implode(',', $ids) . ")
+        ";
+        foreach ($con->query($sqlExist)->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $existencias[$row['producto_id']][$row['tienda_id']] = $row['cantidad'];
+        }
+    }
+     // ⚡ PRECIOS POR LISTA (ANTES: getPrecioLista = N queries)
+    $preciosLista = [];
+    if (!empty($ids)) {
+        $sqlPrecios = "
+            SELECT producto_id, lista_precio_id, valor 
+            FROM producto_precio 
+            WHERE producto_id IN (" . implode(',', $ids) . ")
+        ";
+        foreach ($con->query($sqlPrecios)->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $preciosLista[$row['producto_id']][$row['lista_precio_id']] = $row['valor'];
+        }
+    }
+    
+    
+    $output = [
+        "sEcho" => (int)$r->getParameter('sEcho'),
+        "iTotalRecords" => $iTotal,
+        "iTotalDisplayRecords" => $iTotal,
+        "aaData" => []
+    ];
+
+    $base = ($_SERVER['SERVER_NAME'] == "veniaerp")
+        ? '/venia_dev.php'
+        : '/index.php';
+
+    foreach ($productos as $reg) {
+
+        // 🚫 misma lógica original
+        if (!empty(trim($reg['combo_producto_id']))) {
+            continue;
+        }
+
+        $url = $base . '/ubicacion/index?id=' . $reg['id'];
+
+        $row = [];
+
+        $nombre = $reg['nombre'] . " | " . $reg['codigo_barras'];
+
+        // ✅ MISMAS COLUMNAS
+        $row[] = '<a href="' . $url . '"><div style="text-align:right">' . $reg['codigo_sku'] . '</div></a>';
+        $row[] = '<a href="' . $url . '"><div style="text-align:right">' . $nombre . '</div></a>';
+
+        // 🏬 EXISTENCIA POR TIENDA (MISMO LOOP ORIGINAL)
+//        echo "<pre>";
+//        print_r($existencias);
+//        die();
+//        
+        foreach ($tiendas as $regi) {
+     $exit = 0;
+if (isset($existencias[$reg['id']]) && isset($existencias[$reg['id']][$regi->getId()])) {
+    $exit = $existencias[$reg['id']][$regi->getId()];
+}
+            $row[] = '<a href="' . $url . '"><div style="text-align:right">' . $exit . '</div></a>';
+        }
+
+        // 💰 PRECIO BASE (MISMA POSICIÓN)
+        $row[] = '<div style="text-align:right">' . Parametro::formato($reg['precio'], false) . '</div>';
+//
+//        // 💰 LISTAS DE PRECIO (MISMO ORDEN)
+        foreach ($tipoPrecios as $prec) {
+   $precioLista = 0;
+if (isset($preciosLista[$reg['id']]) && isset($preciosLista[$reg['id']][$prec->getId()])) {
+    $precioLista = $preciosLista[$reg['id']][$prec->getId()];
+}
+            $row[] = Parametro::formato($precioLista, false);
+        }
+
+        // 💰 COSTO (MISMA POSICIÓN FINAL)
+        $row[] = '<div style="text-align:right; display:block">' . Parametro::formato($reg['costo_proveedor'], false) . '</div>';
+
+        $output["aaData"][] = $row;
+    }
+
+    
+  
+ 
+
+    return $this->renderText(json_encode($output));
+}
+
+public function executeTabJsProductoCotiTodas(sfWebRequest $r)
+{
+    $empresaId = sfContext::getInstance()->getUser()->getAttribute("empresa", null, 'seguridad');
+    $busqueda = trim($r->getParameter('sSearch', ''));
+
+    $con = Propel::getConnection();
+
+    // 🔐 WHERE seguro
+    $where = "vi.empresa_id = :empresa";
+    $params = [':empresa' => $empresaId];
+
+    if ($busqueda != "") {
+        $busquedaLike = "%" . str_replace(" ", "%", $busqueda) . "%";
+        $where .= " AND (vi.nombre LIKE :busqueda OR vi.codigo_sku LIKE :busqueda)";
+        $params[':busqueda'] = $busquedaLike;
+    } else {
+        // si no hay búsqueda → no devuelve nada
+        $output = [
+            "sEcho" => (int)$r->getParameter('sEcho'),
+            "iTotalRecords" => 0,
+            "iTotalDisplayRecords" => 0,
+            "aaData" => []
+        ];
+        return $this->renderText(json_encode($output));
+    }
+
+    // 🔢 COUNT
+    $stmt = $con->prepare("SELECT COUNT(vi.id) FROM producto vi WHERE $where");
+    $stmt->execute($params);
+    $iTotal = $stmt->fetchColumn();
+
+    // 📦 DATA (YA TRAE EXISTENCIA Y TRANSITO → elimina ProductoQuery)
+    $sql = "
+        SELECT 
+            vi.id,
+            vi.nombre,
+            vi.codigo_sku,
+            vi.imagen,
+            vi.combo_producto_id,
+            vi.existencia
+        FROM producto vi
+        WHERE $where
+        LIMIT 0, 500
+    ";
+
+    $stmt = $con->prepare($sql);
+    foreach ($params as $k => $v) {
+        $stmt->bindValue($k, $v);
+    }
+    $stmt->execute();
+
+    $rResult = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $output = [
+        "sEcho" => (int)$r->getParameter('sEcho'),
+        "iTotalRecords" => $iTotal,
+        "iTotalDisplayRecords" => $iTotal,
+        "aaData" => []
+    ];
+
+    $base = ($_SERVER['SERVER_NAME'] == "veniaimp")
+        ? '/venia_dev.php'
+        : '/index.php';
+
+    foreach ($rResult as $reg) {
+
+        // 🚫 misma lógica original
+        if (!empty(trim($reg['combo_producto_id']))) {
+            continue;
+        }
+
+        // ⚡ ya no hay query aquí
+        $exit = (float)$reg['existencia'];
+
+        $url = $base . '/orden_cotizacion/producto?id=' . $reg['id'];
+
+        $row = [];
+        $row[] = '<a href="' . $url . '"><font size="-1">' . $reg['codigo_sku'] . '</font></a>';
+        $row[] = '<a href="' . $url . '"><font size="-1">' . $reg['nombre'] . '</font></a>';
+        $row[] = '<a href="' . $url . '"><font size="-1">' . $exit . '</font></a>';
+
+        $output["aaData"][] = $row;
+    }
+
+    return $this->renderText(json_encode($output));
+}
 
     public function executeTabJsProveedor(sfWebRequest $r) {
         $ini = 0;
@@ -406,113 +564,7 @@ public function executeTabJsProducto(sfWebRequest $r) {
         return sfView::NONE;
     }
 
-    public function executeTabJsProductoBusca(sfWebRequest $r) {
-      
-        $ini = 0;
-        $empresaId = sfContext::getInstance()->getUser()->getAttribute("empresa", null, 'seguridad');
-    $tipoPrecios = ListaPrecioQuery::create()->orderByNombre()->filterByActivo(true)->find();
-        if ($r->getParameter('iDisplayStart')) {
-            $ini = $r->getParameter('iDisplayStart');
-        }
-        $sqlexp = "SELECT count(id) as cantidad FROM  producto where id=-1";
-        $empresaId = sfContext::getInstance()->getUser()->getAttribute("empresa", null, 'seguridad');
 
-        if ($r->getParameter('sSearch') != "") {
-            $busqueda = $r->getParameter('sSearch');
-            $sqlexp = "select count(vi.id) as cantidad from producto vi  where  (vi.nombre like  '%" . $busqueda . "%'
-                or vi.codigo_sku like '%" . $busqueda . "%') and  vi.empresa_id=" . $empresaId;
-        }
-
-
-//        $OperacionId = sfContext::getInstance()->getUser()->getAttribute('CotizacionId', null, 'seguridad');
-//        $tiendaId = 0;
-//        $Cotizacion = OrdenCotizacionQuery::create()->findOneById($OperacionId);
-//        if ($Cotizacion) {
-//            $tiendaId = $Cotizacion->getTiendaId();
-//        }
-//         
-        $con = Propel::getConnection();
-        $stmt = $con->prepare($sqlexp);
-        $resource = $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $iTotal = $result[0]["cantidad"];
-//    $query = new ProductoQuery();
-        if ($r->getParameter('sSearch') != "") {
-            $sqlexp = "select vi.id,imagen, codigo_sku,nombre  from producto vi  where  (vi.nombre like  '%" . $busqueda . "%'
-                or vi.codigo_sku like '%" . $busqueda . "%') and  vi.empresa_id=" . $empresaId . " limit " . $ini . ", 120";
-        } else {
-            $sqlexp = "select  id, '' as nombre, nit,  codigo   from proveedor  where id= -9";
-        }
-//                echo $sqlexp;
-//        die();
-        $con = Propel::getConnection();
-        $stmt = $con->prepare($sqlexp);
-        $resource = $stmt->execute();
-        $rResult = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $output = array(
-            "sEcho" => intval($r->getParameter('sEcho')),
-            "iTotalRecords" => $iTotal,
-            "iTotalDisplayRecords" => $iTotal,
-            "aaData" => array()
-        );
-$usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad'); 
-        $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
-       $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
- $tiendas = TiendaQuery::create()->filterByActivo(true)->find();
-  //if ($TIPO_USUARIO != 'ADMINISTRADOR') { 
- $tiendas = TiendaQuery::create()->filterByActivo(true)->filterByActivaBuscador(true)->find();
- //}
-
-//        $bodegaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'bodega');
-        foreach ($rResult as $reg) {
-
-            $productoQ = ProductoQuery::create()->findOneById($reg['id']);
-            if (trim($productoQ->getComboProductoId()) == "") {
-                if ($productoQ) {
-                    $exit = $productoQ->getExistencia();
-                }
-                $precio = $productoQ->getPrecio();
-                $costo= $productoQ->getCostoProveedor();
-                $row = array();
-                $regid = $reg['id'];
-                $nombre = $reg['nombre'];
-                $imagen = $reg['imagen'];
-                $codigo = $reg['codigo_sku'];
-                $rutaimage = "/uploads/nofoto.jpg";
-                if ($reg['imagen']) {
-                    $rutaimage = $reg['imagen'];
-                }
-                $url = '/index.php/ubicacion/index?id=' . $regid;
-                if ($_SERVER['SERVER_NAME'] == "veniaerp") {
-                    $url = '/venia_dev.php/ubicacion/index?id=' . $regid;
-                }
-                $row[] = '<a href="' . $url . '"><div "style:text-align:right">' . $codigo . "</div></a>";
-                ;
-                $row[] = '<a href="' . $url . '"><div "style:text-align:right">' . $nombre . "</div></a>";
-                ;
-
-
-
-//            $row[] = '<a href="' . $url . '"><font size="-1"><i class="  flaticon2-next"></i><i class="  flaticon2-next"></i><font></a>';
-
-               foreach ($tiendas as $regi) {
-                    $exit = $productoQ->getExistenciaBodega($regi->getId());
-                    $row[] = '<a href="' . $url . '"><div "style:text-align:right">' . $exit . "</div></a>";
-                }
-                $textoCosto = '<div style="style:text-align:right; display:block">' . Parametro::formato($costo, false) . "</div>";
-                $row[] = '<div "style:text-align:right">' . Parametro::formato($precio, false) . "</div>";
-                foreach ($tipoPrecios as $prec) {
-                $row[] = Parametro::formato($productoQ->getPrecioLista($prec->getId()), false);
-                    
-                }
-                
-                $row[] = $textoCosto;
-                $output["aaData"][] = $row;
-            }
-        }
-        $this->renderText(json_encode($output));
-        return sfView::NONE;
-    }
 
     public function executeTabJsProductoCoti(sfWebRequest $r) {
         $ini = 0;

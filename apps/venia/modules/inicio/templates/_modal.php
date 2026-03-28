@@ -16,7 +16,7 @@
 </div>
 <?php $acceso = MenuSeguridadQuery::Empresas() ?>
 <div class="modal fade" id="kt_modal_t" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<div class="modal-dialog modal-dialog-centered" style="max-width: 90%;">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">Selección Empresa</h5>
