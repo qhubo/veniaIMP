@@ -38,7 +38,7 @@ abstract class BaseOperacionPagoForm extends BaseFormPropel
       'operacion_id'            => new sfValidatorPropelChoice(array('model' => 'Operacion', 'column' => 'id', 'required' => false)),
       'tipo'                    => new sfValidatorString(array('max_length' => 50, 'required' => false)),
       'valor'                   => new sfValidatorNumber(array('required' => false)),
-      'documento'               => new sfValidatorString(array('max_length' => 50, 'required' => false)),
+      'documento'               => new sfValidatorString(array('max_length' => 500, 'required' => false)),
       'fecha_documento'         => new sfValidatorDate(array('required' => false)),
       'banco_id'                => new sfValidatorPropelChoice(array('model' => 'Banco', 'column' => 'id', 'required' => false)),
       'cuenta_contable'         => new sfValidatorString(array('max_length' => 50, 'required' => false)),
