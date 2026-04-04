@@ -229,7 +229,7 @@ propel:
     operacion_id:                     ~
     tipo:                             { type: varchar(50) } 
     valor:                            { type: double }
-    documento:                        { type: varchar(50) }
+    documento:                        { type: varchar(500) }
     fecha_documento:                  { type: date } 
     banco_id:                         ~
     cuenta_contable:                  { type: varchar(50), default: '' }

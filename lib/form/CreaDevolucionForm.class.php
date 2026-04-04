@@ -3,60 +3,46 @@
 class CreaDevolucionForm extends sfForm {
 
     public function configure() {
-        $tipoUsua = sfContext::getInstance()->getUser()->getAttribute("tipoUsuario", null, 'seguridad');
-  
-            $obligatorio = false;
-        $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
-        $usuarioq = UsuarioQuery::create()->findOneById($usuarioId);
+//        $MEdioPago = MedioPagoQuery::create()
+//                ->filterByPagoProveedor(true)
+//                ->filterByActivo(true)
+//                ->orderByNombre()
+//                ->find();
 
-  
-
-
-        $MEdioPago = MedioPagoQuery::create()
-                ->filterByPagoProveedor(true)
-                ->filterByActivo(true)
-                ->orderByNombre()
-                ->find();
-
-        $listaPM['Del Dia'] = 'Del Dia';
-        foreach ($MEdioPago as $rege) {
-            $listaPM[$rege->getNombre()] = $rege->getNombre();
-        }
+        $listaPM['Cheque'] = 'Cheque';
+//        foreach ($MEdioPago as $rege) {
+//            $listaPM[$rege->getNombre()] = $rege->getNombre();
+//        }
         $listaPM['Vale'] = 'Vale';
-        $listaPM['Cambio'] = 'Cambio';
-
+//        $listaPM['Cambio'] = 'Cambio';
         $this->setWidget('medio', new sfWidgetFormChoice(array("choices" => $listaPM,), array("class" => " form-control ")));
-
         $this->setValidator('medio', new sfValidatorString(array('required' => true)));
 
         $opcionesta['Cliente'] = 'Cliente';
         $opcionesta['Proveedor'] = 'Proveedor';
-
-        $this->setWidget('tipo', new sfWidgetFormChoice(array(
-                    "choices" => $opcionesta,
-                        ), array("class" => " form-control ")));
-
+        $this->setWidget('tipo', new sfWidgetFormChoice(array("choices" => $opcionesta,), array("class" => " form-control ")));
         $this->setValidator('tipo', new sfValidatorString(array('required' => true)));
 
-        $proveddores = ProveedorQuery::create()
-                ->orderByNombre()
-                ->filterByActivo(true)
-                ->find();
+        $proveddores = ProveedorQuery::create()->orderByNombre()->filterByActivo(true)->find();
         $listaP[null] = '[Seleccione Proveedor]';
         foreach ($proveddores as $deta) {
             $listaP[$deta->getId()] = $deta->getNombre();
         }
-
-
-        $this->setWidget('proveedor_id', new sfWidgetFormChoice(array(
-                    "choices" => $listaP,
-                        ), array("class" => " form-control  mi-selector ")));
-
+        $this->setWidget('proveedor_id', new sfWidgetFormChoice(array( "choices" => $listaP,), array("class" => " form-control  mi-selector", "style"=>"width:100%")));
         $this->setValidator('proveedor_id', new sfValidatorString(array('required' => false)));
 
-        $this->setWidget('nombre', new sfWidgetFormInputText(array(), array('class' => 'form-control', 'max_length' => 150, "placeholder" => "Cliente",)));
-        $this->setValidator('nombre', new sfValidatorString(array('required' => false)));
-
+        $clientes = ClienteQuery::create()->orderByNombre()->filterByActivo(true)->find();
+        $listaC[null] = '[Seleccione Cliente]';
+        foreach ($clientes as $deta) {
+            $listaC[$deta->getId()] =$deta->getCodigo()." ".$deta->getNombre();
+        }
+        $this->setWidget('cliente_id', new sfWidgetFormChoice(array( "choices" => $listaC,), array("class" => " form-control  mi-selector " , "style"=>"width:100%")));
+        $this->setValidator('cliente_id', new sfValidatorString(array('required' => false)));
+        $this->setWidget('retorna_inventario', new sfWidgetFormInputCheckbox()); // new sfWidgetFormInputText(array(), array('class' => 'form-control','data-provide'=>'datepicker')));// check
+        $this->setValidator('retorna_inventario', new sfValidatorString(array('required' => false)));
+        
+        $this->setWidget('nombre', new sfWidgetFormInputText(array(), array('class' => 'form-control', 'max_length' => 150, "placeholder" => "Nombre",  "style"=>"background-color:whitesmoke")));
+        $this->setValidator('nombre', new sfValidatorString(array('required' => true)));
         $this->setWidget('referencia_factura', new sfWidgetFormInputText(array(), array('class' => 'form-control', 'placeholder' => 'Factura', 'max_length' => 150,)));
         $this->setValidator('referencia_factura', new sfValidatorString(array('required' => true)));
 
@@ -129,38 +115,25 @@ class CreaDevolucionForm extends sfForm {
                         array('class' => 'form-control', 'data-provide' => 'datepicker', 'data-date-format' => 'dd/mm/yyyy')));
         $this->setValidator('fechaInicio', new sfValidatorString(array('required' => $obligatorio)));
 
-        $this->validatorSchema->setPostValidator(new sfValidatorCallback(array(
-                    'callback' => array($this, "validaIngreso")
-        )));
+
 
         $this->setWidget('cantidad', new sfWidgetFormInputText(array(), array('type'=>'number', 'class' => 'form-control', 'placeholder' => '00', 'max_length' => 50,)));
         $this->setValidator('cantidad', new sfValidatorString(array('required' => true)));
 
+        
+        $tiendas  = TiendaQuery::create()->orderByNombre()->filterByActivo(true)->find();
+        $listaTi[null] = '[Seleccione Tienda]';
+        foreach ($tiendas as $deta) {
+            $listaTi[$deta->getId()] = $deta->getNombre();
+        }
+        $this->setWidget('tienda_id', new sfWidgetFormChoice(array( "choices" => $listaTi,), array("class" => " form-control ", "style"=>"width:100%")));
+        $this->setValidator('tienda_id', new sfValidatorString(array('required' => false)));
+
+        
 
         $this->widgetSchema->setNameFormat('consulta[%s]');
     }
 
-    public function validaIngreso(sfValidatorBase $validator, array $values) {
 
-        $tipo = $values['tipo'];
-//        echo $tipo;
-//        die();
-        if ($tipo == 'Proveedor') {
-            $proveedorId = $values['proveedor_id'];
-            if (!$proveedorId) {
-                throw new sfValidatorErrorSchema($validator, array("proveedor_id" => new sfValidatorError($validator, "Debe seleccionar proveedor")));
-            }
-        }
-
-        if ($tipo == 'Cliente') {
-            $nombre = $values['nombre'];
-            if (!$nombre) {
-                throw new sfValidatorErrorSchema($validator, array("nombre" => new sfValidatorError($validator, "Debe ingresar nombre")));
-            }
-        }
-
-
-        return $values;
-    }
 
 }

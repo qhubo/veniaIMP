@@ -61,9 +61,10 @@ class SelePagoCxcCobrarForm extends sfForm {
            if ( $Nombre <> "contraentrega") {
             $listaP[$rege->getNombre()] = $rege->getNombre();
             }
-                    
-            
         }
+            $listaP['Vuelto'] = 'Vuelto';
+        $listaP['Vale'] = 'Vale';
+                $listaP['NOTACREDITO'] = 'Nota Credito';
      $proveedorId=  sfContext::getInstance()->getUser()->getAttribute("proveedorId", null, 'seguridad');
 
 

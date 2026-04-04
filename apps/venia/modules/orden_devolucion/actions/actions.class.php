@@ -1,16 +1,129 @@
 <?php
 
-/**
- * orden_devolucion actions.
- *
- * @package    plan
- * @subpackage orden_devolucion
- * @author     Via
- * @version    SVN: $Id: actions.class.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
- */
 class orden_devolucionActions extends sfActions {
 
-   
+    public function executeMuestra(sfWebRequest $request) {
+        date_default_timezone_set("America/Guatemala");
+        $id = $request->getParameter('id');
+        $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
+        $usuarioq = UsuarioQuery::create()->findOneById($usuarioId);
+        $this->id = $id;
+        $default = null;
+        $default['medio'] = 'CHEQUE';
+        $tip = sfContext::getInstance()->getUser()->getAttribute('tipodevolu', null, 'seguridad');
+        if ($tip) {
+            $default['tipo'] = $tip;
+        }
+        $this->sol = 0;
+        $ordenDevolucion = OrdenDevolucionQuery::create()
+                ->filterById($id)
+                //->filterByEstatus('Pendiente')
+                ->findOne();
+        if ($ordenDevolucion) {
+            $default['tipo'] = 'Cliente';
+            $default['nombre'] = $ordenDevolucion->getNombre();  // INTERNACIONAL
+            $default['referencia_factura'] = $ordenDevolucion->getReferenciaFactura();  // 2339
+            $default['valor'] = $ordenDevolucion->getValor();  // 500
+            $default['medio'] = $ordenDevolucion->getPagoMedio();  // CHEQUE
+            $default['vendedor'] = $ordenDevolucion->getVendedor();  // 3
+            $default['concepto'] = "";  // asdasd
+            $default['porcentaje_retenie'] = $ordenDevolucion->getPorcentajeRetenie();  //
+            $default['referencia_nota'] = $ordenDevolucion->getReferenciaNota();  // 12312
+            $default['no_hollander'] = $ordenDevolucion->getNoHollander();  //
+            $default['no_stock'] = $ordenDevolucion->getNoStock();  //
+            $default['descripcion'] = $ordenDevolucion->getDescripcion();  //
+            $default['retencion'] = $ordenDevolucion->getRetencion();  //
+            $this->sol = $ordenDevolucion->getSolicitudDevolucionId();
+        }
+        $this->detalle = SolicitudDevDetalleQuery::create()
+                ->filterBySolicitudDevolucionId($this->sol)
+                ->find();
+        $this->form = new CreaDevolucionForm($default);
+        if ($request->isMethod('post')) {
+            $this->form->bind($request->getParameter("consulta"), $request->getFiles("consulta"));
+            if ($this->form->isValid()) {
+                $valores = $this->form->getValues();
+//                echo "<pre>";
+//                print_r($valores);
+//                die();             
+                $fechaInicio = $valores['fechaInicio'];
+                $nuevo = $ordenDevolucion;
+                if (!$ordenDevolucion) {
+                    $nuevo = new OrdenDevolucion();
+                }
+                $nuevo->setTipo($valores['tipo']);
+                $nuevo->setNombre($valores['nombre']); // => Edwin Eduardo Figueroa Alvarado
+                if ($valores['tipo'] == "Proveedor") {
+                    $nuevo->setProveedorId($valores['proveedor_id']);
+                    $proveQ = ProveedorQuery::create()->findOneById($valores['proveedor_id']);
+                    $nuevo->setNombre($proveQ->getNombre());
+                }
+                if ($valores['tipo'] == "Cliente") {
+                    $nuevo->setProveedorId(null);
+                }
+                $nuevo->setFecha(date('Y-m-d H:i:s'));
+                $nuevo->setReferenciaFactura($valores['referencia_factura']);  // => 5458488
+                $nuevo->setValor($valores['valor']); // => 390
+                $nuevo->setConcepto($valores['concepto']);  // => Devolucion en repuesto fact xela 102-1230
+                $nuevo->setEstatus('Nuevo');
+                $nuevo->setUsuarioCreo($usuarioq->getUsuario());
+                $nuevo->setCreatedAt(date('Y-m-d H:i:s'));
+                $nuevo->setPorcentajeRetenie($valores['porcentaje_retenie']);
+                $nuevo->setPagoMedio($valores['medio']);
+                $nuevo->setVendedor($valores['vendedor']);
+                $nuevo->setReferenciaNota($valores['referencia_nota']);
+                $nuevo->setNoHollander($valores['no_hollander']);  //
+                $nuevo->setProductoId($valores['no_hollander']);
+                $nuevo->setCantidad($valores['cantidad']);
+                $nuevo->setNoStock('');  //
+                $nuevo->setReferenciaNota($valores['cliente_id']);
+                $nuevo->setChequeNo($valores['tienda_id']);
+                if ($valores['retorna_inventario']) {
+                 $nuevo->setNoStock(1);  //
+                }
+                $nuevo->setDescripcion($valores['descripcion']);  //
+                // $nuevo->setFechaConfirmo(date('Y-m-d H:i:s'));
+                $tiendaId = sfContext::getInstance()->getUser()->getAttribute("tienda", null, 'seguridad');
+                $nuevo->setTiendaId($tiendaId);
+                if ($fechaInicio) {
+                    $fechaInicio = explode('/', $fechaInicio);
+                    $fechaInicio = $fechaInicio[2] . '-' . $fechaInicio[1] . '-' . $fechaInicio[0];
+                    $nuevo->setFechaFactura($fechaInicio);
+                }
+                $nuevo->save();
+                if ($valores["archivo"]) {
+                    $archivo = $valores["archivo"];
+                    $nombre = $archivo->getOriginalName();
+                    $nombre = str_replace(" ", "_", $nombre);
+                    $nombre = str_replace(".", "", $nombre);
+                    $filename = $nuevo->getCodigo() . "." . $archivo->getExtension($archivo->getOriginalExtension());
+                    $archivo->save(sfConfig::get("sf_upload_dir") . DIRECTORY_SEPARATOR . 'devoluciones' . DIRECTORY_SEPARATOR . $filename);
+                    $nuevo->setArchivo($filename);
+                    $nuevo->save();
+                }
+
+                if ($valores["archivo2"]) {
+                    $archivo = $valores["archivo2"];
+                    $nombre = $archivo->getOriginalName();
+                    $nombre = str_replace(" ", "_", $nombre);
+                    $nombre = str_replace(".", "", $nombre);
+                    $filename = $nuevo->getCodigo() . "_2." . $archivo->getExtension($archivo->getOriginalExtension());
+                    $archivo->save(sfConfig::get("sf_upload_dir") . DIRECTORY_SEPARATOR . 'devoluciones' . DIRECTORY_SEPARATOR . $filename);
+                    $nuevo->setArchivo2($filename);
+                    $nuevo->save();
+                }
+                $nuevo->setRetencion($valores['retencion']);
+                $nuevo->save();
+                $nuevo->setToken(sha1($nuevo->getCodigo()));
+                $nuevo->save();
+
+                //* AQUI MOVIMIENTO_BANCO
+                // $this->partidaPago($nuevo);
+                $this->getUser()->setFlash('exito', 'Orden devolución  realizada con exito  # ' . $nuevo->getId());
+                $this->redirect('orden_devolucion/index');
+            }
+        }
+    }
     public function executeVista(sfWebRequest $request) {
         $acceso = MenuSeguridad::Acceso('orden_devolucion');
         if (!$acceso) {
@@ -20,7 +133,6 @@ class orden_devolucionActions extends sfActions {
         $id = $request->getParameter('id');
         $this->orden = OrdenDevolucionQuery::create()->findOneById($id);
     }
-
     public function executeElimina(sfWebRequest $request) {
         $acceso = MenuSeguridad::Acceso('orden_devolucion');
         if (!$acceso) {
@@ -69,12 +181,10 @@ class orden_devolucionActions extends sfActions {
         BitacoraDocumento::grabacion("Devolucion", $ordenDevolucion->getCodigo(), 'Anulado', 'Devolucion anualada  # ' . $ordenDevolucion->getCodigo() . " Cheque no " . $nocheque);
         $this->redirect('orden_devolucion/index?id=');
     }
-
     public function executePartida(sfWebRequest $request) {
         $id = $request->getParameter('id');
         $this->partida = PartidaQuery::create()->findOneById($id);
     }
-
     public function partidaPago($devolucion) {
         $tienda = '';
         $tiendaID = sfContext::getInstance()->getUser()->getAttribute("tienda", null, 'seguridad');
@@ -160,22 +270,18 @@ class orden_devolucionActions extends sfActions {
             $partidaLinea->save();
         }
     }
-
     public function executeIndex(sfWebRequest $request) {
-
-        $solicutDevolu = SolicitudDevolucionQuery::create()
-                ->orderById("Desc")
-                ->setLimit(25)
-                ->find();
-        foreach ($solicutDevolu as $regi) {
-            $ordenDevolucio = OrdenDevolucionQuery::create()->findOneBySolicitudDevolucionId($regi->getId());
-            if ($ordenDevolucio) {
-                $ordenDevolucio->setDetalleMotivo($regi->getMotivos());
-                $ordenDevolucio->save();
-            }
-        }
-
-
+//        $solicutDevolu = SolicitudDevolucionQuery::create()
+//                ->orderById("Desc")
+//                ->setLimit(25)
+//                ->find();
+//        foreach ($solicutDevolu as $regi) {
+//            $ordenDevolucio = OrdenDevolucionQuery::create()->findOneBySolicitudDevolucionId($regi->getId());
+//            if ($ordenDevolucio) {
+//                $ordenDevolucio->setDetalleMotivo($regi->getMotivos());
+//                $ordenDevolucio->save();
+//            }
+//        }
         $acceso = MenuSeguridad::Acceso('orden_devolucion');
         if (!$acceso) {
             $this->redirect('inicio/index');
@@ -238,9 +344,7 @@ class orden_devolucionActions extends sfActions {
         }
 
         $this->registros = $registros->find();
-
     }
-
     public function executeTipo(sfWebRequest $request) {
         $val = $request->getParameter('val');
         sfContext::getInstance()->getUser()->setAttribute('tipodevolu', $val, 'seguridad');
@@ -248,129 +352,6 @@ class orden_devolucionActions extends sfActions {
 
         die();
     }
-
-    public function executeMuestra(sfWebRequest $request) {
-        date_default_timezone_set("America/Guatemala");
-        $id = $request->getParameter('id');
-        $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
-        $usuarioq = UsuarioQuery::create()->findOneById($usuarioId);
-        $this->id = $id;
-        $default = null;
-        $default['medio'] = 'CHEQUE';
-        $tip = sfContext::getInstance()->getUser()->getAttribute('tipodevolu', null, 'seguridad');
-        if ($tip) {
-            $default['tipo'] = $tip;
-        }   
-        $this->sol = 0;
-        $ordenDevolucion = OrdenDevolucionQuery::create()
-                ->filterById($id)
-                //->filterByEstatus('Pendiente')
-                ->findOne();
-        if ($ordenDevolucion) {
-            $default['tipo'] = 'Cliente';
-            $default['nombre'] = $ordenDevolucion->getNombre();  // INTERNACIONAL
-            $default['referencia_factura'] = $ordenDevolucion->getReferenciaFactura();  // 2339
-            $default['valor'] = $ordenDevolucion->getValor();  // 500
-            $default['medio'] = $ordenDevolucion->getPagoMedio();  // CHEQUE
-            $default['vendedor'] = $ordenDevolucion->getVendedor();  // 3
-            $default['concepto'] = "";  // asdasd
-            $default['porcentaje_retenie'] = $ordenDevolucion->getPorcentajeRetenie();  //
-            $default['referencia_nota'] = $ordenDevolucion->getReferenciaNota();  // 12312
-            $default['no_hollander'] = $ordenDevolucion->getNoHollander();  //
-            $default['no_stock'] = $ordenDevolucion->getNoStock();  //
-            $default['descripcion'] = $ordenDevolucion->getDescripcion();  //
-            $default['retencion'] = $ordenDevolucion->getRetencion();  //
-            $this->sol = $ordenDevolucion->getSolicitudDevolucionId();
-        }
-        $this->detalle = SolicitudDevDetalleQuery::create()
-                ->filterBySolicitudDevolucionId($this->sol)
-                ->find();
-        $this->form = new CreaDevolucionForm($default);
-        if ($request->isMethod('post')) {
-            $this->form->bind($request->getParameter("consulta"), $request->getFiles("consulta"));
-            if ($this->form->isValid()) {
-                $valores = $this->form->getValues();
-//                echo "<pre>";
-//                print_r($valores);
-//                die();
-                
-
-                $fechaInicio = $valores['fechaInicio'];
-
-                $nuevo = $ordenDevolucion;
-                if (!$ordenDevolucion) {
-                    $nuevo = new OrdenDevolucion();
-                }
-                $nuevo->setTipo($valores['tipo']);
-                $nuevo->setNombre($valores['nombre']); // => Edwin Eduardo Figueroa Alvarado
-                if ($valores['tipo'] == "Proveedor") {
-                    $nuevo->setProveedorId($valores['proveedor_id']);
-                    $proveQ = ProveedorQuery::create()->findOneById($valores['proveedor_id']);
-                    $nuevo->setNombre($proveQ->getNombre());
-                }
-                if ($valores['tipo'] == "Cliente") {
-                    $nuevo->setProveedorId(null);
-                }
-                $nuevo->setFecha(date('Y-m-d H:i:s'));
-                $nuevo->setReferenciaFactura($valores['referencia_factura']);  // => 5458488
-                $nuevo->setValor($valores['valor']); // => 390
-                $nuevo->setConcepto($valores['concepto']);  // => Devolucion en repuesto fact xela 102-1230
-                $nuevo->setEstatus('Nuevo');
-                $nuevo->setUsuarioCreo($usuarioq->getUsuario());
-                $nuevo->setCreatedAt(date('Y-m-d H:i:s'));
-                $nuevo->setPorcentajeRetenie($valores['porcentaje_retenie']);
-                $nuevo->setPagoMedio($valores['medio']);
-                $nuevo->setVendedor($valores['vendedor']);
-                $nuevo->setReferenciaNota($valores['referencia_nota']);
-                $nuevo->setNoHollander($valores['no_hollander']);  //
-                $nuevo->setProductoId($valores['no_hollander']);
-                $nuevo->setCantidad($valores['cantidad']);
-                $nuevo->setNoStock($valores['no_stock']);  //
-                $nuevo->setDescripcion($valores['descripcion']);  //
-               // $nuevo->setFechaConfirmo(date('Y-m-d H:i:s'));
-                $tiendaId = sfContext::getInstance()->getUser()->getAttribute("tienda", null, 'seguridad');
-                $nuevo->setTiendaId($tiendaId);
-                if ($fechaInicio) {
-                    $fechaInicio = explode('/', $fechaInicio);
-                    $fechaInicio = $fechaInicio[2] . '-' . $fechaInicio[1] . '-' . $fechaInicio[0];
-                    $nuevo->setFechaFactura($fechaInicio);
-                }
-
-                $nuevo->save();
-                if ($valores["archivo"]) {
-                    $archivo = $valores["archivo"];
-                    $nombre = $archivo->getOriginalName();
-                    $nombre = str_replace(" ", "_", $nombre);
-                    $nombre = str_replace(".", "", $nombre);
-                    $filename = $nuevo->getCodigo() . "." . $archivo->getExtension($archivo->getOriginalExtension());
-                    $archivo->save(sfConfig::get("sf_upload_dir") . DIRECTORY_SEPARATOR . 'devoluciones' . DIRECTORY_SEPARATOR . $filename);
-                    $nuevo->setArchivo($filename);
-                    $nuevo->save();
-                }
-
-                if ($valores["archivo2"]) {
-                    $archivo = $valores["archivo2"];
-                    $nombre = $archivo->getOriginalName();
-                    $nombre = str_replace(" ", "_", $nombre);
-                    $nombre = str_replace(".", "", $nombre);
-                    $filename = $nuevo->getCodigo() . "_2." . $archivo->getExtension($archivo->getOriginalExtension());
-                    $archivo->save(sfConfig::get("sf_upload_dir") . DIRECTORY_SEPARATOR . 'devoluciones' . DIRECTORY_SEPARATOR . $filename);
-                    $nuevo->setArchivo2($filename);
-                    $nuevo->save();
-                }
-                $nuevo->setRetencion($valores['retencion']);
-                $nuevo->save();
-                $nuevo->setToken(sha1($nuevo->getCodigo()));
-                $nuevo->save();
-             
-                //* AQUI MOVIMIENTO_BANCO
-                // $this->partidaPago($nuevo);
-                $this->getUser()->setFlash('exito', 'Orden devolución  realizada con exito  # ' . $nuevo->getId());
-                $this->redirect('orden_devolucion/index');
-            }
-        }
-    }
-
     public function executeReporte(sfWebRequest $request) {
         $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datonsuFE', null, 'consulta'));
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
@@ -597,7 +578,6 @@ class orden_devolucionActions extends sfActions {
         $xl->save('php://output');
         throw new sfStopException();
     }
-
     public function textobusqueda($valores) {
         $textoBusqueda = '';
         $Busqueda = null;

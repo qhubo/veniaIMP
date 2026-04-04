@@ -1,93 +1,6 @@
 <?php
 
-class cuenta_por_cobrarActions extends sfActions {
-
-    public function executeListaVales(sfWebRequest $r) {
-        $clienteId = $r->getParameter('cliente_id');
-        $con = Propel::getConnection();
-        $sql = "SELECT codigo, ROUND(valor - COALESCE(valor_otros, 0), 2) AS saldo  FROM orden_devolucion  WHERE estatus = 'Autorizado' 
-        AND pago_medio='Vale' and   valor - COALESCE(valor_otros, 0) > 0 and referencia_nota = :cliente";
-        $stmt = $con->prepare($sql);
-        $stmt->bindValue(':cliente', $clienteId);
-        $stmt->execute();
-        return $this->renderText(json_encode($stmt->fetchAll(PDO::FETCH_ASSOC)));
-    }
-
-    public function rebajaVueltos($clienteId, $valorTotal) {
-        $con = Propel::getConnection();
-        $sql = "SELECT op.id, (op.vuelto - COALESCE(op.vuelto_pagado,0)) AS disponible  FROM operacion_pago op
-            INNER JOIN operacion ope ON ope.id = op.operacion_id    WHERE op.vuelto > 0
-            AND (op.vuelto - COALESCE(op.vuelto_pagado,0)) > 0  AND ope.cliente_id = :cliente
-            ORDER BY op.id ASC"; // 
-        $stmt = $con->prepare($sql);
-        $stmt->bindValue(':cliente', $clienteId);
-        $stmt->execute();
-        $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($registros as $reg) {
-            //  si ya no hay nada que descontar → salir
-            if ($valorTotal <= 0) {
-                break;
-            }
-            $operacionPago = OperacionPagoQuery::create()->findPk($reg['id']);
-            if (!$operacionPago) {
-                continue;
-            }
-            $vuelto = (float) $operacionPago->getVuelto();
-            $pagado = (float) $operacionPago->getVueltoPagado();
-            $disponible = $vuelto - $pagado;
-            if ($disponible <= 0) {
-                continue;
-            }
-            //  cuánto voy a consumir de este registro
-            $consumo = min($disponible, $valorTotal);
-            //  acumular lo pagado
-            $operacionPago->setVueltoPagado($pagado + $consumo);
-            $operacionPago->save();
-            //  restar al total pendiente
-            $valorTotal -= $consumo;
-        }
-        return true;
-    }
-
-    public function executeGetVuelto(sfWebRequest $request) {
-        $clienteId = $request->getParameter('cliente_id');
-        $con = Propel::getConnection();
-
-        $sql = "SELECT ROUND(SUM(vuelto) - SUM(COALESCE(vuelto_pagado,0)), 2) AS vuelto
-            FROM operacion_pago op
-            INNER JOIN operacion ope ON ope.id = op.operacion_id
-            WHERE vuelto > 0 AND ope.cliente_id = :cliente";
-
-        $stmt = $con->prepare($sql);
-        $stmt->bindValue(':cliente', $clienteId);
-        $stmt->execute();
-
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        $vuelto = $row['vuelto'] !== null ? $row['vuelto'] : 0;
-
-        return $this->renderText($vuelto);
-    }
-
-    public function executeListaNotas(sfWebRequest $r) {
-        $clienteId = $r->getParameter('cliente_id');
-        $con = Propel::getConnection();
-        $sql = "SELECT codigo,(valor_total - COALESCE(valor_pagado,0)) AS saldo FROM nota_credito
-        WHERE cliente_id = :cliente AND estatus IN ('Nueva','Procesada')    ";
-        $stmt = $con->prepare($sql);
-        $stmt->bindValue(':cliente', $clienteId);
-        $stmt->execute();
-        return $this->renderText(json_encode($stmt->fetchAll(PDO::FETCH_ASSOC)));
-    }
-
-    public function executeEliminapago(sfWebRequest $request) {
-        $id = $request->getParameter('id'); //=155555&$dirh =
-        $operacionQ = OperacionPagoQuery::create()->findOneById($id);
-        $OperacionId = $operacionQ->getId();
-        $operacionQ->delete();
-        $this->getUser()->setFlash('error', "Cheque eliminado con exito");
-        $this->redirect('cuenta_por_cobrar/caja?id=' . $OperacionId);
-    }
+class cuenta_por_cobrarXXActions extends sfActions {
 
     public function executePagoMasiva(sfWebRequest $request) {
         error_reporting(-1);
@@ -107,7 +20,7 @@ class cuenta_por_cobrarActions extends sfActions {
             $cliente = $operaicon->getCliente()->getNombre();
             $data = null;
             $data['valor'] = $reg->valor;
-            $data['comision'] = $reg->comision;
+             $data['comision'] = $reg->comision;
             $data['id'] = $reg->id;
             $data['codigo'] = $operaicon->getCodigoFactura();
             $data['fecha'] = $operaicon->getFecha('d/m/Y');
@@ -120,8 +33,8 @@ class cuenta_por_cobrarActions extends sfActions {
         $value['fecha'] = date('d/m/Y');
         $this->form = new SelePagoForm($value);
         if ($request->isMethod('post')) {
-
-
+      
+        
             $this->form->bind($request->getParameter("consulta"), $request->getFiles("consulta"));
             if ($this->form->isValid()) {
                 $valores = $this->form->getValues();
@@ -136,20 +49,20 @@ class cuenta_por_cobrarActions extends sfActions {
                 } else {
                     $fechaInicio = date('Y-m-d');
                 }
-                $pago = new OperacionPagoPadre();
+                $pago= new OperacionPagoPadre();
                 $pago->setTipo($valores['tipo_pago']);
                 $pago->setDocumento($valores['no_documento']);
                 $pago->setFechaDocumento($fechaInicio);
-                if ($valores['banco_id']) {
-                    $pago->setBancoId($valores['banco_id']);
-                }
-                $total = 0;
-                $pago->save();
+                 if ($valores['banco_id']) {
+                        $pago->setBancoId($valores['banco_id']);
+                    }
+                    $total=0;
+                    $pago->save();
                 foreach ($lista as $registro) {
                     $valor = $registro['valor'];
-                    $total = $total + $valor;
+                    $total=$total+$valor;
                     $operacion = OperacionQuery::create()->findOneById($registro['id']);
-
+                    
                     $OperaPgo = new OperacionPago();
                     $OperaPgo->setOperacionId($operacion->getId());
                     $OperaPgo->setTipo($valores['tipo_pago']);
@@ -208,28 +121,23 @@ class cuenta_por_cobrarActions extends sfActions {
                         $cxc->setObservaciones($OperaPgo->getTipo());
                         $cxc->save();
                     }
-                    $this->getUser()->setFlash('exito', 'Pago realizado con exito ' . $OperaPgo->getId());
+                      $this->getUser()->setFlash('exito', 'Pago realizado con exito ' . $OperaPgo->getId());
                 }
                 $pago->setValor($total);
                 $pago->save();
 
-                $this->redirect('cuenta_por_cobrar/index?id=' . $OperaPgo->getId());
+           $this->redirect('cuenta_por_cobrar/index?id=' . $OperaPgo->getId());
             }
         }
     }
 
-    public function executeVuelto(sfWebRequest $request) {
+    public function executeEliminapago(sfWebRequest $request) {
         $id = $request->getParameter('id'); //=155555&$dirh =
-        $val = $request->getParameter('val'); //=155555&$dirh =
-        $operacion = OperacionQuery::create()->findOneById($id);
-        $valorPagado = round($operacion->getValorPagado(), 2) + round($val, 2);
-        $valorTOTAL = $valorPagado - $operacion->getValorTotal();
-        $total = 0;
-        if ($valorTOTAL > 0) {
-            $total = round($valorTOTAL, 2);
-        }
-        echo $total;
-        die();
+        $operacionQ = OperacionPagoQuery::create()->findOneById($id);
+        $OperacionId = $operacionQ->getId();
+        $operacionQ->delete();
+        $this->getUser()->setFlash('error', "Cheque eliminado con exito");
+        $this->redirect('cuenta_por_cobrar/caja?id=' . $OperacionId);
     }
 
     public function executeNota(sfWebRequest $request) {
@@ -322,12 +230,9 @@ class cuenta_por_cobrarActions extends sfActions {
     public function executeIndex(sfWebRequest $request) {
         error_reporting(-1);
         $this->id = $request->getParameter('id'); //=155555&$dirh =
-
+     
         $this->prover = $request->getParameter('prover');
         $this->operacionPago = OperacionPagoQuery::create()->findOneById($this->id);
-//        echo "<pre>";
-//        print_r($this->operacionPago);
-//        die();
         $registros = OperacionQuery::create()
                 ->filterByClienteId(null, Criteria::NOT_EQUAL)
                 ->filterByPagado(false)
@@ -343,7 +248,7 @@ class cuenta_por_cobrarActions extends sfActions {
         }
         $this->bancos = BancoQuery::create()->find();
         $registros = new OperacionQuery();
-        // $registros->setLimit(3);
+       // $registros->setLimit(3);
         $registros->filterByEstatus('Cuenta Cobrar');
         $registros->filterByPagado(false);
         if ($this->prover) {
@@ -360,7 +265,7 @@ class cuenta_por_cobrarActions extends sfActions {
                 ->find();
         $seleccion = null;
         foreach ($proveedores as $registro) {
-            $seleccion[$registro->getClienteId()] = $registro->getCliente()->getCodigo() . " " . $registro->getCliente()->getNombre();
+            $seleccion[$registro->getClienteId()] =$registro->getCliente()->getCodigo()." ".$registro->getCliente()->getNombre();
         }
         $this->seleccion = $seleccion;
         $this->totalSuma = $this->suma($this->prover);
@@ -409,18 +314,21 @@ class cuenta_por_cobrarActions extends sfActions {
             $this->form->bind($request->getParameter("consulta"), $request->getFiles("consulta"));
             if ($this->form->isValid()) {
                 $valores = $this->form->getValues();
+
                 $banco_id = $valores['banco_id'];
                 if ($banco_id) {
-                    $documento = $valores['no_documento'];
-                    $operacionPago = OperacionPagoQuery::create()
-                            ->filterByBancoId($banco_id)
-                            ->filterByDocumento($documento)
-                            ->findOne();
-                    if ($operacionPago) {
-                        $this->getUser()->setFlash('error', 'Numero de documento ya fue utilizado para este banco recibo  ' . $operacionPago->getCodigo());
-                        $this->redirect('cuenta_por_cobrar/caja?id=' . $OperacionId);
-                    }
+//                    $documento = $valores['no_documento'];
+//                    $operacionPago = OperacionPagoQuery::create()
+//                            ->filterByBancoId($banco_id)
+//                            ->filterByDocumento($documento)
+//                            ->findOne();
+//                    if ($operacionPago) {
+//                        $this->getUser()->setFlash('error', 'Numero de documento ya fue utilizado para este banco recibo  ' . $operacionPago->getCodigo());
+//                        $this->redirect('cuenta_por_cobrar/caja?id=' . $OperacionId);
+//                    }
                 }
+
+
                 $valor = $valores['valor'];
                 $tipoPago = $valores['tipo_pago'];
                 $tipoPago = str_replace(" ", "", $tipoPago);
@@ -446,8 +354,19 @@ class cuenta_por_cobrarActions extends sfActions {
                     $OperaPgo->save();
                     $this->getUser()->setFlash('exito', 'Cheque Prefechado ingresado con exito' . $OperaPgo->getId());
                     $this->redirect('cuenta_por_cobrar/caja?id=' . $OperacionId);
+                    //         die();
                 }
+
+
+//                echo "<pre>";
+//                print_r($valores);
+//                die();
+
                 $valorPagado = round($operacion->getValorPagado(), 2) + round($valor, 2) - $valores['vuelto'];
+//                echo $valorPagado;
+//                echo "<pre>";
+//                print_r($valores);
+//                die();
                 if (round($valorPagado, 2) > round($operacion->getValorTotal(), 2)) {
                     sfContext::getInstance()->getUser()->setAttribute('tab', 4, 'seguridad');
                     $this->getUser()->setFlash('error', 'Valor de pago  ' . $valorPagado . " es mayor que valor documento " . $operacion->getValorTotal());
@@ -469,31 +388,10 @@ class cuenta_por_cobrarActions extends sfActions {
                     $valorCOnsumido = $notaCredito->getValorPagado() + $valor;
                     $notaCredito->setValorPagado($valorCOnsumido);
                     $notaCredito->setDocumentoCanje($operacion->getCodigo());
+                    $notaCredito->setEstatus('Canjeado');
                     $notaCredito->save();
-                    if (round($notaCredito->getValorPagado(), 2) >= round($notaCredito->getValorTotal(), 2)) {
-                        $notaCredito->setEstatus('Canjeado');
-                        $notaCredito->save();
-                    }
                 }
-                  if ($tipoPago == "VALE") {
-                    $ordenDevolucion = OrdenDevolucionQuery::create()->findOneByCodigo($valores['no_documento']);
-                    if (!$ordenDevolucion) {
-                        $this->getUser()->setFlash('error', 'Nota credito no encontrada ' . $valores['no_documento']);
-                        $this->redirect('cuenta_por_cobrar/caja?id=' . $OperacionId);
-                    }
-                    $valorCOnsumido = $ordenDevolucion->getValorOtros()  + $valor;
-                    $ordenDevolucion->setValorOtros($valorCOnsumido);
-                    $ordenDevolucion->setMotivo($operacion->getCodigo());
-                    $ordenDevolucion->save();
-                    if (round($ordenDevolucion->getValorOtros(), 2) >= round($ordenDevolucion->getValor(), 2)) {
-                        $ordenDevolucion->setEstatus('Canjeado');
-                        $ordenDevolucion->save();
-                    }
-                }
-                
-             if ($tipoPago == "VUELTO") {
-                    $this->rebajaVueltos($operacion->getClienteId(), $valores['valor']);
-                }
+
 
                 if ($valores['fecha']) {
                     $fechaInicio = $valores['fecha'];
@@ -570,7 +468,7 @@ class cuenta_por_cobrarActions extends sfActions {
                 if ($valorPagado >= $operacion->getValorTotal()) {
                     $this->redirect('cuenta_por_cobrar/index?id=' . $OperaPgo->getId());
                 }
-                $this->redirect('cuenta_por_cobrar/caja?id='. $OperaPgo->getId());
+                $this->redirect('cuenta_por_cobrar/index?id=' . $OperacionId);
             }
         }
 
@@ -646,6 +544,10 @@ class cuenta_por_cobrarActions extends sfActions {
             $partidaLinea->setGrupo("VUELTO VENTA");
             $partidaLinea->save();
         }
+
+
+
+
 
         // $cuentaContable = '2.1.1.2.001';
         $cuentaPartida = Partida::busca("CLIENTES POR COBRAR", 0, 2);
@@ -753,6 +655,20 @@ class cuenta_por_cobrarActions extends sfActions {
         $xl = PHPExcel_IOFactory::createWriter($xl, 'Excel5');
         $xl->save('php://output');
         throw new sfStopException();
+    }
+
+    public function executeVuelto(sfWebRequest $request) {
+        $id = $request->getParameter('id'); //=155555&$dirh =
+        $val = $request->getParameter('val'); //=155555&$dirh =
+        $operacion = OperacionQuery::create()->findOneById($id);
+        $valorPagado = round($operacion->getValorPagado(), 2) + round($val, 2);
+        $valorTOTAL = $valorPagado - $operacion->getValorTotal();
+        $total = 0;
+        if ($valorTOTAL > 0) {
+            $total = round($valorTOTAL, 2);
+        }
+        echo $total;
+        die();
     }
 
 }

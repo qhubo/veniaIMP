@@ -618,32 +618,30 @@ class procesoActions extends sfActions {
                     sfContext::getInstance()->getUser()->setAttribute("lista", true, 'seguridad');
                     $this->redirect($modulo . '/muestra?token=' . $token);
                 }
-                if ($tipo == "ordendevolucion") {
+                      if ($tipo == "ordendevolucion") {
                     $registro = OrdenDevolucionQuery::create()->findOneByToken($token);
                     $tipoMo = strtoupper(trim(str_replace(" ", "", $registro->getPagoMedio())));
-                    $productoQuery = $registro->getProducto();
-
-                    if ($productoQuery) {
-                        $bodegaId = $registro->getTiendaId(); // ->getTiendaId();
-                        $empresaId = $registro->getEmpresaId();
-                        $clave = $productoQuery->getId();
-
-                        ProductoMovimientoQuery::Ingreso($clave, $registro->getCantidad(), $registro->getCodigo(), 'DEVOLUCION', date('Y-m-d'), $registro->getTiendaId());
-                        ProductoExistenciaQuery::Resta($clave, $registro->getCantidad() * -1, $bodegaId);
-                        $ListaProductos = ProductoExistenciaQuery::create()
-                                ->filterByEmpresaId($empresaId)
-                                ->filterByProductoId($clave)
-                                ->withColumn('sum(ProductoExistencia.Cantidad)', 'ValorTotal')
-                                ->findOne();
-                        $nuevaExistencia = $ListaProductos->getValorTotal();
-                        $productoQuery->setExistencia($nuevaExistencia);
-                        $productoQuery->save();
-                    }
-
-
-
-
-
+                    $producto_id = $registro->getProductoId();
+                    $productoQuery= $registro->getProducto();
+                    $tienda_id = $registro->getChequeNo();
+                    $valor = $registro->getCantidad();
+                    $UBICACION = 'DEVOLUCION';
+                       if ($registro->getNoStock()=="1") {
+                        if ($tiendaQ) {     
+                    ProductoMovimientoQuery::Ingreso($producto_id, $valor, 'DEVOLUCION ' . $registro->getCodigo() . " - " . $UBICACION, "Devolucion Producto", date("Y-m-d H:i:s"), $tienda_id);
+                    $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
+                    ProductoExistenciaQuery::Actualiza($producto_id, $valor, $tienda_id);
+                    $ListaProductos = ProductoExistenciaQuery::create()
+                            ->filterByEmpresaId($empresaId)
+                            ->filterByProductoId($producto_id)
+                            ->withColumn('sum(ProductoExistencia.Cantidad)', 'ValorTotal')
+                            ->findOne();
+                    $nuevaExistencia = $ListaProductos->getValorTotal();
+                    $productoQuery->setExistencia($nuevaExistencia);
+                    $productoQuery->save();
+                        }
+                       }
+                 //   ProductoMovimientoPeer::MovimientoUBi($producto_id, $tienda_id, $UBICACION, $valor);
 //                    if ($tipoMo == "CHEQUE") {
                     $this->partidaPago($registro);
 //                    }

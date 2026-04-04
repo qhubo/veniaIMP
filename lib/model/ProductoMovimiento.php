@@ -24,10 +24,14 @@ class ProductoMovimiento extends BaseProductoMovimiento {
         $motivo = trim($motivo);
         $identificador = $this->getIdentificador();
         $PREFI = substr($identificador, 0, 3);
-        if (substr($motivo, 0,9)=="PROVEEDOR") {
-           return "ORDEN COMPRA";
-            
-        }        
+        if (substr($motivo, 0, 9) == "PROVEEDOR") {
+            return "ORDEN COMPRA";
+        }
+        if (substr($identificador, 0, 10) == "DEVOLUCION") {
+
+            return str_replace("DEVOLUCION", "", $identificador);
+        }
+
 
         if ($tipo == "INGRESO") {
             switch ($motivo) {
@@ -64,7 +68,7 @@ class ProductoMovimiento extends BaseProductoMovimiento {
         if ($PREFI == 'NOT') {
             $retorna = TRIM(str_replace("NOTA", "", $this->getIdentificador()));
         }
- 
+
         return $retorna;
     }
 
@@ -74,32 +78,32 @@ class ProductoMovimiento extends BaseProductoMovimiento {
         $motivo = str_replace(" ", "", $motivo);
         $motivo = trim($motivo);
         $identificador = $this->getIdentificador();
-             $partes = explode('-', $identificador);
-        if ($this->getMotivo()=="VENTA"){
-      
-           $ultimo = trim(end($partes));
-           
-          // return $ultimo;
-           if ($ultimo=="") {
-               return $partes[1];
-           }
+        $partes = explode('-', $identificador);
+        if ($this->getMotivo() == "VENTA") {
 
-          
-           //return $ultimo;
-         
-          $query="select codigo_factura from operacion op inner join operacion_detalle de on de.operacion_id=op.id where de.id='".$ultimo."'";
-        $con = Propel::getConnection();
-        $stmt = $con->prepare($query);
-        $resource = $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        if ($result) {
-          $factura = $result[0]['codigo_factura'];
-            RETURN $factura;
-        }
-        }
-        
+            $ultimo = trim(end($partes));
 
-        
+            // return $ultimo;
+            if ($ultimo == "") {
+                return $partes[1];
+            }
+
+
+            //return $ultimo;
+
+            $query = "select codigo_factura from operacion op inner join operacion_detalle de on de.operacion_id=op.id where de.id='" . $ultimo . "'";
+            $con = Propel::getConnection();
+            $stmt = $con->prepare($query);
+            $resource = $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($result) {
+                $factura = $result[0]['codigo_factura'];
+                RETURN $factura;
+            }
+        }
+
+
+
 
         $valores = explode("-", $identificador);
         $documento = $valores[0];
@@ -111,15 +115,14 @@ class ProductoMovimiento extends BaseProductoMovimiento {
         if ($tipo == "REINICIOINVENTARIO") {
             $documento = str_replace("ReIN", "", $documento);
         }
-        
-                if (strtoupper(substr($this->getMotivo(),0,5))=="ANULA"){
-                    return "ANULACION ".$partes[1];
-                    
-                }
-           if ($documento=="LIST") {
-                     return $partes[1];
-           }
-           
+
+        if (strtoupper(substr($this->getMotivo(), 0, 5)) == "ANULA") {
+            return "ANULACION " . $partes[1];
+        }
+        if ($documento == "LIST") {
+            return $partes[1];
+        }
+
         //   $documento= $this->getIdentificador();
         RETURN $documento;
     }
@@ -134,44 +137,42 @@ class ProductoMovimiento extends BaseProductoMovimiento {
         $documento = $valores[0];
         $documento = str_replace("ANU", "", $documento);
         $PREFI = substr($identificador, 0, 3);
-        
-        
-          if ($PREFI == 'NOT') {
+
+
+        if ($PREFI == 'NOT') {
             $codigo = TRIM(str_replace("NOTA", "", $this->getIdentificador()));
-                $query="select nombre from nota_credito op  where codigo='".$codigo."'";
+            $query = "select nombre from nota_credito op  where codigo='" . $codigo . "'";
 
-        $con = Propel::getConnection();
-        $stmt = $con->prepare($query);
-        $resource = $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        if ($result) {   
-            $factura = $result[0]['nombre'];
-            RETURN $factura;
+            $con = Propel::getConnection();
+            $stmt = $con->prepare($query);
+            $resource = $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($result) {
+                $factura = $result[0]['nombre'];
+                RETURN $factura;
+            }
         }
-            
-        }
- 
-        
+
+
         $nombre = '';
-          if ($this->getMotivo()=="VENTA"){
-           $partes = explode('-', $identificador);
-           $ultimo = end($partes);
+        if ($this->getMotivo() == "VENTA") {
+            $partes = explode('-', $identificador);
+            $ultimo = end($partes);
 
-          $query="select nombre from operacion op inner join operacion_detalle de on de.operacion_id=op.id where de.id='".$ultimo."'";
-        $con = Propel::getConnection();
-        $stmt = $con->prepare($query);
-        $resource = $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        if ($result) {   
-            $factura = $result[0]['nombre'];
-            RETURN $factura;
+            $query = "select nombre from operacion op inner join operacion_detalle de on de.operacion_id=op.id where de.id='" . $ultimo . "'";
+            $con = Propel::getConnection();
+            $stmt = $con->prepare($query);
+            $resource = $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($result) {
+                $factura = $result[0]['nombre'];
+                RETURN $factura;
+            }
+            //  return $valores[1];
         }
-      //  return $valores[1];
-        
-        }
-        
+
         if (($tipo == "SALIDA") && ($motivo == 'VENTA')) {
-            $documento=$valores[1];
+            $documento = $valores[1];
             $query = "select nombre from operacion where codigo like '%" . $documento . "%'";
 //            return $query;
             $con = Propel::getConnection();
@@ -254,8 +255,9 @@ class ProductoMovimiento extends BaseProductoMovimiento {
 
         return $nombre;
     }
+
     public function getVenta() {
-        $valor_unitario=0;
+        $valor_unitario = 0;
         $tipo = strtoupper(trim($this->getTipo()));
         $motivo = strtoupper(trim($this->getMotivo()));
         $motivo = str_replace(" ", "", $motivo);
@@ -267,7 +269,7 @@ class ProductoMovimiento extends BaseProductoMovimiento {
         $PREFI = substr($identificador, 0, 3);
         $nombre = '';
         if (($tipo == "SALIDA") && ($motivo == 'VENTA')) {
-            $query = "select valor_unitario from operacion op inner join operacion_detalle de on op.id=de.operacion_id where op.codigo ='" . $documento . "' and producto_id='".$this->getProductoId()."'";
+            $query = "select valor_unitario from operacion op inner join operacion_detalle de on op.id=de.operacion_id where op.codigo ='" . $documento . "' and producto_id='" . $this->getProductoId() . "'";
 //           echo $query;
 //           die();
             $con = Propel::getConnection();
@@ -275,7 +277,7 @@ class ProductoMovimiento extends BaseProductoMovimiento {
             $resource = $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if ($result) {
-                $valor_unitario= $this->getCantidad()* $result[0]['valor_unitario'];
+                $valor_unitario = $this->getCantidad() * $result[0]['valor_unitario'];
             }
         }
         return $valor_unitario;

@@ -20,7 +20,7 @@
             <div class="col-lg-6" >
                 <div class="row" style="padding-top:3PX; padding-bottom:3PX; ;">
                     <div class="col-lg-2"><strong> <font size="+1">Código</font></strong></div>
-                    <div class="col-lg-4"><font size="+1"><?php echo $operacion->getCodigoFactura(); ?></font></div>
+                    <div class="col-lg-4"><font size="+1"><?php echo $operacion->getCodigo(); ?></font></div>
                     <div class="col-lg-2"><strong><font size="+1">Nit</font></strong></div>
                     <div class="col-lg-4"><font size="+1"><?php echo $operacion->getNit(); ?></font></div>
                 </div>
@@ -138,48 +138,222 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#consulta_tipo_pago").on('change', function () {
-              $("#consulta_valor").val(0).prop("readonly", false);
+            $("#consulta_valor").val(0).prop("readonly", false);
             var val = $("#consulta_tipo_pago").val();
             $('#consulta_no_documento').val('');
+            $('#consulta_valor').val(0);
+            $('#consulta_vuelto').val(0);
+            $('#consulta_comision').val(0);
             val = val.replace(/\s+/g, '').toUpperCase();
             $('#consulta_comision').show();
             $('#labelcomi').show();
+            $('#panelcomi').show();
+            $('#panelvuelto').show();
+            $('#labelvuelto').show();
             if (val == "CHEQUEPREFECHADO") {
                 $('#labelcomi').hide();
                 $('#consulta_comision').hide();
+                $('#panelcomi').hide();
+                $('#panelvuelto').hide();
+                $('#labelvuelto').hide();
+            }
+            if (val == "NOTACREDITO") {
+                $('#labelcomi').hide();
+                $('#consulta_comision').hide();
+                $('#panelcomi').hide();
+                $('#panelvuelto').hide();
+                $('#labelvuelto').hide();
+            }
+            if (val == "NOTADEBITO") {
+                $('#labelcomi').hide();
+                $('#consulta_comision').hide();
+                $('#panelcomi').hide();
+                $('#panelvuelto').hide();
+                $('#labelvuelto').hide();
+            }
+            if (val == "VUELTO") {
+                $('#labelcomi').hide();
+                $('#consulta_comision').hide();
+                $('#panelcomi').hide();
+                $('#panelvuelto').hide();
+                $('#labelvuelto').hide();
+            }
+            if (val == "VALE") {
+                $('#labelcomi').hide();
+                $('#consulta_comision').hide();
+                $('#panelcomi').hide();
+                $('#panelvuelto').hide();
+                $('#labelvuelto').hide();
             }
 
         });
     });
 </script>
 <script type="text/javascript">
-$(document).ready(function () {
+    $(document).ready(function () {
+        var clienteId = <?php echo $operacion->getClienteId(); ?>;
+        // 🔹 EVENTOS
+        $(document).on('change', '#consulta_tipo_pago, #consulta_no_documento', function () {
+            verificarTipoPago();
+        });
+        verificarTipoPago();
 
-    function verificarTipoPago() {
-        var tipopago = $("#consulta_tipo_pago").val();
-        tipopago = tipopago.replace(/\s+/g, '').toUpperCase();
+        function verificarTipoPago() {
+            var tipopago = $("#consulta_tipo_pago").val() || '';
+            tipopago = tipopago.replace(/\s+/g, '').toUpperCase();
+            if (tipopago === "NOTACREDITO") {
+                convertirASelect(clienteId,tipopago);
+                setBloqueado(true);
+            } else if (tipopago === "VALE") {
+                convertirASelect(clienteId,tipopago);
+                setBloqueado(false);
+            } else if (tipopago === "VUELTO") {
+                convertirATextarea();
+                setBloqueado(false);
+                aplicarVuelto(clienteId);
+            } else {
+                convertirATextarea();
+                setBloqueado(false);
+            }
 
-        if (tipopago === "NOTACREDITO") {
-            var documento = $("#consulta_no_documento").val().trim();
-            var id = <?php echo $operacion->getId(); ?>;
+            toggleComision(tipopago);
+        }
 
-            // Bloquear el campo antes de la consulta
-            $("#consulta_valor").prop("readonly", true).val("");
+        function aplicarVuelto(clienteId) {
 
-            // Llamada AJAX para obtener el valor
-            $.get('<?php echo url_for("cuenta_por_cobrar/nota") ?>', { id: id, documento: documento }, function (response) {
-                $('#consulta_valor').val(response); // .prop("disabled", true);
+            $.get('<?php echo url_for("cuenta_por_cobrar/getVuelto") ?>',
+                    {cliente_id: clienteId},
+                    function (response) {
+
+                        var vuelto = parseFloat(response) || 0;
+                        var deuda = parseFloat($("#deuda_total").val()) || 0;
+
+                        var valorFinal = 0;
+
+                        if (vuelto >= deuda) {
+                            valorFinal = deuda;
+                        } else {
+                            valorFinal = vuelto;
+                        }
+
+                        // 🔹 Setea el valor calculado
+                        $("#consulta_valor")
+                                .val(valorFinal.toFixed(2))
+                                .prop("readonly", true)
+                                .addClass("campo-bloqueado");
+
+                        $("#icono_bloqueo").show();
+
+                        // 🔥 NUEVO: setear texto en documento
+                        var texto = "Pago con Vuelto - Actual Acumulado: " + vuelto.toFixed(2);
+
+                        if ($("#consulta_no_documento").is("textarea")) {
+                            $("#consulta_no_documento").val(texto);
+                        } else if ($("#consulta_no_documento").is("select")) {
+                            // si por alguna razón sigue siendo select (por NOTACREDITO previo)
+                            convertirATextarea();
+                            $("#consulta_no_documento").val(texto);
+                        }
+                    }
+            );
+        }
+        function setBloqueado(bloqueado) {
+            if (bloqueado) {
+                $("#consulta_valor")
+                        .prop("readonly", true)
+                        .prop("disabled", false) // 🔥 CLAVE
+                        .addClass("campo-bloqueado");
+
+                $("#icono_bloqueo").show();
+            } else {
+                $("#consulta_valor")
+                        .prop("readonly", false)
+                        .prop("disabled", false) // 🔥 CLAVE
+                        .removeClass("campo-bloqueado");
+
+                $("#icono_bloqueo").hide();
+            }
+        }
+
+        function convertirASelect(clienteId, tipopago) {
+
+            // evitar recrear si ya es select
+            if ($("#consulta_no_documento").is("select"))
+                return;
+
+            tipopago = (tipopago || '').replace(/\s+/g, '').toUpperCase();
+
+            var url = '';
+            var textoDefault = '';
+
+            // 🔹 decidir endpoint según tipo
+            if (tipopago === "NOTACREDITO") {
+                url = '<?php echo url_for("cuenta_por_cobrar/listaNotas") ?>';
+                textoDefault = 'Seleccione nota crédito';
+            } else if (tipopago === "VALE") {
+                url = '<?php echo url_for("cuenta_por_cobrar/listaVales") ?>';
+                textoDefault = 'Seleccione vale';
+            } else {
+                return; // no hace nada si no aplica
+            }
+
+            $.get(url, {cliente_id: clienteId}, function (data) {
+
+                if (typeof data === "string") {
+                    data = JSON.parse(data);
+                }
+
+                var html = '<select class="form-control" id="consulta_no_documento" name="consulta[no_documento]">';
+                html += '<option value="">' + textoDefault + '</option>';
+
+                data.forEach(function (item) {
+                    html += '<option value="' + item.codigo + '" data-saldo="' + item.saldo + '">';
+                    html += item.codigo + ' | Saldo: ' + item.saldo;
+                    html += '</option>';
+                });
+
+                html += '</select>';
+
+                // 🔥 reemplazar textarea/select
+                $("#consulta_no_documento").replaceWith(html);
             });
+        }
+
+        function convertirATextarea() {
+
+            // evitar recrear si ya es textarea
+            if ($("#consulta_no_documento").is("textarea"))
+                return;
+
+            var html = '<textarea rows="2" class="form-control" name="consulta[no_documento]" id="consulta_no_documento"></textarea>';
+            $("#contenedor_documento").html(html);
+        }
+
+    });
+
+
+    $(document).on('change', '#consulta_no_documento', function () {
+        var saldo = parseFloat($(this).find(':selected').data('saldo')) || 0;
+        var deuda = parseFloat($("#deuda_total").val()) || 0;
+        var valorFinal = 0;
+        if (saldo >= deuda) {
+            valorFinal = deuda;
         } else {
-            // Si no es NOTACREDITO, desbloquear
-            $("#consulta_valor").prop("readonly", false);
+            valorFinal = saldo;
+        }
+        $("#consulta_valor")
+                .val(valorFinal.toFixed(2))
+                .prop("readonly", true)
+                .addClass("campo-bloqueado");
+    });
+
+    function toggleComision(tipopago) {
+        if (tipopago.includes("NOTA") && tipopago.includes("CREDITO")) {
+            $("#consulta_comision").closest("div").hide(); // 🔥 oculta todo el contenedor
+        } else {
+            $("#consulta_comision").closest("div").show();
         }
     }
-
-    // Ejecutar cuando cambie el tipo de pago o el número de documento
-    $("#consulta_tipo_pago, #consulta_no_documento").on('change', verificarTipoPago);
-
-    // Ejecutar al cargar por si ya viene con valor
-    verificarTipoPago();
-});
 </script>
+
+

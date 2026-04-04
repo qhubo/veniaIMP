@@ -16,7 +16,7 @@
             <th  align="center"><span class="kt-font-success"> Concepto </span></th>
             <th  align="center"><span class="kt-font-success"> Medio Pago </span></th>
             <th  align="center"><span class="kt-font-success"> Valor  </span></th>
-            <th  align="center"><span class="kt-font-success"> Retenido  </span></th>
+      
             <th  align="center"><span class="kt-font-success" width='90px'> Archivo </span></th>
             <th  align="center"><span class="kt-font-success"> Confirmar </span></th>
             <th  align="center"><span class="kt-font-success"> Rechazar </span></th>
@@ -37,7 +37,7 @@
                 <td><?php echo $data->getNombre(); ?></td>
                 <td>
                     <strong>Ref. Nota:</strong> <?php echo $data->getReferenciaNota(); ?><br>
-                    <strong>Ref. Factura: </strong> <?php echo $data->getReferenciaFactura(); ?>
+                   
                     <?php echo $data->getFechaFactura('d/m/Y'); ?>
                     <br>
                 
@@ -52,7 +52,7 @@
                     <font size="-1"><?php echo Parametro::formato($data->getValor()); ?></font>
                 </th>
 
-                <td style="text-align: right"><?php echo $data->getPorcentajeRetenie(); ?>%</td>
+
                 <td style="content-align:center; text-align: center" width='90px'>
 
                     <?php echo ParametroPeer::is_imagen($ruta, $data->getArchivo()); ?>

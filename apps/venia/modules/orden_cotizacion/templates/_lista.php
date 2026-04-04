@@ -70,9 +70,10 @@
             <?php $can = $registro->getExistenciaActual(); ?>
         <?php } ?>
              <input min="1"   class="form-control xlarge" value="<?php echo $can ?>" type="number" id="consulta_numero_<?php echo $pid ?>"  
-         
                     name="consulta[numero_<?php echo $pid ?>]" onkeypress='validate<?php echo $pid ?>(event)' >
-                
+        <?php if ($registro->getProductoId()) {  ?>
+             <span  style="font-size: 13px;  padding-right: 20px; padding-left: 20px; background-color:whitesmoke">  <?php echo $registro->getProducto()->getExistencia(); ?> </span>
+            <?php } ?>
             </td>    
                
             <td><?php //echo $registro->getValorTotal(); ?>
