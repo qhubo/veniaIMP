@@ -88,9 +88,9 @@ class reporte_venta_productoActions extends sfActions {
         if ($valores['vendedor']) {
             $query .= "  and  vendedor_id = " . $valores['vendedor'] . " ";
         }
-           if ($valores['bodega']) {
-            $query .= "  and  tienda_id = " . $valores['bodega'] . " ";
-        }
+//           if ($valores['bodega']) {
+//            $query .= "  and  tienda_id = " . $valores['bodega'] . " ";
+//        }
         if ($valores['busqueda']) {
             $query .= "  and  op.nombre like '%" . $valores['busqueda'] . "%'";
         }
@@ -262,9 +262,9 @@ class reporte_venta_productoActions extends sfActions {
         if ($valores['vendedor']) {
             $query .= "  and  vendedor_id = " . $valores['vendedor'] . " ";
         }
-         if ($valores['bodega']) {
-            $query .= "  and  tienda_id = " . $valores['bodega'] . " ";
-        }
+//         if ($valores['bodega']) {
+//            $query .= "  and  tienda_id = " . $valores['bodega'] . " ";
+//        }
         if ($valores['busqueda']) {
             $query .= "  and  op.nombre like '%" . $valores['busqueda'] . "%'";
         }
