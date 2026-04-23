@@ -14,7 +14,7 @@ class IngresoClienteForm extends sfForm {
 
 
         $this->setWidget('pais', new sfWidgetFormChoice(array("choices" => $listaP), array("class" => " form-control")));
-        $this->setValidator('pais', new sfValidatorString(array('required' => false)));
+        $this->setValidator('pais', new sfValidatorString(array('required' => true)));
 
         $lis[null] = '[Seleccione]';
         $depar = DepartamentoQuery::create()->find();

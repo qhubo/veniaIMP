@@ -289,3 +289,5 @@ class reporte_venta_productoActions extends sfActions {
     }
 
 }
+
+
