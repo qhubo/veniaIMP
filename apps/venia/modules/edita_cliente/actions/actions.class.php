@@ -295,7 +295,12 @@ class edita_clienteActions extends sfActions {
                 $nueva->setTipoReferencia($valores['fuente']);
                 $nueva->setTipoCliente($valores['tipo_cliente']);
                 $nueva->setPaisId($valores['pais']);
-                if ($valores["archivo"]) {
+                
+                
+                 $con = Propel::getConnection();
+        $con->beginTransaction();
+        try {
+           if ($valores["archivo"]) {
                     $archivo = $valores["archivo"];
                     $nombre = $archivo->getOriginalName();
                     $nombre = str_replace(" ", "_", $nombre);
@@ -307,6 +312,17 @@ class edita_clienteActions extends sfActions {
                 }
 
                 $nueva->save();
+            $con->commit();
+        } catch (Exception $e) {
+            $con->rollback();
+            if ($e->getMessage()) {
+                $this->getUser()->setFlash('error', $e->getMessage() . ', !Intentar Nuevamente');
+            }
+            $this->redirect('edita_cliente/index');
+        }
+                
+                
+               
                 if ($id) {
                     $this->getUser()->setFlash('exito', ' Cliente Actualizado con exito');
                 } else {
