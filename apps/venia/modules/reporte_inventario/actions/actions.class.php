@@ -41,7 +41,7 @@ class reporte_inventarioActions extends sfActions {
         $Datos .= "\r\n";
 //        echo $Datos;
 //        die();
-        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaInventa'));
+        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'inventaConsu'));
         $filtro = false;
         if ($valores['tipo_filtro']) {
             $filtro = true;
@@ -107,7 +107,7 @@ class reporte_inventarioActions extends sfActions {
         header('Content-Disposition: attachment; filename="' . $file . '"');
         header("Content-Transfer-Encoding: binary");
 
-        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaInventa'));
+        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'inventaConsu'));
         $filtro = false;
         if ($valores['tipo_filtro']) {
             $filtro = true;
@@ -226,7 +226,7 @@ if ($tipoUsua == "ADMINISTRADOR") {
         $encabezados[] = array("Nombre" => strtoupper("Costo"), "width" => 15, "align" => "right", "format" => "#,##0.00");
         sfContext::getInstance()->getUser()->HojaImprimeEncabezadoHorizontal($encabezados, $columna, $fila, $hoja);
         $datosR = $this->datos();
-        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaInventa'));
+        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'inventaConsu'));
         $filtro = false;
         if ($valores['tipo_filtro']) {
             $filtro = true;
@@ -345,11 +345,11 @@ if ($tipoUsua == "ADMINISTRADOR") {
         sfContext::getInstance()->getUser()->setAttribute("filtraExistencia", false, 'empresa');
 
 
-        $datos = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaInventa'));
+        $datos = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'inventaConsu'));
         $default['bodega'] = $bodegaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'bodega');
         $valores = null;
         if ($datos) {
-            $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaInventa'));
+            $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'inventaConsu'));
             $default = $valores;
         }
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
@@ -366,8 +366,8 @@ if ($tipoUsua == "ADMINISTRADOR") {
             $this->form->bind($request->getParameter("consulta"), $request->getFiles("consulta"));
             if ($this->form->isValid()) {
                 $valores = $this->form->getValues();
-                sfContext::getInstance()->getUser()->setAttribute('valores', serialize($valores), 'consultaInventa');
-                $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaInventa'));
+                sfContext::getInstance()->getUser()->setAttribute('valores', serialize($valores), 'inventaConsu');
+                $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'inventaConsu'));
             }
         }
         if ($valores) {
@@ -393,7 +393,7 @@ if ($tipoUsua == "ADMINISTRADOR") {
     }
 
     public function textobusqueda() {
-        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaInventa'));
+        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'inventaConsu'));
         $textoBusqueda = 'Todo los productos';
         $Busqueda = null;
         foreach ($valores as $clave => $valor) {
@@ -436,7 +436,7 @@ if ($tipoUsua == "ADMINISTRADOR") {
 
     public function datosVENCE() {
         $productos = null;
-        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaInventa'));
+        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'inventaConsu'));
         if ($valores) {
             $nombre = $valores['nombrebuscar']; // => 4555
             $tipo = $valores['tipo']; // => 4
@@ -468,7 +468,7 @@ if ($tipoUsua == "ADMINISTRADOR") {
 
     public function datos() {
         $productos = null;
-        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaInventa'));
+        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'inventaConsu'));
         if ($valores) {
 
             sfContext::getInstance()->getUser()->setAttribute("filtraExistencia", null, 'empresa');
