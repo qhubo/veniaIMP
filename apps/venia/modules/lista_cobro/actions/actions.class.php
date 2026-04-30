@@ -281,7 +281,7 @@ class lista_cobroActions extends sfActions {
                 } else {
                     $fechaInicio = date('Y-m-d');
                 }
-
+ date_default_timezone_set("America/Guatemala");
                 $OperaPgo = new OperacionPago();
                 $OperaPgo->setOperacionId($operacion->getId());
                 $OperaPgo->setTipo($valores['tipo_pago']);

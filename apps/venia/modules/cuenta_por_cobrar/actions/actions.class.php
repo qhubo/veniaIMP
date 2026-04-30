@@ -149,7 +149,7 @@ class cuenta_por_cobrarActions extends sfActions {
                     $valor = $registro['valor'];
                     $total = $total + $valor;
                     $operacion = OperacionQuery::create()->findOneById($registro['id']);
-
+ date_default_timezone_set("America/Guatemala");
                     $OperaPgo = new OperacionPago();
                     $OperaPgo->setOperacionId($operacion->getId());
                     $OperaPgo->setTipo($valores['tipo_pago']);
@@ -430,6 +430,7 @@ class cuenta_por_cobrarActions extends sfActions {
                     $fechaInicio = $valores['fecha'];
                     $fechaInicio = explode('/', $fechaInicio);
                     $fechaInicio = $fechaInicio[2] . '-' . $fechaInicio[1] . '-' . $fechaInicio[0];
+                     date_default_timezone_set("America/Guatemala");
                     $OperaPgo = new OperacionPago();
                     $OperaPgo->setOperacionId($operacion->getId());
                     $OperaPgo->setTipo($valores['tipo_pago']);
@@ -503,7 +504,7 @@ class cuenta_por_cobrarActions extends sfActions {
                     $fechaInicio = date('Y-m-d');
                 }
 
-
+ date_default_timezone_set("America/Guatemala");
                 $OperaPgo = new OperacionPago();
                 $OperaPgo->setOperacionId($operacion->getId());
                 $OperaPgo->setTipo($valores['tipo_pago']);

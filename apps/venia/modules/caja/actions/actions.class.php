@@ -281,6 +281,7 @@ class cajaActions extends sfActions {
                 }
                 $operacion->setValorTotal($valorTotal);
                 $operacion->save();
+                 date_default_timezone_set("America/Guatemala");
                 $operacionPago = new OperacionPago();
                 $operacionPago->setOperacionId($operacion->getId());
                 $operacionPago->setFechaDocumento($fechaInicio);

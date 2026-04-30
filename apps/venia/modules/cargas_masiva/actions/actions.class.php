@@ -208,7 +208,7 @@ class cargas_masivaActions extends sfActions {
     }
     
         public function executeCuentaCobrar(sfWebRequest $request) {
-        $filename = 'CuentaCobrar.xls';
+        $filename = 'CuentaCobrar.xlsxxxxxxxxxx';
         $inputFileName = sfConfig::get("sf_upload_dir") . DIRECTORY_SEPARATOR . $filename;
         $objReader = new PHPExcel_Reader_Excel5();
         $objPHPExcel = $objReader->load($inputFileName);
