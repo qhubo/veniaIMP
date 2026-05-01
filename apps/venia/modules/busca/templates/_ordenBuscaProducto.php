@@ -1,11 +1,12 @@
 <?php $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad'); ?>
 <?php $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId); ?>
 <?php $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario()); ?>
-<?php $tiendas = TiendaQuery::create()->filterByActivo(true)->find(); ?>
-<?php  //if ($TIPO_USUARIO != 'ADMINISTRADOR') {  ?>
-<?php $tiendas = TiendaQuery::create()->filterByActivo(true)->orderById()->filterByActivaBuscador(true)->find(); ?>
-<?php //} ?>
-
+ <?php  $tiendaQuery = TiendaQuery::create()->filterByActivo(true);
+        if ($TIPO_USUARIO != 'ADMINISTRADOR') {
+            $tiendaQuery->filterByActivaBuscador(true);
+        }
+        $tiendaQuery->orderById();
+        $tiendas = $tiendaQuery->find(); ?>
 <?php $tipoPrecios  = ListaPrecioQuery::create()->orderByNombre() ->orderById()->filterByActivo(true)->find(); ?>
 <style>
 .tabla-scroll {
