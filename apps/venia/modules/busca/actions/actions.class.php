@@ -99,7 +99,7 @@ class buscaActions extends sfActions {
                 if (isset($existencias[$reg['id']]) && isset($existencias[$reg['id']][$regi->getId()])) {
                     $exit = $existencias[$reg['id']][$regi->getId()];
                 }
-                $row[] = '<a href="' . $url . '"><div style="text-align:right">' . $exit . '</div></a>';
+                $row[] =$regi->getId().' --> <a href="' . $url . '"><div style="text-align:right">' . $exit . '</div></a>';
             }
           $row[] = '<div style="text-align:right"> xx ' . Parametro::formato($reg['precio'], false) . '</div>';
             foreach ($tipoPrecios as $prec) {
