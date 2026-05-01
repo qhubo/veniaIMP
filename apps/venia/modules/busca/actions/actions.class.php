@@ -92,7 +92,6 @@ class buscaActions extends sfActions {
             $url = $base . '/ubicacion/index?id=' . $reg['id'];
             $row = [];
             $nombre = $reg['nombre'] . " | " . $reg['codigo_barras'];
-            // âœ… MISMAS COLUMNAS
             $row[] = '<a href="' . $url . '"><div style="text-align:right">' . $reg['codigo_sku'] . '</div></a>';
             $row[] = '<a href="' . $url . '"><div style="text-align:right">' . $nombre . '</div></a>';
             foreach ($tiendas as $regi) {
@@ -102,7 +101,7 @@ class buscaActions extends sfActions {
                 }
                 $row[] = '<a href="' . $url . '"><div style="text-align:right">' . $exit . '</div></a>';
             }
-          $row[] = '<div style="text-align:right">' . Parametro::formato($reg['precio'], false) . '</div>';
+          $row[] = '<div style="text-align:right"> xx ' . Parametro::formato($reg['precio'], false) . '</div>';
             foreach ($tipoPrecios as $prec) {
                 $precioLista = 0;
                 if (isset($preciosLista[$reg['id']]) && isset($preciosLista[$reg['id']][$prec->getId()])) {

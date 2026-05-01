@@ -73,16 +73,17 @@
 <?php foreach ($tiendas as $data) { ?>
                 {"bSearchable": true},
 <?php } ?>
+                 {"bSearchable": true},
     <?php foreach ($tipoPrecios as $data) { ?>
                 {"bSearchable": true},
 <?php } ?>
-    
+
 <?php if ($TIPO_USUARIO == 'ADMINISTRADOR') { ?>
                 {"bSearchable": true}
                 ,
 <?php } ?>
-            {"bSearchable": true}
-            ,
+   
+            
             ],
 
     fnDrawCallback: function ()
