@@ -3,10 +3,10 @@
 <?php $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario()); ?>
 <?php $tiendas = TiendaQuery::create()->filterByActivo(true)->find(); ?>
 <?php  //if ($TIPO_USUARIO != 'ADMINISTRADOR') {  ?>
-<?php $tiendas = TiendaQuery::create()->filterByActivo(true)->filterByActivaBuscador(true)->find(); ?>
+<?php $tiendas = TiendaQuery::create()->filterByActivo(true)->orderById()->filterByActivaBuscador(true)->find(); ?>
 <?php //} ?>
 
-<?php $tipoPrecios  = ListaPrecioQuery::create()->orderByNombre()->filterByActivo(true)->find(); ?>
+<?php $tipoPrecios  = ListaPrecioQuery::create()->orderByNombre() ->orderById()->filterByActivo(true)->find(); ?>
 <style>
 .tabla-scroll {
     max-height: 400px;   /* Ajusta la altura */
@@ -24,34 +24,22 @@
 <table class="table table-striped table-bordered table-hover order-column  tablaProductoIvent"  >
     <thead>
         <tr class="success">
-            <th>Código</th>
+            <th>Codigo</th>
             <th width="50%">Nombre</th>
-            <?php foreach ($tiendas as $data) { ?>
-                <th width="10%"><?php echo $data->getCodigo(); ?></th>
+	    <?php foreach ($tiendas as $data) { ?>
+                <th width="10%">Existencia <?php echo $data->getCodigo(); ?></th>
             <?php } ?>
-
-            <th width="10%">Precio</th>
+            <th width="10%">Precio Venta</th>
                <?php foreach ($tipoPrecios as $data) { ?>
-                <th width="10%"><?php echo $data->getNombre(); ?></th>
+                <th width="10%"> Precio <?php echo $data->getNombre(); ?></th>
             <?php } ?>
             <?php if ($TIPO_USUARIO == 'ADMINISTRADOR') { ?>
-                <th width="10%"></th>
+                <th width="10%"> Costo </th>
             <?php } ?>
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-         
-            <td></td>            
-                <?php if ($TIPO_USUARIO == 'ADMINISTRADOR') { ?>
-                <th width="10%"></th>
-            <?php } ?>
-                
-
-        </tr>
+  
     </tbody>
     <tfoot>
     </tfoot>
