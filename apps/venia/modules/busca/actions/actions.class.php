@@ -107,7 +107,7 @@ class buscaActions extends sfActions {
                 if (isset($preciosLista[$reg['id']]) && isset($preciosLista[$reg['id']][$prec->getId()])) {
                     $precioLista = $preciosLista[$reg['id']][$prec->getId()];
                 }
-                $row[] = Parametro::formato($precioLista, false);
+                $row[] =$prec->getId()."--".Parametro::formato($precioLista, false);
             }
 
             // 
