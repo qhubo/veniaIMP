@@ -1,18 +1,54 @@
 <?php
 
-/**
- * estado_cuenta actions.
- *
- * @package    plan
- * @subpackage estado_cuenta
- * @author     Via
- * @version    SVN: $Id: actions.class.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
- */
+
 class estado_cuentaActions extends sfActions {
 
     public function executeReportePdf(sfWebRequest $request) {
         $clientev = $request->getParameter('clientev');
         $fechaInicial = $request->getParameter('fecharef');
+            $SUMAS = 0;
+        $RESTAR = 0;
+
+        // ================= SALDO INICIAL =================
+        $sumatorias = OperacionQuery::create()
+
+              ->withColumn('sum(Operacion.ValorTotal)', 'TotalTotal')
+                ->filterByEstatus('Anulado', Criteria::NOT_EQUAL)
+                ->filterByClienteId($clientev)
+                ->findOne();
+
+        if ($sumatorias) {
+            $SUMAS = $sumatorias->getTotalTotal();
+        }
+
+        $listab[] = 'CXC COBRAR';
+        $listab[] = 'CONTRA ENTREGA';
+        $listab[] = 'CONTRAENTREGA';
+        $listab[] = 'CHEQUE PREFECHADO';
+
+        $restas = OperacionPagoQuery::create()
+                ->filterByTipo($listab, Criteria::NOT_IN)
+                 ->withColumn('sum(OperacionPago.Valor)', 'TotalTotal')
+                ->useOperacionQuery()
+                ->filterByClienteId($clientev)
+                ->endUse()
+                ->findOne();
+
+        if ($restas) {
+            $RESTAR = $restas->getTotalTotal();
+        }
+
+        $notasCredito = NotaCreditoQuery::create()       
+                ->where("NotaCredito.Estatus not like '%Anul%'")
+                ->filterByClienteId($clientev)
+                ->find();
+
+        $RESTAN = 0;
+        foreach ($notasCredito as $nota) {
+            $RESTAN += ($nota->getValorTotal() - $nota->getValorPagado());
+        }
+
+        $SALDO = $SUMAS - $RESTAR - $RESTAN;
 //        echo $fechaInicial;
 //        die();
         error_reporting(-1);
@@ -28,7 +64,7 @@ class estado_cuentaActions extends sfActions {
         //  die();
 
         $html = $this->getPartial('estado_cuenta/reporte', array("logo" => $logo, 'NOMBRE_EMPRESA' => $NOMBRE_EMPRESA,
-            'DIRECCION' => $DIRECCION, 'TELEFONO' => $TELEFONO, 'detalle' => $detalle, 'clienteQ' => $clienteQ));
+       'SALDO'=> $SALDO,    'DIRECCION' => $DIRECCION, 'TELEFONO' => $TELEFONO, 'detalle' => $detalle, 'clienteQ' => $clienteQ));
 //        echo $html;
 //        die();
         $pdf = new sfTCPDF("P", "mm", "Letter");
@@ -43,7 +79,7 @@ class estado_cuentaActions extends sfActions {
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
         $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-        $pdf->SetMargins(3, 5, 0, true);
+        $pdf->SetMargins(0, 5, 2, true);
         $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
         $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
         $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
@@ -53,7 +89,7 @@ class estado_cuentaActions extends sfActions {
         $pdf->setPrintFooter(false);
         $pdf->SetFont('dejavusans', '', 9);
         $pdf->AddPage();
-        $pdf->Image($logo, 5, 10, 35, '', '', '', '100', false, 0);
+        $pdf->Image($logo, 55, -5, 35, '', '', '', '100', false, 0);
         $pdf->writeHTML($html);
 
 
@@ -78,14 +114,11 @@ class estado_cuentaActions extends sfActions {
         }
     }
 
-    public function DatosFactura($clientev, $fechaInicial) {
-
+  public function DatosFactura($clientev, $fechaInicial) {
     $VALORESFECHA = explode("/", $fechaInicial);
     $fechaInicial = $VALORESFECHA[2] . "-" . $VALORESFECHA[1] . "-" . $VALORESFECHA[0];
-
     $SUMAS = 0;
     $RESTAR = 0;
-
     // ================= SALDO INICIAL =================
     $sumatorias = OperacionQuery::create()
         ->where("Operacion.Fecha <= '" . $fechaInicial . " 00:01:00'")
@@ -101,7 +134,6 @@ class estado_cuentaActions extends sfActions {
     $listab[] = 'CONTRA ENTREGA';
     $listab[] = 'CONTRAENTREGA';
     $listab[] = 'CHEQUE PREFECHADO';
-
     $restas = OperacionPagoQuery::create()
         ->filterByTipo($listab, Criteria::NOT_IN)
         ->where("OperacionPago.FechaCreo < '" . $fechaInicial . " 01:01:01'")
@@ -125,16 +157,12 @@ class estado_cuentaActions extends sfActions {
     foreach ($notasCredito as $nota) {
         $RESTAN += ($nota->getValorTotal() - $nota->getValorPagado());
     }
-
     $SALDO = $SUMAS - $RESTAR - $RESTAN;
-
     // ================= MOVIMIENTOS =================
     $lista = [];
     $listaKey = [];
-
     $VALORESFECHA = explode("-", $fechaInicial);
     $fechaInic = $VALORESFECHA[2] . "/" . $VALORESFECHA[1] . "/" . $VALORESFECHA[0];
-
     // Saldo inicial
     $Key = '00000000000000_SALDO';
     $lista[$Key] = [
@@ -146,7 +174,6 @@ class estado_cuentaActions extends sfActions {
         'saldo' => $SALDO
     ];
     $listaKey[] = $Key;
-
     // FACTURAS
     $operaciones = OperacionQuery::create()
         ->where("Operacion.Fecha > '" . $fechaInicial . " 00:01:00'")
@@ -155,21 +182,61 @@ class estado_cuentaActions extends sfActions {
         ->find();
 
     foreach ($operaciones as $registr) {
-
         $Key = $registr->getFecha('YmdHis') . "_P" . $registr->getId();
-
         $lista[$Key] = [
-            'codigo' => "FACT. " . $registr->getCodigoFactura(),
+            'codigo' => "FACT. " .trim(str_replace(" ", "",$registr->getCodigoFactura())),
             'fecha' => $registr->getFecha('d/m/Y'),
             'cargo' => $registr->getValorTotal(),
             'abono' => 0,
             'descripcion' => '',
             'saldo' => 0 // 🔥 ya no se calcula aquí
         ];
+        $listaKey[] = $Key;
+    }
+    
+      
+     //  operacion pago PADRE  YmdHis
+    $sqlquery =" select pp.id,  DATE_FORMAT(pp.fecha_documento, '%Y%m%d%H%i%s') fecha_orden, concat('P',pp.id) codigo, b.nombre banco, pp.documento,"
+            . "  DATE_FORMAT(pp.fecha_documento, '%d/%m/%Y') fecha_documento, pp.valor, pp.tipo,pp.id "
+    . " from operacion_pago_padre pp inner join banco b on b.id = pp.banco_id inner join operacion_pago"
+    . " op on op.operacion_pago_padre_no = pp.id  inner join operacion opera on opera.id = operacion_id"
+    . " where cliente_id=".$clientev."  and pp.fecha_documento >= '".$fechaInicial."'"
+    . " group by pp.id, pp.documento, pp.fecha_documento, pp.valor, pp.tipo, pp.id";
+            $sqlquery .= " order by op.fecha_documento";
+        $con = Propel::getConnection();
+        $stmt = $con->prepare($sqlquery);
+//     echo $sqlquery;
+//     die();
+        $resource = $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $registros = $result;
+    
+
+    foreach ($registros as $pago) {
+        $estado= OperacionPagoQuery::create()
+                ->filterByOperacionPagoPadreNo($pago['id'])
+                ->find();
+        $lsitado= '';
+        $da=null;
+        foreach($estado as $reg){
+            $da[]='Fact '.$reg->getOperacion()->getCodigo()."  Valor " . Parametro::formato($reg->getValor(), false);
+        }
+         $lsitado= implode('<br>', $da);
+        
+         $codigo = 'P' . str_pad($pago['id'], 3, '0', STR_PAD_LEFT);
+        $Key = $pago['fecha_orden']. "_C" . $pago['id'];
+        $lista[$Key] = [
+            'codigo' => "REC.  " .$codigo,
+            'fecha' => $pago['fecha_documento'],
+            'cargo' => 0,
+            'abono' => $pago['valor'],
+            'descripcion' => $pago['tipo'] . " " . $pago['banco'] . " Doc " . $pago['documento']."<br>  ".$lsitado,
+            'saldo' => 0
+        ];
 
         $listaKey[] = $Key;
     }
-
+    
     // PAGOS
     $opeacionesPago = OperacionPagoQuery::create()
         ->where("OperacionPago.FechaCreo >= '" . $fechaInicial . " 01:01:01'")
@@ -177,19 +244,18 @@ class estado_cuentaActions extends sfActions {
         ->useOperacionQuery()
             ->filterByClienteId($clientev)
         ->endUse()
+          ->filterByOperacionPagoPadreNo(0)
         ->find();
 
     foreach ($opeacionesPago as $pago) {
-
         $banco = "";
         if ($pago->getBancoId()) {
             $banco = $pago->getBanco()->getNombre();
         }
 
         $Key = $pago->getFechaCreo('YmdHis') . "_C" . $pago->getId();
-
         $lista[$Key] = [
-            'codigo' => "REC.  " . $pago->getCodigo()."-". $pago->getId(),
+            'codigo' => "REC.  " . $pago->getCodigo(),
             'fecha' => $pago->getFechaCreo('d/m/Y'),
             'cargo' => 0,
             'abono' => $pago->getValor()+ $pago->getComision(),
@@ -206,13 +272,9 @@ class estado_cuentaActions extends sfActions {
         ->where("NotaCredito.Estatus not like '%Anul%'")
         ->filterByClienteId($clientev)
         ->find();
-
     foreach ($notasCredito as $nota) {
-
         $valor = ($nota->getValorTotal() - $nota->getValorPagado());
-
         $Key = $nota->getFecha('YmdHis') . "_N" . $nota->getId();
-
         $lista[$Key] = [
             'codigo' => "N.C. " . $nota->getCodigo(),
             'fecha' => $nota->getFecha('d/m/Y'),
@@ -221,7 +283,6 @@ class estado_cuentaActions extends sfActions {
             'descripcion' => $nota->getConcepto(),
             'saldo' => 0
         ];
-
         $listaKey[] = $Key;
     }
 
@@ -230,26 +291,21 @@ class estado_cuentaActions extends sfActions {
 
     // ================= RECALCULAR SALDO =================
     $saldoINcial = $SALDO;
-
     foreach ($listaKey as $index => $key) {
-
         if ($index == 0) {
             $lista[$key]['saldo'] = $saldoINcial;
             continue;
         }
-
         $saldoINcial += $lista[$key]['cargo'];
         $saldoINcial -= $lista[$key]['abono'];
-
         $lista[$key]['saldo'] = $saldoINcial;
-    }
-
+   }
     // ================= RESULTADO FINAL =================
     $registro = [];
-
     foreach ($listaKey as $key) {
         $registro[$lista[$key]['codigo']] = $lista[$key];
     }
+    
 
     return $registro;
 }

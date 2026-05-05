@@ -59,7 +59,7 @@
                             <td style="text-align: right"><?php echo Parametro::formato($deta['cargo']); ?></td>
                             <td style="text-align: right"><?php  echo Parametro::formato($deta['abono']); ?></td>
                             <td style="text-align: right"><?php  echo Parametro::formato($deta['saldo']); ?></td>
-                            <td><?php echo $deta['descripcion']; ?></td>
+                            <td><?php echo html_entity_decode($deta['descripcion']); ?></td>
                         </tr>
                     <?php } ?>
 
