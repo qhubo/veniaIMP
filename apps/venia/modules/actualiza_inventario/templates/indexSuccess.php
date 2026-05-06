@@ -1,5 +1,6 @@
 <?php $modulo = $sf_params->get('module'); ?>
-<?php //include_partial('soporte/avisos')   ?>
+<?php //include_partial('soporte/avisos')    ?>
+
 <script src='/assets/global/plugins/jquery.min.js'></script>
 <?php $muestrabusqueda = sfContext::getInstance()->getUser()->getAttribute('muestrabusqueda', null, 'busqueda'); ?>
 <?php $linea = unserialize(sfContext::getInstance()->getUser()->getAttribute('carga', null, 'busqueda')); ?>
@@ -15,197 +16,256 @@
                 Ingresos de Inventarios <small>   puedes filtrar tu busqueda  <strong> Unicamente se actualizaran los productos afecto inventario </strong>    </small>
             </h3>
         </div>
-        
-                <div class="kt-portlet__head-toolbar">
-                    <a href="<?php echo url_for($modulo . '/reporte') ?>" class="btn btn-dark" > <li class="fa fa-cloud-upload"></li> Archivo Modelo Carga  </a>
-                </div>
-            
+        <div class="kt-portlet__head-toolbar">
+            <a href="<?php echo url_for("carga/index?tipo=existenciaUbica") ?>" class="btn btn-secondary btn-hover-brand" data-toggle="modal" data-target="#ajaxmodal"> <li class="fa fa-cloud-download"></li> Importar archivo   </a>
+        </div>
     </div>
     <div class="kt-portlet__body">
+        <ul class="nav nav-tabs nav-tabs-line nav-tabs-line-danger nav-tabs-line-2x nav-tabs-line-left" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link   active  " data-toggle="tab" href="#kt_portlet_base_demo_2_1_tab_content" role="tab" aria-selected="false">
+                    <i class="fa fa-calendar-check-o" aria-hidden="true"></i>Actualiza Inventario
+                </a>
+            </li>
 
-            <ul class="nav nav-tabs nav-tabs-line nav-tabs-line-danger nav-tabs-line-2x nav-tabs-line-left" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link   active  " data-toggle="tab" href="#kt_portlet_base_demo_2_1_tab_content" role="tab" aria-selected="false">
-                            <i class="fa fa-calendar-check-o" aria-hidden="true"></i>Actualiza Inventario
-                        </a>
-                    </li>
-               
-                    <li class="nav-item">
-                        <a class="nav-link   " href="<?php echo url_for($modulo . '/historial') ?>" role="tab" aria-selected="false">
-                            <i class="fa fa-bar-chart" aria-hidden="true"></i>Historial
-                        </a>
-                    </li>
-                </ul>
-      <div class="row" style="padding-top:5px">
+            <li class="nav-item">
+                <a class="nav-link   " href="<?php echo url_for('actualiza_inventario/historial') ?>" role="tab" aria-selected="false">
+                    <i class="fa fa-bar-chart" aria-hidden="true"></i>Historial
+                </a>
+            </li>
+        </ul>
+        <div class="row" style="padding-bottom:5px;">
             <div class="col-lg-1"> </div>        
             <label class="col-lg-1 control-label right ">TIENDA  </label>
-         <div class="col-lg-4 <?php if ($form['tienda']->hasError()) echo "has-error" ?>">
-                <?php echo $form['tienda'] ?>           
-                <span class="help-block form-error"> 
-                    <?php echo $form['tienda']->renderError() ?>  
-                </span>
-            </div>
-              <div class="col-lg-2"> </div>   
-               <div class="col-lg-2">
-                        <a href="<?php echo url_for("carga/index?tipo=existencia") ?>" class="btn btn-success btn-sm btn-block btn-hover-brand" data-toggle="modal" data-target="#ajaxmodal"> <li class="fa fa-cloud-download"></li> Importar archivo   </a>
-               </div>
+            <div class="col-lg-4">
+      <button type="button" class="btn btn-primary btn-block btn-outline" data-toggle="modal" data-target="#modalBodega">
+        <i class="fa fa-exchange"></i> <?php if ($bodega) { ?> <?php echo $bodega->getNombre(); ?>  <?php } ?>
+        <?php if (!$bodega) { ?> ***** SELECCIONA *****  <?php } ?>
         
-        </div>
-        
-     
-        <div class="row" style="padding-top:5px">
-            <div class="col-lg-1"> </div>        
-            <label class="col-lg-1 control-label right "><?php echo TipoAparatoQuery::tipo(); ?>  </label>
-            <div class="col-lg-4 <?php if ($form['tipo']->hasError()) echo "has-error" ?>">
-                <?php echo $form['tipo'] ?>           
-                <span class="help-block form-error"> 
-                    <?php echo $form['tipo']->renderError() ?>  
-                </span>
+    </button>
+
             </div>
-       
-                <div class="col-lg-3">
-                         <?php if ($muestrabusqueda) { ?>
-                    <font color="#9eacb4" size="2px">   No Productos Total&nbsp;&nbsp;<strong> <?php echo $total ?> </strong> </font>
-                <?php } ?>
+         </div>
+
+            <div class="row">
+                <div class="col-lg-1"> </div>        
+                <label class="col-lg-1 control-label right "><?php echo TipoAparatoQuery::tipo(); ?>  </label>
+                <div class="col-lg-4 <?php if ($form['tipo']->hasError()) echo "has-error" ?>">
+                    <?php echo $form['tipo'] ?>           
+                    <span class="help-block form-error">  <?php echo $form['tipo']->renderError() ?>  </span>
                 </div>
             
-            
-        </div>
-     <div class="row" style="padding-top:5px">
-            <div class="col-lg-1"> </div>        
-            <label class="col-lg-1 control-label right "><?php echo TipoAparatoQuery::marca(); ?>  </label>
-            <div class="col-lg-4 <?php if ($form['marca']->hasError()) echo "has-error" ?>">
-                <?php echo $form['marca'] ?>           
-                <span class="help-block form-error"> 
-                    <?php echo $form['marca']->renderError() ?>  
-                </span>
             </div>
-
-           
-                <div class="col-lg-3">
-                     <?php if ($muestrabusqueda) { ?>
-                    <font color="#9eacb4" size="2px">   No Productos Busqueda&nbsp;&nbsp;<strong> <?php echo $totalB ?></strong> </font>
-                 <?php } ?>            
+            <div class="row">
+                <div class="col-lg-1"> </div>        
+                <label class="col-lg-1 control-label right ">Producto </label>
+                <div class="col-lg-4 <?php if ($form['nombrebuscar']->hasError()) echo "has-error" ?>">
+                    <?php echo $form['nombrebuscar'] ?>           
+                    <span class="help-block form-error"> <?php echo $form['nombrebuscar']->renderError() ?>  </span>
                 </div>
-            <div class="col-lg-2">
-
-                <button class="btn btn-warning btn-black btn-sm " type="submit">
-                    <i class="fa fa-search "></i>
-                    Buscar
-                </button>
+             
             </div>
-         
+            <div class="row">
+                <div class="col-lg-1"> </div>        
+                <label class="col-lg-1 control-label right "><?php echo TipoAparatoQuery::marca(); ?>  </label>
+                <div class="col-lg-4 <?php if ($form['marca']->hasError()) echo "has-error" ?>">
+                    <?php echo $form['marca'] ?>           
+                    <span class="help-block form-error">   <?php echo $form['marca']->renderError() ?> </span>
+                </div>  
+                   <div class="col-lg-1"></div>
+                <div class="col-lg-2">
+                    <button class="btn btn-warning " type="submit">
+                        <i class="fa fa-search "></i> Buscar
+                    </button>
+                </div>
+                   <div class="col-lg-2">
+                   
+                       <a class="btn btn-outline-success "   href="<?php echo url_for('busca/producto?id=1') ?>"  data-toggle="modal" data-target="#ajaxmodalv">
+                                <li class="fa fa-plus"></li> Agregar Producto
+                            </a>
+                           </div>
+            </div>
+        
         </div>
-    
     </div>
-</div>
-
-<?php echo '</form>'; ?>
-<?php include_partial('actualiza_inventario/detalle', array('pere'=>$pere, 'bodega'=>$bodega, 'modulo'=>$modulo,  'forma'=>$forma,  'muestrabusqueda' => $muestrabusqueda, 'bodegaId' => $bodegaId, 'linea' => $linea, 'productos' => $productos)) ?>
+    <?php echo '</form>'; ?>
+    <?php include_partial('actualiza_inventario/detalle', array( 'bodega' => $bodega, 'modulo' => $modulo, 'forma' => $forma, 'muestrabusqueda' => $muestrabusqueda, 'bodegaId' => $bodegaId, 'linea' => $linea, 'productos' => $productos)) ?>
 
 
-<?php foreach ($productos as $lis) { ?>
-    <?php $id = $lis->getId(); ?>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#registro_numero_<?php echo $id ?>").on('change', function () {
-                var id = $("#registro_numero_<?php echo $id ?>").val();
-                var antes = $("#res_<?php echo $id ?>").val();
-                var valor = $("#res_total").val();
-                var estado = $("#estado").val();
-                var resultado = parseInt(valor) - parseInt(antes) + parseInt(id);
-                $("#res_total").val(resultado);
-                $("#res_<?php echo $id ?>").val(id);
-                var idv = <?php echo $id ?>;
-                $.get('<?php echo url_for("actualiza_inventario/cantidad") ?>', {id: id, idv: idv}, function (response) {
-                    $("#total_<?php echo $id ?>").html(response);
+    <?php foreach ($productos as $lis) { ?>
+        <?php $id = $lis->getId(); ?>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#registro_numero_<?php echo $id ?>").on('change', function () {
+                    var id = $("#registro_numero_<?php echo $id ?>").val();
+                    var antes = $("#res_<?php echo $id ?>").val();
+                    var valor = $("#res_total").val();
+                    var estado = $("#estado").val();
+                    var resultado = parseInt(valor) - parseInt(antes) + parseInt(id);
+                    $("#res_total").val(resultado);
+                    $("#res_<?php echo $id ?>").val(id);
+                    var idv = <?php echo $id ?>;
+                    $.get('<?php echo url_for("actualiza_inventario_ubica/cantidad") ?>', {id: id, idv: idv}, function (response) {
+                        $("#total_<?php echo $id ?>").html(response);
+                    });
+                    if (estado == 0) {
+                        if (resultado > 0) {
+                            $('#procesar').show();
+                            $("#estado").val(1);
+                        }
+                    }
+                    if (estado == 1) {
+                        if (resultado == 0) {
+                            $('#procesar').hide();
+                            $("#estado").val(0);
+
+                        }
+                    }
                 });
-                if (estado == 0) {
-                    if (resultado > 0) {
-                        $('#procesar').show();
-                        $("#estado").val(1);
-                    }
-                }
-                if (estado == 1) {
-                    if (resultado == 0) {
-                        $('#procesar').hide();
-                        $("#estado").val(0);
-
-                    }
-                }
-
-
             });
+        </script>
 
+        <script>
+            function validate<?php echo $id ?>(evt) {
+                var theEvent = evt || window.event;
+                var key = theEvent.keyCode || theEvent.which;
+                key = String.fromCharCode(key);
+                var regex = /[0-8]|\9/;
+                if (!regex.test(key)) {
+                    theEvent.returnValue = false;
+                    if (theEvent.preventDefault)
+                        theEvent.preventDefault();
+                }
+            }
+        </script>
+    <?php } ?>
+    <script>
+        $(document).ready(function () {
+            $("#consulta_tipo").on('change', function () {
+                //    alert('cambio');
+                $("#consulta_marca").empty();
+                $("#consulta_producto_id").empty();
+                $.getJSON('<?php echo url_for("soporte/tipoMarca") ?>?id=' + $("#consulta_tipo").val(), function (data) {
+                    console.log(JSON.stringify(data));
+                    $.each(data, function (k, v) {
+                        $("#consulta_marca").append("<option value=\"" + k + "\">" + v + "</option>");
+                    }).removeAttr("disabled");
+                });
+                $.getJSON('<?php echo url_for("soporte/tipoMarcaModelo") ?>?id=' + $("#consulta_tipo").val(), function (data) {
+                    $("#consulta_modelo").empty();
+                    $.each(data, function (k, v) {
+                        $("#consulta_modelo").append("<option value=\"" + k + "\">" + v + "</option>");
+                    }).removeAttr("disabled");
+                });
+            });
         });
     </script>
+
+
 
     <script>
-        function validate<?php echo $id ?>(evt) {
-            var theEvent = evt || window.event;
-            var key = theEvent.keyCode || theEvent.which;
-            key = String.fromCharCode(key);
-            var regex = /[0-8]|\9/;
-            if (!regex.test(key)) {
-                theEvent.returnValue = false;
-                if (theEvent.preventDefault)
-                    theEvent.preventDefault();
-            }
-        }
+        $(document).ready(function () {
+            $("#consulta_marca").on('change', function () {
+                //    alert('cambio');
+                $("#consulta_modelo").empty();
+                $("#consulta_producto_id").empty();
+                $.getJSON('<?php echo url_for("soporte/marcaModelo") ?>?id=' + $("#consulta_marca").val(), function (data) {
+                    console.log(JSON.stringify(data));
+                    $.each(data, function (k, v) {
+                        $("#consulta_modelo").append("<option value=\"" + k + "\">" + v + "</option>");
+                    }).removeAttr("disabled");
+                });
+
+            });
+        });
     </script>
-<?php } ?>
-<script>
-    $(document).ready(function () {
-        $("#consulta_tipo").on('change', function () {
-            //    alert('cambio');
-            $("#consulta_marca").empty();
-            $("#consulta_producto_id").empty();
-            $.getJSON('<?php echo url_for("soporte/tipoMarca") ?>?id=' + $("#consulta_tipo").val(), function (data) {
-                console.log(JSON.stringify(data));
-                $.each(data, function (k, v) {
-                    $("#consulta_marca").append("<option value=\"" + k + "\">" + v + "</option>");
-                }).removeAttr("disabled");
-            });
-                   $.getJSON('<?php echo url_for("soporte/tipoMarcaModelo") ?>?id=' + $("#consulta_tipo").val(), function (data) {
-                   $("#consulta_modelo").empty();
-                $.each(data, function (k, v) {
-                   $("#consulta_modelo").append("<option value=\"" + k + "\">" + v + "</option>");
-                }).removeAttr("disabled");
-            });
-        });
-    });
+
+    <div class="modal fade" id="ajaxmodal" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
+         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width: 700px">
+            <div class="modal-content" style=" width: 700px">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="ti-close"></span></button>
+                    <h4 class="modal-title" id="myModalLabel6">Carga Archivo</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<div class="modal fade" id="modalBodega" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <form method="POST" action="<?php echo url_for('actualiza_inventario/CambiarBodega') ?>">
+
+        <div class="modal-header">
+          <h4 class="modal-title">Seleccionar Bodega</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <select class="form-control" name="bodega_id">
+                   <option value="">-- Seleccione --</option>
+              <?php 
+
+              foreach ($BODEGAS as $bodega) { ?>
+         
+              <option value="<?php echo $bodega->getId(); ?>"
+                      <?php if ($bodega->getId() == $bodegaId) echo 'selected'; ?>>
+                      <?php echo $bodega->getNombre(); ?>
+                  </option>
+              <?php } ?>
+          </select>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">
+            Guardar
+          </button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Cancelar
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
+    
+    <script>
+document.getElementById("btnGuardarBodega").addEventListener("click", function () {
+
+    let bodegaId = document.getElementById("selectBodega").value;
+
+    console.log("Bodega seleccionada:", bodegaId);
+
+    // OPCIÓN 1: enviar por formulario oculto
+    let inputHidden = document.getElementById("bodega_id_hidden");
+    if (inputHidden) {
+        inputHidden.value = bodegaId;
+    }
+
+    // OPCIÓN 2: recargar con parámetro GET
+    // window.location.href = "?bodega_id=" + bodegaId;
+
+    // cerrar modal
+    $("#modalBodega").modal("hide");
+});
 </script>
-
-
-
-<script>
-    $(document).ready(function () {
-        $("#consulta_marca").on('change', function () {
-            //    alert('cambio');
-            $("#consulta_modelo").empty();
-            $("#consulta_producto_id").empty();
-            $.getJSON('<?php echo url_for("soporte/marcaModelo") ?>?id=' + $("#consulta_marca").val(), function (data) {
-                console.log(JSON.stringify(data));
-                $.each(data, function (k, v) {
-                    $("#consulta_modelo").append("<option value=\"" + k + "\">" + v + "</option>");
-                }).removeAttr("disabled");
-            });
-       
-        });
-    });
-</script>
-
-<div class="modal fade" id="ajaxmodal" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <!--<script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>-->
+    <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    
+    
+    <div class="modal fade" id="ajaxmodalv" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
      role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="width: 700px">
-        <div class="modal-content" style=" width: 700px">
+    <div class="modal-dialog" style="width: 750px">
+        <div class="modal-content" style=" width: 750px">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="ti-close"></span></button>
-                <h4 class="modal-title" id="myModalLabel6">Carga Archivo</h4>
+                <h4 class="modal-title" id="myModalLabel6">Busqueda Producto</h4>
             </div>
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-<!--<script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>-->
-<script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>

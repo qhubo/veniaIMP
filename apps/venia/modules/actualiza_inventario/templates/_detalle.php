@@ -62,6 +62,7 @@
                     <?php if ($muestrabusqueda) { ?>
                         <?php $perec = 0; ?> 
                         <?php foreach ($productos as $lista) { ?>
+                    <?php $existente=$lista->getExistenciaBodega($bodegaId); ?>
                     
                             <tr  <?php if ($lista->getTercero()) { ?> <?php $perec++; ?>
                                     style="background-color:#dbeddc !important;"
@@ -73,75 +74,191 @@
                                 <td>
                                     <font size="-1"> <?php echo $lista->getTipoAparato(); ?></font>   
                                 </td>
-                                <td align="right"><?php echo $lista->getExistenciaBodega($bodegaId); ?></td>
-                                <td width="150px">
-                                    <input class="form-control input-circle" placeholder="0" type="number" name="registro[numero_<?php echo $lista->getId() ?>]" id="registro_numero_<?php echo $lista->getId() ?>"  onkeypress='validate<?php echo $lista->getId() ?>(event)' >
-                                </td> 
-                                <?php if ($pere > 0) { ?>
-                                    <td>
-                                        <?php if ($lista->getTercero()) { ?> 
-                                            <?php echo $forma['fechaInicio_' . $lista->getId()]; ?>
-                                        <?php } ?>
-                                    </td> 
-                                <?php } ?>
-                                <td align="right">
+                             <td align="right">
+    <?php echo $existente; ?>
+</td>
 
-                                    <div id="total_<?php echo $lista->getId() ?>"> <?php echo $lista->getExistenciaBodega($bodegaId) ?></div></td>
-<!--                                <td>           <?php echo "registro[numero_" . $lista->getId() . "]"; ?></td>-->
+<td width="150px">
+    <input 
+        class="form-control input-circle cantidad-input" 
+        placeholder="0" 
+        type="number" 
+        name="registro[numero_<?php echo $lista->getId() ?>]" 
+        id="registro_numero_<?php echo $lista->getId() ?>"  
+        data-existencia="<?php echo $existente ?>"
+        data-id="<?php echo $lista->getId(); ?>"
+    >
+</td> 
+
+<td align="right">
+    <div id="total_<?php echo $lista->getId() ?>">
+        <?php echo $existente ?>
+    </div>
+</td>
+
                             </tr>
                         <?php } ?>
                     <?php } ?>
+                                            <?php  $valoreAgregado = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'valoresAgregado')); ?>
+            <?php if ($valoreAgregado) { ?>   
+                              <?php foreach ($valoreAgregado as $val) { ?>
+                            <?php $lista= ProductoQuery::create()->findOneById($val); ?>
+                       <tr style="background-color:whitesmoke">
+                           <?php $exite=$lista->getExistenciaBodega($bodegaId); ?>
+
+    <td>
+        <strong><?php echo $lista->getCodigoSku() ?></strong>
+    </td>
+
+    <td>
+        <?php echo $lista->getNombre() ?>
+    </td>
+
+    <td></td>
+
+    <td align="right">
+        <?php echo $exite ?>
+    </td>
+
+    <td width="150px">
+
+        <?php $PROCESA_PRODUCTOS["_" . $lista->getId()] = $lista->getId(); ?>
+
+        <input 
+            class="form-control cantidad-input" 
+            placeholder="0" 
+            type="number" 
+            name="registro[numero_<?php echo $lista->getId() ?>]" 
+            id="registro_numero_<?php echo $lista->getId() ?>"
+            data-existencia="<?php echo $exite ?>"
+            data-id="<?php echo $lista->getId(); ?>"
+        >
+
+    </td>
+
+    <td align="right">
+        <div id="total_<?php echo $lista->getId() ?>">
+            <?php echo $exite?>
+        </div>
+    </td>
+
+</tr>
+                         <?php } ?>
+                                  <?php } ?>
                     <?php if (!$muestrabusqueda) { ?>   
                         <?php if ($linea) { ?>
                             <?php foreach ($linea as $lista) { ?>
                                 <?php $totalitem = $totalitem + $lista['Cantidad']; ?> 
                                 <?php $productoId = $lista['productoId']; ?>
-                                <tr  <?php if ($lista['tercero']) { ?> <?php $perec++; ?>
-                                        style="background-color:#dbeddc !important;"
-                                    <?php } ?>
+                              <tr  
 
-                                    <?php if ($lista['valido'] == 0) { ?> 
-                                        class="danger"
-                                    <?php } ?>  >
+    <?php if ($lista['tercero']) { ?> 
+        <?php $perec++; ?>
+        style="background-color:#dbeddc !important;"
+    <?php } ?>
 
-                                    <td><?php echo $lista['Codigo'] ?> </td>
+    <?php if ($lista['valido'] == 0) { ?> 
+        class="danger"
+    <?php } ?>  
 
-                                    <?php if ($lista['valido']) { ?>
-                                        <td><?php echo $lista['nombre'] ?></td>
-                                        <td><?php echo $lista['descripcion'] ?></td>
-                                    <?php } ?>
-                                    <?php if (!$lista['valido']) { ?>
-                                        <td></td>
-                                        <td><strong>Código de producto no valido </strong></td>
-                                    <?php } ?>
+>
+
+    <td><?php echo $lista['Codigo'] ?></td>
+
+    <?php if ($lista['valido']) { ?>
+
+        <td><?php echo $lista['nombre'] ?></td>
+
+        <td><?php echo $lista['descripcion'] ?></td>
+
+    <?php } ?>
+
+    <?php if (!$lista['valido']) { ?>
+
+        <td></td>
+
+        <td>
+            <strong>Código de producto no valido</strong>
+        </td>
+
+    <?php } ?>
 
 
-                                    <td align="right">
-                                        <?php if ($lista['valido']) { ?>
-                                            <?php echo $lista['existencia'] ?>
-                                        <?php } ?>
-                                    </td>
-                                    <td width="150px">
-                                        <?php if ($lista['valido']) { ?>
-                                            <input class="form-control input-circle" placeholder="0" value="<?php echo $lista['Cantidad'] ?>" type="number" name="registro[numero_<?php echo $productoId ?>]" id="registro_numero_<?php echo $productoId ?>"  onkeypress='validate<?php echo $productoId ?>(event)' >
-                                        <?php } ?>  
-                                    </td>    
-                                    <?php if ($lista['valido']) { ?>
-                                        <td>
+    <td align="right">
 
-                                            <?php if ($lista['tercero']) { ?>
-                                                <input class="form-control" data-provide="datepicker" data-date-format="dd/mm/yyyy" type="text"  name="registro[fechaInicio_<?php echo $productoId; ?>]" id="registro_fechaInicio_<?php echo $productoId; ?>"   value=" <?php echo $lista['fecha'] ?>" >
-                                            <?php } ?>
-                                        </td>
+        <?php if ($lista['valido']) { ?>
 
-                                    <?php } ?>
-                                    <td align="right">
-                                        <?php if ($lista['valido']) { ?>
-                                            <input type="hidden" readonly=""  value="<?php echo $lista['Cantidad'] ?>" id="res_<?php echo $productoId ?>" name="res_<?php echo $productoId ?>" >
-                                            <div id="total_<?php echo $productoId ?>"> <?php echo $lista['existencia'] + $lista['Cantidad'] ?></div></td>
-                                    <?php } ?>  
-<!--                                    <td><?php echo $productoId; ?></td>-->
-                                </tr>
+            <?php echo $lista['existencia'] ?>
+
+        <?php } ?>
+
+    </td>
+
+    <td width="150px">
+
+        <?php if ($lista['valido']) { ?>
+
+            <input 
+                class="form-control input-circle cantidad-input" 
+                placeholder="0"
+                value="<?php echo $lista['Cantidad'] ?>"
+                type="number"
+                name="registro[numero_<?php echo $productoId ?>]"
+                id="registro_numero_<?php echo $productoId ?>"
+                onkeypress='validate<?php echo $productoId ?>(event)'
+                data-existencia="<?php echo $lista['existencia']; ?>"
+                data-id="<?php echo $productoId; ?>"
+            >
+
+        <?php } ?>  
+
+    </td>    
+
+
+    <?php if ($lista['valido']) { ?>
+
+        <td>
+
+            <?php if ($lista['tercero']) { ?>
+
+                <input 
+                    class="form-control" 
+                    data-provide="datepicker" 
+                    data-date-format="dd/mm/yyyy"
+                    type="text"
+                    name="registro[fechaInicio_<?php echo $productoId; ?>]"
+                    id="registro_fechaInicio_<?php echo $productoId; ?>"
+                    value="<?php echo $lista['fecha'] ?>"
+                >
+
+            <?php } ?>
+
+        </td>
+
+    <?php } ?>
+
+
+    <td align="right">
+
+        <?php if ($lista['valido']) { ?>
+
+            <input 
+                type="hidden"
+                readonly=""
+                value="<?php echo $lista['Cantidad'] ?>"
+                id="res_<?php echo $productoId ?>"
+                name="res_<?php echo $productoId ?>"
+            >
+
+            <div id="total_<?php echo $productoId ?>">
+                <?php echo $lista['existencia'] + $lista['Cantidad'] ?>
+            </div>
+
+        <?php } ?>  
+
+    </td>
+
+</tr>
                             <?php } ?>
                         <?php } ?>                                
                     <?php } ?>
@@ -228,3 +345,27 @@
         </div>
     </div>
 </div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    document.querySelectorAll('.cantidad-input').forEach(function(input){
+
+        input.addEventListener('input', function(){
+
+            let existencia = parseFloat(this.dataset.existencia) || 0;
+            let valor = parseFloat(this.value) || 0;
+            let id = this.dataset.id;
+
+            let total = existencia + valor;
+
+            document.getElementById('total_' + id).innerHTML = total;
+
+        });
+
+    });
+
+});
+</script>
+

@@ -85,7 +85,7 @@ class Producto extends BaseProducto {
 //        if ($detalle) {
 //            $exitencia = $detalle->getCantidad();
 //        }
-        $query="select cantidad from producto_existencia  where tienda_id=".$bodegaId." and producto_id=".$this->getId();
+        $query="select cantidad from producto_existencia  where tienda_id='".$bodegaId."' and producto_id='".$this->getId()."'";
         $con = Propel::getConnection();
         $stmt = $con->prepare($query);
         $resource = $stmt->execute();

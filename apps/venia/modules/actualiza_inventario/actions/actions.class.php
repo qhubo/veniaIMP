@@ -11,6 +11,15 @@
 class actualiza_inventarioActions extends sfActions {
 
     
+       public function executeProducto(sfWebRequest $request) {
+        $id = $request->getParameter("id");
+        $valoreAgregado = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'valoresAgregado'));
+        $valoreAgregado[$id] = $id;
+        sfContext::getInstance()->getUser()->setAttribute('valores', serialize($valoreAgregado), 'valoresAgregado');
+        $valoreAgregado = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'valoresAgregado'));
+        $this->redirect('actualiza_inventario/index?n=1');
+    }
+    
      public function executeReportePdf(sfWebRequest $request) {
         error_reporting(-1);
         $this->id = $request->getParameter("id");
@@ -149,6 +158,7 @@ class actualiza_inventarioActions extends sfActions {
 
     public function executeCarga(sfWebRequest $request) {
       date_default_timezone_set("America/Guatemala");
+      sfContext::getInstance()->getUser()->setAttribute('valores', null, 'valoresAgregado');
         $id = $request->getParameter('id');
         //     header('Content-type: text/plain; charset=utf-8');
         $bitacora = BitacoraArchivoQuery::create()->findOneById($id);
@@ -361,7 +371,8 @@ class actualiza_inventarioActions extends sfActions {
         $this->total = ProductoQuery::create()->filterByComboProductoId(null)->filterByAfectoInventario(true)->count();
         $bodegaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'bodegaSele');
 
-     
+     $bodegaId = sfContext::getInstance()->getUser()->getAttribute("tiendaInventario", null, 'seguridad');
+
         $productoId = null;
         if ($request->isMethod('post')) {
             $this->forma->bind($request->getParameter("registro"), $request->getFiles("registro"));
@@ -439,6 +450,7 @@ class actualiza_inventarioActions extends sfActions {
                         }
                     }
                 }
+                sfContext::getInstance()->getUser()->setAttribute('valores', null, 'valoresAgregado');
                 $this->getUser()->setFlash('exito', ' Inventario actualizado con  éxito  ');
                 $this->redirect('actualiza_inventario/muestra?id=' . $ingresoIn->getId());
             }
@@ -449,6 +461,10 @@ class actualiza_inventarioActions extends sfActions {
         $this->productos = IngresoProductoDetalleQuery::create()
                 ->filterByIngresoProductoId($id)
                 ->find();
+        
+        if ($this->cabecera) {
+                sfContext::getInstance()->getUser()->setAttribute('valores', null, 'valoresAgregado');
+        }
     
     }
 
@@ -467,6 +483,11 @@ class actualiza_inventarioActions extends sfActions {
         die();
     }
 
+       public function executeCambiarBodega(sfWebRequest $request) {
+        $bodegaId = $request->getParameter('bodega_id');
+        sfContext::getInstance()->getUser()->setAttribute("tiendaInventario", $bodegaId, 'seguridad');
+        $this->redirect('actualiza_inventario/index?n=1');
+    }
     public function executeIndex(sfWebRequest $request) {
 
         $acceso = MenuSeguridad::Acceso('actualiza_inventario');
@@ -475,10 +496,14 @@ class actualiza_inventarioActions extends sfActions {
         }
 
         $this->bodegaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'bodegaSele');
+ $this->bodegaId = sfContext::getInstance()->getUser()->getAttribute("tiendaInventario", null, 'seguridad');
+
+        $this->bodega = TiendaQuery::create()->findOneById($this->bodegaId);
+
 //echo $this->bodegaId;
 //die();
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
-
+   $this->BODEGAS = TiendaQuery::create()->filterByActivo(true)->orderByNombre()->find();
         $datos = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaproducto'));
         $default['estatus'] = 2;
         $default['tienda']=sfContext::getInstance()->getUser()->getAttribute("tienda", null, 'seguridad');
@@ -514,6 +539,14 @@ class actualiza_inventarioActions extends sfActions {
                 $this->redirect('actualiza_inventario/index?n=1');
             }
         }
+        
+           $listano[] = 0;
+        $valoreAgregado = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'valoresAgregado'));
+        if ($valoreAgregado) {
+            foreach ($valoreAgregado as $val) {
+                $listano[] = $val;
+            }
+        }
 
         if ($valores) {
 //            echo "<pre>";
@@ -528,6 +561,7 @@ class actualiza_inventarioActions extends sfActions {
             $operaciones->filterByEmpresaId($empresaId);
             $operaciones->filterByActivo(true);
             $operaciones->filterByComboProductoId(null);
+             $operaciones->filterById($listano, Criteria::NOT_IN);
             if ($tipo) {
                 $operaciones->filterByTipoAparatoId($tipo);
             }

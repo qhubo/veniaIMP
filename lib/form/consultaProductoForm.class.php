@@ -7,7 +7,7 @@ class consultaProductoForm extends sfForm {
         $listab = TiendaQuery::TiendaActivas();
           $tiendaQuery = TiendaQuery::create()
                 ->orderByNombre("Desc")
-                  ->filterById($listab, Criteria::IN)
+              //    ->filterById($listab, Criteria::IN)
               //  ->filterByActivo(true)
                 ->find();
             $lineaTienda=null;

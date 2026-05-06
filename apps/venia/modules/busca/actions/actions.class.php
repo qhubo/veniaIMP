@@ -2,6 +2,104 @@
 
 class buscaActions extends sfActions {
 
+    
+       public function executeProducto(sfWebRequest $request) {
+        $id = $request->getParameter('id');
+        $this->id = $id;
+    }
+
+    
+        public function executeTabJsProductoSalida(sfWebRequest $r) {
+        $ini = 0;
+        $empresaId = sfContext::getInstance()->getUser()->getAttribute("empresa", null, 'seguridad');
+
+        if ($r->getParameter('iDisplayStart')) {
+            $ini = $r->getParameter('iDisplayStart');
+        }
+        $sqlexp = "SELECT count(id) as cantidad FROM  producto where id=-1";
+        $empresaId = sfContext::getInstance()->getUser()->getAttribute("empresa", null, 'seguridad');
+
+        if ($r->getParameter('sSearch') != "") {
+            $busqueda = $r->getParameter('sSearch');
+            $busqueda = str_replace(" ", "%", $busqueda);
+            $sqlexp = "select count(vi.id) as cantidad from producto vi  where vi.activo=1 and  (vi.nombre like  '%" . $busqueda . "%'
+                or vi.codigo_sku like '%" . $busqueda . "%' or vi.codigo_barras like '%" . $busqueda . "%') and  vi.empresa_id=" . $empresaId;
+        }
+
+
+        $OperacionId = sfContext::getInstance()->getUser()->getAttribute('CotizacionId', null, 'seguridad');
+        $tiendaId = 0;
+        $Cotizacion = OrdenCotizacionQuery::create()->findOneById($OperacionId);
+        if ($Cotizacion) {
+            $tiendaId = $Cotizacion->getTiendaId();
+        }
+//         
+        $con = Propel::getConnection();
+        $stmt = $con->prepare($sqlexp);
+        $resource = $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $iTotal = $result[0]["cantidad"];
+//    $query = new ProductoQuery();
+        if ($r->getParameter('sSearch') != "") {
+            $sqlexp = "select codigo_barras, vi.id,imagen, codigo_sku,nombre  from producto vi  where  vi.activo=1 and  (vi.nombre like  '%" . $busqueda . "%'
+                or vi.codigo_sku like '%" . $busqueda . "%' or vi.codigo_barras like '%" . $busqueda . "%') and  vi.empresa_id=" . $empresaId . " limit " . $ini . ", 5";
+        } else {
+            $sqlexp = "select  id, '' as nombre, nit,  codigo   from proveedor  where id= -9";
+        }
+//                echo $sqlexp;
+//        die();
+        $con = Propel::getConnection();
+        $stmt = $con->prepare($sqlexp);
+        $resource = $stmt->execute();
+        $rResult = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $output = array(
+            "sEcho" => intval($r->getParameter('sEcho')),
+            "iTotalRecords" => $iTotal,
+            "iTotalDisplayRecords" => $iTotal,
+            "aaData" => array()
+        );
+//        $bodegaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'bodega');
+        foreach ($rResult as $reg) {
+            $exit = 0;
+            $productoQ = ProductoQuery::create()->findOneById($reg['id']);
+            if (trim($productoQ->getComboProductoId()) == "") {
+                if ($productoQ) {
+                    $exit = $productoQ->getExistencia();   // - $productoQ->getTransito();
+                }
+                $row = array();
+                $regid = $reg['id'];
+                $nombre = $reg['nombre'];
+                $codigov= $reg['codigo_barras'];
+                $imagen = $reg['imagen'];
+                $codigo = $reg['codigo_sku'];
+                $rutaimage = "/uploads/nofoto.jpg";
+                if ($reg['imagen']) {
+                    $rutaimage = $reg['imagen'];
+                }
+
+
+
+
+                $url = '/index.php/actualiza_inventario/producto?id=' . $regid;
+                if ($_SERVER['SERVER_NAME'] == "veniaimp") {
+                    $url = '/venia_dev.php/actualiza_inventario/producto?id=' . $regid;
+       
+                }
+//                $row[] = ' <button class="open-producto btn" data-url="' . $url . '">' . '<img src="' . $rutaimage . '" height="45px" >' . '</button>';
+                $row[] = '<a href="' . $url . '"><font size="-1">' . $codigo . '<font></a>';
+               //       $row[] = '<a href="' . $url . '"><font size="-1">' . $codigov . '<font></a>';
+                $row[] = '<a href="' . $url . '"><font size="-1">' . $nombre . '<font></a>';
+//            $row[] = '<a href="' . $url . '"><font size="-1"><i class="  flaticon2-next"></i><i class="  flaticon2-next"></i><font></a>';
+                $row[] = '<a href="' . $url . '"><font size="-1">' . $exit . '<font></a>';
+
+                $output["aaData"][] = $row;
+            }
+        }
+        $this->renderText(json_encode($output));
+        return sfView::NONE;
+    }
+    
+    
     public function executeTabJsProductoBusca(sfWebRequest $r) {
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("empresa", null, 'seguridad');
         $ini = (int) $r->getParameter('iDisplayStart', 0);

@@ -31,19 +31,12 @@ class NumeroProductoDetalleForm extends sfForm {
 
             $this->setWidget('numero_' . $lis->getId(), new sfWidgetFormInputText(array(), array('class' => 'form-control input-circle', "placeholder" => "0", "type" => 'number')));
             $this->setValidator('numero_' . $lis->getId(), new sfValidatorString(array('required' => false)));
-            for ($i = 1; $i <= 5; $i++) {
+            for ($i = 1; $i <= 1; $i++) {
                 $this->setWidget('numero_' . $lis->getId() . "_" . $i, new sfWidgetFormInputText(array(), array('class' => 'form-control input-circle', "placeholder" => "0", "type" => 'number')));
                 $this->setValidator('numero_' . $lis->getId() . "_" . $i, new sfValidatorString(array('required' => false)));
             }
 
 
-            $this->setWidget('ubica_' . $lis->getId(), new sfWidgetFormInputText(array(), array('class' => 'form-control input-circle')));
-            $this->setValidator('ubica_' . $lis->getId(), new sfValidatorString(array('required' => false)));
-
-            for ($i = 1; $i <= 5; $i++) {
-                $this->setWidget('ubica_' . $lis->getId() . "_" . $i, new sfWidgetFormInputText(array(), array('class' => 'form-control input-circle')));
-                $this->setValidator('ubica_' . $lis->getId() . "_" . $i, new sfValidatorString(array('required' => false)));
-            }
         }
 
         $this->widgetSchema->setNameFormat('registro[%s]');
