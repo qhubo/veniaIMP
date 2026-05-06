@@ -71,13 +71,33 @@ class cargaActions extends sfActions {
                 }
 
                 $codigo = isset($registro[$columnaCodigo]) ? trim($registro[$columnaCodigo]) : '';
+                $codigo = isset($registro[$columnaCodigo]) ? trim($registro[$columnaCodigo]) : '';
+
+$cantidad = isset($registro[$columnaCantidad]) && is_numeric($registro[$columnaCantidad]) 
+    ? max(0, $registro[$columnaCantidad]) 
+    : 0;
+
+// AQUI VA EL AJUSTE
+$valorTexto = isset($registro[$columnaValor]) 
+    ? trim($registro[$columnaValor]) 
+    : 0;
+
+$valorTexto = str_replace([',', 'Q', '$', ' '], '', $valorTexto);
+
+$valorUnitario = is_numeric($valorTexto) 
+    ? max(0, (double)$valorTexto) 
+    : 0;
+
+if ($cantidad <= 0 || $valorUnitario < 0) {
+    continue;
+}
 //              echo $codigo;
 //                die();
-                $cantidad = isset($registro[$columnaCantidad]) && is_numeric($registro[$columnaCantidad]) ? max(0, $registro[$columnaCantidad]) : 0;
-                $valorUnitario = isset($registro[$columnaValor]) && is_numeric($registro[$columnaValor]) ? max(0, $registro[$columnaValor]) : 0;
-                if ($cantidad <= 0 || $valorUnitario < 0) {
-                    continue;
-                }
+//                $cantidad = isset($registro[$columnaCantidad]) && is_numeric($registro[$columnaCantidad]) ? max(0, $registro[$columnaCantidad]) : 0;
+//                $valorUnitario = isset($registro[$columnaValor]) && is_numeric($registro[$columnaValor]) ? max(0, $registro[$columnaValor]) : 0;
+//                if ($cantidad <= 0 || $valorUnitario < 0) {
+//                    continue;
+//                }
                 $producto = ProductoQuery::create()
                         ->filterByCodigoSku($codigo)
                         ->findOne();
