@@ -137,7 +137,7 @@
         <?php foreach ($lista as $regist) { ?>
             <?php $can++; ?>
             <?php $pro = $regist->getProducto(); ?>
-            <?php $totalPeso = $totalPeso + $regist->getProducto()->getPeso(); ?>
+            <?php $totalPeso = $totalPeso + ($regist->getProducto()->getPeso() *$can); ?>
             <?php $totalMetros = $totalMetros + ( ($pro->getAlto() * $pro->getAncho() * $pro->getLargo()) * $regist->getCantidad()); ?>
             <?php $totalUnidades = $totalUnidades + $regist->getCantidad(); ?>  
     <?php $totalCajas = $totalCajas + $regist->getCantidadCaja(); ?>  

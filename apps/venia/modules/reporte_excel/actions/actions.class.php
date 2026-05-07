@@ -93,7 +93,7 @@ class reporte_excelActions extends sfActions {
 
 // ================= CABECERA =================
         $fila = 13;
-        $headers = ["No", "Código", "Descripción", "Origen", "Marca", "Características", "Unidades", "Precio Unit", "Total"];
+        $headers = ["No", "Código", "Descripción", "Origen", "Marca", "Características", "Unidades", "Precio Unit", "Total","Peso"];
 
         $col = "A";
         foreach ($headers as $h) {
@@ -116,7 +116,7 @@ class reporte_excelActions extends sfActions {
         foreach ($lista as $regist) {
             $can++;
             $pro = $regist->getProducto();
-            $totalPeso = $totalPeso + $regist->getProducto()->getPeso();
+            $totalPeso = $totalPeso + ($regist->getProducto()->getPeso() * $can);
             $totalMetros = $totalMetros + ( ($pro->getAlto() * $pro->getAncho() * $pro->getLargo()) * $regist->getCantidad());
             $totalUnidades = $totalUnidades + $regist->getCantidad();
             $totalCajas = $totalCajas + $regist->getCantidadCaja();
@@ -132,6 +132,8 @@ class reporte_excelActions extends sfActions {
             $sheet->setCellValue("G$fila",  $regist->getCantidad());
             $sheet->setCellValue("H$fila", $regist->getValorUnitario());
             $sheet->setCellValue("I$fila", $regist->getValorTotal());
+            $sheet->setCellValue("J$fila", (  $regist->getProducto()->getPeso() * $ca));
+          
         }
 
         foreach (range('A', 'I') as $c) {
