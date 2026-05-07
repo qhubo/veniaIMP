@@ -132,7 +132,7 @@ class reporte_excelActions extends sfActions {
             $sheet->setCellValue("G$fila",  $regist->getCantidad());
             $sheet->setCellValue("H$fila", $regist->getValorUnitario());
             $sheet->setCellValue("I$fila", $regist->getValorTotal());
-            $sheet->setCellValue("J$fila", (  $regist->getProducto()->getPeso() * $ca));
+            $sheet->setCellValue("J$fila", (  $regist->getProducto()->getPeso() * $can));
           
         }
 
