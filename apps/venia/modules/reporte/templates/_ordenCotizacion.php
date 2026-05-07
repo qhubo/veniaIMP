@@ -172,7 +172,7 @@
                 </tr>
                 <tr>
                     <td class="negrita"> Kilogramos</td>
-                    <td style="text-align: right;"><?php echo round($medidas['totalpeso'], 2); ?></td>
+                    <td style="text-align: right;"><?php echo round($totalPeso , 2); ?></td>
 
                 </tr>
                 <tr>
