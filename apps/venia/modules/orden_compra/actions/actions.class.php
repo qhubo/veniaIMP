@@ -158,6 +158,7 @@ class orden_compraActions extends sfActions {
     }
 
     public function executeReporte(sfWebRequest $request) {
+         error_reporting(-1);
         $this->getResponse()->setContentType('text/html;charset=utf-8');
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
         $EmpresaQuery = EmpresaQuery::create()->findOneById($empresaId);
