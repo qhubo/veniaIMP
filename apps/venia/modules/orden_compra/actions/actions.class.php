@@ -1,13 +1,6 @@
 <?php
 
-/**
- * orden_compra actions.
- *
- * @package    plan
- * @subpackage orden_compra
- * @author     Via
- * @version    SVN: $Id: actions.class.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
- */
+
 class orden_compraActions extends sfActions {
 
         public function executeCosto(sfWebRequest $request) {
