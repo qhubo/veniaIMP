@@ -54,7 +54,7 @@ class marca_productoActions extends sfActions
                error_reporting(-1);
         $id = $request->getParameter('id');
         $this->id = $id;
-        $marca = MarcaQuery::create()->findOneById($id);
+        $marca = MarcaProductoQuery::create()->findOneById($id);
         $default['activo'] = true;
         $this->marca = $marca;
         if ($marca) {
