@@ -164,7 +164,7 @@ class orden_compraActions extends sfActions {
         $xl = sfContext::getInstance()->getUser()->nuevoExcel($nombreempresa, $pestanas, $nombre);
         $hoja = $xl->setActiveSheetIndex(0);
         $hoja->getCell("A1")->setValueExplicit("TIPO DE ARCHIVO ", PHPExcel_Cell_DataType::TYPE_STRING);
-        $hoja->getStyle("A1")->getFonect()->setBold(true);
+        $hoja->getStyle("A1")->getFont()->setBold(true);
         $hoja->getStyle("A1")->getFont()->setSize(10);
         $hoja->getCell("B1")->setValueExplicit("Orden Compra " . strtoupper($nombreEMpresa), PHPExcel_Cell_DataType::TYPE_STRING);
         $hoja->mergeCells("B1:D1");
