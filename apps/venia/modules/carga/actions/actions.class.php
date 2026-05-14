@@ -10,163 +10,371 @@
  */
 class cargaActions extends sfActions {
 
-    public function executePedido(sfWebRequest $request) {
-        error_reporting(-1);
-        $ordenId = sfContext::getInstance()->getUser()->getAttribute('CotizacionId', null, 'seguridad');
-        $id = $request->getParameter('id');
-        $precioId= sfContext::getInstance()->getUser()->getAttribute('PrecioID', null, 'seguridad');
-   
-        
-        $bitacora = BitacoraArchivoQuery::create()->findOneById($id);
-        sfContext::getInstance()->getUser()->setAttribute('muestrabusqueda', 0, 'busqueda');
-        $filename = $bitacora->getNombre();
-        $inputFileName = sfConfig::get("sf_upload_dir") . DIRECTORY_SEPARATOR . 'cargas' . DIRECTORY_SEPARATOR . $filename;
-        $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
-        $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
-        $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
-        $objReader = new PHPExcel_Reader_Excel5();
-        $objPHPExcel = $objReader->load($inputFileName);
-        $sheetData = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
-        $contador = 0;
-        $columnaCodigo = null;
-        $columnaCantidad = null;
-        $columnaValor = null;
-//        echo "<pre>";
-//        print_r($sheetData);
-//        die();
+public function executePedido(sfWebRequest $request)
+{
+    error_reporting(-1);
 
-        $columnaCodigo = null;
-        $columnaCantidad = null;
-        $columnaValor = null;
-        $contador = 0;
-        foreach ($sheetData as $registro) {
-            $contador++;
-            /// FILA ENCABEZADO
-            if ($contador == 2) {
-                for ($i = 0; $i <= 3; $i++) {
-                    $letra = sfContext::getInstance()->getUser()->numeroletra($i);
-                    if (!isset($registro[$letra])) {
-                        continue;
-                    }
-                    $valor = strtoupper(str_replace(" ", "", trim($registro[$letra])));
-                    if ($valor == 'CANTIDAD') {
-                        $columnaCantidad = $letra;
-                    }
-                    if ($valor == 'CODIGO') {
-                        $columnaCodigo = $letra;
-                    }
-                    if ($valor == 'VALORUNITARIO') {
-                        $columnaValor = $letra;
-                    }
-                }
+    $ordenId  = sfContext::getInstance()->getUser()->getAttribute('CotizacionId', null, 'seguridad');
+    $precioId = sfContext::getInstance()->getUser()->getAttribute('PrecioID', null, 'seguridad');
+    $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
 
-                continue;
-            }
-            /// VALIDAR COLUMNAS
-            if ($contador > 2) {
-                if (!$columnaCodigo || !$columnaCantidad || !$columnaValor) {
-                    sfContext::getInstance()->getUser()->setAttribute('carga', null, 'busqueda');
-                    $this->getUser()->setFlash('error','Revisar archivo!! Columnas requeridas: CODIGO, CANTIDAD, VALOR UNITARIO');
-                   $this->redirect('orden_cotizacion/index?id=' . $ordenId);
-                }
+    $id = $request->getParameter('id');
 
-                $codigo = isset($registro[$columnaCodigo]) ? trim($registro[$columnaCodigo]) : '';
-                $codigo = isset($registro[$columnaCodigo]) ? trim($registro[$columnaCodigo]) : '';
+    $bitacora = BitacoraArchivoQuery::create()->findOneById($id);
 
-$cantidad = isset($registro[$columnaCantidad]) && is_numeric($registro[$columnaCantidad]) 
-    ? max(0, $registro[$columnaCantidad]) 
-    : 0;
-
-// AQUI VA EL AJUSTE
-$valorTexto = isset($registro[$columnaValor]) 
-    ? trim($registro[$columnaValor]) 
-    : 0;
-
-$valorTexto = str_replace([',', 'Q', '$', ' '], '', $valorTexto);
-
-$valorUnitario = is_numeric($valorTexto) 
-    ? max(0, (double)$valorTexto) 
-    : 0;
-
-if ($cantidad <= 0 || $valorUnitario < 0) {
-    continue;
-}
-//              echo $codigo;
-//                die();
-//                $cantidad = isset($registro[$columnaCantidad]) && is_numeric($registro[$columnaCantidad]) ? max(0, $registro[$columnaCantidad]) : 0;
-//                $valorUnitario = isset($registro[$columnaValor]) && is_numeric($registro[$columnaValor]) ? max(0, $registro[$columnaValor]) : 0;
-//                if ($cantidad <= 0 || $valorUnitario < 0) {
-//                    continue;
-//                }
-                $producto = ProductoQuery::create()
-                        ->filterByCodigoSku($codigo)
-                        ->findOne();
-                if (!$producto) {
-                    continue;
-                }
-                
-                /// PRECIO MINIMO
-                $menor = $producto->getPrecio();
-                $precios = ListaPrecioQuery::create()
-                        ->filterByActivo(true)
-                        ->find();
-                foreach ($precios as $deta) {
-                    $precioLista = $producto->getPrecioLista($deta->getId());
-                    if ($precioLista < $menor) {
-                        $menor = $precioLista;
-                    }
-                }
-                if ($TIPO_USUARIO == 'ADMINISTRADOR') {
-                    $menor = 0;
-                }
-                if ($valorUnitario < $menor) {
-                    $valorUnitario = $menor;
-                }
-                if (!$valorUnitario) {
-                    if ($precioId==999) {
-                        $valorUnitario=$producto->getPrecio();
-                    }
-                    $precioq = ProductoPrecioQuery::create()
-                            ->filterByProductoId($producto->getId())
-                            ->filterByListaPrecioId($precioId)
-                            ->findOne();
-                    if ($precioq) {
-                        $valorUnitario= $precioq->getValor();
-                    }
-                    
-                }
-                /// CALCULAR IVA CORRECTAMENTE
-                $valoresIva = ParametroQuery::ObtenerIva($valorUnitario, false);
-                $ordenQD = new OrdenCotizacionDetalle();
-                $ordenQD->setProductoId($producto->getId());
-                $ordenQD->setDetalle($producto->getNombre());
-                $ordenQD->setCodigo($producto->getCodigoSku());
-                $ordenQD->setCantidad($cantidad);
-                $ordenQD->setValorUnitario($valorUnitario);
-                $ordenQD->setValorTotal(round($valorUnitario * $cantidad, 2));
-                $ordenQD->setTotalIva($valoresIva['IVA']);
-                $ordenQD->setOrdenCotizacionId($ordenId);
-                $ordenQD->setCostoUnitario($producto->getCostoProveedor());
-                $ordenQD->setArchivo(true);
-                $ordenQD->save();
-            }
-        }
-        $ordenQ = OrdenCotizacionQuery::create()->findOneById($ordenId);
-        $lista = OrdenCotizacionDetalleQuery::create()
-                ->withColumn('sum(OrdenCotizacionDetalle.ValorTotal)', 'TotalGeneral')
-                ->filterByOrdenCotizacionId($ordenId)
-                ->findOne();
-        $suma = $lista->getTotalGeneral();
-        $valores = ParametroQuery::ObtenerIva($suma, false);
-        $iva = $valores['IVA'];
-        $valorSInIVa = $valores['VALOR_SIN_IVA'];
-        $ordenQ->setSubTotal($valorSInIVa);
-        $ordenQ->setValorTotal($suma);
-        $ordenQ->setIva($iva);
-        $ordenQ->save();
-        $this->getUser()->setFlash('exito', ' Archivo exportado con éxito ');
+    if (!$bitacora) {
+        $this->getUser()->setFlash('error', 'Archivo no encontrado');
         $this->redirect('orden_cotizacion/index?id=' . $ordenId);
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | EVITAR DOBLE PROCESO
+    |--------------------------------------------------------------------------
+    */
+
+    if ($bitacora->getProcesado()) {
+        $this->getUser()->setFlash('error', 'El archivo ya fue procesado');
+        $this->redirect('orden_cotizacion/index?id=' . $ordenId);
+    }
+
+    sfContext::getInstance()->getUser()->setAttribute('muestrabusqueda', 0, 'busqueda');
+
+    $filename = $bitacora->getNombre();
+
+    $inputFileName = sfConfig::get("sf_upload_dir")
+        . DIRECTORY_SEPARATOR
+        . 'cargas'
+        . DIRECTORY_SEPARATOR
+        . $filename;
+
+    if (!file_exists($inputFileName)) {
+        $this->getUser()->setFlash('error', 'Archivo físico no encontrado');
+        $this->redirect('orden_cotizacion/index?id=' . $ordenId);
+    }
+
+    $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
+
+    $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
+
+    /*
+    |--------------------------------------------------------------------------
+    | LEER EXCEL
+    |--------------------------------------------------------------------------
+    */
+
+    $objReader = new PHPExcel_Reader_Excel5();
+    $objPHPExcel = $objReader->load($inputFileName);
+
+    $sheetData = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
+
+    $contador = 0;
+
+    $columnaCodigo = null;
+    $columnaCantidad = null;
+    $columnaValor = null;
+
+    /*
+    |--------------------------------------------------------------------------
+    | AGRUPAR PRODUCTOS
+    |--------------------------------------------------------------------------
+    */
+
+    $productosAgrupados = [];
+
+    foreach ($sheetData as $registro) {
+
+        $contador++;
+
+        /*
+        |--------------------------------------------------------------------------
+        | ENCABEZADO
+        |--------------------------------------------------------------------------
+        */
+
+        if ($contador == 2) {
+
+            for ($i = 0; $i <= 10; $i++) {
+
+                $letra = sfContext::getInstance()->getUser()->numeroletra($i);
+
+                if (!isset($registro[$letra])) {
+                    continue;
+                }
+
+                $valor = strtoupper(
+                    str_replace(
+                        [" ", "_"],
+                        "",
+                        trim($registro[$letra])
+                    )
+                );
+
+                if ($valor == 'CODIGO') {
+                    $columnaCodigo = $letra;
+                }
+
+                if ($valor == 'CANTIDAD') {
+                    $columnaCantidad = $letra;
+                }
+
+                if ($valor == 'VALORUNITARIO') {
+                    $columnaValor = $letra;
+                }
+            }
+
+            continue;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDAR COLUMNAS
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            !$columnaCodigo ||
+            !$columnaCantidad ||
+            !$columnaValor
+        ) {
+
+            $this->getUser()->setFlash(
+                'error',
+                'Columnas requeridas: CODIGO, CANTIDAD, VALOR UNITARIO'
+            );
+
+            $this->redirect('orden_cotizacion/index?id=' . $ordenId);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SOLO DATOS
+        |--------------------------------------------------------------------------
+        */
+
+        if ($contador <= 2) {
+            continue;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | OBTENER DATOS
+        |--------------------------------------------------------------------------
+        */
+
+        $codigo = isset($registro[$columnaCodigo])
+            ? strtoupper(trim($registro[$columnaCodigo]))
+            : '';
+
+        if (empty($codigo)) {
+            continue;
+        }
+
+        $cantidad = isset($registro[$columnaCantidad]) &&
+            is_numeric($registro[$columnaCantidad])
+            ? (double)$registro[$columnaCantidad]
+            : 0;
+
+        $valorTexto = isset($registro[$columnaValor])
+            ? trim($registro[$columnaValor])
+            : 0;
+
+        $valorTexto = str_replace(
+            [',', 'Q', '$', ' '],
+            '',
+            $valorTexto
+        );
+
+        $valorUnitario = is_numeric($valorTexto)
+            ? (double)$valorTexto
+            : 0;
+
+        if ($cantidad <= 0) {
+            continue;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | AGRUPAR SKU REPETIDOS DEL EXCEL
+        |--------------------------------------------------------------------------
+        */
+
+        if (!isset($productosAgrupados[$codigo])) {
+
+            $productosAgrupados[$codigo] = [
+                'cantidad' => 0,
+                'valor' => $valorUnitario
+            ];
+        }
+
+        $productosAgrupados[$codigo]['cantidad'] += $cantidad;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | GUARDAR PRODUCTOS
+    |--------------------------------------------------------------------------
+    */
+
+    foreach ($productosAgrupados as $codigo => $datos) {
+
+        $cantidad = $datos['cantidad'];
+        $valorUnitario = $datos['valor'];
+
+        $producto = ProductoQuery::create()
+            ->filterByCodigoSku($codigo)
+            ->findOne();
+
+        if (!$producto) {
+            continue;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | PRECIO MINIMO
+        |--------------------------------------------------------------------------
+        */
+
+        $menor = $producto->getPrecio();
+
+        $precios = ListaPrecioQuery::create()
+            ->filterByActivo(true)
+            ->find();
+
+        foreach ($precios as $deta) {
+
+            $precioLista = $producto->getPrecioLista($deta->getId());
+
+            if ($precioLista < $menor) {
+                $menor = $precioLista;
+            }
+        }
+
+        if ($TIPO_USUARIO == 'ADMINISTRADOR') {
+            $menor = 0;
+        }
+
+        if ($valorUnitario < $menor) {
+            $valorUnitario = $menor;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SI NO VIENE PRECIO
+        |--------------------------------------------------------------------------
+        */
+
+        if (!$valorUnitario) {
+
+            if ($precioId == 999) {
+                $valorUnitario = $producto->getPrecio();
+            }
+
+            $precioq = ProductoPrecioQuery::create()
+                ->filterByProductoId($producto->getId())
+                ->filterByListaPrecioId($precioId)
+                ->findOne();
+
+            if ($precioq) {
+                $valorUnitario = $precioq->getValor();
+            }
+        }
+
+        $valoresIva = ParametroQuery::ObtenerIva($valorUnitario, false);
+
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDAR SI YA EXISTE EN LA ORDEN
+        |--------------------------------------------------------------------------
+        */
+
+        $detalleExistente = OrdenCotizacionDetalleQuery::create()
+            ->filterByOrdenCotizacionId($ordenId)
+            ->filterByProductoId($producto->getId())
+            ->findOne();
+
+        if ($detalleExistente) {
+
+            $nuevaCantidad = $detalleExistente->getCantidad() + $cantidad;
+
+            $detalleExistente->setCantidad($nuevaCantidad);
+
+            $detalleExistente->setValorUnitario($valorUnitario);
+
+            $detalleExistente->setValorTotal(
+                round($valorUnitario * $nuevaCantidad, 2)
+            );
+
+            $detalleExistente->save();
+
+        } else {
+
+            $ordenQD = new OrdenCotizacionDetalle();
+
+            $ordenQD->setProductoId($producto->getId());
+            $ordenQD->setDetalle($producto->getNombre());
+            $ordenQD->setCodigo($producto->getCodigoSku());
+            $ordenQD->setCantidad($cantidad);
+            $ordenQD->setValorUnitario($valorUnitario);
+            $ordenQD->setValorTotal(
+                round($valorUnitario * $cantidad, 2)
+            );
+            $ordenQD->setTotalIva($valoresIva['IVA']);
+            $ordenQD->setOrdenCotizacionId($ordenId);
+            $ordenQD->setCostoUnitario(
+                $producto->getCostoProveedor()
+            );
+            $ordenQD->setArchivo(true);
+
+            $ordenQD->save();
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | RECALCULAR TOTALES
+    |--------------------------------------------------------------------------
+    */
+
+    $ordenQ = OrdenCotizacionQuery::create()
+        ->findOneById($ordenId);
+
+    $lista = OrdenCotizacionDetalleQuery::create()
+        ->withColumn(
+            'SUM(OrdenCotizacionDetalle.ValorTotal)',
+            'TotalGeneral'
+        )
+        ->filterByOrdenCotizacionId($ordenId)
+        ->findOne();
+
+    $suma = (double)$lista->getTotalGeneral();
+
+    $valores = ParametroQuery::ObtenerIva($suma, false);
+
+    $ordenQ->setSubTotal($valores['VALOR_SIN_IVA']);
+    $ordenQ->setIva($valores['IVA']);
+    $ordenQ->setValorTotal($suma);
+
+    $ordenQ->save();
+
+    /*
+    |--------------------------------------------------------------------------
+    | MARCAR ARCHIVO PROCESADO
+    |--------------------------------------------------------------------------
+    */
+
+    $bitacora->setProcesado(true);
+    $bitacora->save();
+
+    $this->getUser()->setFlash(
+        'exito',
+        'Archivo cargado correctamente'
+    );
+
+    $this->redirect(
+        'orden_cotizacion/index?id=' . $ordenId
+    );
+}
 
     public function executeProveedor(sfWebRequest $request) {
         $filename = 'LISTAPROVE.xls';
