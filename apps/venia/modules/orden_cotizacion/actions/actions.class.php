@@ -698,7 +698,8 @@ class orden_cotizacionActions extends sfActions {
                 $prefijo = $tipoSerie . '0' . $numero;
             }
             
-            
+            echo $prefijo;
+            die();
             
             if ($prefijo=="COTI0079"){
                 $operain = OrdenCotizacionQuery::create()->findOneByCodigo($prefijo);
@@ -722,6 +723,7 @@ if ($operacion) {
 }
             }
            
+            
             
             $con = Propel::getConnection();
 
