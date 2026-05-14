@@ -699,11 +699,27 @@ class orden_cotizacionActions extends sfActions {
             }
             
             
+                        $con = Propel::getConnection();
+
+try {
+    $con->beginTransaction();
+$operain = OrdenCotizacionQuery::create()->findOneByCodigo($prefijo);
+if ($operacion) {
+    $operacion->delete();
+}
+    $con->commit();
+} catch (Exception $e) {
+    $con->rollBack();
+
+}
+            
+           
             
             $con = Propel::getConnection();
 
 try {
     $con->beginTransaction();
+    
     $operacion = new OrdenCotizacion();
     $operacion->setCodigo($prefijo);
     $operacion->setPrefijo($tipoSerie);
