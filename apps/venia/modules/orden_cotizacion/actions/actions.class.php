@@ -595,7 +595,8 @@ class orden_cotizacionActions extends sfActions {
         $tipoSerieV = $request->getParameter('tipo_serie');
         $idV = $request->getParameter('id');
         $codigoV = $request->getParameter('codigo');
-
+ echo $prefijo;
+        die();
         // Si las tres vienen vacías
         if (empty($tipoSerieV) && empty($idV) && empty($codigoV)) {
 
@@ -627,8 +628,7 @@ class orden_cotizacionActions extends sfActions {
             }
         }
         
-        echo $prefijo;
-        die();
+       
 
 
         date_default_timezone_set("America/Guatemala");
