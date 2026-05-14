@@ -630,7 +630,7 @@ class orden_cotizacionActions extends sfActions {
 //        echo $prefijo;
 //        die();
  
-                $operain = OrdenCotizacionQuery::create()->findOneByCodigo($prefijo);
+                $operacion = OrdenCotizacionQuery::create()->findOneByCodigo($prefijo);
            
                         $con = Propel::getConnection();
 
