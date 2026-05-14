@@ -640,14 +640,13 @@ try {
 
 if ($operacion) {
     $operacion->delete();
-  echo "elimiando";
+
 }
     $con->commit();
 } catch (Exception $e) {
     $con->rollBack();
 
 }
-       die('-'); 
       
 
         date_default_timezone_set("America/Guatemala");
