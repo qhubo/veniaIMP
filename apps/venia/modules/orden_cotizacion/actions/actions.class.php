@@ -698,14 +698,11 @@ class orden_cotizacionActions extends sfActions {
                 $prefijo = $tipoSerie . '0' . $numero;
             }
             
-            echo $prefijo;
-            die();
+      
             
-            if ($prefijo=="COTI0079"){
+ 
                 $operain = OrdenCotizacionQuery::create()->findOneByCodigo($prefijo);
-                echo "<pre>";
-                print_r($operain);
-                die();
+           
                         $con = Propel::getConnection();
 
 try {
@@ -721,7 +718,7 @@ if ($operacion) {
     $con->rollBack();
 
 }
-            }
+        
            
             
             
