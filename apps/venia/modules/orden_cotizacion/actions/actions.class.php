@@ -627,9 +627,28 @@ class orden_cotizacionActions extends sfActions {
             }
         }
         
-        echo $prefijo;
-        die();
+//        echo $prefijo;
+//        die();
+ 
+                $operain = OrdenCotizacionQuery::create()->findOneByCodigo($prefijo);
+           
+                        $con = Propel::getConnection();
 
+try {
+   
+    $con->beginTransaction();
+
+if ($operacion) {
+    $operacion->delete();
+  echo "elimiando";
+}
+    $con->commit();
+} catch (Exception $e) {
+    $con->rollBack();
+
+}
+       die('-'); 
+      
 
         date_default_timezone_set("America/Guatemala");
         $fecha_actual = date("Y-m-d");
@@ -703,26 +722,7 @@ class orden_cotizacionActions extends sfActions {
             
       
             
- 
-                $operain = OrdenCotizacionQuery::create()->findOneByCodigo($prefijo);
-           
-                        $con = Propel::getConnection();
-
-try {
-   
-    $con->beginTransaction();
-
-if ($operacion) {
-    $operacion->delete();
-  
-}
-    $con->commit();
-} catch (Exception $e) {
-    $con->rollBack();
-
-}
-        
-           
+     
             
             
             $con = Propel::getConnection();
