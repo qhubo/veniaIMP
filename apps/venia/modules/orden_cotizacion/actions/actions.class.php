@@ -699,20 +699,28 @@ class orden_cotizacionActions extends sfActions {
             }
             
             
+            
+            if ($prefijo=="COTI0079"){
+                $operain = OrdenCotizacionQuery::create()->findOneByCodigo($prefijo);
+                echo "<pre>";
+                print_r($operain);
+                die();
                         $con = Propel::getConnection();
 
 try {
+   
     $con->beginTransaction();
-$operain = OrdenCotizacionQuery::create()->findOneByCodigo($prefijo);
+
 if ($operacion) {
     $operacion->delete();
+  
 }
     $con->commit();
 } catch (Exception $e) {
     $con->rollBack();
 
 }
-            
+            }
            
             
             $con = Propel::getConnection();
