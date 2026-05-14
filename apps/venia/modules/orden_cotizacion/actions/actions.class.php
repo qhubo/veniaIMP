@@ -602,8 +602,7 @@ class orden_cotizacionActions extends sfActions {
             $this->getUser()->setFlash('error', 'Debe seleccionar Serie');
             return $this->redirect('inicio/index');
         }
- echo $prefijo;
-        die();
+
 
         if ($tipoSerieV <> "") {
             $tipoSerie = $tipoSerieV;
@@ -628,7 +627,8 @@ class orden_cotizacionActions extends sfActions {
             }
         }
         
-       
+        echo $prefijo;
+        die();
 
 
         date_default_timezone_set("America/Guatemala");
