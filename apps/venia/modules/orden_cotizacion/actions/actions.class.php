@@ -626,6 +626,9 @@ class orden_cotizacionActions extends sfActions {
                 $prefijo = $tipoSerie . '0' . $numero;
             }
         }
+        
+        echo $prefijo;
+        die();
 
 
         date_default_timezone_set("America/Guatemala");
