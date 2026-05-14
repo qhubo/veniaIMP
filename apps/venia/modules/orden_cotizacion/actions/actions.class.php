@@ -595,15 +595,15 @@ class orden_cotizacionActions extends sfActions {
         $tipoSerieV = $request->getParameter('tipo_serie');
         $idV = $request->getParameter('id');
         $codigoV = $request->getParameter('codigo');
- echo $prefijo;
-        die();
+
         // Si las tres vienen vacías
         if (empty($tipoSerieV) && empty($idV) && empty($codigoV)) {
 
             $this->getUser()->setFlash('error', 'Debe seleccionar Serie');
             return $this->redirect('inicio/index');
         }
-
+ echo $prefijo;
+        die();
 
         if ($tipoSerieV <> "") {
             $tipoSerie = $tipoSerieV;
