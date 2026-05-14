@@ -428,18 +428,7 @@ class buscaActions extends sfActions {
         $iTotal = $stmt->fetchColumn();
 
         // ðŸ“¦ DATA (YA TRAE EXISTENCIA Y TRANSITO â†’ elimina ProductoQuery)
-        $sql = "
-        SELECT 
-            vi.id,
-            vi.nombre,
-            vi.codigo_sku,
-            vi.imagen,
-            vi.combo_producto_id,
-            vi.existencia
-        FROM producto vi
-        WHERE $where
-        LIMIT 0, 500
-    ";
+        $sql = " SELECT vi.id,vi.nombre,vi.codigo_sku,vi.imagen, vi.combo_producto_id,( select sum(cantidad) from producto_existencia ee where ee.producto_id= vi.id)  existencia  FROM producto vi  WHERE $where    LIMIT 0, 500    ";
 
         $stmt = $con->prepare($sql);
         foreach ($params as $k => $v) {
