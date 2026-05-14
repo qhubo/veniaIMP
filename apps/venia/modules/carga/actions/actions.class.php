@@ -33,10 +33,10 @@ public function executePedido(sfWebRequest $request)
     |--------------------------------------------------------------------------
     */
 
-    if ($bitacora->getProcesado()) {
-        $this->getUser()->setFlash('error', 'El archivo ya fue procesado');
-        $this->redirect('orden_cotizacion/index?id=' . $ordenId);
-    }
+//    if ($bitacora->getProcesado()) {
+//        $this->getUser()->setFlash('error', 'El archivo ya fue procesado');
+//        $this->redirect('orden_cotizacion/index?id=' . $ordenId);
+//    }
 
     sfContext::getInstance()->getUser()->setAttribute('muestrabusqueda', 0, 'busqueda');
 
