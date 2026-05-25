@@ -21,7 +21,7 @@ class SelePagoCxcCobrarForm extends sfForm {
         
         $this->setWidget('valor', new sfWidgetFormInputText(array(), array(
                     'type' => 'number', 'class' => 'form-control', 'placeholder' => '0.00',
-                    'any' => 'step', 'step' => 'any'
+                    'any' => 'step', 'step' => 'any', 'min'=>1
         )));
         $this->setValidator('valor', new sfValidatorString(array('required' => true)));
 
