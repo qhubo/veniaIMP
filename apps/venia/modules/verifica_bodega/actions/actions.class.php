@@ -270,7 +270,6 @@ class verifica_bodegaActions extends sfActions {
         $this->token = '';
         $this->tipo = 1;
         $this->detalles = OrdenCotizacionDetalleQuery::create()
-               // ->setLimit(10)
                 ->filterByConfirmado(true)
                 ->filterByProductoId(null, Criteria::NOT_EQUAL)
                 ->useOrdenCotizacionQuery()
@@ -354,7 +353,10 @@ class verifica_bodegaActions extends sfActions {
             // Obtener IDs de productos del empaque
            $productosEmpaque[]=0;
             foreach ($listaEmpaque as $detalle) {
-                $productosEmpaque[] = $detalle->getProductoId();
+               
+                    if ($detalle->getProductoId()) {
+        $productosEmpaque[] = $detalle->getProductoId();
+    }
             }
 //            echo $CotizacionEmpaque->getId();
 //                echo "<pre>";
