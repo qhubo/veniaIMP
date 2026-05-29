@@ -232,14 +232,31 @@ License: You must have a valid license purchased only from themeforest(the above
         <!--Begin:: Chat-->
         <?php include_partial('inicio/modal') ?>
 
-        <!--ENd:: Chat-->
+                  <?php if ($modulo == 'verifica_bodega') { ?>
+        
+        <!-- jQuery -->
+<script src="./assets/vendors/general/jquery/dist/jquery.js"></script>
 
-        <!-- begin::Global Config(global config for global JS sciprts) -->
-        <!--        <script>
-                var KTAppOptions = {"colors": {"state": {"brand": "#591df1", "light": "#ffffff", "dark": "#282a3c", "primary": "#5867dd", "success": "#34bfa3", "info": "#36a3f7", "warning": "#ffb822", "danger": "#fd3995"}, "base": {"label": ["#c5cbe3", "#a1a8c3", "#3d4465", "#3e4466"], "shape": ["#f0f3ff", "#d9dffa", "#afb4d4", "#646c9a"]}}};
-            </script>-->
-        <!-- end::Global Config -->
-        <!--begin:: Global Mandatory Vendors -->
+<!-- Bootstrap -->
+<script src="./assets/vendors/general/popper.js/dist/umd/popper.js"></script>
+<script src="./assets/vendors/general/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<!-- DatePicker -->
+<script src="./assets/vendors/general/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+
+<!-- DataTables -->
+<script src="/assets/global/plugins/datatables/datatables.min.js"></script>
+<script src="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js"></script>
+
+<!-- Metronic -->
+<script src="./assets/js/demo9/scripts.bundle.js"></script>
+
+<!-- Tus scripts -->
+
+                  <?php } ?>
+        
+            <?php if ($modulo != 'verifica_bodega') { ?>
+        
         <script src="./assets/vendors/general/jquery/dist/jquery.js" type="text/javascript"></script>
         <script src="./assets/vendors/general/popper.js/dist/umd/popper.js" type="text/javascript"></script>
         <script src="./assets/vendors/general/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
@@ -360,6 +377,7 @@ License: You must have a valid license purchased only from themeforest(the above
             }
         </script>
         <script src="./js/veniaLink.js" type="text/javascript"></script>
+           <?php } ?>
     </body>
     <!-- end::Body -->
 

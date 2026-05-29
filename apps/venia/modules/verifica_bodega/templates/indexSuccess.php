@@ -1,13 +1,17 @@
 <!--<meta http-equiv="refresh" content="30">-->
 <?php $modulo = $sf_params->get('module'); ?>
 <style>
-.eli-check {
-    transform: scale(1.9);
-    cursor: pointer;
-}
+    .eli-check {
+        transform: scale(1.9);
+        cursor: pointer;
+    }
 </style>
 <script src='/assets/global/plugins/jquery.min.js'></script>
 <script src='/assets/global/plugins/select2.min.js'></script>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 <div class="kt-portlet kt-portlet--responsive-mobile">
     <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
@@ -54,149 +58,156 @@
             <?php } ?>
         </form>
         <div class="proceso">
-        <?php $ruta = 'ConfirmaPedi'; ?>
-        <?php if ($muestraBoton) { ?>  
-  <form action="<?php echo url_for($modulo . '/eliminarMultipleEmpaque?id=' . $em) ?>"  method="post"     id="formEliminarEmpaque">
-            <?php } ?>
-            <table  style="width: 100%" class=" <?php if (!$muestraBoton) { ?> table  <?php } ?> table-bordered " >
-                <tr>
-                    <?php if ($muestraBoton) { ?>
-                        <th>#</th>
-                    <?php } else { ?>
-                        <th>Orden</th>
-                    <?php } ?>
-                    <th>Codigo Producto</th>
-                    <th>Producto </th>
-                    <th>Marca</th>       
-                    <th>Unidad</th>
-                   
-                    <?php if ($muestraBoton) { ?>
-                        <th>Cant.<br>Bultos</th>
-                        <th>No.<br>Bultos</th>
-                        <th>Peso</th>
-                        <th>Total<br>Peso</th>
-                        <th>CBM</th>
-                        <th>Total<br>CBM</th>
-                     <?php } ?>
-                    <?php if (!$muestraBoton) { ?>
-                        <td></td>
-                    <td></td>
-                    <?php } ?>
-                    <?php if ($muestraBoton) { ?>
-                    <td colspan="2">   <button type="button"   id="btnTogglePendientes"    
-                                   class="btn btn-warning btn-sm">Check /uncheck</button>
-                                   </td>
-                    <?php } ?>
-            
-                </tr>
-                <?php $totalPeso = 0; ?>
-                <?php $no = 0; ?>
-                <?php $pendiente = false; ?>
-                <?php foreach ($detalles as $reg) { ?>
-    <?php $pendienteCheck = 0; ?>           
-         <?php $ver = true; ?>
-                    <?php if ($pr) { ?>
-                        <?php $ver = false; ?>
-                        <?php if ($pr) { ?>
-                            <?php if ($pr == $reg->getProductoId()) { ?>
-                                <?php $ver = true; ?>
-                            <?php } ?>
-                        <?php } ?>
-                    <?php } ?>
-                    <?php $no++; ?>
-                    <?php $totalPeso = $totalPeso + ( $reg->getProducto()->getPeso() * $reg->getCantidad()) ?>
-                    <?php $pesoLin = round($reg->getProducto()->getPeso() * $reg->getCantidad(), 2); ?>
-                    <?php if ($ver) { ?>  
-                        <tr>
-                            <?php if (!$muestraBoton) { ?>
-                                <td><?php echo $reg->getOrdenCotizacion()->getCodigo(); ?></td>
-                            <?php } else { ?>
-                                <td style="text-align:right;"><?php echo $no; ?>&nbsp;&nbsp;</td>
-                            <?php } ?>
-                            <td><?php echo $reg->getProducto()->getCodigoSku(); ?></td>
-                            <td><?php echo $reg->getProducto()->getNombre(); ?></td>
-                            <td><?php echo $reg->getProducto()->getMarcaProducto(); ?></td>
-                            <td style="background-color:white !important; font-weight: bold; text-align: right; font-size:16px;">
-                                <?php if ($muestraBoton) { ?>
-                                    <a class="btn btn-sm btn-block" href="#" data-toggle="modal" data-target="#ajaxmodalCan<?php echo $reg->getId() ?>">       
-                                        <?php echo $reg->getCantidad(); ?>
-                                    </a>
-                                <?php } else { ?>
-                                    <?php echo $reg->getCantidad(); ?>
-
-                                <?php } ?>
-                            </td>                   
-                            <?php if ($muestraBoton) { ?>
-                                <td  style="text-align:right"><?php echo $reg->getCantidadCaja(); ?></td>
-                                <td>
-                                    <?php if ($reg->getCantidadCaja() > 0 or $reg->getBultoSuperior() > 0) { ?>
-                                        <?php echo "&nbsp;&nbsp;&nbsp;Bulto " . $reg->getBultoInicio(); ?>
-                                        <?php if ($reg->getBultoInicio() < $reg->getBultoFin()) { ?>
-                                            <?php echo "<br>&nbsp;&nbsp;&nbsp;A Bulto " . $reg->getBultoFin(); ?>
-                                        <?php } ?>
-                                    <?php } else { ?>
-                                        <?php $pendiente = true; ?>
-                                        <?php $pendienteCheck = 1; ?>
-                                    <?php } ?>
-                                </td>
-                                <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getPeso(), false); ?></td>
-                                <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getPeso() * $reg->getCantidad(), false); ?></td>
-                                <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getCMB(), false); ?></td>
-                                <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getCMB() * $reg->getCantidad(), false); ?></td>
-                                <td><a class="btn btn-sm btn-success" href="#" data-toggle="modal" data-target="#ajaxmodalCE<?php echo $reg->getId() ?>">..</a>  </td>
-                                <?php $token = sha1($reg->getId()); ?>
-                              <td style="text-align:center; vertical-align:middle; white-space:nowrap;">
-    
-    <a class="btn btn-sm btn-danger"
-       style="width:22px; height:22px; padding:0; display:inline-flex; align-items:center; justify-content:center;"
-       href="<?php echo url_for($modulo . '/elimina?token=' . $token . '&id=' . $reg->getId()) ?>">
-        -
-    </a>
-
-    <input type="checkbox"  data-pendiente="<?php echo $pendienteCheck; ?>"           class="eli-check pendiente-check"
-           name="eli[]"           value="<?php echo $reg->getId(); ?>"
-           style="margin-left:6px; transform:scale(1.9); vertical-align:middle;">
-           
-</td>                   
-                            <?php } ?>
-                        </tr>
-                    <?php } ?>
-                <?php } ?>
-            </table>
-
+            <?php $ruta = 'ConfirmaPedi'; ?>
             <?php if ($muestraBoton) { ?>  
-                <div class="row" style="padding-top:2px;padding-bottom:5px;">
-                    <div class="col-lg-3" ></div>
+                <form action="<?php echo url_for($modulo . '/eliminarMultipleEmpaque?id=' . $em) ?>"  method="post"     id="formEliminarEmpaque">
+                <?php } ?>
 
-                    <div class="col-lg-2" >
-                        
-                            <a class="btn btn-block  btn-xs btn-danger" data-toggle="modal" href="#staticPendiente">Recuperar Producto  </a>
-                        
-                    </div>
-                    <div class="col-lg-2" >
-                        <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $idp) ?>" class="btn btn-block btn-sm btn-warning" > <i class="flaticon2-print"></i> Reporte </a>
-                    </div>
-                    <div class="col-lg-2">
-                        <a target="_blank" href="<?php echo url_for('reporte_excel/empaque?id=' . $idp) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"> <i class="flaticon2-printer"></i>Reporte </a>
-                    </div>
-                  
-                    <div class="col-lg-2" style="padding-top:10px;">
-                        <?php if (!$pendiente) { ?>
-                           <a class="btn btn-block btn-xs btn-dark dark"
-   href="<?php echo url_for($modulo . '/' . $ruta . '?id=' . $em) ?>">
-    <i class="flaticon2-check-mark"></i> CONFIRMAR EMPAQUE
-</a>
+                <table id="tablaEmpaque" style="width:100%" class="  <?php if (!$muestraBoton) { ?> table  <?php } ?> table-bordered">
+                  <thead>
+<tr>
+
+<?php if ($muestraBoton) { ?>
+    <th>#</th>
+<?php } else { ?>
+    <th>Orden</th>
+<?php } ?>
+
+<th>Codigo Producto</th>
+<th>Producto</th>
+<th>Marca</th>
+<th>Unidad</th>
+
+<?php if ($muestraBoton) { ?>
+    <th>Cant. Bultos</th>
+    <th>No. Bultos</th>
+    <th>Peso</th>
+    <th>Total Peso</th>
+    <th>CBM</th>
+    <th>Total CBM</th>
+    <th>Detalle</th>
+    <th>
+        <button type="button"
+                id="btnTogglePendientes"
+                class="btn btn-warning btn-sm">
+            Check / UnCheck
+        </button>
+    </th>
+<?php } ?>
+
+</tr>
+</thead>
+
+<tbody>
+                    <?php $totalPeso = 0; ?>
+                    <?php $no = 0; ?>
+                    <?php $pendiente = false; ?>
+                    <?php foreach ($detalles as $reg) { ?>
+                        <?php $pendienteCheck = 0; ?>           
+                        <?php $ver = true; ?>
+                        <?php if ($pr) { ?>
+                            <?php $ver = false; ?>
+                            <?php if ($pr) { ?>
+                                <?php if ($pr == $reg->getProductoId()) { ?>
+                                    <?php $ver = true; ?>
+                                <?php } ?>
+                            <?php } ?>
                         <?php } ?>
-                    </div> 
-                      <div class="col-lg-1">
-                    <button type="button" id="btnEliminarSeleccionadosEmpaque" class="btn btn-block btn-sm btn-danger">
-                    Eliminar Seleccionados
-                </button>
+                        <?php $no++; ?>
+                        <?php $totalPeso = $totalPeso + ( $reg->getProducto()->getPeso() * $reg->getCantidad()) ?>
+                        <?php $pesoLin = round($reg->getProducto()->getPeso() * $reg->getCantidad(), 2); ?>
+                        <?php if ($ver) { ?>  
+                            <tr>
+                                <?php if (!$muestraBoton) { ?>
+                                    <td><?php echo $reg->getOrdenCotizacion()->getCodigo(); ?></td>
+                                <?php } else { ?>
+                                    <td style="text-align:right;"><?php echo $no; ?>&nbsp;&nbsp;</td>
+                                <?php } ?>
+                                <td><?php echo $reg->getProducto()->getCodigoSku(); ?></td>
+                                <td><?php echo $reg->getProducto()->getNombre(); ?></td>
+                                <td><?php echo $reg->getProducto()->getMarcaProducto(); ?></td>
+                                <td style="background-color:white !important; font-weight: bold; text-align: right; font-size:16px;">
+                                    <?php if ($muestraBoton) { ?>
+                                        <a class="btn btn-sm btn-block" href="#" data-toggle="modal" data-target="#ajaxmodalCan<?php echo $reg->getId() ?>">       
+                                            <?php echo $reg->getCantidad(); ?>
+                                        </a>
+                                    <?php } else { ?>
+                                        <?php echo $reg->getCantidad(); ?>
+
+                                    <?php } ?>
+                                </td>                   
+                                <?php if ($muestraBoton) { ?>
+                                    <td  style="text-align:right"><?php echo $reg->getCantidadCaja(); ?></td>
+                                    <td>
+                                        <?php if ($reg->getCantidadCaja() > 0 or $reg->getBultoSuperior() > 0) { ?>
+                                            <?php echo "&nbsp;&nbsp;&nbsp;Bulto " . $reg->getBultoInicio(); ?>
+                                            <?php if ($reg->getBultoInicio() < $reg->getBultoFin()) { ?>
+                                                <?php echo "<br>&nbsp;&nbsp;&nbsp;A Bulto " . $reg->getBultoFin(); ?>
+                                            <?php } ?>
+                                        <?php } else { ?>
+                                            <?php $pendiente = true; ?>
+                                            <?php $pendienteCheck = 1; ?>
+                                        <?php } ?>
+                                    </td>
+                                    <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getPeso(), false); ?></td>
+                                    <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getPeso() * $reg->getCantidad(), false); ?></td>
+                                    <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getCMB(), false); ?></td>
+                                    <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getCMB() * $reg->getCantidad(), false); ?></td>
+                                    <td><a class="btn btn-sm btn-success" href="#" data-toggle="modal" data-target="#ajaxmodalCE<?php echo $reg->getId() ?>">..</a>  </td>
+                                    <?php $token = sha1($reg->getId()); ?>
+                                    <td style="text-align:center; vertical-align:middle; white-space:nowrap;">
+
+                                        <a class="btn btn-sm btn-danger"
+                                           style="width:22px; height:22px; padding:0; display:inline-flex; align-items:center; justify-content:center;"
+                                           href="<?php echo url_for($modulo . '/elimina?token=' . $token . '&id=' . $reg->getId()) ?>">
+                                            -
+                                        </a>
+
+                                        <input type="checkbox"  data-pendiente="<?php echo $pendienteCheck; ?>"           class="eli-check pendiente-check"
+                                               name="eli[]"           value="<?php echo $reg->getId(); ?>"
+                                               style="margin-left:6px; transform:scale(1.9); vertical-align:middle;">
+
+                                    </td>                   
+                                <?php } ?>
+                            </tr>
+                        <?php } ?>
+                    <?php } ?>
+                            </tbody>
+                </table>
+
+                <?php if ($muestraBoton) { ?>  
+                    <div class="row" style="padding-top:2px;padding-bottom:5px;">
+                        <div class="col-lg-3" ></div>
+
+                        <div class="col-lg-2" >
+
+                            <a class="btn btn-block  btn-xs btn-danger" data-toggle="modal" href="#staticPendiente">Recuperar Producto  </a>
+
+                        </div>
+                        <div class="col-lg-2" >
+                            <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $idp) ?>" class="btn btn-block btn-sm btn-warning" > <i class="flaticon2-print"></i> Reporte </a>
+                        </div>
+                        <div class="col-lg-2">
+                            <a target="_blank" href="<?php echo url_for('reporte_excel/empaque?id=' . $idp) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"> <i class="flaticon2-printer"></i>Reporte </a>
+                        </div>
+
+                        <div class="col-lg-2" style="padding-top:10px;">
+                            <?php if (!$pendiente) { ?>
+                                <a class="btn btn-block btn-xs btn-dark dark"
+                                   href="<?php echo url_for($modulo . '/' . $ruta . '?id=' . $em) ?>">
+                                    <i class="flaticon2-check-mark"></i> CONFIRMAR EMPAQUE
+                                </a>
+                            <?php } ?>
+                        </div> 
+                        <div class="col-lg-1">
+                            <button type="button" id="btnEliminarSeleccionadosEmpaque" class="btn btn-block btn-sm btn-danger">
+                                Eliminar Seleccionados
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </form>
-        <?php } ?>
-     </div>
+                </form>
+            <?php } ?>
+        </div>
 
     </div>
 </div>
@@ -225,54 +236,54 @@
 
 
 <script>
-$(document).ready(function(){
+    $(document).ready(function () {
 
-    $("#btnTogglePendientes").click(function(){
+        $("#btnTogglePendientes").click(function () {
 
-        let checks = $("input[data-pendiente='1']");
-        let total = checks.length;
-        let marcados = $("input[data-pendiente='1']:checked").length;
+            let checks = $("input[data-pendiente='1']");
+            let total = checks.length;
+            let marcados = $("input[data-pendiente='1']:checked").length;
 
-        if(total === 0){
-            alert("No hay líneas pendientes");
-            return;
-        }
+            if (total === 0) {
+                alert("No hay líneas pendientes");
+                return;
+            }
 
-        if(marcados === total){
-            checks.prop("checked", false);
-        } else {
-            checks.prop("checked", true);
-        }
+            if (marcados === total) {
+                checks.prop("checked", false);
+            } else {
+                checks.prop("checked", true);
+            }
+
+        });
 
     });
-
-});
 </script>
 
 <script>
-$(document).ready(function(){
+    $(document).ready(function () {
 
-    $("#btnEliminarSeleccionadosEmpaque").click(function(){
+        $("#btnEliminarSeleccionadosEmpaque").click(function () {
 
-        let total = $(".eli-check:checked").length;
+            let total = $(".eli-check:checked").length;
 
-        if(total === 0){
-            alert("Debe seleccionar al menos un registro");
-            return;
-        }
+            if (total === 0) {
+                alert("Debe seleccionar al menos un registro");
+                return;
+            }
 
-        $("#textoConfirmacionEmpaque").html(
-            "¿Está seguro de eliminar <b>" + total + "</b> registros?"
-        );
+            $("#textoConfirmacionEmpaque").html(
+                    "¿Está seguro de eliminar <b>" + total + "</b> registros?"
+                    );
 
-        $("#modalEliminarEmpaque").modal("show");
+            $("#modalEliminarEmpaque").modal("show");
+        });
+
+        $("#confirmarEliminarEmpaque").click(function () {
+            $("#formEliminarEmpaque").submit();
+        });
+
     });
-
-    $("#confirmarEliminarEmpaque").click(function(){
-        $("#formEliminarEmpaque").submit();
-    });
-
-});
 </script>
 <script type="text/javascript">
     $(document).ready(function () {
@@ -591,7 +602,7 @@ $(document).ready(function(){
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                       <div class="col-lg-6" style="text-align:right; font-weight: bold;">   Empaque </div>
+                        <div class="col-lg-6" style="text-align:right; font-weight: bold;">   Empaque </div>
                         <div class="col-lg-2">
                             <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $operacion->getId()) ?>" class="btn btn-sm btn-warning" > <i class="flaticon2-print"></i> Reporte </a>
                         </div>
@@ -603,11 +614,11 @@ $(document).ready(function(){
             </div>
         </div>
     </div>
-<script>
-    $(document).ready(function () {
-        $("#ajaxmodalFactura").modal();
-    });
-</script>
+    <script>
+        $(document).ready(function () {
+            $("#ajaxmodalFactura").modal();
+        });
+    </script>
 
 <?php } ?>
 
@@ -653,3 +664,28 @@ $(document).ready(function(){
     </div>
 
 </div> 
+
+<script>
+$('#tablaEmpaque').DataTable({
+    pageLength: -1,
+    responsive: true,
+    ordering: true,
+    searching: true,
+    info: true,
+
+    columnDefs: [
+        {
+            targets: 0,
+            type: 'num'
+        },
+        {
+            orderable: false,
+            targets: -1
+        }
+    ],
+
+    language: {
+        url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json'
+    }
+});
+</script>

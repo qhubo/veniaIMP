@@ -252,12 +252,7 @@ class cuenta_por_cobrarActions extends sfActions {
 //        } catch (Exception $e) {
 //
 //            $con->rollBack();
-//
-//            $this->getUser()->setFlash(
-//                'error',
-//                'Error al grabar pago: ' . $e->getMessage()
-//            );
-
+//            $this->getUser()->setFlash('error', 'Error al grabar pago: ' . $e->getMessage() );
 //            $this->redirect('cuenta_por_cobrar/index');
 //        }
     }

@@ -2219,3 +2219,20 @@ propel:
     clave_2:                           { type: varchar(150) } 
     direccion:                         { type: varchar(450) } 
     correo:                            { type: varchar(150) } 
+    
+    
+  lista_empaque_unida:
+    _attributes: { phpName: ListaEmpaqueUnida, idMethod: native }
+    id:                                ~
+    empresa_id:                        ~
+    titulo:                            { type: varchar(450) } 
+    usuario:                           { type: varchar(50) }   
+    
+  lista_empaque_unida_detalle:
+    _attributes: { phpName: ListaEmpaqueUnidaDetalle, idMethod: native }
+    id:                                ~
+    empresa_id:                        ~
+    lista_empaque_unida_id:    ~
+    codigo:                            { type: varchar(50) } 
+ 
+    

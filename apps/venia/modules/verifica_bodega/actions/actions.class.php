@@ -270,6 +270,7 @@ class verifica_bodegaActions extends sfActions {
         $this->token = '';
         $this->tipo = 1;
         $this->detalles = OrdenCotizacionDetalleQuery::create()
+                ->setLimit(10)
                 ->filterByConfirmado(true)
                 ->filterByProductoId(null, Criteria::NOT_EQUAL)
                 ->useOrdenCotizacionQuery()
