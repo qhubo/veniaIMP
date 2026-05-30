@@ -10,6 +10,24 @@
  */
 class reporte_excelActions extends sfActions {
 
+           public function BuscaId($listaId) {
+        $sql = " select oc.id from lista_empaque_unida_detalle un inner join orden_cotizacion ";
+        $sql .= " oc on un.codigo =oc.codigo where lista_empaque_unida_id in (select lista_empaque_unida_id ";
+        $sql .= " from lista_empaque_unida_detalle un inner join orden_cotizacion oc on un.codigo =oc.codigo  where oc.id=" . $listaId . ");";
+        $con = Propel::getConnection();
+        $stmt = $con->prepare($sql);
+        $resource = $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $listados = array();
+        $listados[] = $listaId;
+        foreach ($result as $fila) {
+            if (!in_array($fila['id'], $listados)) {
+                $listados[] = $fila['id'];
+            }
+        }
+        return $listados;
+    }
+    
     public function executePedido(sfWebRequest $request) {
         error_reporting(-1);
         $id = $request->getParameter('id');
@@ -184,12 +202,19 @@ class reporte_excelActions extends sfActions {
     public function executeEmpaque(sfWebRequest $request) {
         error_reporting(-1);
         $id = $request->getParameter('id');
+         $listas = $this->BuscaId($id);
+        
+        $IIREDB= OrdenCotizacionQuery::create()->filterById($listas, Criteria::IN)->find();
+        foreach($IIREDB as $reg) {
+            $listaCo[]= str_replace('LIST-','',$reg->getCodigo());
+        }
+        $codigo = 'LIST-'.implode("-", $listaCo);
 
         $operacion = OrdenCotizacionQuery::create()->findOneById($id);
         $detalle = OrdenCotizacionDetalleQuery::create()
                 ->filterByConfirmado(true)
                 ->filterByProductoId(null, Criteria::NOT_EQUAL)
-                ->filterByOrdenCotizacionId($id)
+               ->filterByOrdenCotizacionId($listas, Criteria::IN)
                 ->withColumn('CAST(orden_cotizacion_detalle.bulto_inicio AS UNSIGNED)', 'BultoOrden')
                 ->orderBy('BultoOrden', Criteria::ASC)
                 ->find();
@@ -246,7 +271,7 @@ $sheet->setCellValue("B5", $operacion->getComentario());
 
 // ================= LADO DERECHO =================
 $sheet->setCellValue("G2", "No.");
-$sheet->setCellValue("H2", $operacion->getCodigo());
+$sheet->setCellValue("H2", $codigo);
 
 
 $sheet->setCellValue("G6", "CÓDIGO DEL CLIENTE:");
@@ -254,7 +279,7 @@ if ($operacion->getClienteId()) {
 $sheet->setCellValue("H6", $operacion->getCliente()->getCodigo());
 }
 $sheet->setCellValue("G7", "PEDIDO:");
-$sheet->setCellValue("H7", str_replace("LIST-","", $operacion->getCodigo()));
+$sheet->setCellValue("H7", str_replace("LIST-","", $codigo));
 
 
 // ================= ESTILO (opcionales) =================

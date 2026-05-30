@@ -32,10 +32,18 @@
                 <div class="col-lg-7">
                     <select  onchange="this.form.submit()" class="form-control mi-selector" name="em" id="em">
                         <option  selected="selected"  value="99" >Todos los pedidos</option>
-                        <?php foreach ($cotizacio as $reg) { ?>
-                            <option value="<?php echo $reg->getOrdenCotizacionId(); ?>"  <?php if ($em == $reg->getOrdenCotizacionId()) { ?> selected="selected" <?php } ?> >  
-                                <?php echo $reg->getOrdenCotizacion()->getCodigo(); ?>      <?php echo $reg->getOrdenCotizacion()->getNombre(); ?>
+                        <?php foreach ($listaEmpques as $re) { ?>
+                            <option value="U<?php echo $re->getId(); ?>"  <?php if ($em == "U" . $re->getId()) { ?> selected="selected" <?php } ?> >  
+                                <?php echo $re->getId(); ?> --     <?php echo $re->getTitulo(); ?>
                             </option>
+                        <?php } ?>
+                        <?php foreach ($cotizacio as $reg) { ?>
+                            <?php $ListaUNida = ListaEmpaqueUnidaDetalleQuery::create()->filterByCodigo($reg->getOrdenCotizacion()->getCodigo())->count(); ?>
+                            <?php if ($ListaUNida == 0) { ?>
+                                <option value="<?php echo $reg->getOrdenCotizacionId(); ?>"  <?php if ($em == $reg->getOrdenCotizacionId()) { ?> selected="selected" <?php } ?> >  
+                                    <?php echo $reg->getOrdenCotizacion()->getCodigo(); ?>      <?php echo $reg->getOrdenCotizacion()->getNombre(); ?>
+                                </option>
+                            <?php } ?>
                         <?php } ?>
                     </select>
                 </div>
@@ -64,115 +72,123 @@
                 <?php } ?>
 
                 <table id="tablaEmpaque" style="width:100%" class="  <?php if (!$muestraBoton) { ?> table  <?php } ?> table-bordered">
-                  <thead>
-<tr>
+                    <thead>
+                        <tr>
+                            <?php if ($prefijo == "U") { ?>
+                                <td>Orden</td>
+                            <?php } ?>
 
-<?php if ($muestraBoton) { ?>
-    <th>#</th>
-<?php } else { ?>
-    <th>Orden</th>
-<?php } ?>
+                            <?php if ($muestraBoton) { ?>
+                                <th>#</th>
+                            <?php } else { ?>
+                                <th>Orden</th>
+                            <?php } ?>
 
-<th>Codigo Producto</th>
-<th>Producto</th>
-<th>Marca</th>
-<th>Unidad</th>
+                            <th>Codigo Producto</th>
+                            <th>Producto</th>
+                            <th>Marca</th>
+                            <th>Unidad</th>
 
-<?php if ($muestraBoton) { ?>
-    <th>Cant. Bultos</th>
-    <th>No. Bultos</th>
-    <th>Peso</th>
-    <th>Total Peso</th>
-    <th>CBM</th>
-    <th>Total CBM</th>
-    <th>Detalle</th>
-    <th>
-        <button type="button"
-                id="btnTogglePendientes"
-                class="btn btn-warning btn-sm">
-            Check / UnCheck
-        </button>
-    </th>
-<?php } ?>
+                            <?php if ($muestraBoton) { ?>
+                                <th>Cant. Bultos</th>
+                                <th>No. Bultos</th>
+                                <th>Peso</th>
+                                <th>Total Peso</th>
+                                <th>CBM</th>
+                                <th>Total CBM</th>
+                                <th>Detalle</th>
+                                <th>
+                                    <button type="button"
+                                            id="btnTogglePendientes"
+                                            class="btn btn-warning btn-sm">
+                                        Check / UnCheck
+                                    </button>
+                                </th>
+                            <?php } ?>
 
-</tr>
-</thead>
+                        </tr>
+                    </thead>
 
-<tbody>
-                    <?php $totalPeso = 0; ?>
-                    <?php $no = 0; ?>
-                    <?php $pendiente = false; ?>
-                    <?php foreach ($detalles as $reg) { ?>
-                        <?php $pendienteCheck = 0; ?>           
-                        <?php $ver = true; ?>
-                        <?php if ($pr) { ?>
-                            <?php $ver = false; ?>
+                    <tbody>
+                        <?php $totalPeso = 0; ?>
+                        <?php $no = 0; ?>
+                        <?php $pendiente = false; ?>
+                        <?php foreach ($detalles as $reg) { ?>
+                            <?php $pendienteCheck = 0; ?>           
+                            <?php $ver = true; ?>
                             <?php if ($pr) { ?>
-                                <?php if ($pr == $reg->getProductoId()) { ?>
-                                    <?php $ver = true; ?>
+                                <?php $ver = false; ?>
+                                <?php if ($pr) { ?>
+                                    <?php if ($pr == $reg->getProductoId()) { ?>
+                                        <?php $ver = true; ?>
+                                    <?php } ?>
                                 <?php } ?>
                             <?php } ?>
-                        <?php } ?>
-                        <?php $no++; ?>
-                        <?php $totalPeso = $totalPeso + ( $reg->getProducto()->getPeso() * $reg->getCantidad()) ?>
-                        <?php $pesoLin = round($reg->getProducto()->getPeso() * $reg->getCantidad(), 2); ?>
-                        <?php if ($ver) { ?>  
-                            <tr>
-                                <?php if (!$muestraBoton) { ?>
-                                    <td><?php echo $reg->getOrdenCotizacion()->getCodigo(); ?></td>
-                                <?php } else { ?>
-                                    <td style="text-align:right;"><?php echo $no; ?>&nbsp;&nbsp;</td>
-                                <?php } ?>
-                                <td><?php echo $reg->getProducto()->getCodigoSku(); ?></td>
-                                <td><?php echo $reg->getProducto()->getNombre(); ?></td>
-                                <td><?php echo $reg->getProducto()->getMarcaProducto(); ?></td>
-                                <td style="background-color:white !important; font-weight: bold; text-align: right; font-size:16px;">
-                                    <?php if ($muestraBoton) { ?>
-                                        <a class="btn btn-sm btn-block" href="#" data-toggle="modal" data-target="#ajaxmodalCan<?php echo $reg->getId() ?>">       
-                                            <?php echo $reg->getCantidad(); ?>
-                                        </a>
-                                    <?php } else { ?>
-                                        <?php echo $reg->getCantidad(); ?>
+                            <?php $no++; ?>
+                            <?php $totalPeso = $totalPeso + ( $reg->getProducto()->getPeso() * $reg->getCantidad()) ?>
+                            <?php $pesoLin = round($reg->getProducto()->getPeso() * $reg->getCantidad(), 2); ?>
+                            <?php if ($ver) { ?>  
+                                <tr>
 
+                                    <?php if ($prefijo == "U") { ?>
+                                        <td><?php echo $reg->getOrdenCotizacion()->getCodigo(); ?></td>
                                     <?php } ?>
-                                </td>                   
-                                <?php if ($muestraBoton) { ?>
-                                    <td  style="text-align:right"><?php echo $reg->getCantidadCaja(); ?></td>
-                                    <td>
-                                        <?php if ($reg->getCantidadCaja() > 0 or $reg->getBultoSuperior() > 0) { ?>
-                                            <?php echo "&nbsp;&nbsp;&nbsp;Bulto " . $reg->getBultoInicio(); ?>
-                                            <?php if ($reg->getBultoInicio() < $reg->getBultoFin()) { ?>
-                                                <?php echo "<br>&nbsp;&nbsp;&nbsp;A Bulto " . $reg->getBultoFin(); ?>
-                                            <?php } ?>
+
+                                    <?php if (!$muestraBoton) { ?>
+                                        <td><?php echo $reg->getOrdenCotizacion()->getCodigo(); ?></td>
+                                    <?php } else { ?>
+                                        <td style="text-align:right;"><?php echo $no; ?>&nbsp;&nbsp;</td>
+                                    <?php } ?>
+                                    <td><?php echo $reg->getProducto()->getCodigoSku(); ?>  </td>
+                                    <td><?php echo $reg->getProducto()->getNombre(); ?></td>
+                                    <td><?php echo $reg->getProducto()->getMarcaProducto(); ?></td>
+                                    <td style="background-color:white !important; font-weight: bold; text-align: right; font-size:16px;">
+                                        <?php if ($muestraBoton) { ?>
+                                            <a class="btn btn-sm btn-block" href="#" data-toggle="modal" data-target="#ajaxmodalCan<?php echo $reg->getId() ?>">       
+                                                <?php echo $reg->getCantidad(); ?>
+                                            </a>
                                         <?php } else { ?>
-                                            <?php $pendiente = true; ?>
-                                            <?php $pendienteCheck = 1; ?>
+                                            <?php echo $reg->getCantidad(); ?>
+
                                         <?php } ?>
-                                    </td>
-                                    <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getPeso(), false); ?></td>
-                                    <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getPeso() * $reg->getCantidad(), false); ?></td>
-                                    <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getCMB(), false); ?></td>
-                                    <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getCMB() * $reg->getCantidad(), false); ?></td>
-                                    <td><a class="btn btn-sm btn-success" href="#" data-toggle="modal" data-target="#ajaxmodalCE<?php echo $reg->getId() ?>">..</a>  </td>
-                                    <?php $token = sha1($reg->getId()); ?>
-                                    <td style="text-align:center; vertical-align:middle; white-space:nowrap;">
-
-                                        <a class="btn btn-sm btn-danger"
-                                           style="width:22px; height:22px; padding:0; display:inline-flex; align-items:center; justify-content:center;"
-                                           href="<?php echo url_for($modulo . '/elimina?token=' . $token . '&id=' . $reg->getId()) ?>">
-                                            -
-                                        </a>
-
-                                        <input type="checkbox"  data-pendiente="<?php echo $pendienteCheck; ?>"           class="eli-check pendiente-check"
-                                               name="eli[]"           value="<?php echo $reg->getId(); ?>"
-                                               style="margin-left:6px; transform:scale(1.9); vertical-align:middle;">
-
                                     </td>                   
-                                <?php } ?>
-                            </tr>
+                                    <?php if ($muestraBoton) { ?>
+                                        <td  style="text-align:right"><?php echo $reg->getCantidadCaja(); ?></td>
+                                        <td>
+                                            <?php if ($reg->getCantidadCaja() > 0 or $reg->getBultoSuperior() > 0) { ?>
+                                                <?php echo "&nbsp;&nbsp;&nbsp;Bulto " . $reg->getBultoInicio(); ?>
+                                                <?php if ($reg->getBultoInicio() < $reg->getBultoFin()) { ?>
+                                                    <?php echo "<br>&nbsp;&nbsp;&nbsp;A Bulto " . $reg->getBultoFin(); ?>
+                                                <?php } ?>
+                                            <?php } else { ?>
+                                                <?php $pendiente = true; ?>
+                                                <?php $pendienteCheck = 1; ?>
+                                            <?php } ?>
+                                        </td>
+                                        <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getPeso(), false); ?></td>
+                                        <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getPeso() * $reg->getCantidad(), false); ?></td>
+                                        <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getCMB(), false); ?></td>
+                                        <td style="text-align:right"><?php echo Parametro::formato($reg->getProducto()->getCMB() * $reg->getCantidad(), false); ?></td>
+                                        <td><a class="btn btn-sm btn-success" href="#" data-toggle="modal" data-target="#ajaxmodalCE<?php echo $reg->getId() ?>">..</a>  </td>
+                                        <?php $token = sha1($reg->getId()); ?>
+                                        <td style="text-align:center; vertical-align:middle; white-space:nowrap;">
+
+                                            <a class="btn btn-sm btn-danger"
+                                               style="width:22px; height:22px; padding:0; display:inline-flex; align-items:center; justify-content:center;"
+                                               href="<?php echo url_for($modulo . '/elimina?token=' . $token . '&id=' . $reg->getId()) ?>">
+                                                -
+                                            </a>
+
+                                            <input type="checkbox"  data-pendiente="<?php echo $pendienteCheck; ?>"           class="eli-check pendiente-check"
+                                                   name="eli[]"           value="<?php echo $reg->getId(); ?>"
+                                                   style="margin-left:6px; transform:scale(1.9); vertical-align:middle;">
+
+                                        </td>                   
+                                    <?php } ?>
+                                </tr>
+                            <?php } ?>
                         <?php } ?>
-                    <?php } ?>
-                            </tbody>
+                    </tbody>
                 </table>
 
                 <?php if ($muestraBoton) { ?>  
@@ -666,26 +682,26 @@
 </div> 
 
 <script>
-$('#tablaEmpaque').DataTable({
-    pageLength: -1,
-    responsive: true,
-    ordering: true,
-    searching: true,
-    info: true,
+    $('#tablaEmpaque').DataTable({
+        pageLength: -1,
+        responsive: true,
+        ordering: true,
+        searching: true,
+        info: true,
 
-    columnDefs: [
-        {
-            targets: 0,
-            type: 'num'
-        },
-        {
-            orderable: false,
-            targets: -1
+        columnDefs: [
+            {
+                targets: 0,
+                type: 'num'
+            },
+            {
+                orderable: false,
+                targets: -1
+            }
+        ],
+
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json'
         }
-    ],
-
-    language: {
-        url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json'
-    }
-});
+    });
 </script>

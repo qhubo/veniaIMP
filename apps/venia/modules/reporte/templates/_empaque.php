@@ -68,10 +68,10 @@
         </td>
         <td  style="width:50%">  
             <div class="header-right">
-                <strong>No.</strong> <?php echo $operacion->getCodigo(); ?><br><br>
+                <strong>No.</strong> <?php echo $codigo; ?><br><br>
                 <br><br><br>
                 <strong>CÓDIGO DEL CLIENTE:</strong> <?php echo $operacion->getCliente()->getCodigo(); ?><br>
-                <strong>PEDIDO:</strong> <?php echo str_replace("LIST-","", $operacion->getCodigo()); ?>
+                <strong>PEDIDO:</strong> <?php echo str_replace("LIST-","", $codigo); ?>
             </div>
         </td>
     </tr>
