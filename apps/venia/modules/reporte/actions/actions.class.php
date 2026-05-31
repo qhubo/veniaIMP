@@ -10,7 +10,191 @@
  */
 class reporteActions extends sfActions {
 
+
+    public function executeExportar(sfWebRequest $request) {
+    $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
+    $con = Propel::getConnection();
+    // ==========================================
+    // OBTENER LISTAS DE PRECIOS
+    // ==========================================
+    $stmt = $con->prepare("SELECT id, nombre FROM lista_precio WHERE empresa_id = :empresa_id ORDER BY id ");
+    $stmt->bindValue(':empresa_id', $empresaId, PDO::PARAM_INT);
+    $stmt->execute();
+    $listasPrecio = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // ==========================================
+    // CONSTRUIR COLUMNAS DINÁMICAS DE PRECIOS
+    // ==========================================
+    $camposPrecios = '';
+    $joinsPrecios  = '';
+    foreach ($listasPrecio as $lista) {
+        $alias = 'pp_' . $lista['id'];
+        $camposPrecios .= ", {$alias}.valor AS precio_{$lista['id']}";
+        $joinsPrecios .= "   LEFT JOIN producto_precio {$alias}  ON {$alias}.producto_id = p.id   AND {$alias}.lista_precio_id = {$lista['id']}";
+    }
+    if ($camposPrecios) {
+        $camposPrecios=",".$camposPrecios;
+    }
+//echo $empresaId;
+//die();
+//    echo $camposPrecios;
+//    die();
+    // ==========================================
+    // CONSULTA PRINCIPAL
+    // ==========================================
+    $query = " SELECT t.codigo AS codigo_tienda,  t.nombre AS tienda, p.codigo_sku,  p.codigo_barras,  p.nombre AS producto,
+    pe.cantidad,  p.precio {$camposPrecios} , costo_proveedor FROM producto_existencia pe INNER JOIN producto p ON p.id = pe.producto_id
+    INNER JOIN tienda t  ON t.id = pe.tienda_id   {$joinsPrecios}  WHERE pe.empresa_id = :empresa_id
+    AND IFNULL(pe.cantidad,0) > 0 and t.id not in(99)   ORDER BY   t.nombre,  p.nombre ";
+    $query = str_replace(",,", ",", $query);
+//    echo $query;
+//    die();
+    $stmt = $con->prepare($query);
     
+    
+    $stmt->bindValue(':empresa_id', $empresaId, PDO::PARAM_INT);
+    $stmt->execute();
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // ==========================================
+    // DESCARGA CSV
+    // ==========================================
+    $filename = 'inventario_' . date('Ymd_His') . '.csv';
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
+    header('Content-Type: text/csv; charset=UTF-8');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Pragma: no-cache');
+    header('Expires: 0');
+    $output = fopen('php://output', 'w');
+    // BOM UTF-8 para Excel
+    fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
+    // ==========================================
+    // ENCABEZADOS
+    // ==========================================
+    $header = array('Codigo Tienda', 'Tienda','SKU', 'Codigo Barras', 'Producto','Existencia','Precio  Venta');
+    foreach ($listasPrecio as $lista) {
+        $header[] = $lista['nombre'];
+    }
+    $header[]='Costo';
+    fputcsv($output, $header);
+    // ==========================================
+    // TOTALES
+    // ==========================================
+    $totalExistencia = 0;
+    $totalValor = 0;
+    // ==========================================
+    // DETALLE
+    // ==========================================
+    foreach ($result as $row) {
+
+        $codigoTienda = preg_replace(
+            '/\s+/',
+            ' ',
+            str_replace(
+                array(',', ';', "\r", "\n", "\t"),
+                ' ',
+                trim((string)$row['codigo_tienda'])
+            )
+        );
+
+        $tienda = preg_replace(
+            '/\s+/',
+            ' ',
+            str_replace(
+                array(',', ';', "\r", "\n", "\t"),
+                ' ',
+                trim((string)$row['tienda'])
+            )
+        );
+
+        $sku = preg_replace(
+            '/\s+/',
+            ' ',
+            str_replace(
+                array(',', ';', "\r", "\n", "\t"),
+                ' ',
+                trim((string)$row['codigo_sku'])
+            )
+        );
+
+        $codigoBarras = preg_replace(
+            '/\s+/',
+            ' ',
+            str_replace(
+                array(',', ';', "\r", "\n", "\t"),
+                ' ',
+                trim((string)$row['codigo_barras'])
+            )
+        );
+
+        $producto = preg_replace(
+            '/\s+/',
+            ' ',
+            str_replace(
+                array(',', ';', "\r", "\n", "\t"),
+                ' ',
+                trim((string)$row['producto'])
+            )
+        );
+
+        $linea = array(
+            $codigoTienda,
+            $tienda,
+            $sku,
+            $codigoBarras,
+            $producto,
+            (int)$row['cantidad'],
+            number_format((float)$row['precio'], 2, '.', '')
+
+        );
+
+        // Agregar precios de listas dinámicamente
+        foreach ($listasPrecio as $lista) {
+
+            $campo = 'precio_' . $lista['id'];
+
+            $linea[] = (
+                isset($row[$campo]) &&
+                $row[$campo] !== null
+            )
+                ? number_format((float)$row[$campo], 2, '.', '')
+                : '';
+        }
+        $linea[]=number_format((float)$row['costo_proveedor'], 2, '.', '');
+
+        fputcsv($output, $linea);
+
+        $totalExistencia += (int)$row['cantidad'];
+        $totalValor += (float)$row['valor_existencia'];
+    }
+
+    // ==========================================
+    // TOTALES
+    // ==========================================
+    fputcsv($output, array());
+
+//    $filaTotal = array(
+//        '',
+//        '',
+//        '',
+//        '',
+//        'TOTALES',
+//        '',
+//        $totalExistencia,
+//        number_format($totalValor, 2, '.', '')
+//    );
+//
+//    // Completar columnas de listas de precios
+//    foreach ($listasPrecio as $lista) {
+//        $filaTotal[] = '';
+//    }
+//
+//    fputcsv($output, $filaTotal);
+
+    fclose($output);
+
+    return sfView::NONE;
+}
        public function BuscaId($listaId) {
         $sql = " select oc.id from lista_empaque_unida_detalle un inner join orden_cotizacion ";
         $sql .= " oc on un.codigo =oc.codigo where lista_empaque_unida_id in (select lista_empaque_unida_id ";
