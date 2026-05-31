@@ -12,6 +12,8 @@ class reporteActions extends sfActions {
 
 
     public function executeExportar(sfWebRequest $request) {
+        $tipoUsua = strtoupper(sfContext::getInstance()->getUser()->getAttribute("tipoUsuario", null, 'seguridad'));
+   
     $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
     $con = Propel::getConnection();
     // ==========================================
@@ -75,7 +77,11 @@ class reporteActions extends sfActions {
     foreach ($listasPrecio as $lista) {
         $header[] = $lista['nombre'];
     }
-    $header[]='Costo';
+    
+         if ($tipoUsua == "ADMINISTRADOR") { 
+                $header[]='Costo';
+        }
+
     fputcsv($output, $header);
     // ==========================================
     // TOTALES
@@ -160,8 +166,9 @@ class reporteActions extends sfActions {
                 ? number_format((float)$row[$campo], 2, '.', '')
                 : '';
         }
+              if ($tipoUsua == "ADMINISTRADOR") { 
         $linea[]=number_format((float)$row['costo_proveedor'], 2, '.', '');
-
+              }
         fputcsv($output, $linea);
 
         $totalExistencia += (int)$row['cantidad'];
