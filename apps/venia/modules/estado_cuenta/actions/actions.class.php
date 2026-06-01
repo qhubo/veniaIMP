@@ -131,6 +131,7 @@ class estado_cuentaActions extends sfActions {
         $SUMAS = $sumatorias->getTotalTotal();
     }
 
+     $listab[] = 'Anulado';
     $listab[] = 'CONTRA ENTREGA';
     $listab[] = 'CONTRAENTREGA';
     $listab[] = 'CHEQUE PREFECHADO';
@@ -200,7 +201,7 @@ class estado_cuentaActions extends sfActions {
             . "  DATE_FORMAT(pp.fecha_documento, '%d/%m/%Y') fecha_documento, pp.valor, pp.tipo,pp.id "
     . " from operacion_pago_padre pp inner join banco b on b.id = pp.banco_id inner join operacion_pago"
     . " op on op.operacion_pago_padre_no = pp.id  inner join operacion opera on opera.id = operacion_id"
-    . " where cliente_id=".$clientev."  and pp.fecha_documento >= '".$fechaInicial."'"
+    . " where tipo <> 'anulado' and cliente_id=".$clientev."  and pp.fecha_documento >= '".$fechaInicial."'"
     . " group by pp.id, pp.documento, pp.fecha_documento, pp.valor, pp.tipo, pp.id";
             $sqlquery .= " order by op.fecha_documento";
         $con = Propel::getConnection();
