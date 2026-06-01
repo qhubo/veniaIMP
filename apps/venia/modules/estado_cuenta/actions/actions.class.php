@@ -20,7 +20,7 @@ class estado_cuentaActions extends sfActions {
         if ($sumatorias) {
             $SUMAS = $sumatorias->getTotalTotal();
         }
-
+ $listab[] = 'Anulado';
         $listab[] = 'CXC COBRAR';
         $listab[] = 'CONTRA ENTREGA';
         $listab[] = 'CONTRAENTREGA';
