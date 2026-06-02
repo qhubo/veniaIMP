@@ -34,11 +34,11 @@
             </div>
                 <div class="row">
                 <div class="col-lg-1"> </div>        
-                <label class="col-lg-1 control-label right "><?php echo TipoAparatoQuery::marca(); ?>  </label>
-                <div class="col-lg-4 <?php if ($form['marca']->hasError()) echo "has-error" ?>">
-                    <?php echo $form['marca'] ?>           
+                <label class="col-lg-1 control-label right ">Proveedor </label>
+                <div class="col-lg-4 <?php if ($form['proveedor']->hasError()) echo "has-error" ?>">
+                    <?php echo $form['proveedor'] ?>           
                     <span class="help-block form-error"> 
-                        <?php echo $form['marca']->renderError() ?>  
+                        <?php echo $form['proveedor']->renderError() ?>  
                     </span>
                 </div>
            
@@ -53,6 +53,12 @@
                     </span>
                 </div>
            
+                  <div class="col-lg-2">
+                 <button class="btn green btn-outline" type="submit">
+                    <i class="fa fa-search "></i>
+                    <span>Buscar</span>
+                </button>
+                         </div>
             </div>
 
 
@@ -74,23 +80,13 @@
 
             </div>
             <div class="col-lg-1">
-                <button class="btn green btn-outline" type="submit">
-                    <i class="fa fa-search "></i>
-                    <span>Buscar</span>
-                </button>
+               
             </div>
                    <div class="col-lg-2">
                           <a class="btn  btn grey-cascade  btn-block "  target="_blank"  href="<?php echo url_for($modulo . '/reporte') ?>" ><i class="fa fa-list"></i>&nbsp;&nbsp;Reporte&nbsp;&nbsp;  <i class="fa fa-print"></i></a>
                 </div>
                 <!-- Exportar -->
-    <div class="col-lg-2">
-        <a class="btn btn-warning btn-block"
-           target="_blank"
-           href="<?php echo url_for('reporte/exportar') ?>">
-            <i class="fa fa-file-excel-o"></i>
-            Exportar Precios
-        </a>
-    </div>
+
 
                   
         </div>

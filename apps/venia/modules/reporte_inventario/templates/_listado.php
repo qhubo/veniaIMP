@@ -9,6 +9,7 @@
 
                 <th  align="center"> Código Sku</th>
                 <th  align="center"> Nombre</th>
+                 <th  align="center"> Proveedor</th>
                 <th  align="center">Marca  </th>  
 
                 <?php foreach ($bodegas as $data) { ?>
@@ -43,6 +44,7 @@
 
                             <td> <?php echo $lista->getCodigoSku() ?> </td>
                             <td><?php echo $lista->getNombre() ?></td>
+                             <td><?php  if ($lista->getProveedorId()) echo $lista->getProveedor()->getCodigo() ?></td>
                             <td><?php echo $lista->getMarcaProducto(); ?> </td>
                             <?php foreach ($bodegas as $data) { ?>
                                 <?php if ($data->getTiendaId()) { ?>

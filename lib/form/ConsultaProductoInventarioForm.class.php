@@ -4,6 +4,23 @@ class consultaProductoInventarioForm extends sfForm {
 
     public function configure() {
         
+        
+        $tipoP['']='Todas las Proveedores';
+      $query="select  pp.id, pp.nombre from proveedor pp inner join producto p on p.proveedor_id=pp.id  order by pp.nombre";
+        $con = Propel::getConnection();
+        $stmt = $con->prepare($query);
+        $resource = $stmt->execute();
+        $proveedorDe = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach($proveedorDe as $result){
+            $tipoP[$result['id']]=$result['nombre'];
+        }
+        
+        
+         $this->setWidget('proveedor', new sfWidgetFormChoice(array(
+            "choices" => $tipoP,
+                ), array("class" => "form-control")));
+        $this->setValidator('proveedor', new sfValidatorString(array('required' => false)));
+        
             $tipoId = sfContext::getInstance()->getUser()->getAttribute('tipo_id', null, 'seguridad');
         $marcaId = sfContext::getInstance()->getUser()->getAttribute('marca_id', null, 'seguridad');
 
