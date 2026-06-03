@@ -6,7 +6,7 @@ class CreaOrdenProveedorForm extends sfForm {
 
 
         
-           $this->setWidget('proveedor', new sfWidgetFormInputText(array(), array('class' => 'form-control')));
+           $this->setWidget('proveedor', new sfWidgetFormInputText(array(), array('class' => 'form-control mi-selector ')));
         $this->setValidator('proveedor', new sfValidatorString(array('required' => true)));
         
         

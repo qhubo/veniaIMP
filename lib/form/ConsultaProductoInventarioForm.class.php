@@ -18,7 +18,7 @@ class consultaProductoInventarioForm extends sfForm {
         
          $this->setWidget('proveedor', new sfWidgetFormChoice(array(
             "choices" => $tipoP,
-                ), array("class" => "form-control")));
+                ), array("class" => "form-control mi-selector ")));
         $this->setValidator('proveedor', new sfValidatorString(array('required' => false)));
         
             $tipoId = sfContext::getInstance()->getUser()->getAttribute('tipo_id', null, 'seguridad');

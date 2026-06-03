@@ -84,7 +84,7 @@ class IngresoProveedorForm extends sfForm {
 
         $this->setWidget('tipo_proveedor', new sfWidgetFormChoice(array(
                     "choices" => $opciones,
-                        ), array("class" => "form-control")));
+                        ), array("class" => "form-control mi-selector ")));
         $this->setValidator('tipo_proveedor', new sfValidatorString(array('required' => false)));
 
         $opcionesT[null] = 'SIN CALIFICACION';

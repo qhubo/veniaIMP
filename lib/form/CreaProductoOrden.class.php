@@ -39,7 +39,7 @@ class CreaProductoOrdenForm extends sfForm {
         foreach ($proveedorQuery as $regis) {
             $lineaTipo[$regis->getId()] = $regis->getDescripcion();
         }
-        $this->setWidget('tipo', new sfWidgetFormChoice(array("choices" => $lineaTipo,), array("class" => "form-control required")));
+        $this->setWidget('tipo', new sfWidgetFormChoice(array("choices" => $lineaTipo,), array("class" => "mi-selector  form-control required")));
         $this->setValidator('tipo', new sfValidatorString(array('required' => false)));     
         
   

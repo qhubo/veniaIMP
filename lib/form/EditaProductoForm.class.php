@@ -24,19 +24,19 @@ class EditaProductoForm extends sfForm {
             $lineaProve[null] = '[ Seleccione Proveedor ]';
             $proveedorQuery = ProveedorQuery::create()
                     ->filterByActivo(true)
-                    ->orderByNombre("Desc")
+                    ->orderByNombre("Asc")
                     ->find();
         } else {
          $proveedorQuery = ProveedorQuery::create()
                     ->filterById($proveedor_id)
-                    ->orderByNombre("Desc")
+                    ->orderByNombre("Asc")
                     ->find();
         }
         foreach ($proveedorQuery as $regis) {
             $lineaProve[$regis->getId()] = $regis->getNombre();
         }
 
-        $this->setWidget('proveedor', new sfWidgetFormChoice(array( "choices" => $lineaProve ), array("class" => "form-control")));
+        $this->setWidget('proveedor', new sfWidgetFormChoice(array( "choices" => $lineaProve ), array("class" => "mi-selector  form-control")));
         $this->setValidator('proveedor', new sfValidatorString(array('required' => false)));
  $lineaMarca[null] = '[ Seleccione  ]';
 $marcaQ = MarcaProductoQuery::create()->find();

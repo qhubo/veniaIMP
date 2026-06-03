@@ -28,6 +28,7 @@ if ($pefilq) {
     }
 </style>
 <script src='/assets/global/plugins/jquery.min.js'></script>
+<script src='/assets/global/plugins/select2.min.js'></script>
 
 <div class="kt-portlet kt-portlet--responsive-mobile">
     <div class="kt-portlet__head">
@@ -541,4 +542,12 @@ function guardarCodigo() {
     window.location.href = "<?php echo url_for('edita_producto/editarCodigo'); ?>?id=" 
         + id + "&codigo=" + encodeURIComponent(nuevoCodigo);
 }
+</script>
+
+<script>
+jQuery(document).ready(function($){
+    $(document).ready(function() {
+        $('.mi-selector').select2();
+    });
+});
 </script>

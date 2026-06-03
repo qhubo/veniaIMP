@@ -3,7 +3,10 @@
 <?php echo $form->renderFormTag(url_for($modulo . '/index'), array('class' => 'form-horizontal"')) ?>
 <?php echo $form->renderHiddenFields() ?>
  <?php      $tipoPrecios = ListaPrecioQuery::create()->orderByNombre()->filterByActivo(true)->find(); ?>
- 
+ <script src='/assets/global/plugins/jquery.min.js'></script>
+<script src='/assets/global/plugins/select2.min.js'></script>
+
+
 <div class="kt-portlet kt-portlet--responsive-mobile">
     <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
@@ -127,3 +130,12 @@
         </div>
     </div>
 </div>
+
+
+<script>
+jQuery(document).ready(function($){
+    $(document).ready(function() {
+        $('.mi-selector').select2();
+    });
+});
+</script>
