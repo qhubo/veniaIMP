@@ -144,10 +144,11 @@ class buscaActions extends sfActions {
         // ðŸ’° LISTAS DE PRECIO
         $tipoPrecios = ListaPrecioQuery::create()
                 ->filterByActivo(true)
+                ->filterByConfidencial(false)
                 ->orderByNombre()
                    ->orderById()
                 ->find();
-
+ $tipoPrecioscon  = ListaPrecioQuery::create()->filterByConfidencial(true)->orderByNombre() ->orderById()->filterByActivo(true)->find();
         // âš¡ IDS
         $ids = array_column($productos, 'id');
 
@@ -208,9 +209,16 @@ class buscaActions extends sfActions {
                 $row[] =Parametro::formato($precioLista, false);
             }
 
-            // 
-            $row[] = '<div style="text-align:right; display:block">' . Parametro::formato($reg['costo_proveedor'], false) . '</div>';
-
+       if ($TIPO_USUARIO == 'ADMINISTRADOR') {
+               foreach ($tipoPrecioscon as $prec) {
+                $precioLista = 0;
+                if (isset($preciosLista[$reg['id']]) && isset($preciosLista[$reg['id']][$prec->getId()])) {
+                    $precioLista = $preciosLista[$reg['id']][$prec->getId()];
+                }
+                $row[] =Parametro::formato($precioLista, false);
+            }          
+              $row[] = '<div style="text-align:right; display:block">' . Parametro::formato($reg['costo_proveedor'], false) . '</div>';
+       }
             $output["aaData"][] = $row;
         }
 

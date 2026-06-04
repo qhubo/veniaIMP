@@ -7,7 +7,9 @@
         }
         $tiendaQuery->orderById();
         $tiendas = $tiendaQuery->find(); ?>
-<?php $tipoPrecios  = ListaPrecioQuery::create()->orderByNombre() ->orderById()->filterByActivo(true)->find(); ?>
+<?php $tipoPrecios  = ListaPrecioQuery::create()->filterByConfidencial(false)->orderByNombre() ->orderById()->filterByActivo(true)->find(); ?>
+<?php $tipoPrecioscon  = ListaPrecioQuery::create()->filterByConfidencial(true)->orderByNombre() ->orderById()->filterByActivo(true)->find(); ?>
+
 <style>
 .tabla-scroll {
     max-height: 400px;   /* Ajusta la altura */
@@ -34,7 +36,12 @@
                <?php foreach ($tipoPrecios as $data) { ?>
                 <th width="10%"> Precio <?php echo $data->getNombre(); ?></th>
             <?php } ?>
+                
             <?php if ($TIPO_USUARIO == 'ADMINISTRADOR') { ?>
+
+                   <?php foreach ($tipoPrecioscon as $data) { ?>
+                <th width="10%"> Precio <?php echo $data->getNombre(); ?></th>
+            <?php } ?>
                 <th width="10%"> Costo </th>
             <?php } ?>
         </tr>
@@ -80,8 +87,11 @@
 <?php } ?>
 
 <?php if ($TIPO_USUARIO == 'ADMINISTRADOR') { ?>
-                {"bSearchable": true}
-                ,
+                <?php foreach ($tipoPrecioscon as $data) { ?>
+                    {"bSearchable": true} ,
+                    <?php } ?>
+
+    {"bSearchable": true} ,
 <?php } ?>
    
             

@@ -11,7 +11,8 @@
 class reporte_inventarioActions extends sfActions {
 
     public function executeReporte(sfWebRequest $request) {
-        $tipoPrecios = ListaPrecioQuery::create()->orderByNombre()->filterByActivo(true)->find();
+        $tipoPrecios = ListaPrecioQuery::create()->filterByConfidencial(false)->orderByNombre()->filterByActivo(true)->find();
+        $tipoPrecioscon = ListaPrecioQuery::create()->filterByConfidencial(true)->orderByNombre()->filterByActivo(true)->find();
         $tipoUsua = strtoupper(sfContext::getInstance()->getUser()->getAttribute("tipoUsuario", null, 'seguridad'));
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
         error_reporting(-1);
@@ -50,6 +51,9 @@ class reporte_inventarioActions extends sfActions {
             $encabezados[] = $datad->getNombre();
         }
         if ($tipoUsua == "ADMINISTRADOR") { 
+             foreach ($tipoPrecioscon as $datad) {
+            $encabezados[] = $datad->getNombre();
+        }
         $encabezados[] = strtoupper("Costo");
         }
         $Datos = implode(",", $encabezados);
@@ -89,6 +93,9 @@ class reporte_inventarioActions extends sfActions {
                     $datos[] = round($lista->getPrecioLista($datad->getId()), 2);  // ENTERO                          
                 }
 if ($tipoUsua == "ADMINISTRADOR") { 
+       foreach ($tipoPrecioscon as $datad) {
+                    $datos[] = round($lista->getPrecioLista($datad->getId()), 2);  // ENTERO                          
+                }
                 $datos[] = round($lista->getCostoProveedor(), 2);  // ENTERO
 }
                 $lineas = implode(",", $datos);

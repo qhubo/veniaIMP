@@ -1329,7 +1329,8 @@ propel:
     empresa_id:                        ~
     codigo:	                       { type: varchar(32) }
     nombre:                            { type: varchar(260), required: true, primaryString: true, default: ''  } 
-    activo:                            { type: boolean, default: true }     
+    activo:                            { type: boolean, default: true } 
+    confidencial:                      { type: boolean, default: false } 
     
   ingreso_producto:
     _attributes: { phpName: IngresoProducto, idMethod: native }

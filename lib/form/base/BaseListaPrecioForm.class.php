@@ -14,19 +14,21 @@ abstract class BaseListaPrecioForm extends BaseFormPropel
   public function setup()
   {
     $this->setWidgets(array(
-      'id'         => new sfWidgetFormInputHidden(),
-      'empresa_id' => new sfWidgetFormPropelChoice(array('model' => 'Empresa', 'add_empty' => true)),
-      'codigo'     => new sfWidgetFormInputText(),
-      'nombre'     => new sfWidgetFormInputText(),
-      'activo'     => new sfWidgetFormInputCheckbox(),
+      'id'           => new sfWidgetFormInputHidden(),
+      'empresa_id'   => new sfWidgetFormPropelChoice(array('model' => 'Empresa', 'add_empty' => true)),
+      'codigo'       => new sfWidgetFormInputText(),
+      'nombre'       => new sfWidgetFormInputText(),
+      'activo'       => new sfWidgetFormInputCheckbox(),
+      'confidencial' => new sfWidgetFormInputCheckbox(),
     ));
 
     $this->setValidators(array(
-      'id'         => new sfValidatorChoice(array('choices' => array($this->getObject()->getId()), 'empty_value' => $this->getObject()->getId(), 'required' => false)),
-      'empresa_id' => new sfValidatorPropelChoice(array('model' => 'Empresa', 'column' => 'id', 'required' => false)),
-      'codigo'     => new sfValidatorString(array('max_length' => 32, 'required' => false)),
-      'nombre'     => new sfValidatorString(array('max_length' => 260)),
-      'activo'     => new sfValidatorBoolean(array('required' => false)),
+      'id'           => new sfValidatorChoice(array('choices' => array($this->getObject()->getId()), 'empty_value' => $this->getObject()->getId(), 'required' => false)),
+      'empresa_id'   => new sfValidatorPropelChoice(array('model' => 'Empresa', 'column' => 'id', 'required' => false)),
+      'codigo'       => new sfValidatorString(array('max_length' => 32, 'required' => false)),
+      'nombre'       => new sfValidatorString(array('max_length' => 260)),
+      'activo'       => new sfValidatorBoolean(array('required' => false)),
+      'confidencial' => new sfValidatorBoolean(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('lista_precio[%s]');

@@ -21,6 +21,9 @@ class TipoPrecioForm extends sfForm {
           $this->setWidget('activo', new sfWidgetFormInputCheckbox()); // new sfWidgetFormInputText(array(), array('class' => 'form-control','data-provide'=>'datepicker')));// check
         $this->setValidator('activo', new sfValidatorString(array('required' => false)));
 
+           $this->setWidget('confidencial', new sfWidgetFormInputCheckbox()); // new sfWidgetFormInputText(array(), array('class' => 'form-control','data-provide'=>'datepicker')));// check
+        $this->setValidator('confidencial', new sfValidatorString(array('required' => false)));
+
         $this->widgetSchema->setNameFormat('consulta[%s]');
     }
 

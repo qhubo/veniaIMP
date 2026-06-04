@@ -60,6 +60,7 @@ class lista_precioActions extends sfActions
             $default['codigo'] = $lista->getCodigo();
             $default['nombre'] = $lista->getNombre();
             $default['activo'] = $lista->getActivo();
+            $default['confidencial']=$lista->getConfidencial();
         }
         $this->form = new TipoPrecioForm($default);
         if ($request->isMethod('post')) {
@@ -69,6 +70,7 @@ class lista_precioActions extends sfActions
                 if (!$lista) {
                     $lista = new ListaPrecio();
                 }
+                $lista->setConfidencial($valores['confidencial']);
                 $lista->setCodigo($valores['codigo']);
                 $lista->setNombre($valores['nombre']);
                 $lista->setActivo($valores['activo']);

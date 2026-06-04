@@ -23,6 +23,7 @@ class EditaProductoForm extends sfForm {
         if (!$proveedor_id) {
             $lineaProve[null] = '[ Seleccione Proveedor ]';
             $proveedorQuery = ProveedorQuery::create()
+                     ->filterByTipoProveedor('INTERNACIONAL')
                     ->filterByActivo(true)
                     ->orderByNombre("Asc")
                     ->find();
@@ -44,7 +45,7 @@ $marcaQ = MarcaProductoQuery::create()->find();
             $lineaMarca[$regis->getNombre()] = $regis->getNombre();
         }
         
-        $this->setWidget('marcaProducto', new sfWidgetFormChoice(array( "choices" => $lineaMarca ), array("class" => "form-control")));
+        $this->setWidget('marcaProducto', new sfWidgetFormChoice(array( "choices" => $lineaMarca ), array("class" => "mi-selector  form-control")));
         $this->setValidator('marcaProducto', new sfValidatorString(array('required' => false)));
 
         
@@ -96,14 +97,14 @@ $this->setWidget('origen', new sfWidgetFormInputText(array(), array('class' => '
         }
                 $this->setWidget('tipo', new sfWidgetFormChoice(array(
             "choices" => $lineaTipo,
-                ), array("class" => "form-control")));
+                ), array("class" => "mi-selector form-control")));
         $this->setValidator('tipo', new sfValidatorString(array('required' => true)));
         $this->setWidget('marca', new sfWidgetFormPropelChoice(
                 array('model' => 'Marca',
             'criteria' => $criteriaMarca,
             'add_empty' => '[ Seleccione ' . TipoAparatoQuery::marca() . ' ]',
             'order_by' => array('Descripcion', 'asc'),
-                ), array('class' => 'form-control',
+                ), array('class' => 'form-control mi-selector ',
         )));
         $this->setValidator('marca', new sfValidatorString(array('required' => false)));
         $this->setWidget('modelo', new sfWidgetFormPropelChoice(
@@ -111,7 +112,7 @@ $this->setWidget('origen', new sfWidgetFormInputText(array(), array('class' => '
             'criteria' => $criteria,
             'add_empty' => '[ Seleccione ' . TipoAparatoQuery::modelo() . ' ]',
             'order_by' => array('Descripcion', 'asc'),
-                ), array('class' => 'form-control',
+                ), array('class' => 'form-control mi-selector ',
         )));
         $this->setValidator('modelo', new sfValidatorString(array('required' => false)));
         $this->setWidget('codigo_sku', new sfWidgetFormInputText(array(), array('class' => 'form-control',

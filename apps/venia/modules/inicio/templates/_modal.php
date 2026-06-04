@@ -1,17 +1,33 @@
+<script>
+    .modal-80 {
+    width: 80vw !important;
+    max-width: 80vw !important;
+}
+
+.modal-80 .modal-content {
+    height: 80vh;
+}
+
+.modal-80 .modal-body {
+    overflow-y: auto;
+}
+    </script>
 <?php $modulo = $sf_params->get('module'); ?>
 <?php if (($modulo <> 'carga_producto')) { ?>
-    <div class="modal fade" id="kt_modal_bus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Buscador Producto</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    </button>
-                </div>
-                <div class="modal-body">     <?php include_partial('busca/ordenBuscaProducto', array()) ?>  
-                </div>
+  <div class="modal fade" id="kt_modal_bus" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-80" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Buscador Producto</h5>
+                <button type="button" class="close" data-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <?php include_partial('busca/ordenBuscaProducto', array()) ?>
             </div>
         </div>
+    </div>
+</div>
     <?php } ?>
 </div>
 <?php $acceso = MenuSeguridadQuery::Empresas() ?>

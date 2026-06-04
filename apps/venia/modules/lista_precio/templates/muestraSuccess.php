@@ -52,7 +52,16 @@
                 </span>
             </div>
         </div>
-        
+              <div class="row"  style="padding-bottom:8px;">
+                 <div class="col-lg-1"> </div>
+            <label class="col-lg-1 control-label font-blue-steel right ">Confidencial</label>
+            <div class="col-lg-1 <?php if ($form['confidencial']->hasError()) echo "has-error" ?>">
+                <?php echo $form['confidencial'] ?>           
+                <span class="help-block form-error"> 
+                    <?php echo $form['confidencial']->renderError() ?>  
+                </span>
+            </div>
+              </div>
             
 
         

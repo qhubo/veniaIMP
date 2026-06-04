@@ -1254,7 +1254,9 @@ class orden_compraActions extends sfActions {
         }
 
         $orden = OrdenProveedorQuery::create()->findOneById($id);
-        $this->proveedores = ProveedorQuery::create()->orderByNombre("Asc")->find();
+        $this->proveedores = ProveedorQuery::create()
+                ->filterByTipoProveedor('Internacional')
+                ->orderByNombre("Asc")->find();
         $provedorId = null;
         if ($orden) {
             $provedorId = $orden->getProveedorId();

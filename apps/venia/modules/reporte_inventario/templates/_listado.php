@@ -1,4 +1,7 @@
-<?php $tipoPrecios = ListaPrecioQuery::create()->orderByNombre()->filterByActivo(true)->find(); ?>
+
+<?php    $tipoPrecios = ListaPrecioQuery::create()->filterByConfidencial(false)->orderByNombre()->filterByActivo(true)->find(); ?>
+<?php        $tipoPrecioscon = ListaPrecioQuery::create()->filterByConfidencial(true)->orderByNombre()->filterByActivo(true)->find(); ?>
+   
 <?php $tipoUsua = strtoupper(sfContext::getInstance()->getUser()->getAttribute("tipoUsuario", null, 'seguridad')); ?>
 <div class="table-scrollable">
     <table class="table table-bordered  dataTable table-condensed flip-content" >
@@ -23,6 +26,9 @@
                     <th  align="center"><span class="font-blue sbold"> <?php echo $datad->getNombre() ?> </span></th>
                 <?php } ?>
                 <?php if ($tipoUsua == "ADMINISTRADOR") { ?>
+                     <?php foreach ($tipoPrecioscon as $datad) { ?>
+                    <th  align="center"><span class="font-blue sbold"> <?php echo $datad->getNombre() ?> </span></th>
+                <?php } ?>
                     <th  align="center"> Costo
                     <?php } ?>
                 </th>
@@ -57,12 +63,16 @@
                             <?php foreach ($tipoPrecios as $datad) { ?>
                                 <td  align="right"><?php echo number_format($lista->getPrecioLista($datad->getId()), 2); ?> </td>                           
                             <?php } ?>
-
+        <?php if ($tipoUsua == "ADMINISTRADOR") { ?>
+                                 <?php foreach ($tipoPrecioscon as $datad) { ?>
+                                <td  align="right"><?php echo number_format($lista->getPrecioLista($datad->getId()), 2); ?> </td>                           
+                            <?php } ?>
                             <td  align="right">
-                                <?php if ($tipoUsua == "ADMINISTRADOR") { ?>
+                        
                                     <?php echo number_format($lista->getCostoProveedor(), 2); ?> 
-                                <?php } ?>
+                           
                             </td>
+                                 <?php } ?>
                         </tr>
                     <?php } ?>
                 <?php } ?>

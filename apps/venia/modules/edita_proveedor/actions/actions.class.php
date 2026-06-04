@@ -253,6 +253,8 @@ class edita_proveedorActions extends sfActions {
         $this->leyenda = $leyenda;
         $this->color = $color;
         $carpetaArchivos = sfConfig::get('sf_upload_dir'); // $ParametroConexion['ruta']; 
+//        echo $defaults['tipo_proveedor'];
+//        die();
         $this->form = new IngresoProveedorForm($defaults);
         if ($request->isMethod('post')) {
             $this->form->bind($request->getParameter("consulta"), $request->getFiles("consulta"));
