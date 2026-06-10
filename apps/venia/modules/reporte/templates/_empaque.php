@@ -61,7 +61,7 @@
             <br><br><br><br><br>
             <div class="header-left">
                 <strong><?php echo $operacion->getEmpresa()->getNombre(); ?></strong><br>
-                <strong>FECHA:</strong> <?php echo $operacion->getFecha('d/m/Y'); ?><br>
+                <strong>FECHA:</strong> <?php echo $operacion->getFechaVencimiento('d/m/Y'); ?><br>
                 <strong>NOMBRE:</strong> <?php echo $operacion->getNombre(); ?><br>
                 <strong>OBSERVACIONES:</strong> <?php echo $operacion->getComentario(); ?>
             </div>

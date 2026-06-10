@@ -69,7 +69,7 @@ class orden_cotizacion2Actions extends sfActions {
         $operacion->setUsuario($usuarioQ->getUsuario());
         $operacion->setFecha(date('Y-m-d H:i:s'));
         $operacion->setFechaDocumento(date('Y-m-d H:i:s'));
-        $operacion->setFechaVencimiento($fecha_vencimiento);
+       // $operacion->setFechaVencimiento($fecha_vencimiento);
         $operacion->setClienteId($receta->getClienteId());
         $operacion->setNit($receta->getCliente()->getNit());
         $operacion->setNombre($receta->getCliente()->getNombre());
@@ -651,7 +651,7 @@ class orden_cotizacion2Actions extends sfActions {
         $operacion->setUsuario($usuarioQ->getUsuario());
         $operacion->setFecha(date('Y-m-d H:i:s'));
         $operacion->setFechaDocumento(date('Y-m-d H:i:s'));
-        $operacion->setFechaVencimiento($fecha_vencimiento);
+      //  $operacion->setFechaVencimiento($fecha_vencimiento);
         $operacion->save();
         sfContext::getInstance()->getUser()->setAttribute('CotizacionId', $operacion->getId(), 'seguridad');
         $this->getUser()->setFlash('exito', 'Orden creada con exito ' . $operacion->getCodigo());
@@ -689,7 +689,7 @@ class orden_cotizacion2Actions extends sfActions {
         if ($orden) {
             //  $default['no_documento'] = $orden->getNoDocumento();
             $default['fecha_documento'] = $orden->getFechaDocumento('d/m/Y');
-            $default['fecha_contabilizacion'] = $orden->getFechaVencimiento('d/m/Y');
+            $default['fecha_contabilizacion'] = $orden->getFechaDocumento('d/m/Y');
             $default['dia_credito'] = $orden->getDiaCredito();
             $default['nit'] = $orden->getNit();
             $default['nombre'] = $orden->getNombre();
@@ -735,7 +735,7 @@ class orden_cotizacion2Actions extends sfActions {
 //                    $orden->setExcento(true);
 //                }
                 $orden->setFechaDocumento($fecha_documento);
-                $orden->setFechaVencimiento($fecha_contabilizacion);
+             //   $orden->setFechaVencimiento($fecha_contabilizacion);
                 $orden->setTelefono($valores['telefono']);
                 $orden->setDireccion($valores['direccion']);
                 $orden->setCorreo($valores['correo']);

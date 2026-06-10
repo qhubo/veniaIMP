@@ -80,7 +80,7 @@ class reporte_excelActions extends sfActions {
 
 // ================= CLIENTE =================
         $sheet->setCellValue("B6", "Fecha:");
-        $sheet->setCellValue("C6", $ordenCompra->getFecha('d/m/Y'));
+        $sheet->setCellValue("C6", $ordenCompra->getFechaVencimiento('d/m/Y'));
         $sheet->setCellValue("B7", "Cliente:");
         $sheet->setCellValue("C7", $ordenCompra->getNombre());
         $sheet->setCellValue("B8", "Dirección:");

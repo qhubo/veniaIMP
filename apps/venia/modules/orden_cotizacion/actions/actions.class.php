@@ -759,7 +759,7 @@ try {
         $tokenGuardado = sha1($operacion->getCodigo());
         $operacion->setToken($tokenGuardado);
         $operacion->setUsuario($usuarioQ->getUsuario());
-        $operacion->setFechaVencimiento($fecha_vencimiento);
+        //$operacion->setFechaVencimiento($fecha_vencimiento);
         $operacion->save();
         sfContext::getInstance()->getUser()->setAttribute('CotizacionId', $operacion->getId(), 'seguridad');
         $listaPendi = sfContext::getInstance()->getUser()->getAttribute('CotizacionIPendie', null, 'seguridad');
@@ -815,7 +815,7 @@ try {
         if ($orden) {
             //  $default['no_documento'] = $orden->getNoDocumento();
             $default['fecha_documento'] = $orden->getFechaDocumento('d/m/Y');
-            $default['fecha_contabilizacion'] = $orden->getFechaVencimiento('d/m/Y');
+            $default['fecha_contabilizacion'] = $orden->getFechaDocumento('d/m/Y');
             $default['dia_credito'] = $orden->getDiaCredito();
             $default['nit'] = $orden->getNit();
             $default['nombre'] = $orden->getNombre();
@@ -917,7 +917,7 @@ try {
                 }
                 $orden->setAcuerdoPago($valores['acuerdo_pago']);
                 $orden->setFechaDocumento($fecha_documento);
-                $orden->setFechaVencimiento($fecha_contabilizacion);
+              //  $orden->setFechaVencimiento($fecha_contabilizacion);
                 $orden->setTelefono($valores['telefono']);
                 $orden->setDireccion($valores['direccion']);
                 $orden->setCorreo($valores['correo']);

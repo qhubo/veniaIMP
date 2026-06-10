@@ -4,6 +4,7 @@ class verifica_bodegaActions extends sfActions {
 
     
     public function executeConfirmaPedi(sfWebRequest $request) {
+         date_default_timezone_set("America/Guatemala");
         error_reporting(-1);
 
         $id = $request->getParameter('id');
@@ -42,6 +43,7 @@ class verifica_bodegaActions extends sfActions {
                 //$this->redirect('verifica_bodega/index?id=' . $id);
             }
         }
+        $opreacion->setFechaVencimiento(date('Y-m-d H:i:s'));
         $opreacion->setEmpacado(true);
         $opreacion->save();
         }

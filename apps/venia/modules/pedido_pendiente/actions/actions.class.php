@@ -45,7 +45,7 @@ class pedido_pendienteActions extends sfActions {
  $RENUEVA->setNit($ordenQ->getNit());                  
  $RENUEVA->setNombre($ordenQ->getNombre());               
  $RENUEVA->setFechaDocumento($ordenQ->getFechaDocumento());      
- $RENUEVA->setFechaVencimiento($ordenQ->getFechaVencimiento());    
+ //$RENUEVA->setFechaVencimiento($ordenQ->getFechaVencimiento());    
  $RENUEVA->setFecha($ordenQ->getFecha());                
  $RENUEVA->setDiaCredito($ordenQ->getDiaCredito());          
  $RENUEVA->setUsuario($ordenQ->getUsuario());              

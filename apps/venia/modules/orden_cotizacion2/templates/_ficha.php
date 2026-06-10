@@ -26,7 +26,7 @@
 
             <th align="center"><span class="kt-font-success">Documento </span></th>
             <th align="center"><span class="kt-font-success">Fecha  Documento</span></th>
-            <th align="center"><span class="kt-font-success">Fecha  Vencimiento</span></th>
+
             <th align="center"><span class="kt-font-success">Sub Total</span></th>
             <th align="center"><span class="kt-font-success">Iva</span></th>
             <th align="center"><span class="kt-font-success">Total</span></th>
@@ -37,7 +37,7 @@
         <tr>
             <td> </td>
             <td><?php echo $orden->getFechaDocumento('d/m/Y') ?></td>
-            <td><?php echo $orden->getFechaVencimiento('d/m/Y') ?></td>
+
             <td><?php echo number_format($orden->getSubTotal(), 2); ?> </td>
             <td><?php echo number_format($orden->getIva(), 2); ?> </td>
             <td><h3><?php echo number_format($orden->getValorTotal(), 2); ?></h3> </td>
