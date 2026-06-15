@@ -263,6 +263,50 @@ if ($pefilq) {
             </div>
             
         </div>
+          <?php if (($TIPO_USUARIO == 'ADMINISTRADOR') OR (strtoupper($tipoUsua) == 'CONTABILIDAD')) { ?>
+        <div class="row mt-3" style="padding-bottom:10px;">
+    <div class="col-lg-1"></div>
+
+    <div class="col-lg-10">
+        <div class="card border-primary">
+
+                <table class="table table-sm table-bordered mb-0">
+                    <thead>
+                        <tr>
+                            <th>Tipo Costo</th>
+                            <th>Costo</th>
+                            <th>Ganancia</th>
+                            <th>% Margen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Fábrica</td>
+                            <td id="cf_costo">Q0.00</td>
+                            <td id="cf_ganancia">Q0.00</td>
+                            <td id="cf_margen">0%</td>
+                        </tr>
+
+                        <tr>
+                            <td>CIF</td>
+                            <td id="cif_costo">Q0.00</td>
+                            <td id="cif_ganancia">Q0.00</td>
+                            <td id="cif_margen">0%</td>
+                        </tr>
+
+                        <tr>
+                            <td>Costo Final</td>
+                            <td id="final_costo">Q0.00</td>
+                            <td id="final_ganancia">Q0.00</td>
+                            <td id="final_margen">0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+   
+        </div>
+    </div>
+</div>
+          <?php } ?>
 
         <div class="row">    
             <div class="col-lg-1"></div>
@@ -548,5 +592,51 @@ function guardarCodigo() {
 
     $(document).ready(function() {
         $('.mi-selector').select2();
+         $("#consulta_precio,#consulta_costo,#consulta_costo_fabrica,#consulta_costo_cif")
+        .on("keyup change", function(){
+            actualizarMargenes();
+        });
+
+    actualizarMargenes();
     });
+    function calculaMargen(costo, precio, prefijo){
+
+    if(costo <= 0 || precio <= 0){
+        $("#" + prefijo + "_costo").html("$0.00");
+        $("#" + prefijo + "_ganancia").html("$0.00");
+        $("#" + prefijo + "_margen").html("0%");
+        return;
+    }
+
+    var ganancia = precio - costo;
+    var margen   = ((precio - costo) / costo) * 100;
+
+    $("#" + prefijo + "_costo").html("$" + costo.toFixed(2));
+    $("#" + prefijo + "_ganancia").html("$" + ganancia.toFixed(2));
+
+    var badge = "danger";
+
+    if(margen >= 20) badge = "warning";
+    if(margen >= 40) badge = "success";
+    if(margen >= 80) badge = "primary";
+
+    $("#" + prefijo + "_margen").html(
+        '<span class="badge badge-' + badge + '">' +
+        margen.toFixed(2) + '%</span>'
+    );
+}
+
+function actualizarMargenes(){
+
+    var precio        = parseFloat($("#consulta_precio").val()) || 0;
+    var costoFabrica  = parseFloat($("#consulta_costo_fabrica").val()) || 0;
+    var costoCif      = parseFloat($("#consulta_costo").val()) || 0;
+    var costoFinal    = parseFloat($("#consulta_costo_cif").val()) || 0;
+
+    calculaMargen(costoFabrica, precio, "cf");
+    calculaMargen(costoCif, precio, "cif");
+    calculaMargen(costoFinal, precio, "final");
+}
+
+
 </script>

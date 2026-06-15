@@ -4,6 +4,11 @@
 <script src='/assets/global/plugins/jquery.min.js'></script>
 <?php echo $form->renderFormTag(url_for($modulo . '/index'), array('class' => 'form-horizontal"')) ?>
 <?php echo $form->renderHiddenFields() ?>
+<?php $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad'); ?>
+<?php $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId); ?>
+<?php
+$TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
+ ?>
 <div class="kt-portlet kt-portlet--responsive-mobile">
     <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
@@ -93,6 +98,9 @@
                     <th  align="center"><font size="-2"> Marca</font></th>
                     <th  align="center"><font size="-2"> Existencia</font></th>
                     <th  align="center"><font size="-2"> Precio</font></th>
+                       <?php if (($TIPO_USUARIO == 'ADMINISTRADOR') OR (strtoupper($tipoUsua) == 'CONTABILIDAD')) { ?>
+                    <th  align="center"><font size="-2"> Margen</font></th>
+                       <?php } ?>
                     <th  align="center"><font size="-2"> Activo</font></th>
                     <th><font size="-2">Editar</font></th>
                     <th><font size="-2">Eliminar</font></th>
@@ -112,6 +120,21 @@
                             <td> <font size="-1"> <?php echo $lista->getMarcaProducto(); ?></font> </td>
                             <td style="text-align: right;"> <font size="-1"> <?php echo $lista->getExistencia(); ?></font> </td>
                             <td style="text-align: right;"> <font size="-1"> <?php echo Parametro::formato($lista->getPrecio(),false); ?></font> </td>
+                                             <?php if (($TIPO_USUARIO == 'ADMINISTRADOR') OR (strtoupper($tipoUsua) == 'CONTABILIDAD')) { ?>
+                            <td style="text-align: right;"> <font size="-1"> <?php
+$costo = $lista->getCostoProveedor();
+$precio = $lista->getPrecio();
+
+$margen = 0;
+
+if ($costo > 0) {
+    $margen = (($precio - $costo) / $costo) * 100;
+}
+
+echo number_format($margen, 2) . '%';
+?> </font> </td>
+
+                                             <?php } ?>
                             <td> <font size="-1"> <?php if ($lista->getActivo()) { ?><li class="fa fa-check  font-green-jungle"></li> <?php } ?> </font>  </td>
 
                     <td>
