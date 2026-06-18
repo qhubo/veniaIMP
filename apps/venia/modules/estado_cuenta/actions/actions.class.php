@@ -141,14 +141,14 @@ class estado_cuentaActions extends sfActions {
     $restas = OperacionPagoQuery::create()
         ->filterByTipo($listab, Criteria::NOT_IN)
         ->where("OperacionPago.FechaCreo < '" . $fechaInicial . " 01:01:01'")
-        ->withColumn('sum(OperacionPago.Valor)', 'TotalTotal')
+       // ->withColumn('sum(OperacionPago.Valor)', 'TotalTotal')
         ->useOperacionQuery()
             ->filterByClienteId($clientev)
         ->endUse()
         ->findOne();
 
-    if ($restas) {
-        $RESTAR = $restas->getTotalTotal();
+  foreach($restas as $re) {
+        $RESTAR = $re->getValor()+$RESTAR;
     }
 
     $notasCredito = NotaCreditoQuery::create()
