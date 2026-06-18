@@ -253,34 +253,28 @@ $(document).ready(function () {
         return valor;
     }
 
-    function recalcularFila(datoid) {
+function recalcularFila(datoid){
 
-        let inputValor = $('.valor-pagar[datoid="' + datoid + '"]');
-        let inputComision = $('.valor-comision[datoid="' + datoid + '"]');
+    let inputValor = $('.valor-pagar[datoid="'+datoid+'"]');
+    let inputComision = $('.valor-comision[datoid="'+datoid+'"]');
 
-        let valor = parseFloat(inputValor.val()) || 0;
-        let comision = parseFloat(inputComision.val()) || 0;
-        let maximo = parseFloat(inputValor.data('max'));
+    let valor = parseFloat(inputValor.val()) || 0;
+    let comision = parseFloat(inputComision.val()) || 0;
+    let saldo = parseFloat(inputValor.data('max')) || 0;
 
-        let totalFila = valor + comision;
+    if (valor + comision > saldo) {
 
-        // 🔥 VALIDACIÓN: no mayor al saldo
-        if (totalFila > maximo) {
-
-            // ajustar automáticamente
-            if ($(document.activeElement).hasClass('valor-comision')) {
-                comision = maximo - valor;
-                inputComision.val(comision.toFixed(2));
-            } else {
-                valor = maximo - comision;
-                inputValor.val(valor.toFixed(2));
-            }
-
-            totalFila = maximo;
+        if ($(document.activeElement).hasClass('valor-comision')) {
+            inputComision.val((saldo - valor > 0 ? saldo - valor : 0).toFixed(2));
+            comision = parseFloat(inputComision.val());
+        } else {
+            inputValor.val((saldo - comision > 0 ? saldo - comision : 0).toFixed(2));
+            valor = parseFloat(inputValor.val());
         }
-
-        return totalFila;
     }
+
+    return valor + comision;
+}
 
     function recalcularTotal() {
         let total = 0;
