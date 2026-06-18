@@ -135,18 +135,43 @@ class estado_cuentaActions extends sfActions {
     $listab[] = 'CONTRA ENTREGA';
     $listab[] = 'CONTRAENTREGA';
     $listab[] = 'CHEQUE PREFECHADO';
-    $restas = OperacionPagoQuery::create()
-        ->filterByTipo($listab, Criteria::NOT_IN)
-        ->where("OperacionPago.FechaCreo < '" . $fechaInicial . " 01:01:01'")
-        ->withColumn('sum(OperacionPago.Valor)', 'TotalTotal')
-        ->useOperacionQuery()
-            ->filterByClienteId($clientev)
-        ->endUse()
-        ->findOne();
+    
+    $RESTAR = 0;
 
-    if ($restas) {
-        $RESTAR = $restas->getTotalTotal();
-    }
+$sql = "
+    SELECT
+        SUM(COALESCE(op.valor,0) + COALESCE(op.comision,0)) AS total
+    FROM operacion_pago op
+    INNER JOIN operacion o
+        ON o.id = op.operacion_id
+    WHERE op.tipo NOT IN (" . implode(',', array_map(function($v){
+        return "'" . $v . "'";
+    }, $listab)) . ")
+      AND op.fecha_creo < '".$fechaInicial." 01:01:01'
+      AND o.cliente_id = ".$clientev;
+
+
+
+ $con = Propel::getConnection();
+        $stmt = $con->prepare($sql);
+
+  $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  foreach ($registros as $row) {
+  $RESTAR = $row['total'];
+  }  
+  
+//    $restas = OperacionPagoQuery::create()
+//        ->filterByTipo($listab, Criteria::NOT_IN)
+//        ->where("OperacionPago.FechaCreo < '" . $fechaInicial . " 01:01:01'")
+//        ->withColumn('sum(OperacionPago.Valor)', 'TotalTotal')
+//        ->useOperacionQuery()
+//            ->filterByClienteId($clientev)
+//        ->endUse()
+//        ->findOne();
+//
+//    if ($restas) {
+//        $RESTAR = $restas->getTotalTotal();
+//    }
 
     $notasCredito = NotaCreditoQuery::create()
         ->where("NotaCredito.Fecha < '" . $fechaInicial . " 01:01:01'")
