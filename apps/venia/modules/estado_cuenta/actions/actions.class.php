@@ -148,18 +148,18 @@ class estado_cuentaActions extends sfActions {
         ->find();
 
   foreach($restas as $re) {
-      $query="SELECT SUM(COALESCE(op1.comision,0)) valor  FROM operacion_pago op1 WHERE op1.operacion_pago_padre_no = ".$re->getId();
-        $con = Propel::getConnection();
-        $stmt = $con->prepare($query);
-        $resource = $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $valor=0;
-        if ($result) {
-            $valor = $result[0]['valor'];
-           
-            
-        }
-        $RESTAR = $re->getValor()+$RESTAR+$valor;
+//      $query="SELECT SUM(COALESCE(op1.comision,0)) valor  FROM operacion_pago op1 WHERE op1.operacion_pago_padre_no = ".$re->getId();
+//        $con = Propel::getConnection();
+//        $stmt = $con->prepare($query);
+//        $resource = $stmt->execute();
+//        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//        $valor=$re->getComision();
+//        if ($result) {
+//            $valor = $result[0]['valor'];
+//           
+//            
+//        }
+        $RESTAR = $re->getValor() +$RESTAR+$valor;
     }
 //echo $RESTAR;
 //die();
