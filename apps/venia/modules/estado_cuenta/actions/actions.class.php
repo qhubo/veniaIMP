@@ -159,7 +159,7 @@ class estado_cuentaActions extends sfActions {
 //           
 //            
 //        }
-        $RESTAR = $re->getValor() +$RESTAR+$valor;
+        $RESTAR = $re->getValor() +$RESTAR+$re->getComision();
     }
 //echo $RESTAR;
 //die();
