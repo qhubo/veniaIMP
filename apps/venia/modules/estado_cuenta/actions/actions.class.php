@@ -156,6 +156,7 @@ class estado_cuentaActions extends sfActions {
         $valor=0;
         if ($result) {
             $valor = $result[0]['valor'];
+            die();
         }
         $RESTAR = $re->getValor()+$RESTAR+$valor;
     }
