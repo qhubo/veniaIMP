@@ -155,7 +155,7 @@ class estado_cuentaActions extends sfActions {
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $valor=0;
         if ($result) {
-            $valor = $result[0]['valor'];
+           echo $valor = $result[0]['valor'];
             die();
         }
         $RESTAR = $re->getValor()+$RESTAR+$valor;
