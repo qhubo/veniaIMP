@@ -198,7 +198,17 @@ class estado_cuentaActions extends sfActions {
       
      //  operacion pago PADRE  YmdHis
     $sqlquery =" select pp.id,  DATE_FORMAT(pp.fecha_documento, '%Y%m%d%H%i%s') fecha_orden, concat('P',pp.id) codigo, b.nombre banco, pp.documento,"
-            . "  DATE_FORMAT(pp.fecha_documento, '%d/%m/%Y') fecha_documento, pp.valor, pp.tipo,pp.id "
+            . "  DATE_FORMAT(pp.fecha_documento, '%d/%m/%Y') fecha_documento,"
+            . "  (
+        pp.valor +
+        COALESCE(
+            (
+                SELECT SUM(COALESCE(op1.comision,0))
+                FROM operacion_pago op1
+                WHERE op1.operacion_pago_padre_no = pp.id
+            ),
+        0)
+    ) AS valor,   pp.tipo,pp.id "
     . " from operacion_pago_padre pp inner join banco b on b.id = pp.banco_id inner join operacion_pago"
     . " op on op.operacion_pago_padre_no = pp.id  inner join operacion opera on opera.id = operacion_id"
     . " where op.tipo <> 'anulado' and cliente_id=".$clientev."  and pp.fecha_documento >= '".$fechaInicial."'"
