@@ -145,12 +145,13 @@ class estado_cuentaActions extends sfActions {
         ->useOperacionQuery()
             ->filterByClienteId($clientev)
         ->endUse()
-        ->findOne();
+        ->find();
 
   foreach($restas as $re) {
         $RESTAR = $re->getValor()+$RESTAR;
     }
-
+//echo $RESTAR;
+//die();
     $notasCredito = NotaCreditoQuery::create()
         ->where("NotaCredito.Fecha < '" . $fechaInicial . " 01:01:01'")
         ->where("NotaCredito.Estatus not like '%Anul%'")
