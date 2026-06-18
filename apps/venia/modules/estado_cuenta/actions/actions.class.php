@@ -152,13 +152,13 @@ $sql = "
 
 
 
- $con = Propel::getConnection();
-        $stmt = $con->prepare($sql);
-
-  $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-  foreach ($result as $row) {
-  $RESTAR = $row['total'];
-  }  
+// $con = Propel::getConnection();
+//        $stmt = $con->prepare($sql);
+//
+//  $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//  foreach ($result as $row) {
+//  $RESTAR = $row['total'];
+//  }  
   
 //    $restas = OperacionPagoQuery::create()
 //        ->filterByTipo($listab, Criteria::NOT_IN)
