@@ -156,7 +156,7 @@ $sql = "
         $stmt = $con->prepare($sql);
 
   $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-  foreach ($registros as $row) {
+  foreach ($result as $row) {
   $RESTAR = $row['total'];
   }  
   
