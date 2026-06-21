@@ -193,7 +193,21 @@
 
                 <?php if ($muestraBoton) { ?>  
                     <div class="row" style="padding-top:2px;padding-bottom:5px;">
-                        <div class="col-lg-3" ></div>
+                        <div class="col-lg-2" style="padding-top:10px;">
+
+    <?php if ($pendiente) { ?>
+
+        <a class="btn btn-block btn-xs btn-danger"
+           style="margin-top:5px"
+           data-toggle="modal"
+           href="#modalCancelarConfirmacion">
+            <i class="fa fa-undo"></i>
+            CANCELAR CONFIRMACIÓN
+        </a>
+    <?php } ?>
+
+</div>
+                        <div class="col-lg-1" ></div>
 
                         <div class="col-lg-2" >
 
@@ -705,3 +719,58 @@
         }
     });
 </script>
+
+<?php if ($cancela) { ?>
+
+<div id="modalCancelarConfirmacion"
+     class="modal fade"
+     tabindex="-1"
+     data-backdrop="static"
+     data-keyboard="false">
+
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4>Cancelar confirmación</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <p style="font-size:16px">
+
+                    ¿Desea cancelar la confirmación del empaque y enviar nuevamente
+                    a edición el pedido?
+
+                </p>
+
+                <h3 style="color:#d9534f;text-align:center">
+                    <?php echo $cancela->getCodigo(); ?>
+                </h3>
+
+                <p style="text-align:center">
+                    El pedido volverá al estado <strong>En edición</strong> y podrá
+                    modificarse nuevamente.
+                </p>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button class="btn btn-secondary"
+                        data-dismiss="modal">
+                    No
+                </button>
+
+                <a class="btn btn-danger"
+                   href="<?php echo url_for($modulo.'/cancelarConfirmacion?id='.$cancela->getId()); ?>">
+                    Sí, cancelar confirmación
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<?php } ?>

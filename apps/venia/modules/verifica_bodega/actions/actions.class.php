@@ -3,8 +3,35 @@
 class verifica_bodegaActions extends sfActions {
 
     
+    public function executeCancelarConfirmacion(sfWebRequest $request) {
+        date_default_timezone_set("America/Guatemala");
+        error_reporting(-1);
+
+        $id = $request->getParameter('id');
+        $ordenCotizacion = OrdenCotizacionQuery::create()->findOneById($id);
+        $ordendetalle = OrdenCotizacionDetalleQuery::create()
+                ->filterByOrdenCotizacionId($id)
+                ->find();
+        if ($ordendetalle) {
+            $ordendetalle->delete();
+        }
+        $codigo =$ordenCotizacion->getCodigo();
+        $codigo = str_replace("LIST-", "",$codigo);
+        $ordenPedido = OrdenCotizacionQuery::create()->findOneByCodigo($codigo);
+        $idv=0;
+        if ($ordenPedido) {
+            $ordenPedido->setSolicitarBodega(true);
+            $ordenPedido->save();
+                    $idv=$ordenPedido->getId();
+        }
+        $this->getUser()->setFlash('exito', 'Pedido reiniciado ' . $codigo);
+        $this->redirect('pedido_pendiente/index?id=' . $idv);
+    }
+
+    
+    
     public function executeConfirmaPedi(sfWebRequest $request) {
-         date_default_timezone_set("America/Guatemala");
+        date_default_timezone_set("America/Guatemala");
         error_reporting(-1);
 
         $id = $request->getParameter('id');
@@ -21,37 +48,37 @@ class verifica_bodegaActions extends sfActions {
                 }
             }
         } else {
-            $filtra[] =$id;
+            $filtra[] = $id;
         }
-        
+
 //        echo "<pre>";
 //        print_r($filtra);
 //        die();
-  
-        
-        foreach($filtra as $lin) {
-        $opreacion = OrdenCotizacionQuery::create()->findOneById($lin);
-        $opreacionDetalle = OrdenCotizacionDetalleQuery::create()
-                ->filterByConfirmado(true)
-                ->filterByProductoId(null, Criteria::NOT_EQUAL)
+
+
+        foreach ($filtra as $lin) {
+            $opreacion = OrdenCotizacionQuery::create()->findOneById($lin);
+            $opreacionDetalle = OrdenCotizacionDetalleQuery::create()
+                    ->filterByConfirmado(true)
+                    ->filterByProductoId(null, Criteria::NOT_EQUAL)
 //                ->filterByCantidadCaja()
-                ->filterByOrdenCotizacionId($lin)
-                ->find();
-        foreach ($opreacionDetalle as $detalle) {
-            if ((!$detalle->getCantidadCaja()) && (!$detalle->getBultoSuperior())) {
-                $this->getUser()->setFlash('error', 'Cantidad de bulto no definidad para producto ' . $detalle->getDetalle());
-                //$this->redirect('verifica_bodega/index?id=' . $id);
+                    ->filterByOrdenCotizacionId($lin)
+                    ->find();
+            foreach ($opreacionDetalle as $detalle) {
+                if ((!$detalle->getCantidadCaja()) && (!$detalle->getBultoSuperior())) {
+                    $this->getUser()->setFlash('error', 'Cantidad de bulto no definidad para producto ' . $detalle->getDetalle());
+                    //$this->redirect('verifica_bodega/index?id=' . $id);
+                }
             }
-        }
-        $opreacion->setFechaVencimiento(date('Y-m-d H:i:s'));
-        $opreacion->setEmpacado(true);
-        $opreacion->save();
+            $opreacion->setFechaVencimiento(date('Y-m-d H:i:s'));
+            $opreacion->setEmpacado(true);
+            $opreacion->save();
         }
         $this->getUser()->setFlash('exito', 'Pedido empacado ' . $opreacion->getCodigo());
         $this->redirect('verifica_bodega/index?id=' . $opreacion->getId());
     }
-    
-        public function executeEliminarMultipleEmpaque(sfWebRequest $request) {
+
+    public function executeEliminarMultipleEmpaque(sfWebRequest $request) {
         $ids = $request->getParameter('eli');
         $em = $request->getParameter('id');
         $ids = $request->getParameter('eli');
@@ -85,8 +112,7 @@ class verifica_bodegaActions extends sfActions {
         $this->redirect('verifica_bodega/index');
     }
 
-    
-     public function executeRecuperar(sfWebRequest $request) {
+    public function executeRecuperar(sfWebRequest $request) {
         error_reporting(-1);
         $id = $request->getParameter('id');
         $detalle = OrdenCotizacionDetalleQuery::create()->findOneById($id);
@@ -121,7 +147,7 @@ class verifica_bodegaActions extends sfActions {
         $this->getUser()->setFlash('exito', 'Producto Agregado Con exito');
         $this->redirect('verifica_bodega/index?em=' . $OrdenID);
     }
-    
+
     public function executeElimina(sfWebRequest $request) {
         error_reporting(-1);
         $id = $request->getParameter('id');
@@ -146,7 +172,7 @@ class verifica_bodegaActions extends sfActions {
         $this->getUser()->setFlash('error', 'Linea eliminada con exito');
         $this->redirect('verifica_bodega/index');
     }
-    
+
     public function executeGrabaEmpaque(sfWebRequest $request) {
         error_reporting(-1);
         $id = $request->getParameter('id');
@@ -418,25 +444,26 @@ class verifica_bodegaActions extends sfActions {
 
         $this->bultosCreado = $listaCr;
         $this->operacion = OrdenCotizacionQuery::create()->findOneById($id);
+        $this->cancela = OrdenCotizacionQuery::create()->findOneById( $request->getParameter('em'));
         $this->productoBorrado = null;
-        if ($prefi=="U") {
-         $Empaques= OrdenCotizacionQuery::create()
-            ->filterById($filtra, Criteria::IN)
-            ->find();
-            $productosEmpaque[] = 0;
-    foreach ($Empaques as  $CotizacionEmpaque) {
-             $listaEmpaque = OrdenCotizacionDetalleQuery::create()
-                    ->filterByOrdenCotizacionId($CotizacionEmpaque->getId())
-                    ->groupByProductoId()
+        if ($prefi == "U") {
+            $Empaques = OrdenCotizacionQuery::create()
+                    ->filterById($filtra, Criteria::IN)
                     ->find();
-            // Obtener IDs de productos del empaque
-            foreach ($listaEmpaque as $detalle) {
-                if ($detalle->getProductoId()) {
-                    $productosEmpaque[] = $detalle->getProductoId();
+            $productosEmpaque[] = 0;
+            foreach ($Empaques as $CotizacionEmpaque) {
+                $listaEmpaque = OrdenCotizacionDetalleQuery::create()
+                        ->filterByOrdenCotizacionId($CotizacionEmpaque->getId())
+                        ->groupByProductoId()
+                        ->find();
+                // Obtener IDs de productos del empaque
+                foreach ($listaEmpaque as $detalle) {
+                    if ($detalle->getProductoId()) {
+                        $productosEmpaque[] = $detalle->getProductoId();
+                    }
                 }
             }
-    }      
-                    $listaPedido = OrdenCotizacionDetalleQuery::create()
+            $listaPedido = OrdenCotizacionDetalleQuery::create()
                     ->filterByProductoId($productosEmpaque, Criteria::NOT_IN)
                     ->useOrdenCotizacionQuery()
                     ->filterByCodigo($filtra, Criteria::IN)
@@ -445,40 +472,37 @@ class verifica_bodegaActions extends sfActions {
                     ->find();
 
             $this->productoBorrado = $listaPedido;
-            
         } else {
-        $CotizacionEmpaque = OrdenCotizacionQuery::create()->findOneById($this->em);
-        if ($CotizacionEmpaque) {
-            // ==============================
-            // 1️⃣ PRODUCTOS EN LISTA EMPAQUE
-            // ==============================
-            $listaEmpaque = OrdenCotizacionDetalleQuery::create()
-                    ->filterByOrdenCotizacionId($CotizacionEmpaque->getId())
-                    ->groupByProductoId()
-                    ->find();
-            // Obtener IDs de productos del empaque
-            $productosEmpaque[] = 0;
-            foreach ($listaEmpaque as $detalle) {
+            $CotizacionEmpaque = OrdenCotizacionQuery::create()->findOneById($this->em);
+            if ($CotizacionEmpaque) {
+                // ==============================
+                // 1️⃣ PRODUCTOS EN LISTA EMPAQUE
+                // ==============================
+                $listaEmpaque = OrdenCotizacionDetalleQuery::create()
+                        ->filterByOrdenCotizacionId($CotizacionEmpaque->getId())
+                        ->groupByProductoId()
+                        ->find();
+                // Obtener IDs de productos del empaque
+                $productosEmpaque[] = 0;
+                foreach ($listaEmpaque as $detalle) {
 
-                if ($detalle->getProductoId()) {
-                    $productosEmpaque[] = $detalle->getProductoId();
+                    if ($detalle->getProductoId()) {
+                        $productosEmpaque[] = $detalle->getProductoId();
+                    }
                 }
+
+                $codigoPedido = trim(str_replace("LIST-", "", $CotizacionEmpaque->getCodigo()));
+                $listaPedido = OrdenCotizacionDetalleQuery::create()
+                        ->filterByProductoId($productosEmpaque, Criteria::NOT_IN)
+                        ->useOrdenCotizacionQuery()
+                        ->filterByCodigo($codigoPedido)
+                        ->endUse()
+                        ->groupByProductoId()
+                        ->find();
+
+                $this->productoBorrado = $listaPedido;
             }
-
-            $codigoPedido = trim(str_replace("LIST-", "", $CotizacionEmpaque->getCodigo()));
-            $listaPedido = OrdenCotizacionDetalleQuery::create()
-                    ->filterByProductoId($productosEmpaque, Criteria::NOT_IN)
-                    ->useOrdenCotizacionQuery()
-                    ->filterByCodigo($codigoPedido)
-                    ->endUse()
-                    ->groupByProductoId()
-                    ->find();
-
-            $this->productoBorrado = $listaPedido;
         }
-        }
-        
-    
     }
 
     public function BuscaId($listaId) {
