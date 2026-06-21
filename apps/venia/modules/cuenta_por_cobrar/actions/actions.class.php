@@ -478,7 +478,7 @@ class cuenta_por_cobrarActions extends sfActions {
 
             $fecha = $regi->getFecha(); // Ej: 2026-06-20
             $fechaCobro = date('Y-m-d', strtotime($fecha . " +{$diasCredito} days"));
-            echo $codigo . " <strong>{$fecha}</strong> " . $acuerdo . " --> {$diasCredito} días" . " => Cobro: <strong>{$fechaCobro}</strong><br>";
+    //        echo $codigo . " <strong>{$fecha}</strong> " . $acuerdo . " --> {$diasCredito} días" . " => Cobro: <strong>{$fechaCobro}</strong><br>";
             $regi->setFechaCobro($fechaCobro);
             $regi->save();
         }

@@ -26,7 +26,7 @@ $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
 <?php $modulo = $sf_params->get('module'); ?>
         <form action="<?php echo url_for($modulo . '/index') ?>" method="get">
             <div class="row"  style="padding-bottom:10px;">
-                <div class="col-lg-6">
+                <div class="col-lg-5">
                     <span style="display:block">Clientes</span>
                     <select  onchange="this.form.submit()" class="form-control mi-selector"  name="prover" id="prover">
                         <option value="0">[    Todos    ]</option>
@@ -53,7 +53,7 @@ $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
         <option value="ALDIA" <?php if($estado=='ALDIA') echo 'selected'; ?>>🟢 Al día</option>
     </select>
 </div>
-                <div class="col-lg-1"></div>
+          
 
                 <div class="col-lg-1">
                     <a target="_blank" href="<?php echo url_for($modulo . '/reporte?prover=' . $prover) ?>" class="btn  btn-sm  " style="background-color:#04AA6D; color:white"> <i class="flaticon2-printer"></i> Excel </a>
