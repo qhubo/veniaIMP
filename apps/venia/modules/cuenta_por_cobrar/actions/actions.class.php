@@ -459,13 +459,29 @@ class cuenta_por_cobrarActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
         error_reporting(-1);
+        $revis= $request->getParameter('revisa'); 
+        if ($revis) {
+        $registros = OperacionQuery::create()
+                ->filterByFechaCobro(null)
+                ->filterByPagado(false)
+                ->find();
+        foreach($registros as $regi) {
+            $codigo = trim(str_replace('LIST-','', $regi->getCodigo()));
+            $cotiza = OrdenCotizacionQuery::create()->filterByDiaCredito(0, Criteria::GREATER_THAN)->findOneByCodigo($codigo);
+            $diasCredito=1;
+            if ($cotiza) {
+             $diasCredito= $cotiza->getDiaCredito();
+            }
+            $fecha= $regi->getFecha();
+           echo $codigo."  <strong> ".$fecha." </strong>  ".$diasCredito;
+           echo "<br>";
+        }
+           die();
+        }
+        
         $this->id = $request->getParameter('id'); //=155555&$dirh =
-
         $this->prover = $request->getParameter('prover');
         $this->operacionPago = OperacionPagoQuery::create()->findOneById($this->id);
-//        echo "<pre>";
-//        print_r($this->operacionPago);
-//        die();
         $registros = OperacionQuery::create()
                 ->filterByClienteId(null, Criteria::NOT_EQUAL)
                 ->filterByPagado(false)
