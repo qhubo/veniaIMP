@@ -3,6 +3,16 @@
 
 class Operacion extends BaseOperacion {
 
+       public function getAcuerdoPago() {
+           $codigo =str_replace("LIST-","", $this->getCodigo());
+           $orden= OrdenCotizacionQuery::create()->findOneByCodigo($codigo);
+           $retonra='';
+           if ($orden) {
+               $retonra = $orden->getAcuerdoPago();
+           }
+           return $retonra;
+       }
+    
         public function getPedidos() {
             $codigo =str_replace("LIST-","", $this->getCodigo());
             

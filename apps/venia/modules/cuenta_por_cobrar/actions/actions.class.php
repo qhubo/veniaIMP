@@ -91,7 +91,7 @@ class cuenta_por_cobrarActions extends sfActions {
 
     public function executePagoMasiva(sfWebRequest $request) {
         error_reporting(-1);
-         date_default_timezone_set("America/Guatemala");
+        date_default_timezone_set("America/Guatemala");
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
         $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
         $id = $request->getParameter('id'); //=155555&$dirh =  
@@ -122,132 +122,132 @@ class cuenta_por_cobrarActions extends sfActions {
         $this->form = new SelePagoForm($value);
         if ($request->isMethod('post')) {
 
-    $this->form->bind(
-        $request->getParameter("consulta"),
-        $request->getFiles("consulta")
-    );
+            $this->form->bind(
+                    $request->getParameter("consulta"),
+                    $request->getFiles("consulta")
+            );
 
-    if ($this->form->isValid()) {
+            if ($this->form->isValid()) {
 
-        $con = Propel::getConnection();
-        $con->beginTransaction();
+                $con = Propel::getConnection();
+                $con->beginTransaction();
 //
 //        try {
 
-            $valores = $this->form->getValues();
+                $valores = $this->form->getValues();
 
-            if ($valores['fecha']) {
-                $fechaInicio = $valores['fecha'];
-                $fechaInicio = explode('/', $fechaInicio);
-                $fechaInicio = $fechaInicio[2] . '-' . $fechaInicio[1] . '-' . $fechaInicio[0];
-            } else {
-                $fechaInicio = date('Y-m-d');
-            }
-
-            $pago = new OperacionPagoPadre();
-            $pago->setTipo($valores['tipo_pago']);
-            $pago->setDocumento($valores['no_documento']);
-            $pago->setFechaDocumento($fechaInicio);
-
-            if ($valores['banco_id']) {
-                $pago->setBancoId($valores['banco_id']);
-            }
-
-            $total = 0;
-            $pago->save();
-
-            foreach ($lista as $registro) {
-
-                $valor = $registro['valor'];
-                $total += $valor;
-
-                $operacion = OperacionQuery::create()
-                    ->findOneById($registro['id']);
-
-                if (!$operacion) {
-                    throw new Exception('Operación no encontrada: ' . $registro['id']);
+                if ($valores['fecha']) {
+                    $fechaInicio = $valores['fecha'];
+                    $fechaInicio = explode('/', $fechaInicio);
+                    $fechaInicio = $fechaInicio[2] . '-' . $fechaInicio[1] . '-' . $fechaInicio[0];
+                } else {
+                    $fechaInicio = date('Y-m-d');
                 }
 
-                $OperaPgo = new OperacionPago();
-                $OperaPgo->setOperacionId($operacion->getId());
-                $OperaPgo->setTipo($valores['tipo_pago']);
-                $OperaPgo->setDocumento($valores['no_documento']);
+                $pago = new OperacionPagoPadre();
+                $pago->setTipo($valores['tipo_pago']);
+                $pago->setDocumento($valores['no_documento']);
+                $pago->setFechaDocumento($fechaInicio);
 
                 if ($valores['banco_id']) {
-                    $OperaPgo->setBancoId($valores['banco_id']);
+                    $pago->setBancoId($valores['banco_id']);
                 }
 
-                $OperaPgo->setFechaDocumento($fechaInicio);
-                $OperaPgo->setUsuario($usuarioQ->getUsuario());
-                $OperaPgo->setFechaCreo(date('Y-m-d H:i:s'));
-                $OperaPgo->setValor($valor);
-                $OperaPgo->setComision($registro['comision']);
-                $OperaPgo->setVuelto($valores['vuelto']);
-                $OperaPgo->setCxcCobrar($operacion->getCodigo());
-                $OperaPgo->setOperacionPagoPadreNo($pago->getId());
-                $OperaPgo->save();
+                $total = 0;
+                $pago->save();
 
-                $valorPagado = $operacion->getValorPagado() + $valor + $registro['comision'];
+                foreach ($lista as $registro) {
 
-                if ($valorPagado >= $operacion->getValorTotal()) {
+                    $valor = $registro['valor'];
+                    $total += $valor;
 
-                    $operacion->setPagado(true);
+                    $operacion = OperacionQuery::create()
+                            ->findOneById($registro['id']);
 
-                    $detalle = OperacionDetalleQuery::create()
-                        ->filterByOperacionId($operacion->getId())
-                        ->useProductoQuery()
-                            ->filterByTercero(true)
-                        ->endUse()
-                        ->count();
+                    if (!$operacion) {
+                        throw new Exception('Operación no encontrada: ' . $registro['id']);
+                    }
 
-                    if ($detalle > 0) {
-                        $operacion->setEstatus('Entrega');
+                    $OperaPgo = new OperacionPago();
+                    $OperaPgo->setOperacionId($operacion->getId());
+                    $OperaPgo->setTipo($valores['tipo_pago']);
+                    $OperaPgo->setDocumento($valores['no_documento']);
+
+                    if ($valores['banco_id']) {
+                        $OperaPgo->setBancoId($valores['banco_id']);
+                    }
+
+                    $OperaPgo->setFechaDocumento($fechaInicio);
+                    $OperaPgo->setUsuario($usuarioQ->getUsuario());
+                    $OperaPgo->setFechaCreo(date('Y-m-d H:i:s'));
+                    $OperaPgo->setValor($valor);
+                    $OperaPgo->setComision($registro['comision']);
+                    $OperaPgo->setVuelto($valores['vuelto']);
+                    $OperaPgo->setCxcCobrar($operacion->getCodigo());
+                    $OperaPgo->setOperacionPagoPadreNo($pago->getId());
+                    $OperaPgo->save();
+
+                    $valorPagado = $operacion->getValorPagado() + $valor + $registro['comision'];
+
+                    if ($valorPagado >= $operacion->getValorTotal()) {
+
+                        $operacion->setPagado(true);
+
+                        $detalle = OperacionDetalleQuery::create()
+                                ->filterByOperacionId($operacion->getId())
+                                ->useProductoQuery()
+                                ->filterByTercero(true)
+                                ->endUse()
+                                ->count();
+
+                        if ($detalle > 0) {
+                            $operacion->setEstatus('Entrega');
+                        }
+                    }
+
+                    $operacion->setValorPagado($valorPagado);
+                    $operacion->save();
+
+                    if ($OperaPgo->getBancoId()) {
+
+                        $movimiento = new MovimientoBanco();
+                        $movimiento->setTipo('Pago');
+                        $movimiento->setTipoMovimiento($OperaPgo->getTipo());
+                        $movimiento->setBancoOrigen($OperaPgo->getBancoId());
+                        $movimiento->setDocumento($OperaPgo->getDocumento());
+                        $movimiento->setBancoId($OperaPgo->getBancoId());
+                        $movimiento->setFechaDocumento($OperaPgo->getFechaDocumento('Y-m-d H:i'));
+                        $movimiento->setValor($OperaPgo->getValor());
+                        $movimiento->setObservaciones("Pago Operacion " . $operacion->getCodigo());
+                        $movimiento->setEstatus("Confirmado");
+                        $movimiento->setUsuario($OperaPgo->getUsuario());
+                        $movimiento->setPartidaNo($OperaPgo->getId());
+                        $movimiento->save();
+
+                        $cxc = new CuentaBanco();
+                        $cxc->setBancoId($OperaPgo->getBancoId());
+                        $cxc->setOperacionPagoId($OperaPgo->getId());
+                        $cxc->setValor($OperaPgo->getValor());
+                        $cxc->setFecha($OperaPgo->getFechaCreo('Y-m-d'));
+                        $cxc->setDocumento($OperaPgo->getDocumento());
+                        $cxc->setUsuario($OperaPgo->getUsuario());
+                        $cxc->setCreatedAt($OperaPgo->getFechaCreo());
+                        $cxc->setObservaciones($OperaPgo->getTipo());
+                        $cxc->save();
                     }
                 }
 
-                $operacion->setValorPagado($valorPagado);
-                $operacion->save();
+                $pago->setValor($total);
+                $pago->save();
 
-                if ($OperaPgo->getBancoId()) {
+                $con->commit();
 
-                    $movimiento = new MovimientoBanco();
-                    $movimiento->setTipo('Pago');
-                    $movimiento->setTipoMovimiento($OperaPgo->getTipo());
-                    $movimiento->setBancoOrigen($OperaPgo->getBancoId());
-                    $movimiento->setDocumento($OperaPgo->getDocumento());
-                    $movimiento->setBancoId($OperaPgo->getBancoId());
-                    $movimiento->setFechaDocumento($OperaPgo->getFechaDocumento('Y-m-d H:i'));
-                    $movimiento->setValor($OperaPgo->getValor());
-                    $movimiento->setObservaciones("Pago Operacion " . $operacion->getCodigo());
-                    $movimiento->setEstatus("Confirmado");
-                    $movimiento->setUsuario($OperaPgo->getUsuario());
-                    $movimiento->setPartidaNo($OperaPgo->getId());
-                    $movimiento->save();
+                $this->getUser()->setFlash(
+                        'exito',
+                        'Pago realizado con éxito ' . $OperaPgo->getId()
+                );
 
-                    $cxc = new CuentaBanco();
-                    $cxc->setBancoId($OperaPgo->getBancoId());
-                    $cxc->setOperacionPagoId($OperaPgo->getId());
-                    $cxc->setValor($OperaPgo->getValor());
-                    $cxc->setFecha($OperaPgo->getFechaCreo('Y-m-d'));
-                    $cxc->setDocumento($OperaPgo->getDocumento());
-                    $cxc->setUsuario($OperaPgo->getUsuario());
-                    $cxc->setCreatedAt($OperaPgo->getFechaCreo());
-                    $cxc->setObservaciones($OperaPgo->getTipo());
-                    $cxc->save();
-                }
-            }
-
-            $pago->setValor($total);
-            $pago->save();
-
-            $con->commit();
-
-            $this->getUser()->setFlash(
-                'exito',
-                'Pago realizado con éxito ' . $OperaPgo->getId()
-            );
-
-            $this->redirect('cuenta_por_cobrar/index?id=' . $OperaPgo->getId());
+                $this->redirect('cuenta_por_cobrar/index?id=' . $OperaPgo->getId());
 
 //        } catch (Exception $e) {
 //
@@ -255,8 +255,8 @@ class cuenta_por_cobrarActions extends sfActions {
 //            $this->getUser()->setFlash('error', 'Error al grabar pago: ' . $e->getMessage() );
 //            $this->redirect('cuenta_por_cobrar/index');
 //        }
-    }
-}
+            }
+        }
 //        if ($request->isMethod('post')) {
 //
 //
@@ -459,26 +459,30 @@ class cuenta_por_cobrarActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
         error_reporting(-1);
-        $revis= $request->getParameter('revisa'); 
-        if ($revis) {
+        $revis = $request->getParameter('revisa');
+
         $registros = OperacionQuery::create()
                 ->filterByFechaCobro(null)
                 ->filterByPagado(false)
                 ->find();
-        foreach($registros as $regi) {
-            $codigo = trim(str_replace('LIST-','', $regi->getCodigo()));
-            $cotiza = OrdenCotizacionQuery::create()->filterByDiaCredito(0, Criteria::GREATER_THAN)->findOneByCodigo($codigo);
-            $diasCredito=1;
+        foreach ($registros as $regi) {
+            $codigo = trim(str_replace('LIST-', '', $regi->getCodigo()));
+            $cotiza = OrdenCotizacionQuery::create()->findOneByCodigo($codigo);
+            $acuerdo = "";
+            $diasCredito = 0;
             if ($cotiza) {
-             $diasCredito= $cotiza->getDiaCredito();
+                $acuerdo = $cotiza->getAcuerdoPago();
+                preg_match('/\d+/', $acuerdo, $matches);
+                $diasCredito = isset($matches[0]) ? (int) $matches[0] : 0;
             }
-            $fecha= $regi->getFecha();
-           echo $codigo."  <strong> ".$fecha." </strong>  ".$diasCredito;
-           echo "<br>";
+
+            $fecha = $regi->getFecha(); // Ej: 2026-06-20
+            $fechaCobro = date('Y-m-d', strtotime($fecha . " +{$diasCredito} days"));
+            echo $codigo . " <strong>{$fecha}</strong> " . $acuerdo . " --> {$diasCredito} días" . " => Cobro: <strong>{$fechaCobro}</strong><br>";
+            $regi->setFechaCobro($fechaCobro);
+            $regi->save();
         }
-           die();
-        }
-        
+
         $this->id = $request->getParameter('id'); //=155555&$dirh =
         $this->prover = $request->getParameter('prover');
         $this->operacionPago = OperacionPagoQuery::create()->findOneById($this->id);
@@ -503,6 +507,30 @@ class cuenta_por_cobrarActions extends sfActions {
         if ($this->prover) {
             $registros->filterByClienteId($this->prover);
         }
+        
+        $estado = $request->getParameter('estado');
+$hoy = date('Y-m-d');
+
+switch($estado){
+
+    case 'VENCIDA':
+        $registros->where('Operacion.FechaCobro < ?', $hoy);
+        $registros->where('Operacion.ValorTotal > Operacion.ValorPagado');
+        break;
+
+    case 'PORVENCER':
+        $registros->where('Operacion.FechaCobro >= ?', $hoy);
+        $registros->where('Operacion.FechaCobro <= ?', date('Y-m-d',strtotime('+7 days')));
+        $registros->where('Operacion.ValorTotal > Operacion.ValorPagado');
+        break;
+
+    case 'ALDIA':
+        $registros->where('Operacion.FechaCobro > ?', date('Y-m-d',strtotime('+7 days')));
+        $registros->where('Operacion.ValorTotal > Operacion.ValorPagado');
+        break;
+}
+
+        
         $this->operaciones = $registros->find();
         $proveedores = OperacionQuery::create()
                 ->filterByEstatus('Cuenta Cobrar')
@@ -518,6 +546,7 @@ class cuenta_por_cobrarActions extends sfActions {
         }
         $this->seleccion = $seleccion;
         $this->totalSuma = $this->suma($this->prover);
+        $this->estado= $request->getParameter('estado');
     }
 
     public function suma($prove) {
@@ -584,7 +613,7 @@ class cuenta_por_cobrarActions extends sfActions {
                     $fechaInicio = $valores['fecha'];
                     $fechaInicio = explode('/', $fechaInicio);
                     $fechaInicio = $fechaInicio[2] . '-' . $fechaInicio[1] . '-' . $fechaInicio[0];
-                     date_default_timezone_set("America/Guatemala");
+                    date_default_timezone_set("America/Guatemala");
                     $OperaPgo = new OperacionPago();
                     $OperaPgo->setOperacionId($operacion->getId());
                     $OperaPgo->setTipo($valores['tipo_pago']);
@@ -630,13 +659,13 @@ class cuenta_por_cobrarActions extends sfActions {
                         $notaCredito->save();
                     }
                 }
-                  if ($tipoPago == "VALE") {
+                if ($tipoPago == "VALE") {
                     $ordenDevolucion = OrdenDevolucionQuery::create()->findOneByCodigo($valores['no_documento']);
                     if (!$ordenDevolucion) {
                         $this->getUser()->setFlash('error', 'Nota credito no encontrada ' . $valores['no_documento']);
                         $this->redirect('cuenta_por_cobrar/caja?id=' . $OperacionId);
                     }
-                    $valorCOnsumido = $ordenDevolucion->getValorOtros()  + $valor;
+                    $valorCOnsumido = $ordenDevolucion->getValorOtros() + $valor;
                     $ordenDevolucion->setValorOtros($valorCOnsumido);
                     $ordenDevolucion->setMotivo($operacion->getCodigo());
                     $ordenDevolucion->save();
@@ -645,8 +674,8 @@ class cuenta_por_cobrarActions extends sfActions {
                         $ordenDevolucion->save();
                     }
                 }
-                
-             if ($tipoPago == "VUELTO") {
+
+                if ($tipoPago == "VUELTO") {
                     $this->rebajaVueltos($operacion->getClienteId(), $valores['valor']);
                 }
 
@@ -658,7 +687,7 @@ class cuenta_por_cobrarActions extends sfActions {
                     $fechaInicio = date('Y-m-d');
                 }
 
- date_default_timezone_set("America/Guatemala");
+                date_default_timezone_set("America/Guatemala");
                 $OperaPgo = new OperacionPago();
                 $OperaPgo->setOperacionId($operacion->getId());
                 $OperaPgo->setTipo($valores['tipo_pago']);
@@ -725,7 +754,7 @@ class cuenta_por_cobrarActions extends sfActions {
                 if ($valorPagado >= $operacion->getValorTotal()) {
                     $this->redirect('cuenta_por_cobrar/index?id=' . $OperaPgo->getId());
                 }
-                $this->redirect('cuenta_por_cobrar/caja?id='. $OperaPgo->getId());
+                $this->redirect('cuenta_por_cobrar/caja?id=' . $OperaPgo->getId());
             }
         }
 

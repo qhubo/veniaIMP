@@ -44,6 +44,15 @@ $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
 <?php } ?>
                     </select>
                 </div>
+                <div class="col-lg-3">
+    <span style="display:block">Estado Cobro</span>
+    <select onchange="this.form.submit()" class="form-control" name="estado">
+        <option value="">Todos</option>
+        <option value="VENCIDA" <?php if($estado=='VENCIDA') echo 'selected'; ?>>🔴 Vencidas</option>
+        <option value="PORVENCER" <?php if($estado=='PORVENCER') echo 'selected'; ?>>🟡 Por vencer (7 días)</option>
+        <option value="ALDIA" <?php if($estado=='ALDIA') echo 'selected'; ?>>🟢 Al día</option>
+    </select>
+</div>
                 <div class="col-lg-1"></div>
 
                 <div class="col-lg-1">
@@ -81,13 +90,14 @@ $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
                     <th align="center" width="20px">Fecha / Usuario</th>
                     <th  align="center">Vendedor </th>
                     <th  align="center"> Cliente / RUC</th>
-                    <th  align="center"> Observaciones</th>    
+        
                     <th  align="center"> Valor</th>    
                     <?php if ($prover) { ?>
                         <th  align="center"> Valor  Pagar</th>  
 <?php } ?>
                     <th  align="center"> Valor Pagado</th>     
-                    <th  align="center"> Saldo</th>     
+                    <th  align="center"> Saldo</th>  
+                     <th  align="center"> Fecha Vencimiento</th>  
                     <th  align="center"> Estado </th>
                     <th  align="center"> #</th>    
                 </tr>
@@ -95,6 +105,23 @@ $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
             <tbody>
                 <?php $total = 0; ?>
                 <?php foreach ($operaciones as $lista) { ?>
+                <?php
+$hoy = date('Y-m-d');
+$fechaCobro = $lista->getFechaCobro('Y-m-d');
+
+$dias = floor((strtotime($fechaCobro) - strtotime($hoy)) / 86400);
+
+if ($dias < 0) {
+    $estadoCobro = "VENCIDA";
+    $color = "#dc3545"; // rojo
+} elseif ($dias <= 7) {
+    $estadoCobro = "POR VENCER";
+    $color = "#ffc107"; // amarillo
+} else {
+    $estadoCobro = "AL DÍA";
+    $color = "#28a745"; // verde
+}
+?>
     <?php $total = $lista->getValorTotal() + $total; ?>
     <?php $detalleProducto = OperacionDetalleQuery::create()->filterByOperacionId($lista->getId())->count(); ?>    
                     <tr>     
@@ -125,7 +152,7 @@ $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
     <?php } ?>
                             <br> <font size="-1"><?php echo $lista->getNit() ?></font>  
                         </td>
-                        <td>  <font size="-1"><?php echo $lista->getObservaciones() ?></font>  </td>
+                    
 
 
                         <td>  <font size="-1"><?php echo number_format($lista->getValorTotal(), 2) ?>  </font>  </td>
@@ -180,8 +207,35 @@ $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
         <?php echo number_format($lista->getValorTotal() - $lista->getValorPagado(), 2) ?>  </font>  
     <?php } ?>
                         </td>
+                            <td>  <font size="-1"><?php echo $lista->getFechaCobro('d/m/Y') ?></font>  </td>
 
-                        <td>  <font size="-1"><?php echo $lista->getEstatus() ?>  </font>  </td>
+                            <td>
+                                <?php echo $lista->getAcuerdoPago();  ?>
+    <br>
+
+<?php if($dias<0){ ?>
+
+    <span class="badge badge-danger" style="background-color:	#EE4B2B; color:white">
+        VENCIDA
+    </span>
+    <small><?php echo abs($dias); ?> días vencida</small>
+
+<?php }elseif($dias<=7){ ?>
+
+    <span class="badge badge-warning" style="background-color:	#E1C16E; color:white">
+        POR VENCER
+    </span>
+    <small><?php echo $dias; ?> días</small>
+
+<?php }else{ ?>
+    <span class="badge badge-success" style="background-color:	#5F9EA0; color:white">
+        AL DÍA
+    </span>
+    <small><?php echo $dias; ?> días</small>
+<?php } ?>
+
+</td>
+               
                         <td><?php echo $lista->getId(); ?></td>
 
                     </tr>
