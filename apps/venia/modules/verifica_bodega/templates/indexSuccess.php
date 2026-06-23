@@ -195,7 +195,7 @@
                     <div class="row" style="padding-top:2px;padding-bottom:5px;">
                         <div class="col-lg-2" style="padding-top:10px;">
 
-    <?php if ($pendiente) { ?>
+    <?php if ($cancela) { ?>
 
         <a class="btn btn-block btn-xs btn-danger"
            style="margin-top:5px"
