@@ -1,9 +1,5 @@
 <?php $modulo = 'orden_cotizacion'; ?>
-
-<?php    $Precios = ListaPrecioQuery::create()->filterByConfidencial(false)->orderByNombre()->filterByActivo(true)->find(); ?>
-<?php        $Precioscon = ListaPrecioQuery::create()->filterByConfidencial(true)->orderByNombre()->filterByActivo(true)->find(); ?>
-   
-<?php $tipoUsua = strtoupper(sfContext::getInstance()->getUser()->getAttribute("tipoUsuario", null, 'seguridad')); ?>
+<?php $precios = ListaPrecioQuery::create()->filterByActivo(true)->find(); ?>
 <br><br>
 <style>
 .eli-check {
@@ -249,22 +245,6 @@ $(document).ready(function(){
                                                 </td>
                                             </tr>                                            
                                             <?php } ?>
-                                            
-                                            
-                                                   <?php if ($tipoUsua == "ADMINISTRADOR") { ?>
-                                              <?php foreach($Precioscon as $deta) { ?>
-                                            <?php if ($ListaDetalle->getProducto()->getPrecioLista($deta->getId()) < $Menor) { ?>
-                                            <?php $Menor=$ListaDetalle->getProducto()->getPrecioLista($deta->getId()); ?>
-                                                <?php  } ?>
-                                            <tr>
-                                                <th style="text-align: left;"><?php echo $deta->getNombre(); ?></th>
-                                                <td style="text-align: right;"><?php echo Parametro::formato($ListaDetalle->getProducto()->getPrecioLista($deta->getId())); ?></td>
-                                                <td>
-                                                    <a class="btn btn-sm   btn-primary " href="<?php echo url_for('orden_cotizacion/precioEdit?edit=' . $ListaDetalle->getId()."&valor=".$ListaDetalle->getProducto()->getPrecioLista($deta->getId())) ?>"><i class="fa fa-check"></i> </a>  
-                                                </td>
-                                            </tr>                                            
-                                            <?php } ?>
-                                                   <?php } ?>
                                             <?php $min = $Menor; ?>
                                              <?php if ($TIPO_USUARIO=='ADMINISTRADOR') { ?>
                                             <?php $min = 0; ?>
