@@ -191,7 +191,7 @@ class nota_credito_facturaActions extends sfActions {
                     $nuevo->setValorTotal($valores['valor']); // => 390
                     $nuevo->setSubTotal($valoresIva['VALOR_SIN_IVA']);
                     $nuevo->setIva($valoresIva['IVA']);
-                    $nuevo->setConcepto($valores['observaciones']);  // => Devolucion en repuesto fact xela 102-1230
+                    $nuevo->setConcepto($valores['observaciones']." Fact ".$operacion->getCodigoFactura());  // => Devolucion en repuesto fact xela 102-1230
                     $nuevo->setEstatus('Nueva');
                     $nuevo->setUsuario($usuarioq->getUsuario());
                     $nuevo->setCreatedBy($usuarioq->getUsuario());
@@ -199,6 +199,15 @@ class nota_credito_facturaActions extends sfActions {
                     $nuevo->setTipoNota('CLIENTE');
                     $nuevo->setJsonRetorna($json);
                     $nuevo->save();
+                    $valorPagado =$operacion->getValorPagado()+$valores['valor'];
+                    $valorTOtal = $operacion->getValorTotal();
+                    if ($valorPagado >= $valorTOtal) {
+                        $operacion->setPagado(true);
+                        $operacion->setEstatus("Pagado");
+                    }
+                    
+                    $operacion->setValorPagado($valorPagado);
+                    $operacion->save();
                     //*** fin grabacion nota
                     // retorno de prudoctos
                     foreach ($items as $item) {
@@ -296,7 +305,7 @@ class nota_credito_facturaActions extends sfActions {
         $tienda = '';
 
         $valoresIva = ParametroQuery::ObtenerIva($nota->getValorTotal());
-        $VALORSINIVA = $valoresIva['VALOR_SIN_IVA'];
+        $VALORSINIVA = $valoresIva['VALOR_SIN_IVA'];   
         $IVA = $valoresIva['IVA'];
 
         //4010-08	VENTAS Periferico	4010-08

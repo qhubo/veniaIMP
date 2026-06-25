@@ -31,7 +31,7 @@
         </div>
         <div class="row">
             <div class="col-lg-1" style="font-weight:bold;"> Nombre</div>
-            <div class="col-lg-4" style="padding-bottom:5px;"> <input class="form-control" readonly="" disabled="" value="<?php echo $operacion->getNombre(); ?>   <?php echo $operacion->getFaceNumeroFactura(); ?>" > </div>
+            <div class="col-lg-6" style="padding-bottom:5px;"> <input class="form-control" readonly="" disabled="" value="<?php echo $operacion->getNombre(); ?>   <?php echo $operacion->getFaceNumeroFactura(); ?>" > </div>
 
             <div class="col-lg-1" style="font-weight:bold;"> Valor <input type="hidden" value="<?php echo $operacion->getValorTotal(); ?>" id="tota" name="tota"> </div>
             <div class="col-lg-2" style="font-size:18px; font-weight: bold; padding-bottom:5px; "> <?php echo Parametro::formato($operacion->getValorTotal()); ?> </div>

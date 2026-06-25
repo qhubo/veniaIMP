@@ -65,6 +65,7 @@ class pedido_facturaActions extends sfActions {
     }
 
     public function executeConfirmar(sfWebRequest $request) {
+
         $id = $request->getParameter('id');
         $tipoSerie = $request->getParameter('tipoSerie');
         error_reporting(-1);

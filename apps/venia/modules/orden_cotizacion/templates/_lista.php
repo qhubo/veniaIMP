@@ -234,9 +234,19 @@ $(document).ready(function(){
                                                 </td>
                                             </tr>
                                             <?php foreach($precios as $deta) { ?>
+                                            <?php $verLista =true; ?>
+                                            <?php if ($deta->getConfidencial()) { ?>
+                                            <?php $verLista =false; ?>
+                                            
+                                            <?Php } ?>      
+                                             <?php if ($TIPO_USUARIO=='ADMINISTRADOR') { ?>
+                                         <?php $verLista =true; ?>
+
+                                             <?php } ?>
                                             <?php if ($ListaDetalle->getProducto()->getPrecioLista($deta->getId()) < $Menor) { ?>
                                             <?php $Menor=$ListaDetalle->getProducto()->getPrecioLista($deta->getId()); ?>
                                                 <?php  } ?>
+                                            <?php if ($verLista) { ?>
                                             <tr>
                                                 <th style="text-align: left;"><?php echo $deta->getNombre(); ?></th>
                                                 <td style="text-align: right;"><?php echo Parametro::formato($ListaDetalle->getProducto()->getPrecioLista($deta->getId())); ?></td>
@@ -245,6 +255,7 @@ $(document).ready(function(){
                                                 </td>
                                             </tr>                                            
                                             <?php } ?>
+                                                 <?php } ?>
                                             <?php $min = $Menor; ?>
                                              <?php if ($TIPO_USUARIO=='ADMINISTRADOR') { ?>
                                             <?php $min = 0; ?>

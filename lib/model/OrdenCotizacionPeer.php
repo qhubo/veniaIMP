@@ -174,6 +174,9 @@ class OrdenCotizacionPeer extends BaseOrdenCotizacionPeer {
         $operacion->setValorTotal($totalVal);
         $operacion->setIva($totalIva);
         $operacion->setSubTotal($totalVal - $totalIva);
+        if ($operacion->getClienteId()){
+        $operacion->setEstatus("Cuenta Cobrar");
+        }
         $operacion->save();
 
    //     BitacoraDocumento::grabacion('Cotizacion', $cotizacion->getCodigo(), 'Finalizacion', "Cotizacion Finalizada");
