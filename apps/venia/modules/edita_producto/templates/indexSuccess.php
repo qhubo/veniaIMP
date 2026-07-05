@@ -102,8 +102,10 @@ $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
                     <th  align="center"><font size="-2"> Margen</font></th>
                        <?php } ?>
                     <th  align="center"><font size="-2"> Activo</font></th>
+                        <?php if (($TIPO_USUARIO == 'ADMINISTRADOR') OR (strtoupper($tipoUsua) == 'CONTABILIDAD')) { ?>
                     <th><font size="-2">Editar</font></th>
                     <th><font size="-2">Eliminar</font></th>
+                             <?php } ?>
                 </tr>
             </thead>
             <tbody>
@@ -111,7 +113,20 @@ $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
                 <?php if ($productos) { ?>
                     <?php foreach ($productos as $lista) { ?>
                         <tr>
-                            <td>  <img src="<?php echo $lista->getImagen() ?>" width="75px" ></td>
+                            <td>  
+                            
+                            <td>
+                                <?php if ($lista->getImagen()  <> "") { ?>
+    <img src="<?php echo $lista->getImagen() ?>"
+         width="75"
+         class="img-thumbnail img-producto"
+         style="cursor:pointer"
+         data-toggle="modal"
+         data-target="#modalImagen"
+         data-imagen="<?php echo $lista->getImagen() ?>">
+</td>
+                                <?php }?>
+                            </td>
                             <td><?php echo $lista->getCodigoSku() ?></td>
                             <td> <font size="-1"> <?php echo $lista->getNombre(); ?></font> 
                                 <br>
@@ -180,8 +195,37 @@ echo number_format($margen, 2) . '%';
 
 <script src="./assets/vendors/general/jquery/dist/jquery.js" type="text/javascript"></script>
 
+<div class="modal fade" id="modalImagen" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document" style="max-width:90%;">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Imagen del producto</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body text-center">
+                <img id="imagenGrande"
+                     src=""
+                     class="img-fluid"
+                     style="max-height:80vh;">
+            </div>
+
+        </div>
+    </div>
+</div>
 
 <script>
+    $(document).ready(function () {
+
+    $('.img-producto').on('click', function () {
+        var imagen = $(this).data('imagen');
+        $('#imagenGrande').attr('src', imagen);
+    });
+
+});
 
     $(document).ready(function () {
         $("#consulta_tipo").on('change', function () {

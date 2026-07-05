@@ -1,12 +1,12 @@
 <!--<script src='/assets/global/plugins/jquery.min.js'></script>-->
 
-   <?php $condomi= sfContext::getInstance()->getUser()->getAttribute("nombrelinea", null, 'seguridad'); ?>
-             <?php $porUno  =0; ?>   
- <?php $porDos  =0; ?>   
- <?php $porUno  =0; ?>  
- <?php $porPagar  =0; ?>  
- <?php $dia  =0; ?>  
- <?php $moroso  =0; ?>  
+<?php $condomi = sfContext::getInstance()->getUser()->getAttribute("nombrelinea", null, 'seguridad'); ?>
+<?php $porUno = 0; ?>   
+<?php $porDos = 0; ?>   
+<?php $porUno = 0; ?>  
+<?php $porPagar = 0; ?>  
+<?php $dia = 0; ?>  
+<?php $moroso = 0; ?>  
 
 
 <div class="kt-portlet kt-portlet--responsive-mobile">
@@ -24,11 +24,15 @@
     </div>
     <div class="kt-portlet__body">
 
-     
+<a href="javascript:void(0)"
+   class="btn"
+   onclick="abrirBuscadorProducto();">
+    <i class="flaticon-search"></i> Ver Productos
+</a>
     </div>
 </div>
 
 
 <!--
 <link href="./assets/global/css/components-md.css" rel="stylesheet" type="text/css" />
-     -->
+-->

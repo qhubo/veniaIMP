@@ -3,6 +3,14 @@
 class buscaActions extends sfActions {
 
     
+        
+       public function executeVerProducto(sfWebRequest $request) {
+        $id = $request->getParameter('id');
+        $this->id = $id;
+    }
+
+    
+    
        public function executeProducto(sfWebRequest $request) {
         $id = $request->getParameter('id');
         $this->id = $id;
