@@ -378,6 +378,21 @@ License: You must have a valid license purchased only from themeforest(the above
         </script>
         <script src="./js/veniaLink.js" type="text/javascript"></script>
            <?php } ?>
+        
+        <script>
+        function abrirBuscadorProducto() {
+
+    // Bootstrap usa 768px como referencia para móvil
+    if (window.innerWidth <= 768) {
+
+        window.location.href = "/venia_dev.php/busca/verProducto";
+        return;
+    }
+
+    // Desktop
+    $('#kt_modal_bus').modal('show');
+}  
+        </script>
     </body>
     <!-- end::Body -->
 
