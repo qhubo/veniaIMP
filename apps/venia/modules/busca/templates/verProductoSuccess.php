@@ -23,26 +23,92 @@
     z-index: 10;
 }
 </style>
+<style>
+
+.tabla-scroll{
+    width:100%;
+    overflow-x:auto;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    max-height:75vh;
+}
+
+.tablaProductoIvent{
+    min-width:1200px;
+    width:100%;
+    border-collapse:collapse;
+}
+
+.tablaProductoIvent th{
+    position:sticky;
+    top:0;
+    background:#dff0d8;
+    white-space:nowrap;
+    text-align:center;
+    font-size:13px;
+}
+
+.tablaProductoIvent td{
+    white-space:nowrap;
+    vertical-align:middle;
+    font-size:13px;
+}
+
+@media(max-width:768px){
+
+    .tabla-scroll{
+        max-height:calc(100vh - 180px);
+    }
+
+    .tablaProductoIvent{
+
+        min-width:900px;
+
+        font-size:11px;
+
+    }
+
+    .tablaProductoIvent th{
+
+        font-size:11px;
+        padding:6px;
+
+    }
+
+    .tablaProductoIvent td{
+
+        font-size:11px;
+        padding:4px;
+
+    }
+
+}
+
+</style>
+<div class="alert alert-info text-center visible-xs">
+    <i class="fa fa-arrows-h"></i>
+    Desliza la tabla hacia la derecha para ver existencias y precios.
+</div>
 <div class="table-responsive tabla-scroll">
 <table class="table table-striped table-bordered table-hover order-column  tablaProductoIvent"  >
     <thead>
         <tr class="success">
             <th>Codigo</th>
-            <th width="50%">Nombre</th>
+            <th >Nombre</th>
 	    <?php foreach ($tiendas as $data) { ?>
-                <th width="10%">Existencia <?php echo $data->getCodigo(); ?></th>
+                <th>Existencia <?php echo $data->getCodigo(); ?></th>
             <?php } ?>
-            <th width="10%">Precio Venta</th>
+            <th >Precio Venta</th>
                <?php foreach ($tipoPrecios as $data) { ?>
-                <th width="10%"> Precio <?php echo $data->getNombre(); ?></th>
+                <th > Precio <?php echo $data->getNombre(); ?></th>
             <?php } ?>
                 
             <?php if ($TIPO_USUARIO == 'ADMINISTRADOR') { ?>
 
                    <?php foreach ($tipoPrecioscon as $data) { ?>
-                <th width="10%"> Precio <?php echo $data->getNombre(); ?></th>
+                <th > Precio <?php echo $data->getNombre(); ?></th>
             <?php } ?>
-                <th width="10%"> Costo </th>
+                <th > Costo </th>
             <?php } ?>
         </tr>
     </thead>
@@ -75,15 +141,15 @@ $(function () {
 <script>
     var oppTable = $('.tablaProductoIvent').dataTable({
 //  sDom: '<"block-controls"<"controls-buttons"p>>rti<"block-footer clearfix"lf>',
-    "sPaginationType": "full_numbers",
-            "bProcessing": true,
-            "bServerSide": true,
-            "bStateSave": false,
-            "bLengthChange": false,
-            "searchDelay": 1300,
-            "aLengthMenu": [[5, 25, 50, 100, - 1], [5, 25, 50, 100, "Todos"]],
-            "iDisplayStart": 500,
-            "sAjaxSource": "/index.php/busca/tabJsProductoBusca?id=1",
+  "sPaginationType": "full_numbers",
+    "bProcessing": true,
+    "bServerSide": true,
+    "bStateSave": false,
+    "bLengthChange": false,
+    "searchDelay": 1300,
+    "aLengthMenu": [[5,25,50,100,-1],[5,25,50,100,"Todos"]],
+    "iDisplayStart": 500,
+    "sAjaxSource": "/index.php/busca/tabJsProductoBusca?id=1",
             "aoColumns": [
             {"bSearchable": true},
             {"bSearchable": true},
