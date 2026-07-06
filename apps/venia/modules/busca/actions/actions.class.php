@@ -203,7 +203,7 @@ class buscaActions extends sfActions {
             $imagenCompleta .='style="cursor:pointer" data-toggle="modal"  data-target="#modalImagen"';
             $imagenCompleta .='data-imagen="'.$reg['imagen'].'">';
             //$row[] = $reg['imagen'];
-            $row[] = '<a href="' . $url . '">'.$imagenCompleta.'<div style="text-align:right">' . $reg['codigo_sku'] . '</div></a>';
+            $row[] = $imagenCompleta.'<div style="text-align:right">' . $reg['codigo_sku'] . '</div>';
             $row[] = '<a href="' . $url . '"><div style="text-align:right">' . $nombre . '</div></a>';
             foreach ($tiendas as $regi) {
                 $exit = 0;
