@@ -228,6 +228,39 @@ License: You must have a valid license purchased only from themeforest(the above
         <!-- begin::Demo Panel -->
         <?php // include_partial('inicio/muestratool') 
         ?>
+        
+        <div class="modal fade" id="modalImagen" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document" style="max-width:90%;">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Imagen del producto</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body text-center">
+                <img id="imagenGrande"
+                     src=""
+                     class="img-fluid"
+                     style="max-height:80vh;">
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+      $(document).ready(function () {
+
+    $('.img-producto').on('click', function () {
+        var imagen = $(this).data('imagen');
+        $('#imagenGrande').attr('src', imagen);
+    });
+
+});
+
+</script>
         <!-- end::Demo Panel -->
         <!--Begin:: Chat-->
         <?php include_partial('inicio/modal') ?>
@@ -385,7 +418,7 @@ License: You must have a valid license purchased only from themeforest(the above
     // Bootstrap usa 768px como referencia para móvil
     if (window.innerWidth <= 768) {
 
-        window.location.href = "/venia_dev.php/busca/verProducto";
+        window.location.href = "/index.php/busca/verProducto";
         return;
     }
 

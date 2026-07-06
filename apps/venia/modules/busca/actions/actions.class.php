@@ -199,7 +199,11 @@ class buscaActions extends sfActions {
             $url = $base . '/ubicacion/index?id=' . $reg['id'];
             $row = [];
             $nombre = $reg['nombre'] . " | " . $reg['codigo_barras'];
-            $row[] = '<a href="' . $url . '"><div style="text-align:right">' . $reg['codigo_sku'] . '</div></a>';
+            $imagenCompleta='<img src="'.$reg['imagen'].'" width="75"  class="img-thumbnail img-producto"';
+            $imagenCompleta .='style="cursor:pointer" data-toggle="modal"  data-target="#modalImagen"';
+            $imagenCompleta .='data-imagen="'.$reg['imagen'].'">';
+            //$row[] = $reg['imagen'];
+            $row[] = '<a href="' . $url . '">'.$imagenCompleta.'<div style="text-align:right">' . $reg['codigo_sku'] . '</div></a>';
             $row[] = '<a href="' . $url . '"><div style="text-align:right">' . $nombre . '</div></a>';
             foreach ($tiendas as $regi) {
                 $exit = 0;

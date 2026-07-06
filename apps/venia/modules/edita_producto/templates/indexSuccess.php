@@ -195,38 +195,10 @@ echo number_format($margen, 2) . '%';
 
 <script src="./assets/vendors/general/jquery/dist/jquery.js" type="text/javascript"></script>
 
-<div class="modal fade" id="modalImagen" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-xl" role="document" style="max-width:90%;">
-        <div class="modal-content">
 
-            <div class="modal-header">
-                <h5 class="modal-title">Imagen del producto</h5>
-                <button type="button" class="close" data-dismiss="modal">
-                    <span>&times;</span>
-                </button>
-            </div>
-
-            <div class="modal-body text-center">
-                <img id="imagenGrande"
-                     src=""
-                     class="img-fluid"
-                     style="max-height:80vh;">
-            </div>
-
-        </div>
-    </div>
-</div>
 
 <script>
-    $(document).ready(function () {
-
-    $('.img-producto').on('click', function () {
-        var imagen = $(this).data('imagen');
-        $('#imagenGrande').attr('src', imagen);
-    });
-
-});
-
+ 
     $(document).ready(function () {
         $("#consulta_tipo").on('change', function () {
             //      alert('cambio');
