@@ -10,6 +10,65 @@
  */
 class movimiento_bancoActions extends sfActions {
 
+        public function executeIndex(sfWebRequest $request) {
+        error_reporting(-1);
+        date_default_timezone_set("America/Guatemala");
+        $acceso = MenuSeguridad::Acceso('movimiento_banco');
+        if (!$acceso) {
+            $this->redirect('inicio/index');
+        }
+
+        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datoconsultaBanco', null, 'consulta'));
+        if (!$valores) {
+            $valores['fechaInicio'] = date('d/m/Y');
+            $valores['fechaFin'] = date('d/m/Y');
+            $valores['banco'] = null;
+            sfContext::getInstance()->getUser()->setAttribute('datoconsultaBanco', serialize($valores), 'consulta');
+        }
+        $this->form = new ConsultaReporteCajaForm($valores);
+        if ($request->isMethod('post')) {
+            $this->form->bind($request->getParameter('consulta'));
+            if ($this->form->isValid()) {
+                $valores = $this->form->getValues();
+                sfContext::getInstance()->getUser()->setAttribute('datoconsultaBanco', serialize($valores), 'consulta');
+                $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datoconsultaBanco', null, 'consulta'));
+                $this->redirect('movimiento_banco/index?id=');
+            }
+        }
+        $fechaInicio = $valores['fechaInicio'];
+        $fechaInicio = explode('/', $fechaInicio);
+        $fechaInicio = $fechaInicio[2] . '-' . $fechaInicio[1] . '-' . $fechaInicio[0];
+        $fechaFin = $valores['fechaFin'];
+        $fechaFin = explode('/', $fechaFin);
+        $fechaFin = $fechaFin[2] . '-' . $fechaFin[1] . '-' . $fechaFin[0];
+        $valores['inicio'] = '00:00';
+        $valores['fin'] = '23:00';
+
+        if ($valores['banco']) {
+            $this->operaciones = MovimientoBancoQuery::create()
+                    ->filterByBancoOrigen($valores['banco'])
+                    ->orderByFechaDocumento("Desc")
+                    ->filterByTipoMovimiento('Transferencia')
+                    ->where("MovimientoBanco.FechaDocumento >= '" . $fechaInicio . " " . $valores['inicio'] . ":00" . "'")
+                    ->where("MovimientoBanco.FechaDocumento <= '" . $fechaFin . " " . $valores['fin'] . ":00" . "'")
+                    ->find();
+        } else {
+            $this->operaciones = MovimientoBancoQuery::create()
+                    ->orderByFechaDocumento("Desc")
+                    ->filterByTipoMovimiento('Transferencia')
+                    ->where("MovimientoBanco.FechaDocumento >= '" . $fechaInicio . " " . $valores['inicio'] . ":00" . "'")
+                    ->where("MovimientoBanco.FechaDocumento <= '" . $fechaFin . " " . $valores['fin'] . ":00" . "'")
+                    ->find();
+        }
+
+        $this->bancos = BancoQuery::create()
+                ->orderByNombre("Asc")
+                ->filterByActivo(true)
+                ->find();
+
+
+    }
+    
     public function executeReporte(sfWebRequest $request) {
         date_default_timezone_set("America/Guatemala");
         $acceso = MenuSeguridad::Acceso('movimiento_banco');
@@ -94,7 +153,7 @@ class movimiento_bancoActions extends sfActions {
             ;
         }
         $operaciones->orderByFechaDocumento("Desc");
-        $operaciones->filterByTipo('Transferencia');
+        $operaciones->filterByTipoMovimiento('Transferencia');
         $operaciones->where("MovimientoBanco.FechaDocumento >= '" . $fechaInicio . " " . $valores['inicio'] . ":00" . "'");
         $operaciones->where("MovimientoBanco.FechaDocumento <= '" . $fechaFin . " " . $valores['fin'] . ":00" . "'");
         $this->operaciones = $operaciones->find();
@@ -305,77 +364,5 @@ class movimiento_bancoActions extends sfActions {
         $movimientoBanco->save();
     }
 
-    public function executeIndex(sfWebRequest $request) {
-        error_reporting(-1);
-        date_default_timezone_set("America/Guatemala");
-        $acceso = MenuSeguridad::Acceso('movimiento_banco');
-        if (!$acceso) {
-            $this->redirect('inicio/index');
-        }
 
-        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datoconsultaBanco', null, 'consulta'));
-        if (!$valores) {
-            $valores['fechaInicio'] = date('d/m/Y');
-            $valores['fechaFin'] = date('d/m/Y');
-            $valores['banco'] = null;
-            sfContext::getInstance()->getUser()->setAttribute('datoconsultaBanco', serialize($valores), 'consulta');
-        }
-        $this->form = new ConsultaReporteCajaForm($valores);
-        if ($request->isMethod('post')) {
-            $this->form->bind($request->getParameter('consulta'));
-            if ($this->form->isValid()) {
-                $valores = $this->form->getValues();
-                sfContext::getInstance()->getUser()->setAttribute('datoconsultaBanco', serialize($valores), 'consulta');
-                $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datoconsultaBanco', null, 'consulta'));
-                $this->redirect('movimiento_banco/index?id=');
-            }
-        }
-        $fechaInicio = $valores['fechaInicio'];
-        $fechaInicio = explode('/', $fechaInicio);
-        $fechaInicio = $fechaInicio[2] . '-' . $fechaInicio[1] . '-' . $fechaInicio[0];
-        $fechaFin = $valores['fechaFin'];
-        $fechaFin = explode('/', $fechaFin);
-        $fechaFin = $fechaFin[2] . '-' . $fechaFin[1] . '-' . $fechaFin[0];
-        $valores['inicio'] = '00:00';
-        $valores['fin'] = '23:00';
-
-        if ($valores['banco']) {
-            $this->operaciones = MovimientoBancoQuery::create()
-                    ->filterByBancoOrigen($valores['banco'])
-                    ->orderByFechaDocumento("Desc")
-                    ->filterByTipoMovimiento('Transferencia')
-                    ->where("MovimientoBanco.FechaDocumento >= '" . $fechaInicio . " " . $valores['inicio'] . ":00" . "'")
-                    ->where("MovimientoBanco.FechaDocumento <= '" . $fechaFin . " " . $valores['fin'] . ":00" . "'")
-                    ->find();
-        } else {
-            $this->operaciones = MovimientoBancoQuery::create()
-                    ->orderByFechaDocumento("Desc")
-                    ->filterByTipoMovimiento('Transferencia')
-                    ->where("MovimientoBanco.FechaDocumento >= '" . $fechaInicio . " " . $valores['inicio'] . ":00" . "'")
-                    ->where("MovimientoBanco.FechaDocumento <= '" . $fechaFin . " " . $valores['fin'] . ":00" . "'")
-                    ->find();
-        }
-
-        $this->bancos = BancoQuery::create()
-                ->orderByNombre("Asc")
-                ->filterByActivo(true)
-                ->find();
-
-//           $operaciones = MovimientoBancoQuery::create()
-//                ->orderById("Desc")
-//                ->filterByTipo('Transferencia')
-//                ->setLimit(50)
-//                 ->find();
-//        $partidas[]=0;   
-//         foreach ($operaciones as $regi){
-//        $partidas[]=$regi->getPartidaNo();
-//             
-//         }
-//        
-//         $this->partidas = $partidas;
-//        $partidaPen = PartidaQuery::create()->filterById($partidas, Criteria::IN)->filterByConfirmada(false)->orderById('Asc')->findOne();  
-//         echo "<pre>";
-//         print_r($partidaPen);
-//         die();
-    }
 }
