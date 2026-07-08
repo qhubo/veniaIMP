@@ -19,9 +19,9 @@ class movimiento_bancoActions extends sfActions {
 
 
         $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datoconsultaBanco', null, 'consulta'));
-        echo "<pre>";
-        print_r($valores);
-        die();
+//        echo "<pre>";
+//        print_r($valores);
+//        die();
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
         $usuarioQue = UsuarioQuery::create()->findOneById($usuarioId);
         if (!$valores) {
@@ -94,7 +94,7 @@ class movimiento_bancoActions extends sfActions {
             ;
         }
         $operaciones->orderByFechaDocumento("Desc");
-        $operaciones->filterByTipo('Credito');
+        $operaciones->filterByTipo('Transferencia');
         $operaciones->where("MovimientoBanco.FechaDocumento >= '" . $fechaInicio . " " . $valores['inicio'] . ":00" . "'");
         $operaciones->where("MovimientoBanco.FechaDocumento <= '" . $fechaFin . " " . $valores['fin'] . ":00" . "'");
         $this->operaciones = $operaciones->find();
