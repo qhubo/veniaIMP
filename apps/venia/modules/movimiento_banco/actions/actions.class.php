@@ -19,6 +19,9 @@ class movimiento_bancoActions extends sfActions {
 
 
         $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('datoconsultaBanco', null, 'consulta'));
+        echo "<pre>";
+        print_r($valores);
+        die();
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
         $usuarioQue = UsuarioQuery::create()->findOneById($usuarioId);
         if (!$valores) {
