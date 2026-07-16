@@ -82,11 +82,13 @@
 
 
             </div>
-            <div class="col-lg-1">
-               
-            </div>
+
                    <div class="col-lg-2">
-                          <a class="btn  btn grey-cascade  btn-block "  target="_blank"  href="<?php echo url_for($modulo . '/reporte') ?>" ><i class="fa fa-list"></i>&nbsp;&nbsp;Reporte&nbsp;&nbsp;  <i class="fa fa-print"></i></a>
+                          <a class="btn  btn btn-info  "  target="_blank"  href="<?php echo url_for($modulo . '/reporte') ?>" ><i class="fa fa-list"></i>&nbsp;&nbsp;Reporte&nbsp;&nbsp;  <i class="fa fa-print"></i></a>
+                </div>
+            
+                <div class="col-lg-2">
+                          <a class="btn  btn btn-warning  "  target="_blank"  href="<?php echo url_for($modulo . '/reporteCBMExcel') ?>" ><i class="fa fa-list"></i>&nbsp;&nbsp;Reporte&nbsp;&nbsp;CMB  <i class="fa fa-print"></i></a>
                 </div>
                 <!-- Exportar -->
 

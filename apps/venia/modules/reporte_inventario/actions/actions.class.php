@@ -10,6 +10,208 @@
  */
 class reporte_inventarioActions extends sfActions {
 
+
+
+
+public function executeReporteCBMExcel(sfWebRequest $request)
+{
+    $productos = $this->datos();
+
+    $xl = sfContext::getInstance()->getUser()->nuevoExcel(
+        "REPORTE CBM",
+        array('Reporte CBM'),
+        'Reporte CBM'
+    );
+
+    $hoja = $xl->setActiveSheetIndex(0);
+
+    // Encabezados
+    $headers = array(
+        "CODIGO",
+        "DESCRIPCION",
+        "MARCA",
+        "EXISTENCIA",
+        "PESO UND",
+        "CBM UND"
+    );
+
+    $fila = 1;
+    $col = 0;
+
+    foreach ($headers as $h) {
+        $hoja->setCellValueByColumnAndRow($col++, $fila, $h);
+    }
+
+    // Estilo encabezado
+    $hoja->getStyle("A1:F1")->applyFromArray(array(
+        'font' => array(
+            'bold' => true,
+            'size' => 11,
+            'color' => array('rgb' => 'FFFFFF')
+        ),
+        'fill' => array(
+            'type'  => PHPExcel_Style_Fill::FILL_SOLID,
+            'color' => array('rgb' => '1F4E78')
+        ),
+        'alignment' => array(
+            'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+        ),
+        'borders' => array(
+            'allborders' => array(
+                'style' => PHPExcel_Style_Border::BORDER_THIN
+            )
+        )
+    ));
+
+    $hoja->freezePane('A2');
+
+    $fila++;
+
+    foreach ($productos as $producto) {
+
+        $existencia = $producto->getExistencia();
+
+        if ($existencia <= 0) {
+            continue;
+        }
+
+        // CBM
+        $cbm = 0;
+
+        if (
+            $producto->getLargo() > 0 &&
+            $producto->getAncho() > 0 &&
+            $producto->getAlto() > 0
+        ) {
+            $cbm = round(
+                $producto->getLargo() *
+                $producto->getAncho() *
+                $producto->getAlto(),
+                3
+            );
+        }
+
+        $col = 0;
+
+        $hoja->setCellValueByColumnAndRow($col++, $fila, $producto->getCodigoSku());
+        $hoja->setCellValueByColumnAndRow($col++, $fila, $producto->getNombre());
+        $hoja->setCellValueByColumnAndRow($col++, $fila, $producto->getMarcaProducto());
+        $hoja->setCellValueByColumnAndRow($col++, $fila, $existencia);
+        $hoja->setCellValueByColumnAndRow($col++, $fila, (float)$producto->getPeso());
+        $hoja->setCellValueByColumnAndRow($col++, $fila, (float)$cbm);
+
+        $fila++;
+    }
+
+    // Formatos numéricos
+    $hoja->getStyle("D2:D{$fila}")
+            ->getNumberFormat()
+            ->setFormatCode('#,##0');
+
+    $hoja->getStyle("E2:E{$fila}")
+            ->getNumberFormat()
+            ->setFormatCode('#,##0.00');
+
+    $hoja->getStyle("F2:F{$fila}")
+            ->getNumberFormat()
+            ->setFormatCode('0.000');
+
+    // Auto ancho
+    foreach (range('A', 'F') as $c) {
+        $hoja->getColumnDimension($c)->setAutoSize(true);
+    }
+
+    // Bordes
+    $hoja->getStyle("A1:F{$fila}")
+            ->getBorders()
+            ->getAllBorders()
+            ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+    // Autofiltro
+    $hoja->setAutoFilter("A1:F1");
+
+    // Salida
+    header('Content-Type: application/vnd.ms-excel');
+    header('Content-Disposition: attachment;filename="Reporte_CBM.xls"');
+    header('Cache-Control: max-age=0');
+
+    $writer = PHPExcel_IOFactory::createWriter($xl, 'Excel5');
+    $writer->save('php://output');
+
+    exit;
+}
+
+
+    
+    public function executeReporteCBM(sfWebRequest $request)
+{
+  
+    $text = date('YmdHis');
+    $file = "Reporte_CBM_$text.csv";
+
+    $this->getResponse()->setContentType('charset=utf-8');
+    header('Expires: 0');
+    header('Cache-Control: private');
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . $file . '"');
+    header("Content-Transfer-Encoding: binary");
+
+    $Datos = '';
+
+    // Encabezados
+    $encabezados = array(
+        'CODIGO',
+        'DESCRIPCION',
+        'MARCAS',
+        'EXISTENCIA',
+        'PESO UND',
+        'CBM UND'
+    );
+
+    $Datos .= implode(",", $encabezados) . "\r\n";
+
+    $productos = $this->datos();
+
+    foreach ($productos as $producto)
+    {
+        $existencia = $producto->getExistencia();
+
+        if ($existencia <= 0)
+            continue;
+
+        // CBM
+        $cbm = 0;
+
+        if ($producto->getLargo() > 0 &&
+            $producto->getAncho() > 0 &&
+            $producto->getAlto() > 0)
+        {
+            $cbm = round(
+                $producto->getLargo() *
+                $producto->getAncho() *
+                $producto->getAlto(),
+                3
+            );
+        }
+
+        $fila = array(
+            "'" . str_replace(",", "", $producto->getCodigoSku()),
+            '"' . str_replace('"', '""', $producto->getNombre()) . '"',
+            '"' . str_replace('"', '""', $producto->getMarcaProducto()) . '"',
+            $existencia,
+            round($producto->getPeso(),2),
+            $cbm
+        );
+
+        $Datos .= implode(",", $fila) . "\r\n";
+    }
+
+    echo "\xEF\xBB\xBF"; // UTF-8 BOM para Excel
+    echo $Datos;
+die();
+}
+
+
     public function executeReporte(sfWebRequest $request) {
         $tipoPrecios = ListaPrecioQuery::create()->filterByConfidencial(false)->orderByNombre()->filterByActivo(true)->find();
         $tipoPrecioscon = ListaPrecioQuery::create()->filterByConfidencial(true)->orderByNombre()->filterByActivo(true)->find();
