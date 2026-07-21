@@ -1,195 +1,178 @@
-<script src='/assets/global/plugins/jquery.min.js'></script>
-<style>
-    .table-responsive-scroll {
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-}
-
-.table-responsive-scroll table {
-    min-width: 1400px; /* ajusta según columnas */
-    white-space: nowrap;
-}
-
-</style>
 <?php $modulo = $sf_params->get('module'); ?>
-<?php $proveedor_id = sfContext::getInstance()->getUser()->getAttribute('proveedor_id', null, 'seguridad'); ?>
+
 <div class="kt-portlet kt-portlet--responsive-mobile">
+
     <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
             <span class="kt-portlet__head-icon">
-                <i class="flaticon-list-2 kt-font-warning"></i>
+                <i class="flaticon2-graph kt-font-warning"></i>
             </span>
-            <h3 class="kt-portlet__head-title kt-font-info"> Consulta Ventas
-                <small>&nbsp;&nbsp;&nbsp; filtra por un rango de fechas y usuario&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</small>
+            <h3 class="kt-portlet__head-title kt-font-info">
+                Reporte de Ventas, Anulaciones y Notas de Crédito
+                <small>Consolidado por rango de fechas</small>
             </h3>
         </div>
-        <div class="kt-portlet__head-toolbar">
-        </div>
     </div>
+
     <div class="kt-portlet__body">
-        <?php echo $form->renderFormTag(url_for('consulta_venta/index?id=1'), array('class' => 'form-horizontal"')) ?>
-        <?php echo $form->renderHiddenFields() ?>
-        <div class="row"  style="padding-bottom:3px;">
-            <label class="col-lg-2 control-label right " style="font-weight:bold; text-align: right;"> Fecha Inicio </label>
-            <div class="col-lg-2 <?php if ($form['fechaInicio']->hasError()) echo "has-error" ?>">
-                <?php echo $form['fechaInicio'] ?>           
-                <span class="help-block form-error"> 
-                    <?php echo $form['fechaInicio']->renderError() ?>  
-                </span>
-            </div>
-            <label class="col-lg-1 control-label right " style="font-weight:bold; text-align: right;"> Fecha Fin </label>
-            <div class="col-lg-2 <?php if ($form['fechaFin']->hasError()) echo "has-error" ?>">
-                <?php echo $form['fechaFin'] ?>           
-                <span class="help-block form-error"> 
-                    <?php echo $form['fechaFin']->renderError() ?>  
-                </span>
-            </div>
-            <label class="col-lg-1 control-label right " style="font-weight:bold; text-align: right;"> Tienda </label>   
-            <div class="col-lg-2"> <?php echo $form['bodega'] ?></div>  
-        </div>
 
+        <!-- 🔹 FORM -->
+        <form method="POST" action="<?php echo url_for($modulo.'/index') ?>" class="form-horizontal">
 
-        <div class="row"  style="padding-bottom:3px;">
+            <?php echo $form->renderHiddenFields() ?>
 
-            <label class="col-lg-2 control-label right " style="font-weight:bold; text-align: right;"> Estatus </label>
-            <div class="col-lg-2">
-                <?php echo $form['estatus_op'] ?> 
-            </div>
-            <label class="col-lg-1 control-label right " style="font-weight:bold; text-align: right;"> Vendedor </label>
-            <div class="col-lg-2">
-                <?php echo $form['vendedor'] ?> 
-            </div>
-            <label class="col-lg-1 control-label right " style="font-weight:bold; text-align: right;"> Usuario </label>
-            <div class="col-lg-2">
-                <?php echo $form['usuario'] ?> 
+            <div class="row">
+                <div class="col-lg-3">
+                    <label>Fecha Inicio</label>
+                    <?php echo $form['fechaInicio'] ?>
+                </div>
+
+                <div class="col-lg-3">
+                    <label>Fecha Fin</label>
+                    <?php echo $form['fechaFin'] ?>
+                </div>
+
+                <div class="col-lg-2">
+                    <label>Tienda</label>
+                    <?php echo $form['bodega'] ?>
+                </div>
+
+                <div class="col-lg-2">
+                    <label>Vendedor</label>
+                    <?php echo $form['vendedor'] ?>
+                </div>
             </div>
 
-        </div>
+            <div class="row" style="margin-top:10px;">
+                <div class="col-lg-3">
+                    <label>Factura</label>
+                    <?php echo $form['busqueda'] ?>
+                </div>
 
-
-        <div class="row" style="padding-bottom:3px;">
-            <div class="col-lg-2 control-label right " style="font-weight:bold; text-align: right;"> Factura </div>
-            <div class="col-lg-2 <?php if ($form['busqueda']->hasError()) echo "has-error" ?>">
-                <?php echo $form['busqueda'] ?>           
-                <span class="help-block form-error"> 
-                    <?php echo $form['busqueda']->renderError() ?>  
-                </span>
-            </div>
-            <div class="col-lg-1 control-label right " style="font-weight:bold; text-align: right;">Cliente  </div>
-            <div class="col-lg-2 <?php if ($form['cliente']->hasError()) echo "has-error" ?>">
-                <?php echo $form['cliente'] ?>           
-                <span class="help-block form-error"> 
-                    <?php echo $form['cliente']->renderError() ?>  
-                </span>
-            </div>
-            <div class="col-lg-1"></div>
-            <div class="col-lg-1">
-                <button class="btn  btn-info btn-outline" type="submit">
-                    <i class="fa fa-search "></i>
-                    <span>Buscar</span>
-                </button>
-            </div>
-            <div class="col-lg-1">
-                <a target="_blank" href="<?php echo url_for('consulta_venta/reporteExcel') ?>" class="btn  btn-sm btn-warning" > <i class="flaticon2-printer"></i>Reporte </a>
-            </div>
-        </div>
-
-
-
-        <?php echo '</form>'; ?>
-        <div class="table-responsive-scroll">
-        <table class="table table-bordered  dataTable table-condensed flip-content" >
-            <thead class="flip-content">
-                <tr class="active">
-                    <th align="center" width="20px"> Código</th>
-                    <th align="center" width="20px"> Tienda</th>
-                    <th align="center" width="20px">Fecha</th>
-                    <th align="center" width="20px">Usuario</th>
-                    <th width="25px">Cliente</th>
-                    <th  align="center"> Nombre</th>
-                    <th  align="center"> RUC</th>
-                    <th  align="center"> Estado</th>
-                    <th  align="center"> Valor</th>    
-                    <th width="25px">CUFE</th>
-                    <th align="center" width="20px">Vendedor</th>
-                    <th  align="center"> Observaciones /Guia</th>   
+                <div class="col-lg-2">
+                    <label>Cliente</label>
+                    <?php echo $form['cliente'] ?>
+                </div>
                     
+                <div class="col-lg-2 <?php if ($form['tipo_reporte']->hasError()) echo "has-error" ?>">
+                    <label>Tipo Reporte</label>
+                    <?php echo $form['tipo_reporte'] ?>           
+                    <span class="help-block form-error"> 
+                        <?php echo $form['tipo_reporte']->renderError() ?>  
+                    </span>
+                </div>
+                <div class="col-lg-1">
+                    
+                    <br>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        Buscar
+                    </button>
+                </div>
+                  <div class="col-lg-1"><br><br>
+                    <a target="_blank"
+                       href="<?php echo url_for($modulo.'/reporteExcel') ?>"
+                   class="btn  btn-sm btn-block " style="background-color:#04AA6D; color:white">
+                    Excel
+                    </a>
+                </div>
+            </div>
 
-                    <th  align="center"> Valor Pagado</th>      
-                    <th>Ult Recibo</th>
-                    <th>Ult Fecha Pago</th>
+            <br>
+
+            <div class="row">
+                
+
+              
+            </div>
+
+        </form>
+
+        <hr>
+
+        <!-- 🔥 TABLA -->
+        <table class="table table-bordered table-condensed">
+            <thead>
+                <tr class="active">
+                    <th>Código</th>
+                    <th>Tienda</th>
+                    <th>Fecha</th>
+                    <th>Usuario</th>
+                    <th>Cliente</th>
+                    <th>Nombre</th>
+                    <th>RUC</th>
+                    <th>Estado</th>
+                    <th style="text-align:right">Valor</th>
+                   
+                    <th>Vendedor</th>
+                          <th style="text-align:right">Pagado</th>
+           
                 </tr>
             </thead>
-            <tbody>
-                <?php foreach ($operaciones as $lista) { ?>
-                    <?php $id = $lista->getId(); ?>
-                    <?php $val = explode('-', $lista->getFaceFirma()) ?>
-                    <?php $numero ="Fact"; // $val[0]; ?>
-                    <tr>
-                        <td>
-                            <a class="btn btn-warning btn-sm btn-block" href="<?php echo url_for('reporte_venta/muestra?id=' . $id) ?>" data-toggle="modal" data-target="#ajaxmodal<?php echo $id ?>">  <?php echo $lista->getCodigoFactura() ?> </a>
-                        </td>
-                        <td> <?php echo substr($lista->getTienda(), 0, 20) ?>  </td>
-                        <td><?php echo $lista->getFecha('d/m/Y H:i') ?></td>
-                        <td> <font size="-1"><?php echo $lista->getUsuario() ?></font>  </td>
-                        <td><?php
-                            if ($lista->getClienteId()) {
-                                echo $lista->getCliente()->getCodigoCli();
-                            }
-                            ?></td>
-                        <td><?php echo $lista->getNombre() ?></td>
-                        <td><?php echo $lista->getNit() ?></td>
-                        <td><?php echo $lista->getEstatus() ?></td>
-                        <td style="text-algn:right"><?php echo Parametro::formato($lista->getValorTotal()) ?> </td>
-                        <td>
-                            <?php echo substr($lista->getFaceFirma(),0,20) ?>
-                                                          
-                                                            </td>
-                        <td><?php
-                            if ($lista->getVendedorId()) {
-                                echo $lista->getVendedor()->getNombre();
-                            }
-                            ?></td>
-                        <td><?php echo $lista->getObservaciones() ?>  </td>
-                        <td  style="text-align:right"><?php echo Parametro::formato($lista->getValorPagado()) ?>   </td>
-                        <td>  <?php if ($lista->getRecibo()) { ?> 
-                                <a target="_blank" href="<?php echo url_for('lista_cobro/reporte?id=' . $lista->getRecibo()) ?>" class="btn btn-block btn-xs  " target = "_blank">
-                                    <?php echo $lista->getRecibo(); ?>
-                                </a>
-                            <?php } ?>
 
+            <tbody>
+
+                <?php 
+                $TOTAL_VALOR = 0;
+                $TOTAL_PAGADO = 0;
+                ?>
+
+                <?php foreach ($registros as $r) { ?>
+
+                    <?php 
+                    $TOTAL_VALOR += $r['valor'];
+                    $TOTAL_PAGADO += $r['valor_pagado'];
+                    ?>
+
+                    <tr>
+
+                        <td><?php echo $r['codigo'] ?></td>
+                        <td><?php echo $r['codigo_tienda'] ?></td>
+                        <td><?php echo $r['fecha'] ?></td>
+                        <td><?php echo $r['usuario'] ?></td>
+                        <td><?php echo $r['cliente'] ?></td>
+                        <td><?php echo $r['nombre'] ?></td>
+                        <td><?php echo $r['nit'] ?></td>
+
+                        <td>
+                            <?php if ($r['estatus'] == 'ANULADO') { ?>
+                                <span class="label label-danger">ANULADO</span>
+                            <?php } elseif ($r['estatus'] == 'NOTA CREDITO') { ?>
+                                <span class="label label-warning">NOTA</span>
+                            <?php } else { ?>
+                                <span class="label label-success">VENTA</span>
+                            <?php } ?>
                         </td>
-                        <td><?php echo $lista->getFechaRecibo() ?>  </td>
+
+                        <td style="text-align:right">
+                            <?php echo Parametro::formato($r['valor']) ?>
+                        </td>
+
+
+                        <td><?php echo $r['vendedor'] ?></td>
+                
+
+                        <td style="text-align:right">
+                            <?php echo Parametro::formato($r['valor_pagado']) ?>
+                        </td>
+
+                
                     </tr>
 
                 <?php } ?>
+
             </tbody>
+
+            <tfoot>
+                <tr>
+                    <th colspan="8">TOTALES</th>
+                    <th style="text-align:right"><?php echo Parametro::formato($TOTAL_VALOR) ?></th>
+                    <th colspan="1"></th>
+                    <th style="text-align:right"><?php echo Parametro::formato($TOTAL_PAGADO) ?></th>
+       
+                </tr>
+            </tfoot>
+
         </table>
-   </div>
+
     </div>
 </div>
-
-
-<script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-
-
-<?php foreach ($operaciones as $reg) { ?>
-    <?php $lista = $reg; ?>
-
-
-
-    <div class="modal fade" id="ajaxmodal<?php echo $reg->getId() ?>" tabindex="-1"  data-toggle="modal" data-target="#responsivemodal"
-         role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog" style="width: 750px">
-            <div class="modal-content" style=" width: 750px">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="ti-close"></span></button>
-                    <h4 class="modal-title" id="myModalLabel6">Detalle de Operación</h4>
-                </div>
-            </div>
-        </div>
-    </div>
-
-<?php } ?>

@@ -96,6 +96,7 @@ class cuenta_por_cobrarActions extends sfActions {
         $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
         $id = $request->getParameter('id'); //=155555&$dirh =  
         $total = $request->getParameter('total');
+   
         $list = $request->getParameter('list');
         $this->list = $list;
         $valores = json_decode($list);
@@ -121,6 +122,15 @@ class cuenta_por_cobrarActions extends sfActions {
         $value['fecha'] = date('d/m/Y');
         $this->form = new SelePagoForm($value);
         if ($request->isMethod('post')) {
+            $valorTotal=0;
+                foreach ($lista as $registro) {
+
+                    $valorTotal = $registro['valor']+$valorTotal;
+                }
+     if ($valorTotal <=0){
+             $this->getUser()->setFlash('error','Debe ingresar un valor de pago ');
+                $this->redirect('cuenta_por_cobrar/index');
+     }
 
             $this->form->bind(
                     $request->getParameter("consulta"),
@@ -155,10 +165,10 @@ class cuenta_por_cobrarActions extends sfActions {
 
                 $total = 0;
                 $pago->save();
-
                 foreach ($lista as $registro) {
 
                     $valor = $registro['valor'];
+
                     $total += $valor;
 
                     $operacion = OperacionQuery::create()
@@ -592,6 +602,12 @@ switch($estado){
             $this->form->bind($request->getParameter("consulta"), $request->getFiles("consulta"));
             if ($this->form->isValid()) {
                 $valores = $this->form->getValues();
+                $valor = $valores['valor'];
+            
+                if ($valor<=0) {
+                            $this->getUser()->setFlash('error', 'Debe ingresar un valor ' );
+                        $this->redirect('cuenta_por_cobrar/caja?id=' . $OperacionId);
+                }
                 $banco_id = $valores['banco_id'];
                 if ($banco_id) {
                     $documento = $valores['no_documento'];
@@ -758,7 +774,7 @@ switch($estado){
             }
         }
 
-        $this->partidaQ = PartidaQuery::create()->filterByConfirmada(false)->findOneByCodigo($operacion->getCodigo());
+     
     }
 
     public function partidaPago($ordenPago) {

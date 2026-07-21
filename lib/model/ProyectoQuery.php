@@ -19,7 +19,559 @@
  */
 class ProyectoQuery extends BaseProyectoQuery
 {
+  
     
+    public static function obtenerReporteVentasV2($empresaId, $valores)
+{
+    $fechaInicio = explode('/', $valores['fechaInicio']);
+    $fechaInicio = $fechaInicio[2] . '-' . $fechaInicio[1] . '-' . $fechaInicio[0];
+
+    $fechaFin = explode('/', $valores['fechaFin']);
+    $fechaFin = $fechaFin[2] . '-' . $fechaFin[1] . '-' . $fechaFin[0];
+
+    $con = Propel::getConnection();
+
+    $query = "
+        SELECT
+
+            tt.codigo AS codigo_tienda,
+            tt.nombre AS tienda,
+
+            op.codigo,
+            op.codigo AS codigo_factura,
+
+            op.fecha AS fecha_real,
+            DATE_FORMAT(op.fecha,'%d/%m/%Y %H:%i') AS fecha,
+
+            op.usuario,
+
+            cli.codigo AS cliente,
+            cli.nit,
+
+            op.nombre,
+
+            'VENTA' AS estatus,
+
+            (de.cantidad * de.valor_unitario) AS valor_total,
+
+            op.face_firma,
+
+            ve.nombre AS vendedor,
+
+            op.valor_pagado,
+
+            de.id AS detalle_id,
+
+            de.codigo AS codigo_producto,
+
+            COALESCE(pro.nombre,de.detalle) AS detalle,
+
+            de.cantidad,
+
+            de.valor_unitario,
+
+            COALESCE(de.costo_unitario,0) AS costo_proveedor,
+
+            IFNULL(de.valor_unitario,0) AS precio_lista
+
+        FROM operacion op
+
+        INNER JOIN operacion_detalle de
+            ON de.operacion_id = op.id
+
+        LEFT JOIN cliente cli
+            ON cli.id = op.cliente_id
+
+        LEFT JOIN vendedor ve
+            ON ve.id = op.vendedor_id
+
+        LEFT JOIN tienda tt
+            ON tt.id = op.tienda_id
+
+        LEFT JOIN producto pro
+            ON pro.id = de.producto_id
+
+        WHERE
+
+            op.empresa_id = {$empresaId}
+
+            AND op.anulado = 0
+
+            AND de.cantidad > 0
+
+            AND op.fecha BETWEEN '{$fechaInicio} 00:00:00'
+                             AND '{$fechaFin} 23:59:59'
+    ";
+
+    // ==========================
+    // FILTROS
+    // ==========================
+
+    if (!empty($valores['bodega'])) {
+        $query .= " AND op.tienda_id = " . (int)$valores['bodega'];
+    }
+
+    if (isset($valores['vendedor']) && $valores['vendedor'] !== '') {
+
+        if ($valores['vendedor'] == '-99') {
+            $query .= " AND op.vendedor_id IS NOT NULL ";
+        } else {
+            $query .= " AND op.vendedor_id = " . (int)$valores['vendedor'];
+        }
+    }
+
+    if (!empty($valores['busqueda'])) {
+
+        $busqueda = addslashes($valores['busqueda']);
+
+        $query .= " AND op.nombre LIKE '%{$busqueda}%'";
+    }
+
+    if (!empty($valores['cliente'])) {
+
+        $cliente = addslashes($valores['cliente']);
+
+        $query .= " AND (
+            cli.nombre LIKE '%{$cliente}%'
+            OR cli.codigo LIKE '%{$cliente}%'
+        )";
+    }
+
+    if (!empty($valores['producto'])) {
+
+        $producto = addslashes($valores['producto']);
+
+        $query .= " AND (
+            pro.nombre LIKE '%{$producto}%'
+            OR pro.codigo_sku LIKE '%{$producto}%'
+        )";
+    }
+
+    $query .= "
+        ORDER BY
+            op.fecha,
+            op.codigo,
+            de.id
+    ";
+
+    $stmt = $con->prepare($query);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+    
+public static function obtenerAnulaciones($empresaId, $valores)
+{
+    $fechaInicio = explode('/', $valores['fechaInicio']);
+    $fechaInicio = $fechaInicio[2] . '-' . $fechaInicio[1] . '-' . $fechaInicio[0];
+
+    $fechaFin = explode('/', $valores['fechaFin']);
+    $fechaFin = $fechaFin[2] . '-' . $fechaFin[1] . '-' . $fechaFin[0];
+
+    $con = Propel::getConnection();
+
+    $query = "
+        SELECT
+            tt.codigo AS codigo_tienda,
+            tt.nombre AS tienda,
+
+            CONCAT(op.codigo,' - ANULADO') AS codigo,
+            op.codigo AS codigo_factura,
+
+            op.fecha_anulo AS fecha_real,
+            DATE_FORMAT(op.fecha_anulo,'%d/%m/%Y %H:%i') AS fecha,
+
+            op.usuario,
+
+            cli.codigo AS cliente,
+            op.nombre,
+            cli.nit,
+
+            'ANULADO' AS estatus,
+
+            (de.cantidad * de.valor_unitario) * -1 AS valor,
+
+            op.anula_face_firma AS face_firma,
+
+            ve.nombre AS vendedor,
+
+            0 AS valor_pagado,
+
+            de.codigo AS codigo_producto,
+
+            COALESCE(pro.nombre,de.detalle) AS detalle,
+
+            de.cantidad,
+
+            de.valor_unitario,
+
+            COALESCE(de.costo_unitario,0) AS costo_proveedor,
+
+            IFNULL(de.valor_unitario,0) AS precio_lista
+
+        FROM operacion op
+
+        INNER JOIN operacion_detalle de
+            ON de.operacion_id = op.id
+
+        LEFT JOIN cliente cli
+            ON cli.id = op.cliente_id
+
+        LEFT JOIN vendedor ve
+            ON ve.id = op.vendedor_id
+
+        LEFT JOIN tienda tt
+            ON tt.id = op.tienda_id
+
+        LEFT JOIN producto pro
+            ON pro.id = de.producto_id
+
+        WHERE
+
+            op.empresa_id = {$empresaId}
+
+            AND op.anulado = 1
+
+            AND op.fecha_anulo BETWEEN '{$fechaInicio} 00:00:00'
+                                  AND '{$fechaFin} 23:59:59'
+
+            AND NOT EXISTS (
+                SELECT 1
+                FROM nota_credito nc
+                WHERE nc.documento = op.codigo
+            )
+    ";
+
+    // ==========================
+    // FILTROS
+    // ==========================
+
+    if (!empty($valores['bodega'])) {
+        $query .= " AND op.tienda_id=".(int)$valores['bodega'];
+    }
+
+    if (isset($valores['vendedor']) && $valores['vendedor'] !== '') {
+
+        if ($valores['vendedor'] == '-99') {
+            $query .= " AND op.vendedor_id IS NOT NULL ";
+        } else {
+            $query .= " AND op.vendedor_id=".(int)$valores['vendedor'];
+        }
+    }
+
+    if (!empty($valores['busqueda'])) {
+
+        $busqueda = addslashes($valores['busqueda']);
+
+        $query .= " AND op.nombre LIKE '%{$busqueda}%'";
+    }
+
+    if (!empty($valores['cliente'])) {
+
+        $cliente = addslashes($valores['cliente']);
+
+        $query .= " AND (
+            cli.nombre LIKE '%{$cliente}%'
+            OR cli.codigo LIKE '%{$cliente}%'
+        )";
+    }
+
+    if (!empty($valores['producto'])) {
+
+        $producto = addslashes($valores['producto']);
+
+        $query .= " AND (
+            pro.nombre LIKE '%{$producto}%'
+            OR pro.codigo_sku LIKE '%{$producto}%'
+        )";
+    }
+
+    $stmt = $con->prepare($query);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+public static function obtenerNotasCredito($con, $empresaId, $valores)
+{
+    $fechaInicio = explode('/', $valores['fechaInicio']);
+    $fechaInicio = $fechaInicio[2] . '-' . $fechaInicio[1] . '-' . $fechaInicio[0];
+
+    $fechaFin = explode('/', $valores['fechaFin']);
+    $fechaFin = $fechaFin[2] . '-' . $fechaFin[1] . '-' . $fechaFin[0];
+
+    $query = "
+        SELECT
+            nc.id,
+            nc.codigo AS codigo_nc,
+            nc.documento,
+            nc.fecha AS fecha_real,
+
+            op.usuario,
+            op.nombre,
+
+            cli.codigo AS cliente,
+            cli.nit,
+
+            ve.nombre AS vendedor,
+
+            tt.codigo AS codigo_tienda,
+            tt.nombre AS tienda,
+
+            op.valor_pagado,
+
+            op.face_firma,
+
+            nc.json_retorna
+
+        FROM nota_credito nc
+
+        INNER JOIN operacion op
+            ON op.codigo = nc.documento
+
+        LEFT JOIN cliente cli
+            ON cli.id = op.cliente_id
+
+        LEFT JOIN vendedor ve
+            ON ve.id = op.vendedor_id
+
+        LEFT JOIN tienda tt
+            ON tt.id = op.tienda_id
+
+        WHERE
+
+            op.empresa_id = {$empresaId}
+
+            AND nc.fecha BETWEEN '{$fechaInicio} 00:00:00'
+                             AND '{$fechaFin} 23:59:59'
+    ";
+
+    // ==========================
+    // FILTROS
+    // ==========================
+
+    if (!empty($valores['bodega'])) {
+        $query .= " AND op.tienda_id=".(int)$valores['bodega'];
+    }
+
+    if (isset($valores['vendedor']) && $valores['vendedor'] !== '') {
+
+        if ($valores['vendedor'] == '-99') {
+            $query .= " AND op.vendedor_id IS NOT NULL ";
+        } else {
+            $query .= " AND op.vendedor_id=".(int)$valores['vendedor'];
+        }
+    }
+
+    if (!empty($valores['busqueda'])) {
+
+        $busqueda = addslashes($valores['busqueda']);
+
+        $query .= " AND op.nombre LIKE '%{$busqueda}%'";
+    }
+
+    if (!empty($valores['cliente'])) {
+
+        $cliente = addslashes($valores['cliente']);
+
+        $query .= " AND (
+            cli.nombre LIKE '%{$cliente}%'
+            OR cli.codigo LIKE '%{$cliente}%'
+        )";
+    }
+
+    $stmt = $con->prepare($query);
+    $stmt->execute();
+
+    $notas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $resultado = array();
+
+    foreach ($notas as $nc) {
+
+        $json = json_decode($nc['json_retorna'], true);
+
+        if (!$json) {
+            continue;
+        }
+
+        foreach ($json as $item) {
+
+            $detalle = OperacionDetalleQuery::create()
+                ->findPk($item['id']);
+
+            if (!$detalle) {
+                continue;
+            }
+
+            $cantidad = (float)$item['cantidad'];
+
+            $valor = round(
+                $cantidad * $detalle->getValorUnitario(),
+                2
+            );
+
+            $resultado[] = array(
+
+                'codigo_tienda' => $nc['codigo_tienda'],
+
+                'tienda' => $nc['tienda'],
+
+                'codigo' => $nc['documento'].' - '.$nc['codigo_nc'],
+
+                'codigo_factura' => $nc['documento'],
+
+                'fecha_real' => $nc['fecha_real'],
+
+                'fecha' => date(
+                    'd/m/Y H:i',
+                    strtotime($nc['fecha_real'])
+                ),
+
+                'usuario' => $nc['usuario'],
+
+                'cliente' => $nc['cliente'],
+
+                'nombre' => $nc['nombre'],
+
+                'nit' => $nc['nit'],
+
+                'estatus' => 'NOTA CREDITO',
+
+                'valor' => $valor * -1,
+
+                'face_firma' => $nc['face_firma'],
+
+                'vendedor' => $nc['vendedor'],
+
+                'valor_pagado' => 0,
+
+                'codigo_producto' => $detalle->getCodigo(),
+
+                'detalle' => $detalle->getDetalle(),
+
+                'cantidad' => $cantidad,
+
+                'valor_unitario' => $detalle->getValorUnitario(),
+
+                'costo_proveedor' => $detalle->getCostoUnitario(),
+
+                'precio_lista' => $detalle->getPrecioLista()
+
+            );
+        }
+    }
+
+    return $resultado;
+}
+
+public static function obtenerReporteVentasSaldoConsolidado($empresaId, $valores, $estadoActual = true)
+{
+ 
+
+    $detalle = self::obtenerReporteVentasSaldo(
+        $empresaId,
+        $valores,
+        $estadoActual
+    );
+
+    $facturas = array();
+
+    foreach ($detalle as $d) {
+
+        $codigo = $d['codigo_factura'];
+
+        if (!isset($facturas[$codigo])) {
+
+            $facturas[$codigo] = array(
+
+                'codigo_tienda' => $d['codigo_tienda'],
+
+                'codigo'        => $codigo,
+
+                'fecha_real'    => $d['fecha_real'],
+
+                'fecha'         => date(
+                    'd/m/Y H:i',
+                    strtotime($d['fecha_real'])
+                ),
+
+                'usuario'       => $d['usuario'],
+
+                'cliente'       => $d['cliente'],
+
+                'nombre'        => $d['nombre'],
+
+                'nit'           => $d['nit'],
+
+                'estatus'       => 'VENTA',
+
+                'valor'         => 0,
+
+                'face_firma'    => $d['face_firma'],
+
+                'vendedor'      => $d['vendedor'],
+
+                'valor_pagado'  => $d['valor_pagado']
+            );
+        }
+
+        $facturas[$codigo]['valor'] += $d['valor_total'];
+    }
+
+    usort($facturas, function ($a, $b) {
+
+        if ($a['fecha_real'] == $b['fecha_real']) {
+            return strcmp($a['codigo'], $b['codigo']);
+        }
+
+        return strcmp($a['fecha_real'], $b['fecha_real']);
+    });
+
+    return array_values($facturas);
+}
+public static function obtenerReporteVentasHistoricoConsolidado($empresaId, $valores)
+{
+    $con = Propel::getConnection();
+
+    // Ventas
+    $ventas = self::obtenerReporteVentas(
+        $empresaId,
+        $valores
+    );
+
+    // Anulaciones
+    $anulados = self::obtenerAnulaciones(
+        $empresaId,
+        $valores
+    );
+
+    // Notas de Crédito
+    $notas = self::obtenerNotasCredito(
+        $con,
+        $empresaId,
+        $valores
+    );
+
+    // Unificar movimientos
+    $registros = array_merge(
+        $ventas,
+        $anulados,
+        $notas
+    );
+
+    usort($registros, function ($a, $b) {
+
+        if ($a['fecha_real'] == $b['fecha_real']) {
+            return strcmp($a['codigo'], $b['codigo']);
+        }
+
+        return strcmp($a['fecha_real'], $b['fecha_real']);
+    });
+
+    return $registros;
+}
+
            public function __construct($dbName = 'propel', $modelName = 'Proyecto', $modelAlias = null) {
         parent::__construct($dbName, $modelName, $modelAlias);
         $empresa_id = UsuarioQuery::getEmpresaSeleccionada('Proyecto');
@@ -31,4 +583,559 @@ class ProyectoQuery extends BaseProyectoQuery
             }
         }
     }
+    
+    
+        
+
+ static public function  obtenerReporteVentas($empresaId, $valores) {
+        $fechaInicio = explode('/', $valores['fechaInicio']);
+        $fechaInicio = $fechaInicio[2] . '-' . $fechaInicio[1] . '-' . $fechaInicio[0];
+        $fechaFin = explode('/', $valores['fechaFin']);
+        $fechaFin = $fechaFin[2] . '-' . $fechaFin[1] . '-' . $fechaFin[0];
+
+        $query = "
+    SELECT     
+        IFNULL(de.valor_unitario,0) AS precio_lista,
+        tt.nombre AS tienda,
+        op.codigo AS codigo_factura,
+        cli.codigo AS cliente,
+        op.nombre,
+        'VENTA' estatus,
+        DATE_FORMAT(op.fecha, '%d/%m/%y') fecha,
+        ve.nombre AS vendedor,
+        op.usuario,
+        op.valor_total,
+        op.valor_pagado,
+        de.codigo AS codigo_producto,
+        COALESCE(pro.nombre, de.detalle) AS detalle,
+        de.cantidad,
+        de.valor_unitario,
+        COALESCE(
+            de.costo_unitario,
+            (
+                SELECT pm.costo 
+                FROM producto_movimiento pm 
+                WHERE pm.costo > 0 
+                AND pm.fecha >= DATE(op.fecha)
+                AND pm.fecha < DATE(op.fecha) + INTERVAL 1 DAY
+                AND pm.producto_id = de.producto_id 
+                ORDER BY pm.fecha DESC 
+                LIMIT 1
+            )
+        ) AS costo_proveedor, DATE_FORMAT(op.fecha, '%d/%m/%y')  fecha_documento_original,0 fecha_fuera_rango
+    FROM operacion op
+    LEFT JOIN operacion_detalle de ON op.id = de.operacion_id
+    LEFT JOIN vendedor ve ON ve.id = op.vendedor_id
+    LEFT JOIN cliente cli ON cli.id = op.cliente_id
+    LEFT JOIN producto pro ON pro.id = de.producto_id
+    LEFT JOIN tienda tt ON tt.id = op.tienda_id
+    WHERE op.empresa_id = $empresaId
+    AND de.cantidad > 0
+    AND op.fecha BETWEEN '$fechaInicio 00:00:00' AND '$fechaFin 23:59:59'
+    ";
+
+        // 🔹 filtros dinámicos
+        if ($valores['vendedor']) {
+            $query .= " AND op.vendedor_id = " . $valores['vendedor'];
+        }
+
+        if ($valores['busqueda']) {
+            $query .= " AND op.nombre LIKE '%" . addslashes($valores['busqueda']) . "%'";
+        }
+
+        if ($valores['cliente']) {
+            $query .= " AND (cli.nombre LIKE '%" . addslashes($valores['cliente']) . "%' 
+                    OR cli.codigo LIKE '%" . addslashes($valores['cliente']) . "%')";
+        }
+
+        if ($valores['producto']) {
+            $query .= " AND (pro.nombre LIKE '%" . addslashes($valores['producto']) . "%' 
+                    OR pro.codigo_sku LIKE '%" . addslashes($valores['producto']) . "%')";
+        }
+
+        // 🔴 ANULADOS
+        $query .= "
+    UNION ALL
+    SELECT 
+        IFNULL( de.valor_unitario,0) * -1 AS precio_lista,
+        tt.nombre,
+        CONCAT(op.codigo, ' - ANULADO'),
+        cli.codigo,
+        op.nombre,
+        'NOTA CREDITO',
+        DATE_FORMAT(op.fecha_anulo, '%d/%m/%y'),
+        ve.nombre,
+        op.usuario,
+        op.valor_total * -1,
+        op.valor_pagado * -1,
+        de.codigo,
+        COALESCE(pro.nombre, de.detalle),
+        de.cantidad,
+        de.valor_unitario * -1,
+        -ABS(COALESCE(de.costo_unitario, 0)) AS costo_proveedor, DATE_FORMAT(op.fecha, '%d/%m/%y')  fecha_documento_original,
+CASE 
+    WHEN DATE(op.fecha) < '$fechaInicio'
+      OR DATE(op.fecha) > '$fechaFin'
+    THEN 1
+    ELSE 0
+END AS        
+
+fecha_fuera_rango
+    FROM operacion op
+    LEFT JOIN operacion_detalle de ON op.id = de.operacion_id
+    LEFT JOIN vendedor ve ON ve.id = op.vendedor_id
+    LEFT JOIN cliente cli ON cli.id = op.cliente_id
+    LEFT JOIN producto pro ON pro.id = de.producto_id
+    LEFT JOIN tienda tt ON tt.id = op.tienda_id
+    WHERE op.empresa_id = $empresaId
+    AND op.anulado = 1
+    AND de.cantidad > 0
+    AND op.fecha_anulo BETWEEN '$fechaInicio 00:00:00' AND '$fechaFin 23:59:59'
+    ";
+
+
+        // 🔹 filtros dinámicos
+        if ($valores['vendedor']) {
+            $query .= " AND op.vendedor_id = " . $valores['vendedor'];
+        }
+
+        if ($valores['busqueda']) {
+            $query .= " AND op.nombre LIKE '%" . addslashes($valores['busqueda']) . "%'";
+        }
+
+        if ($valores['cliente']) {
+            $query .= " AND (cli.nombre LIKE '%" . addslashes($valores['cliente']) . "%' 
+                    OR cli.codigo LIKE '%" . addslashes($valores['cliente']) . "%')";
+        }
+
+        if ($valores['producto']) {
+            $query .= " AND (pro.nombre LIKE '%" . addslashes($valores['producto']) . "%' 
+                    OR pro.codigo_sku LIKE '%" . addslashes($valores['producto']) . "%')";
+        }
+
+
+        $query .= " ORDER BY fecha";
+
+        $con = Propel::getConnection();
+        $stmt = $con->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    
+  static public function obtenerReporteVentasHistorico(
+    $empresaId,
+    $valores
+)
+{
+    $con = Propel::getConnection();
+
+    $ventas = ProyectoQuery::obtenerReporteVentas(
+        $empresaId,
+        $valores
+    );
+
+    $notas = ProyectoQuery::obtenerNotasCredito(
+        $con,
+        $empresaId,
+        $valores
+    );
+
+    if ($notas) {
+        return array_merge($ventas, $notas);
+    }
+
+    return $ventas;
+}
+static public function obtenerNotasCreditoRawHistorico($con, $empresaId, $valores)
+{
+    // Fechas
+    $fechaInicio = explode('/', $valores['fechaInicio']);
+    $fechaInicio = $fechaInicio[2] . '-' . $fechaInicio[1] . '-' . $fechaInicio[0];
+
+    $fechaFin = explode('/', $valores['fechaFin']);
+    $fechaFin = $fechaFin[2] . '-' . $fechaFin[1] . '-' . $fechaFin[0];
+
+    $query = "
+        SELECT
+            nc.json_retorna
+        FROM nota_credito nc
+        INNER JOIN operacion op
+            ON op.codigo = nc.documento
+        LEFT JOIN vendedor ve
+            ON ve.id = op.vendedor_id
+        LEFT JOIN cliente cli
+            ON cli.id = op.cliente_id
+        LEFT JOIN operacion_detalle de
+            ON de.operacion_id = op.id
+        LEFT JOIN producto pro
+            ON pro.id = de.producto_id
+        WHERE
+            op.empresa_id = {$empresaId}
+            AND op.anulado = 0
+            AND nc.fecha BETWEEN '{$fechaInicio} 00:00:00'
+                             AND '{$fechaFin} 23:59:59'
+    ";
+
+    // Bodega
+    if (!empty($valores['bodega'])) {
+        $query .= " AND op.tienda_id = " . (int)$valores['bodega'];
+    }
+
+    // Vendedor
+    if (isset($valores['vendedor']) && $valores['vendedor'] !== '') {
+
+        if ($valores['vendedor'] == '-99') {
+            $query .= " AND op.vendedor_id IS NOT NULL ";
+        } else {
+            $query .= " AND op.vendedor_id = " . (int)$valores['vendedor'];
+        }
+    }
+
+    // Búsqueda por nombre
+    if (!empty($valores['busqueda'])) {
+        $busqueda = addslashes($valores['busqueda']);
+        $query .= " AND op.nombre LIKE '%{$busqueda}%'";
+    }
+
+    // Cliente
+    if (!empty($valores['cliente'])) {
+        $cliente = addslashes($valores['cliente']);
+        $query .= " AND (
+            cli.nombre LIKE '%{$cliente}%'
+            OR cli.codigo LIKE '%{$cliente}%'
+        )";
+    }
+
+    // Producto
+    if (!empty($valores['producto'])) {
+        $producto = addslashes($valores['producto']);
+        $query .= " AND (
+            pro.nombre LIKE '%{$producto}%'
+            OR pro.codigo_sku LIKE '%{$producto}%'
+        )";
+    }
+
+    $stmt = $con->prepare($query);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+static public function obtenerReporteVentasSaldo($empresaId, $valores, $estadoActual = true)
+{
+    // ==========================
+    // FECHAS
+    // ==========================
+    $fechaInicio = explode('/', $valores['fechaInicio']);
+    $fechaInicio = $fechaInicio[2] . '-' . $fechaInicio[1] . '-' . $fechaInicio[0];
+
+    $fechaFin = explode('/', $valores['fechaFin']);
+    $fechaFin = $fechaFin[2] . '-' . $fechaFin[1] . '-' . $fechaFin[0];
+
+    $con = Propel::getConnection();
+
+    // ==========================
+    // VENTAS
+    // ==========================
+    $query = "
+        SELECT
+            de.id AS detalle_id,
+            IFNULL(de.valor_unitario,0) AS precio_lista,
+            tt.codigo AS codigo_tienda,
+            tt.nombre AS tienda,
+            op.codigo AS codigo_factura,
+            op.fecha AS fecha_real,
+            DATE_FORMAT(op.fecha,'%d/%m/%y') AS fecha,
+            cli.codigo AS cliente,
+            cli.nit,
+            op.nombre,
+            op.face_firma,
+            ve.nombre AS vendedor,
+            op.usuario,
+            op.valor_total,
+            op.valor_pagado,
+            de.codigo AS codigo_producto,
+            COALESCE(pro.nombre,de.detalle) AS detalle,
+            de.cantidad,
+            de.valor_unitario,
+            COALESCE(de.costo_unitario,0) AS costo_proveedor
+        FROM operacion op
+        INNER JOIN operacion_detalle de
+            ON de.operacion_id=op.id
+        LEFT JOIN vendedor ve
+            ON ve.id=op.vendedor_id
+        LEFT JOIN cliente cli
+            ON cli.id=op.cliente_id
+        LEFT JOIN producto pro
+            ON pro.id=de.producto_id
+        LEFT JOIN tienda tt
+            ON tt.id=op.tienda_id
+        WHERE
+            op.empresa_id={$empresaId}
+            AND op.anulado=0
+            AND de.cantidad>0
+            AND op.fecha BETWEEN '{$fechaInicio} 00:00:00'
+                             AND '{$fechaFin} 23:59:59'
+    ";
+
+    // ==========================
+    // FILTROS
+    // ==========================
+
+    if (!empty($valores['bodega'])) {
+        $query .= " AND op.tienda_id=".(int)$valores['bodega'];
+    }
+
+    if (isset($valores['vendedor']) && $valores['vendedor'] !== '') {
+
+        if ($valores['vendedor'] == '-99') {
+            $query .= " AND op.vendedor_id IS NOT NULL ";
+        } else {
+            $query .= " AND op.vendedor_id=".(int)$valores['vendedor'];
+        }
+    }
+
+    if (!empty($valores['busqueda'])) {
+
+        $busqueda = addslashes($valores['busqueda']);
+
+        $query .= " AND op.nombre LIKE '%{$busqueda}%'";
+    }
+
+    if (!empty($valores['cliente'])) {
+
+        $cliente = addslashes($valores['cliente']);
+
+        $query .= " AND (
+            cli.nombre LIKE '%{$cliente}%'
+            OR cli.codigo LIKE '%{$cliente}%'
+        )";
+    }
+
+    if (!empty($valores['producto'])) {
+
+        $producto = addslashes($valores['producto']);
+
+        $query .= " AND (
+            pro.nombre LIKE '%{$producto}%'
+            OR pro.codigo_sku LIKE '%{$producto}%'
+        )";
+    }
+
+    $stmt = $con->prepare($query);
+    $stmt->execute();
+
+    $ventas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // ==========================
+    // NOTAS DE CREDITO
+    // ==========================
+
+    if ($estadoActual) {
+
+        $notas = ProyectoQuery::obtenerNotasCreditoRawEstadoActual(
+            $con,
+            $empresaId,
+            $valores
+        );
+
+    } else {
+
+        $notas = ProyectoQuery::obtenerNotasCreditoRawHistorico(
+            $con,
+            $empresaId,
+            $valores
+        );
+    }
+
+    // ==========================
+    // MAPA DEVUELTO
+    // ==========================
+
+    $mapDevuelto = [];
+
+    foreach ($notas as $nc) {
+
+        $json = json_decode($nc['json_retorna'], true);
+
+        if (!$json) {
+            continue;
+        }
+
+        foreach ($json as $item) {
+
+            $detalleId = (int)$item['id'];
+            $cantidad = (float)$item['cantidad'];
+
+            if (!isset($mapDevuelto[$detalleId])) {
+                $mapDevuelto[$detalleId] = 0;
+            }
+
+            $mapDevuelto[$detalleId] += $cantidad;
+        }
+    }
+
+    // ==========================
+    // CALCULAR SALDO
+    // ==========================
+
+    $resultado = [];
+
+    foreach ($ventas as $v) {
+
+        $cantidadOriginal = (float)$v['cantidad'];
+
+        $cantidadDevuelta = isset($mapDevuelto[$v['detalle_id']])
+            ? $mapDevuelto[$v['detalle_id']]
+            : 0;
+
+        $cantidadFinal = $cantidadOriginal - $cantidadDevuelta;
+
+        if ($cantidadFinal <= 0) {
+            continue;
+        }
+
+        $valorTotal = round(
+            $cantidadFinal * $v['valor_unitario'],
+            2
+        );
+
+        $resultado[] = array(
+
+            'detalle_id'       => $v['detalle_id'],
+
+            'precio_lista'     => $v['precio_lista'],
+
+            'codigo_tienda'    => $v['codigo_tienda'],
+
+            'tienda'           => $v['tienda'],
+
+            'codigo_factura'   => $v['codigo_factura'],
+
+            'fecha_real'       => $v['fecha_real'],
+
+            'fecha'            => $v['fecha'],
+
+            'usuario'          => $v['usuario'],
+
+            'cliente'          => $v['cliente'],
+
+            'nombre'           => $v['nombre'],
+
+            'nit'              => $v['nit'],
+
+            'estatus'          => 'VENTA',
+
+            'face_firma'       => $v['face_firma'],
+
+            'vendedor'         => $v['vendedor'],
+
+            'codigo_producto'  => $v['codigo_producto'],
+
+            'detalle'          => $v['detalle'],
+
+            'cantidad'         => $cantidadFinal,
+
+            'valor_unitario'   => $v['valor_unitario'],
+
+            'valor_total'      => $valorTotal,
+
+            'valor_pagado'     => $v['valor_pagado'],
+
+            'costo_proveedor'  => $v['costo_proveedor']
+
+        );
+    }
+
+    return $resultado;
+}
+
+
+static public function obtenerNotasCreditoRawEstadoActual($con, $empresaId, $valores)
+{
+    $query = "
+        SELECT
+            nc.json_retorna
+        FROM nota_credito nc
+        INNER JOIN operacion op
+            ON op.codigo = nc.documento
+        LEFT JOIN vendedor ve
+            ON ve.id = op.vendedor_id
+        LEFT JOIN cliente cli
+            ON cli.id = op.cliente_id
+        LEFT JOIN operacion_detalle de
+            ON de.operacion_id = op.id
+        LEFT JOIN producto pro
+            ON pro.id = de.producto_id
+        WHERE
+            op.empresa_id = {$empresaId}
+            AND op.anulado = 0
+    ";
+
+    // ==========================================
+    // BODEGA
+    // ==========================================
+    if (!empty($valores['bodega'])) {
+        $query .= " AND op.tienda_id = " . (int)$valores['bodega'];
+    }
+
+    // ==========================================
+    // VENDEDOR
+    // ==========================================
+    if (isset($valores['vendedor']) && $valores['vendedor'] !== '') {
+
+        if ($valores['vendedor'] == '-99') {
+            $query .= " AND op.vendedor_id IS NOT NULL ";
+        } else {
+            $query .= " AND op.vendedor_id = " . (int)$valores['vendedor'];
+        }
+    }
+
+    // ==========================================
+    // BUSQUEDA
+    // ==========================================
+    if (!empty($valores['busqueda'])) {
+
+        $busqueda = addslashes($valores['busqueda']);
+
+        $query .= " AND op.nombre LIKE '%{$busqueda}%'";
+    }
+
+    // ==========================================
+    // CLIENTE
+    // ==========================================
+    if (!empty($valores['cliente'])) {
+
+        $cliente = addslashes($valores['cliente']);
+
+        $query .= " AND (
+            cli.nombre LIKE '%{$cliente}%'
+            OR cli.codigo LIKE '%{$cliente}%'
+        )";
+    }
+
+    // ==========================================
+    // PRODUCTO
+    // ==========================================
+    if (!empty($valores['producto'])) {
+
+        $producto = addslashes($valores['producto']);
+
+        $query .= " AND (
+            pro.nombre LIKE '%{$producto}%'
+            OR pro.codigo_sku LIKE '%{$producto}%'
+        )";
+    }
+
+    $stmt = $con->prepare($query);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+
 }
