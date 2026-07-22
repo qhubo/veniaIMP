@@ -230,17 +230,6 @@
 
 </div>
 
-<div class="row" style="padding-top: 3px;">
-    <div  class="col-lg-2">
-        Dirección     
-    </div>
-    <div class="col-lg-9  <?php if ($form['direccion']->hasError()) echo "has-error" ?>">
-        <?php echo $form['direccion'] ?>          
-        <span class="help-block form-error"> 
-            <?php echo $form['direccion']->renderError() ?>       
-        </span>
-    </div>
-</div>
 
 
 
