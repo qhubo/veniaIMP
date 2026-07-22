@@ -1,255 +1,430 @@
 <?php
 
-/**
- * consulta_venta actions.
- *
- * @package    plan
- * @subpackage consulta_venta
- * @author     Via
- * @version    SVN: $Id: actions.class.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
- */
 class consulta_ventaActions extends sfActions {
 
-    public function executeReporteExcel(sfWebRequest $request) {
-        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('reporteventa', null, 'consulta'));
-        if (!$valores) {
-            $valores['fechaInicio'] = date('d/m/Y');
-            $valores['fechaFin'] = date('d/m/Y');
-            $valores['usuario'] = null;
-            $valores['estatus_op'] = 'Procesados';
-            $valores['bodega'] = null;
-            $valores['vendedor'] = null;
-            $valores['usuario'] = null;
-            $valores['busqueda'] = '';
-            $valores['cliente'] = '';
-            sfContext::getInstance()->getUser()->setAttribute('reporteventa', serialize($valores), 'consulta');
-        }
-        $this->getResponse()->setContentType('text/html;charset=utf-8');
+    private function obtenerReporteVentasSaldoConsolidado($valores) {
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
-        $EmpresaQuery = EmpresaQuery::create()->findOneById($empresaId);
-        $nombreempresa = "Modelo";
-        $pestanas[] = substr($EmpresaQuery->getNombre(), 0, 30);
-        $nombre = "Modelo";
-        $nombreEMpresa = $EmpresaQuery->getNombre();
-        $nombreEMpresa = str_replace(" ", "_", $nombreEMpresa);
-        $filename = "Reporte de Ventas " . $nombreEMpresa . date("Ymd");
-        $xl = sfContext::getInstance()->getUser()->nuevoExcel($nombreempresa, $pestanas, $nombre);
-        $hoja = $xl->setActiveSheetIndex(0);
-        $hoja->getCell("A1")->setValueExplicit("FECHAS", PHPExcel_Cell_DataType::TYPE_STRING);
-        $hoja->getStyle("A1")->getFont()->setBold(true);
-        $hoja->getStyle("A1")->getFont()->setSize(10);
-        $hoja->getCell("B1")->setValueExplicit($valores['fechaInicio'] . " al  " . $valores['fechaFin'], PHPExcel_Cell_DataType::TYPE_STRING);
-        $hoja->mergeCells("B1:D1");
-        $fila = 2;
-        $columna = 0;
-        $encabezados = null;
-        $encabezados[] = array("Nombre" => "TIENDA", "width" => 20, "align" => "center", "format" => "@");
-        $encabezados[] = array("Nombre" => "CODIGO", "width" => 20, "align" => "center", "format" => "@");
-        $encabezados[] = array("Nombre" => strtoupper("Fecha"), "width" => 30, "align" => "left", "format" => "#,##0.00");
-        $encabezados[] = array("Nombre" => "USUARIO", "width" => 20, "align" => "center", "format" => "@");
-        $encabezados[] = array("Nombre" => "CLIENTE", "width" => 30, "align" => "center", "format" => "@");
-        $encabezados[] = array("Nombre" => "NOMBRE", "width" => 50, "align" => "center", "format" => "@");
-        $encabezados[] = array("Nombre" => "RUC", "width" => 20, "align" => "center", "format" => "@");
-        $encabezados[] = array("Nombre" => "ESTADO", "width" => 20, "align" => "center", "format" => "@");
-        $encabezados[] = array("Nombre" => strtoupper("Valor"), "width" => 15, "align" => "left", "format" => "#,##0.00");
-        $encabezados[] = array("Nombre" => "CUFE", "width" => 20, "align" => "center", "format" => "@");
-        $encabezados[] = array("Nombre" => "Vendedor", "width" => 45, "align" => "center", "format" => "@");
-        $encabezados[] = array("Nombre" => "Observaciones/Guia", "width" => 45, "align" => "center", "format" => "@");
-   //     $encabezados[] = array("Nombre" => "Ruta Cobro", "width" => 25, "align" => "center", "format" => "@");
-        $encabezados[] = array("Nombre" => strtoupper("Valor Pagado"), "width" => 25, "align" => "left", "format" => "#,##0.00");
-        $encabezados[] = array("Nombre" => "Recibo", "width" => 20, "align" => "center", "format" => "@");
-        $encabezados[] = array("Nombre" => "Fecha Pago", "width" => 20, "align" => "center", "format" => "@");
-        sfContext::getInstance()->getUser()->HojaImprimeEncabezadoHorizontal($encabezados, $columna, $fila, $hoja);
-        $operaciones = $this->datos($valores);
-        $TOTALvENTA = 0;
-        $TOTALpAGADO = 0;
-        $TOTALrECIBO = 0;
-        foreach ($operaciones as $lista) {
-            $fila++;
-            $datos = null;
-            $codigCli = '';
-            if ($lista->getClienteId()) {
-                $codigCli = $lista->getCliente()->getCodigoCli();
-            }
-            $vende = "";
-            if ($lista->getVendedorId()) {
-                $vende = $lista->getVendedor()->getNombre();
-            }
-            $datos[] = array("tipo" => 3, "valor" => substr($lista->getTienda(), 0, 20));  // ENTERO
-            $datos[] = array("tipo" => 3, "valor" => $lista->getCodigoFactura());  // ENTERO
-            $datos[] = array("tipo" => 3, "valor" => $lista->getFecha('d/m/Y H:i'));  // ENTERO
-            $datos[] = array("tipo" => 3, "valor" => $lista->getUsuario());
-            $datos[] = array("tipo" => 3, "valor" => $codigCli);
-            $datos[] = array("tipo" => 3, "valor" => $lista->getNombre());
-            $datos[] = array("tipo" => 3, "valor" => $lista->getNit());
-            $datos[] = array("tipo" => 3, "valor" => $lista->getEstatus());
-            $datos[] = array("tipo" => 2, "valor" => $lista->getValorTotal());
-            $datos[] = array("tipo" => 3, "valor" => $lista->getFaceFirma());
-            $datos[] = array("tipo" => 3, "valor" => $vende);
-            $datos[] = array("tipo" => 3, "valor" => $lista->getObservaciones());
-        //    $datos[] = array("tipo" => 3, "valor" => $lista->getRutaCobro());
-            $datos[] = array("tipo" => 2, "valor" => $lista->getValorPagado());
-            $datos[] = array("tipo" => 3, "valor" => $lista->getRecibo());
-            $datos[] = array("tipo" => 3, "valor" => $lista->getFechaRecibo());
-            $TOTALvENTA = $lista->getValorTotal() + $TOTALvENTA;
-            $TOTALpAGADO = $lista->getValorPagado() + $TOTALpAGADO;
 
+        $detalle = ProyectoQuery::obtenerReporteVentasSaldo($empresaId, $valores);
 
-            $columnafinal = sfContext::getInstance()->getUser()->HojaImprimeListaHorizontal($datos, $columna, $fila, $hoja);
+        $facturas = [];
+        $totalDetalle = 0;
+        foreach ($detalle as $d) {
+//        if ($d['codigo_factura'] == '1COTI2793') {
+//
+//    echo $d['codigo_producto']
+//        ." | "
+//        .$d['cantidad']
+//        ." | "
+//        .$d['valor_total']
+//        ."<br>";
+//
+//}
+            $totalDetalle += $d['valor_total'];
+            $codigo = $d['codigo_factura'];
+
+            if (!isset($facturas[$codigo])) {
+
+                $facturas[$codigo] = array(
+                    'codigo_tienda' => $d['tienda'],
+                    'codigo' => $codigo,
+                    'fecha_real' => DateTime::createFromFormat('d/m/y', $d['fecha'])->format('Y-m-d'),
+                    'fecha' => $d['fecha'],
+                    'usuario' => $d['usuario'],
+                    'cliente' => $d['cliente'],
+                    'nombre' => $d['nombre'],
+                    'nit' => '',
+                    'estatus' => $d['estatus'],
+                    'valor' => 0,
+                    'face_firma' => '',
+                    'vendedor' => $d['vendedor'],
+                    'valor_pagado' => $d['valor_pagado']
+                );
+            }
+
+            // ESTA ES LA DIFERENCIA
+            $facturas[$codigo]['valor'] += $d['valor_total'];
         }
-        $fila++;
 
+//    $totalDetalle = 0;
+//
+//foreach ($detalle as $d) {
+//    $totalDetalle += $d['valor_total'];
+//}
+//
+//die(
+//    'Registros: '.count($detalle).
+//    '<br>Total detalle: '.number_format($totalDetalle,2)
+// );
+//    echo "<pre>";
+//
+//foreach ($facturas as $f) {
+//
+//    if ($f['codigo'] == '1COTI2793') {
+//
+//        print_r($f);
+//
+//    }
+//
+//}
+//
+//die();
+        usort($facturas, function($a, $b) {
 
-//        $hoja->getCell("A" . $fila)->setValueExplicit("ULTIMA LINEA", PHPExcel_Cell_DataType::TYPE_STRING);
+            if ($a['fecha_real'] == $b['fecha_real']) {
+                return strcmp($a['codigo'], $b['codigo']);
+            }
 
-        $hoja->getStyle("D" . $fila)->getFont()->setBold(true);
-        $hoja->getStyle("D" . $fila)->getFont()->setSize(14);
-        $hoja->getCell("D" . $fila)->setValueExplicit("TOTALES", PHPExcel_Cell_DataType::TYPE_STRING);
-        $hoja->getStyle("I" . $fila)->getFont()->setBold(true);
-        $hoja->getStyle("I" . $fila)->getFont()->setSize(14);
-        $hoja->getCell("I" . $fila)->setValueExplicit(ROUND($TOTALvENTA, 2), PHPExcel_Cell_DataType::TYPE_STRING);
-        $hoja->getStyle("N" . $fila)->getFont()->setBold(true);
-        $hoja->getStyle("N" . $fila)->getFont()->setSize(14);
-        $hoja->getCell("N" . $fila)->setValueExplicit(round($TOTALpAGADO, 2), PHPExcel_Cell_DataType::TYPE_STRING);
-//        print_r($encabezados);
-//        
-//        die();
-        header("Content-Type: text/html;charset=utf-8");
-        header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
-        header('Cache-Control: max-age=0');
+            return strcmp($a['fecha_real'], $b['fecha_real']);
+        });
 
-        $xl = PHPExcel_IOFactory::createWriter($xl, 'Excel5');
-        $xl->save('php://output');
-        throw new sfStopException();
+        return array_values($facturas);
     }
 
-    public function executeIndex(sfWebRequest $request) {
-        $usuarioQ = UsuarioQuery::create()->filterByVendedorId(null, Criteria::NOT_EQUAL)->find();
-        $listaU[] = '0';
-        foreach ($usuarioQ as $reg) {
-            $listaU[] = $reg->getUsuario();
-        }
-
-        $ventas = OperacionQuery::create()
-                ->filterByVendedorId(null)
-                ->filterByUsuario($listaU, Criteria::IN)
-                ->find();
-        foreach ($ventas as $regi) {
-            $usuarioQ = UsuarioQuery::create()->findOneByUsuario($regi->getUsuario());
-            $vendedorId = $usuarioQ->getVendedorId();
-            $vendedorQ = VendedorQuery::create()->findOneById($vendedorId);
-            if ($vendedorQ) {
-                echo $usuarioQ->getUsuario();
-                $regi->setVendedorId($vendedorId);
-                $regi->save();
-                echo " --- ";
-                echo $vendedorId;
-                echo "<br>";
-            }
-        }
 
 
+    /* =========================================
+     * 🔥 ARMAR FILTROS DINÁMICOS (CLAVE)
+     * ========================================= */
 
-        date_default_timezone_set("America/Guatemala");
-        $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('reporteventa', null, 'consulta'));
-        $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
-        $usuarioQue = UsuarioQuery::create()->findOneById($usuarioId);
-        $bodegaId = null;
-        if ($usuarioQue) {
-            $bodegaId = $usuarioQue->getTiendaId();
-        }
-        if (!$valores) {
-            $valores['fechaInicio'] = date('d/m/Y');
-            $valores['fechaFin'] = date('d/m/Y');
-            $valores['usuario'] = null;
-            $valores['estatus_op'] = 'Procesados';
-            $valores['bodega'] = null;
-            $valores['vendedor'] = null;
-            $valores['usuario'] = null;
-            $valores['busqueda'] = '';
-            $valores['cliente'] = '';
-            sfContext::getInstance()->getUser()->setAttribute('reporteventa', serialize($valores), 'consulta');
-        }
-        $this->form = new ConsultaFechaVentaForm($valores);
-        if ($request->isMethod('post')) {
-            $this->form->bind($request->getParameter('consulta'));
-            if ($this->form->isValid()) {
-                $valores = $this->form->getValues();
-                sfContext::getInstance()->getUser()->setAttribute('reporteventa', serialize($valores), 'consulta');
-                $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('reporteventa', null, 'consulta'));
+    private function getFiltros($valores) {
 
-                $this->redirect('consulta_venta/index?id=1');
-            }
-        }
-        $this->operaciones = $this->datos($valores);
-    }
-
-    public function datos($valores) {
-        // $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('reporteventa', null, 'consulta'));
-        $fechaInicio = $valores['fechaInicio'];
-        $fechaInicio = explode('/', $fechaInicio);
-        $fechaInicio = $fechaInicio[2] . '-' . $fechaInicio[1] . '-' . $fechaInicio[0];
-        $fechaFin = $valores['fechaFin'];
-        $fechaFin = explode('/', $fechaFin);
-        $fechaFin = $fechaFin[2] . '-' . $fechaFin[1] . '-' . $fechaFin[0];
-        //    $usuariof = $valores['usuario'];
-//        $tipo_fecha = $valores['tipo_fecha'];
-        $bodega = $valores['bodega'];
-        $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
-        $usuarioQue = UsuarioQuery::create()->findOneById($usuarioId);
-//        $empresaId = $usuarioQue->getEmpresaId();
-        $empresq = EmpresaQuery::create()->findOne();
-        $operaciones = OperacionQuery::create();
-        //    $operaciones->filterByClienteId(null, Criteria::NOT_EQUAL);
-        $listab = TiendaQuery::TiendaActivas(); // ctivas();
-        $operaciones->where("Operacion.Fecha >= '" . $fechaInicio . " 00:00:00" . "'");
-        $operaciones->where("Operacion.Fecha <= '" . $fechaFin . " 23:59:00" . "'");
-        if ($bodega) {
-            $operaciones->filterByTiendaId($bodega);
-        }
 //        echo "<pre>";
 //        print_r($valores);
 //        die();
-        
-        if ($valores['usuario']) {
-            $operaciones->filterByUsuario($valores['usuario']);
-        }
-        if ($valores['vendedor']) {
-            if ($valores['vendedor'] == '-99') {
-                $operaciones->filterByVendedorId(null, Criteria::NOT_EQUAL);
-            } else {
-                $operaciones->filterByVendedorId($valores['vendedor']);
-            }
-        }
-        if ($valores['busqueda']) {
-            $operaciones->where("Operacion.Nombre like  '%" . $valores['busqueda'] . "%'");
-        }
-        if ($valores['cliente']) {
-            $operaciones->useClienteQuery();
-            $operaciones->where("( Cliente.Nombre like  '%" . $valores['cliente'] . "%' or Cliente.Codigo like  '%" . $valores['cliente'] . "%' ) ");
+//        
+        $filtros = "";
+
+        // 🔹 BODEGA
+        if (!empty($valores['bodega'])) {
+            $filtros .= " AND op.tienda_id = " . (int) $valores['bodega'];
         }
 
-        if ($valores['estatus_op']) {
-            if ($valores['estatus_op'] == 'Anulados') {
-                $operaciones->filterByAnulado(true);
-            }
-            if ($valores['estatus_op'] == 'Procesados') {
-                $operaciones->filterByAnulado(false);
-            }
-            if ($valores['estatus_op'] == 'Pagados') {
-                $operaciones->filterByAnulado(false);
-                $operaciones->filterByPagado(true);
-            }
-            if ($valores['estatus_op'] == 'PendientesPago') {
-                $operaciones->filterByAnulado(false);
-                $operaciones->filterByPagado(false);
+        // 🔹 VENDEDOR
+        if (isset($valores['vendedor']) && $valores['vendedor'] !== '') {
+
+            if ($valores['vendedor'] == '-99') {
+                $filtros .= " AND op.vendedor_id IS NOT NULL ";
+            } else {
+                $filtros .= " AND op.vendedor_id = " . (int) $valores['vendedor'];
             }
         }
-        $operaciones->filterByEmpresaId($usuarioQue->getEmpresaId());
-        $operaciones->orderByFecha("Asc");
-        $operaciones = $operaciones->find();
-        return $operaciones;
+
+        // 🔹 BUSQUEDA
+        if (!empty($valores['busqueda'])) {
+            $busqueda = addslashes($valores['busqueda']);
+            $filtros .= " AND op.nombre LIKE '%{$busqueda}%'";
+        }
+
+        // 🔹 CLIENTE
+        if (!empty($valores['cliente'])) {
+            $cliente = addslashes($valores['cliente']);
+            $filtros .= " AND (
+                cli.nombre LIKE '%{$cliente}%'
+                OR cli.codigo LIKE '%{$cliente}%'
+            )";
+        }
+
+        return $filtros;
+    }
+
+        /* =========================================
+     * 🔥 QUERY UNIFICADO
+     * ========================================= */
+private function getQuery($valores)
+{
+    $fi = explode('/', $valores['fechaInicio']);
+    $fechaInicio = $fi[2] . '-' . $fi[1] . '-' . $fi[0];
+
+    $ff = explode('/', $valores['fechaFin']);
+    $fechaFin = $ff[2] . '-' . $ff[1] . '-' . $ff[0];
+
+    $filtros = $this->getFiltros($valores);
+$empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
+    return "
+    SELECT * FROM (
+
+    /* ===== VENTAS ===== */
+    SELECT
+        tt.codigo AS codigo_tienda,
+        op.codigo,
+        op.fecha AS fecha_real,
+        DATE_FORMAT(op.fecha,'%d/%m/%Y ') AS fecha,
+        op.usuario,
+        cli.codigo AS cliente,
+        op.nombre,
+        cli.nit,
+        'VENTA' AS estatus,
+        op.valor_total AS valor,
+        op.face_firma,
+        ve.nombre AS vendedor,
+        op.valor_pagado
+
+    FROM operacion op
+    LEFT JOIN cliente cli ON cli.id = op.cliente_id
+    LEFT JOIN vendedor ve ON ve.id = op.vendedor_id
+    LEFT JOIN tienda tt ON tt.id = op.tienda_id
+
+    WHERE op.fecha BETWEEN '{$fechaInicio} 00:00:00' AND '{$fechaFin} 23:59:59'
+    {$filtros}  and op.empresa_id = {$empresaId}
+
+    UNION ALL
+
+    /* ===== ANULADAS SIN NOTA ===== */
+    SELECT
+        tt.codigo,
+        CONCAT(op.codigo, ' - ANULADO') AS codigo,
+        op.fecha_anulo AS fecha_real,
+        DATE_FORMAT(op.fecha_anulo,'%d/%m/%Y %H:%i'),
+        op.usuario,
+        cli.codigo,
+        op.nombre,
+        cli.nit,
+        'ANULADO',
+        op.valor_total * -1 AS valor,
+        op.anula_face_firma face_firma,
+        ve.nombre,
+        0 AS valor_pagado
+
+    FROM operacion op
+    LEFT JOIN cliente cli ON cli.id = op.cliente_id
+    LEFT JOIN vendedor ve ON ve.id = op.vendedor_id
+    LEFT JOIN tienda tt ON tt.id = op.tienda_id
+
+    WHERE op.anulado = 1
+    AND op.fecha_anulo BETWEEN '{$fechaInicio} 00:00:00' AND '{$fechaFin} 23:59:59'
+    AND NOT EXISTS (
+        SELECT 1 FROM nota_credito nc WHERE nc.documento = op.codigo
+    )
+    {$filtros} and op.empresa_id = {$empresaId}
+
+
+    UNION ALL
+
+    /* ===== NOTAS DE CRÃ‰DITO ===== */
+    SELECT
+        tt.codigo,
+        CONCAT(nc.documento, ' - ', nc.codigo) AS codigo,
+        nc.fecha AS fecha_real,
+        DATE_FORMAT(nc.fecha,'%d/%m/%Y %H:%i'),
+        op.usuario,
+        cli.codigo,
+        op.nombre,
+        cli.nit,
+        'NOTA CREDITO',
+        nc.valor_total * -1 AS valor,
+        op. anula_face_firma face_firma,
+        ve.nombre,
+        0 AS valor_pagado
+
+    FROM nota_credito nc
+    INNER JOIN operacion op ON op.codigo = nc.documento
+    LEFT JOIN cliente cli ON cli.id = op.cliente_id
+    LEFT JOIN vendedor ve ON ve.id = op.vendedor_id
+    LEFT JOIN tienda tt ON tt.id = op.tienda_id
+
+    WHERE nc.fecha BETWEEN '{$fechaInicio} 00:00:00' AND '{$fechaFin} 23:59:59'
+    {$filtros}   and op.empresa_id = {$empresaId}
+
+    ) t
+
+    ORDER BY t.fecha_real ASC
+    ";
+}
+    /* =========================================
+     * 🔥 QUERY UNIFICADO
+     * ========================================= */
+
+ 
+
+    /* =========================================
+     * 🔥 EXPORT EXCEL
+     * ========================================= */
+
+    public function executeReporteExcel(sfWebRequest $request) {
+                         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
+
+        $valores = unserialize(
+                sfContext::getInstance()->getUser()->getAttribute('datosConsultaRecibo', null, 'consulta')
+        );
+
+        if (!$valores) {
+            die('Debe aplicar filtros');
+        }
+
+        if ($valores['tipo_reporte'] == "VENTA_NETA") {
+
+            $registros = $this->obtenerReporteVentasSaldoConsolidado($valores);
+        } else {
+
+      $query = $this->getQuery($valores);
+
+    $con = Propel::getConnection();
+    $stmt = $con->prepare($query);
+    $stmt->execute();
+    $registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        }
+
+        $xl = sfContext::getInstance()->getUser()->nuevoExcel("REPORTE", array('Reporte'), 'Reporte');
+        $hoja = $xl->setActiveSheetIndex(0);
+
+        $headers = array(
+            "TIENDA", "CODIGO", "FECHA", "USUARIO", "CLIENTE",
+            "NOMBRE", "RUC", "ESTADO", "VALOR", 
+            "VENDEDOR", "VALOR PAGADO"
+        );
+
+        $fila = 1;
+        $col = 0;
+
+        // 🔥 ENCABEZADOS
+        foreach ($headers as $h) {
+            $hoja->setCellValueByColumnAndRow($col++, $fila, $h);
+        }
+
+        // 🔥 ESTILO ENCABEZADO
+        $hoja->getStyle("A1:L1")->applyFromArray(array(
+            'font' => array(
+                'bold' => true,
+                'size' => 11
+            ),
+            'fill' => array(
+                'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                'color' => array('rgb' => 'D9D9D9')
+            ),
+            'borders' => array(
+                'allborders' => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THIN
+                )
+            )
+        ));
+
+        // 🔥 congelar encabezado
+        $hoja->freezePane('A2');
+
+        $fila++;
+
+        $total = 0;
+        $totalPagado = 0;
+
+        foreach ($registros as $r) {
+
+            $col = 0;
+
+            $hoja->setCellValueByColumnAndRow($col++, $fila, $r['codigo_tienda']);
+            $hoja->setCellValueByColumnAndRow($col++, $fila, $r['codigo']);
+            $hoja->setCellValueByColumnAndRow($col++, $fila, $r['fecha']);
+            $hoja->setCellValueByColumnAndRow($col++, $fila, $r['usuario']);
+            $hoja->setCellValueByColumnAndRow($col++, $fila, $r['cliente']);
+            $hoja->setCellValueByColumnAndRow($col++, $fila, $r['nombre']);
+            $hoja->setCellValueByColumnAndRow($col++, $fila, $r['nit']);
+            $hoja->setCellValueByColumnAndRow($col++, $fila, $r['estatus']);
+
+            $hoja->setCellValueByColumnAndRow($col++, $fila, (float) $r['valor']);
+            $hoja->setCellValueByColumnAndRow($col++, $fila, $r['vendedor']);
+            $hoja->setCellValueByColumnAndRow($col++, $fila, (float) $r['valor_pagado']);
+
+            $total += (float) $r['valor'];
+            $totalPagado += (float) $r['valor_pagado'];
+
+            $fila++;
+        }
+
+        // 🔥 TOTALES
+        $hoja->setCellValue("H{$fila}", "TOTALES");
+        $hoja->setCellValue("I{$fila}", $total);
+        $hoja->setCellValue("K{$fila}", $totalPagado);
+
+        // 🔥 estilo totales
+        $hoja->getStyle("H{$fila}:K{$fila}")->applyFromArray(array(
+            'font' => array('bold' => true),
+            'fill' => array(
+                'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                'color' => array('rgb' => 'F2F2F2')
+            )
+        ));
+
+        // 🔥 FORMATO NUMÉRICO
+        $hoja->getStyle("I2:I{$fila}")
+                ->getNumberFormat()
+                ->setFormatCode('#,##0.00');
+
+        $hoja->getStyle("L2:L{$fila}")
+                ->getNumberFormat()
+                ->setFormatCode('#,##0.00');
+
+        // 🔥 AUTO ANCHO COLUMNAS
+        foreach (range('A', 'K') as $col) {
+            $hoja->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // 🔥 bordes a toda la tabla
+        $hoja->getStyle("A1:K{$fila}")
+                ->getBorders()
+                ->getAllBorders()
+                ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+        // 🔥 salida
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="reporte.xls"');
+        header('Cache-Control: max-age=0');
+
+        $writer = PHPExcel_IOFactory::createWriter($xl, 'Excel5');
+        $writer->save('php://output');
+
+        exit;
+    }
+
+    public function executeIndex(sfWebRequest $request) {
+        error_reporting(-1);
+                         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
+
+        // 🔹 valores desde sesión
+        $valores = unserialize(
+                sfContext::getInstance()->getUser()->getAttribute('datosConsultaRecibo', null, 'consulta')
+        );
+
+        if (!$valores) {
+            $valores = array(
+                'fechaInicio' => date('d/m/Y'),
+                'fechaFin' => date('d/m/Y'),
+                'bodega' => '',
+                'vendedor' => '',
+                'busqueda' => '',
+                'cliente' => '',
+                'tipo_reporte' => ''
+            );
+        }
+
+        // 🔹 guardar si viene POST
+        if ($request->isMethod('post')) {
+            $valores = $request->getParameter('consulta');
+            sfContext::getInstance()->getUser()->setAttribute('datosConsultaRecibo', serialize($valores), 'consulta');
+        }
+
+
+
+
+        if ($valores['tipo_reporte'] == "VENTA_NETA") {
+
+            $this->registros = $this->obtenerReporteVentasSaldoConsolidado($valores);
+        } else {
+          
+    $query = $this->getQuery($valores);
+
+    $con = Propel::getConnection();
+    $stmt = $con->prepare($query);
+    $stmt->execute();
+
+    $this->registros = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        }
+
+
+
+        // 🔹 form
+        $this->form = new ConsultaFechaDatosForm($valores);
     }
 
 }

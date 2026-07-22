@@ -1,10 +1,11 @@
 <?php
 
+
 class ConsultaFechaDatosForm extends sfForm {
 
     public function configure() {
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
-
+$USUAURIOQ = UsuarioQuery::create()->findOneById($usuarioId);
         $this->setWidget('fechaInicio', new sfWidgetFormInputText(array(),
                         array('class' => 'form-control', 'data-provide' => 'datepicker', 'data-date-format' => 'dd/mm/yyyy')));
         $this->setValidator('fechaInicio', new sfValidatorString(array('required' => true)));
@@ -12,15 +13,35 @@ class ConsultaFechaDatosForm extends sfForm {
                     'data-provide' => 'datepicker', 'data-date-format' => 'dd/mm/yyyy')));
         $this->setValidator('fechaFin', new sfValidatorString(array('required' => true)));
 
-        
-        
+        $this->setWidget('vendedor_cobro', new sfWidgetFormInputCheckbox());
+
+$this->setValidator(
+    'vendedor_cobro',
+    new sfValidatorBoolean(array(
+        'required' => false
+    ))
+);
+           $tipoUsuario= sfContext::getInstance()->getUser()->getAttribute('tipoUsuario', null, 'seguridad');
+       $prefil = PerfilQuery::create()->findOneById($tipoUsuario);
+       if ($prefil) {
+           $tipoUsuario= substr(trim(strtoupper($prefil->getDescripcion())),0,5);
+       }
+    if ($tipoUsuario <>"VENTA") {
         $vendedores= VendedorQuery::create()->orderByNombre()->find();       
         $listaVe[null]='Seleccione';
         foreach ($vendedores as $vende) {
             $listaVe[$vende->getId()]=$vende->getNombre();
-            
-        }                
-        $this->setWidget('vendedor', new sfWidgetFormChoice(array("choices" => $listaVe), array("class" => " form-control")));
+        }       
+    }
+    if ($tipoUsuario=="VENTA") {
+        if ($USUAURIOQ->getVendedorId()) {
+         $listaVe[$USUAURIOQ->getVendedorId()]=$USUAURIOQ->getVendedor()->getNombre();
+    }
+    }
+        
+        
+        
+        $this->setWidget('vendedor', new sfWidgetFormChoice(array("choices" => $listaVe), array("class" => " form-control mi-selector select2")));
         $this->setValidator('vendedor', new sfValidatorString(array('required' => false)));
 
 
@@ -55,6 +76,18 @@ class ConsultaFechaDatosForm extends sfForm {
 
         $this->setValidator('bodega', new sfValidatorString(array('required' => false)));
 
+      $tipore['VENTA_BRUTA']='Ventas (Histórico)';
+    $tipore['VENTA_NETA']='Ventas Netas por Producto';
+        
+        
+              $this->setWidget('tipo_reporte', new sfWidgetFormChoice(array(
+            "choices" => $tipore
+                ), array("class" => " form-control")));
+
+        $this->setValidator('tipo_reporte', new sfValidatorString(array('required' => false)));
+
+       
+        
        
         
          $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');

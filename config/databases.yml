@@ -24,7 +24,7 @@ all:
     class: sfPropelDatabase
     param:
       classname:  PropelPDO
-      dsn:        mysql:dbname=veniaimp;host=localhost:3306
+      dsn:        mysql:dbname=golden;host=localhost:3306
       username:   root
       password:   admin123
       encoding:   utf8
