@@ -71,9 +71,9 @@ public function executeReporteCBMExcel(sfWebRequest $request)
 
         $existencia = $producto->getExistencia();
 
-        if ($existencia <= 0) {
-            continue;
-        }
+//        if ($existencia <= 0) {
+//            continue;
+//        }
 
         // CBM
         $cbm = 0;
