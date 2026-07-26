@@ -1,38 +1,28 @@
 <?php
 
-/**
- * edita_producto actions.
- *
- * @package    plan
- * @subpackage edita_producto
- * @author     Via
- * @version    SVN: $Id: actions.class.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
- */
 class edita_productoActions extends sfActions {
 
-    
-    
-      public function executeEditarCodigo(sfWebRequest $request) {
-                    date_default_timezone_set("America/Guatemala");
-            $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
-$usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
+    public function executeEditarCodigo(sfWebRequest $request) {
+        date_default_timezone_set("America/Guatemala");
+        $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
+        $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
         $id = $request->getParameter('id');
         $producto = ProductoQuery::create()->findOneById($id);
-        $codigOrig= $producto->getCodigoSku();
+        $codigOrig = $producto->getCodigoSku();
         $producto->setCodigoSku($request->getParameter('codigo'));
         $producto->save();
-        
+
         $bitacora = new BitacoraCambio();
         $bitacora->setTipo('ACTUALIZACION DE CODIGO');
-        $bitacora->setObservaciones("Producto id ".$id.".".$codigOrig."  ahora  codigo ".$producto->getCodigoSku());
+        $bitacora->setObservaciones("Producto id " . $id . "." . $codigOrig . "  ahora  codigo " . $producto->getCodigoSku());
         $bitacora->setUsuario($usuarioQ->getUsuario());
         $bitacora->setFecha(date('Y-m-d H:i:s'));
         $bitacora->save();
-        
-          $this->getUser()->setFlash('exito', 'Producto  con  SKU ' . $producto->getCodigoSku() . ' actualizado con exito ');
-                $this->redirect('edita_producto/muestra?id=' . $producto->getId());
-        }
-    
+
+        $this->getUser()->setFlash('exito', 'Producto  con  SKU ' . $producto->getCodigoSku() . ' actualizado con exito ');
+        $this->redirect('edita_producto/muestra?id=' . $producto->getId());
+    }
+
     public function executeProveedor(sfWebRequest $request) {
         $id = $request->getParameter('id');
         $proveeor = ProveedorQuery::create()->findOneById($id);
@@ -196,6 +186,12 @@ $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
     }
 
     public function executeIndex(sfWebRequest $request) {
+        $acceso = MenuSeguridad::Acceso('edita_producto');
+        if (!$acceso) {
+            $this->redirect('inicio/index');
+        }
+
+        
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
         $adminsitrador = sfContext::getInstance()->getUser()->getAttribute('administrador', null, 'seguridad');
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
@@ -207,8 +203,6 @@ $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
             $default = $valores;
         }
         $this->form = new consultaProductoForm($default);
-//        $this->total = ProductoQuery::create()->filterByComboProductoId(null)->filterByRecetaProductoId(null)->count();
-//        $this->productos = ProductoQuery::create()->filterByComboProductoId(null)->filterByRecetaProductoId(null)->find();
         $this->productos = null;
         if ($request->isMethod('post')) {
             $this->form->bind($request->getParameter("consulta"), $request->getFiles("consulta"));
@@ -218,8 +212,6 @@ $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
                 $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('valores', null, 'consultaproducto'));
             }
         }
-
-
         if ($valores) {
             $nombre = $valores['producto']; // => 4555
             $tipo = $valores['tipo']; // => 4
@@ -232,9 +224,6 @@ $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
             if ($tipo) {
                 $operaciones->filterByTipoAparatoId($tipo);
             }
-//            if ($estatus == 0) {
-//                $operaciones->filterByEstatus(0);
-//            }
             if ($nombre <> "") {
                 $operaciones->where("(Producto.CodigoSku like '%" . $nombre . "%' or Producto.Nombre like '%" . $nombre . "%')");
             }
@@ -316,7 +305,7 @@ $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
             $valores['alto'] = $producto->getAlto();
             $valores['ancho'] = $producto->getAncho();
             $valores['largo'] = $producto->getLargo();
-            $valores['nombre_ingles']=$producto->getNombreIngles();
+            $valores['nombre_ingles'] = $producto->getNombreIngles();
             sfContext::getInstance()->getUser()->setAttribute('tipo_id', $producto->getTipoAparatoId(), 'seguridad');
             sfContext::getInstance()->getUser()->setAttribute('marca_id', $producto->getMarcaId(), 'seguridad');
         }
@@ -395,7 +384,8 @@ $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
                     $nuevo->setAncho($valores['ancho']);
                     $nuevo->setLargo($valores['largo']);
                     if ($valores['proveedor']) {
-                    $nuevo->setProveedorId($valores['proveedor']);; //
+                        $nuevo->setProveedorId($valores['proveedor']);
+                        ; //
                     }
                     $nuevo->save();
                     $con->commit();
@@ -426,5 +416,4 @@ $usuarioQ = UsuarioQuery::create()->findOneById($usuarioId);
             }
         }
     }
-
 }

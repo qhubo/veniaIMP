@@ -96,8 +96,19 @@ class consultaProductoForm extends sfForm {
         $this->setValidator('modelo', new sfValidatorString(array('required' => false)));
         
         
-         $this->setWidget('porcentaje', new sfWidgetFormInputText(array(), array('class' => 'form-control ',
-        )));
+        
+        $marcaProducto = MarcaProductoQuery::create()
+                ->orderByNombre('Asc')
+                ->find();
+        $lineamarca[null]='Todas las marcas';
+        foreach($marcaProducto as $producto) {
+            $lineamarca[$producto->getNombre()]=$producto->getNombre();
+        }
+        
+        
+       $this->setWidget('marca_producto', new sfWidgetFormChoice(array( "choices" => $lineamarca,), array("class" => "form-control  mi-selector")));
+       $this->setValidator('marca_producto', new sfValidatorString(array('required' => false)));
+       $this->setWidget('porcentaje', new sfWidgetFormInputText(array(), array('class' => 'form-control ',      )));
         $this->setValidator('porcentaje', new sfValidatorString(array('required' => false)));
         
         $this->widgetSchema->setNameFormat('consulta[%s]');
