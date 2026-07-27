@@ -155,7 +155,6 @@ class edita_producto_verActions extends sfActions {
                     }
                     $nuevo->setUnidadMedida($valores['unidad_medida']);
                     $nuevo->setUnidadMedidaCosto($valores['unidad_medida_costo']);
-                    $nuevo->setActivo($valores['activo']); // $producto; //
                     $nuevo->setNombreIngles($valores['nombre_ingles']);
                     $nuevo->setCaracteristica($valores['caracteristica']);
                     $nuevo->setMarcaProducto($valores['marcaProducto']);
@@ -165,9 +164,7 @@ class edita_producto_verActions extends sfActions {
                     $nuevo->setAlto($valores['alto']);
                     $nuevo->setAncho($valores['ancho']);
                     $nuevo->setLargo($valores['largo']);
-                    if ($valores['proveedor']) {
-                    $nuevo->setProveedorId($valores['proveedor']);; //
-                    }
+            
                     $nuevo->save();
                     $con->commit();
                 } catch (Exception $e) {
