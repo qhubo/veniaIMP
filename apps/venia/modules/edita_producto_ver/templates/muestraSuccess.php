@@ -186,24 +186,7 @@ if ($pefilq) {
                 </span>
             </div>    
         </div>
-        <div class="row" style="padding-bottom:5px;">
-            <div class="col-lg-1"></div>
-            <div class="col-lg-1 ">Proveedor </div>
-
-            <div class="col-lg-3 <?php if ($form['proveedor']->hasError()) echo "has-error" ?>">
-                <?php echo $form['proveedor'] ?>           
-                <span class="help-block form-error"> 
-                    <?php echo $form['proveedor']->renderError() ?>  
-                </span>
-            </div>
-            <label class="col-lg-2 control-label">Código Proveedor</label>
-            <div class="col-lg-2 <?php if ($form['codigo_proveedor']->hasError()) echo "has-error" ?>">
-                <?php echo $form['codigo_proveedor'] ?>           
-                <span class="help-block form-error"> 
-                    <?php echo $form['codigo_proveedor']->renderError() ?>  
-                </span>
-            </div>
-        </div>
+     
         <div class="row">
             <div class="col-lg-12"><br></div>
         </div>
