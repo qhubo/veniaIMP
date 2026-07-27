@@ -31,6 +31,7 @@
                     <th>Finalizar</th> 
                 </tr>
                 <?php foreach ($registros as $dete) { ?>
+                <?php if ($dete->getTotalProductos() >0) { ?>
                     <tr>
                         <td>
 
@@ -68,7 +69,7 @@
 
 
                     </tr>
-
+     <?php } ?>
                 <?php } ?>
 
             </table>
