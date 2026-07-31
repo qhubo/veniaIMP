@@ -263,13 +263,14 @@ class ProductoMovimiento extends BaseProductoMovimiento {
         $motivo = str_replace(" ", "", $motivo);
         $motivo = trim($motivo);
         $identificador = $this->getIdentificador();
+        $identificador = str_replace('LIST-', "", $identificador);
         $valores = explode("-", $identificador);
         $documento = $valores[0];
         $documento = str_replace("ANU", "", $documento);
         $PREFI = substr($identificador, 0, 3);
         $nombre = '';
         if (($tipo == "SALIDA") && ($motivo == 'VENTA')) {
-            $query = "select valor_unitario from operacion op inner join operacion_detalle de on op.id=de.operacion_id where op.codigo ='" . $documento . "' and producto_id='" . $this->getProductoId() . "'";
+            $query = "select valor_unitario from operacion op inner join operacion_detalle de on op.id=de.operacion_id where op.codigo  = 'LIST-" . $documento . "' and producto_id='" . $this->getProductoId() . "'";
 //           echo $query;
 //           die();
             $con = Propel::getConnection();
