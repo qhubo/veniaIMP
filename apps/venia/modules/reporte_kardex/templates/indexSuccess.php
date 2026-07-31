@@ -144,7 +144,7 @@
                             <td align="right" >
                                    <?php if ($TIPO_USUARIO == 'ADMINISTRADOR') { ?>
                                 <a class="btn  btn-small btn-block "   href="<?php echo url_for('reporte_kardex/costo?id=' . $reg->getId()) ?>"  data-toggle="modal" data-target="#ajaxmodal<?php echo $reg->getId() ?>">
-                              <?php echo Parametro::formato($reg->getVenta()); ?>
+                              <?php echo Parametro::formato ($reg->getVenta()); // ?>
                             </a>
                                    <?php } else { ?>
                               <?php echo Parametro::formato($reg->getVenta()); ?>
