@@ -984,36 +984,27 @@ try {
         $id = $request->getParameter('id');
         $operacion = OrdenCotizacionQuery::create()->findOneById($id);
         if ($operacion) {
+
+    
+
             $operacion->setEstatus('Verificar');
             $operacion->setSolicitarBodega(true);
             $operacion->save();
             $ordenDetalle = OrdenCotizacionDetalleQuery::create()->filterByOrdenCotizacionId($id)->filterByProductoId(null, criteria::NOT_EQUAL)->find();
-            foreach ($ordenDetalle as $pend) {
+            foreach ($ordenDetalle as $pend) {                
                 $pend->setVerificado(false);
                 $pend->save();
             }
-
-//            echo "<pre>";
-//            print_r($ordenDetalle);
-//            die();
-//            echo $ordenDetalle;
             if (count($ordenDetalle) == 0) {
                 $Detalles = OrdenCotizacionDetalleQuery::create()->filterByOrdenCotizacionId($id)->filterByProductoId(null)->find();
-//                   echo "<pre>";
-//                   print_R($Detalles);
-
                 foreach ($Detalles as $reg) {
                     $reg->setVerificado(true);
                     $reg->save();
                 }
             }
-//             die();
             sfContext::getInstance()->getUser()->setAttribute('CotizacionId', null, 'seguridad');
             $this->getUser()->setFlash('exito', 'Orden almacenada con exitoo! ' . $operacion->getCodigo());
         }
-//        ->filterBySolicitarBodega(true)
-//          ->filterByVerificado(true)
-
         $this->redirect('orden_cotizacion/index');
     }
 

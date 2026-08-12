@@ -25,6 +25,7 @@ class consulta_reciboActions extends sfActions
             $valores['estatus_op']='Procesados';
             $valores['fechaInicio'] = date('d/m/Y');
             $valores['fechaFin'] = date('d/m/Y');
+             $valores['tipo_filtro'] = 'fecha_documento';
             sfContext::getInstance()->getUser()->setAttribute('datoconsultaREcibo', serialize($valores), 'consulta');
         }
         $this->form = new ConsultaFechaForm($valores);
@@ -48,8 +49,13 @@ class consulta_reciboActions extends sfActions
 //        if ($valores['estatus_op']==)
         $registros =new OperacionPagoQuery();
                $registros->filterByTipo('CXC COBRAR', Criteria::NOT_EQUAL);
-               $registros->where("OperacionPago.FechaCreo >= '" . $fechaInicio . " 00:00:00" . "'");
-               $registros ->where("OperacionPago.FechaCreo <=  '" . $fechaFin . " 23:59:00" . "'");
+               if ($valores['tipo_filtro']=='fecha_creacion') {
+                    $registros->where("OperacionPago.FechaCreo >= '" . $fechaInicio . " 00:00:00" . "'");
+               $registros ->where("OperacionPago.FechaCreo <=  '" . $fechaFin . " 23:59:00" . "'");  
+               } else {
+               $registros->where("OperacionPago.FechaDocumento >= '" . $fechaInicio . " 00:00:00" . "'");
+               $registros ->where("OperacionPago.FechaDocumento <=  '" . $fechaFin . " 23:59:00" . "'");
+               }
                if ($valores['estatus_op']=='Procesados') {
                    $ls[]='CXC COBRAR';
                    $ls[]='Anulado';
@@ -112,12 +118,27 @@ class consulta_reciboActions extends sfActions
         $fechaFin = $fechaFin[2] . '-' . $fechaFin[1] . '-' . $fechaFin[0];
         $valores['inicio'] = '01:00';
         $valores['fin'] = '23:00';
-        $operaciones = OperacionPagoQuery::create()
-                ->filterByTipo('CXC COBRAR', Criteria::NOT_EQUAL)
-                ->where("OperacionPago.FechaCreo >= '" . $fechaInicio . " 00:00:00" . "'")
-                ->where("OperacionPago.FechaCreo <=  '" . $fechaFin . " 23:59:00" . "'")
-                ->orderById('Asc')
-                ->find();
+     $registros =new OperacionPagoQuery();
+               $registros->filterByTipo('CXC COBRAR', Criteria::NOT_EQUAL);
+               if ($valores['tipo_filtro']=='fecha_creacion') {
+                    $registros->where("OperacionPago.FechaCreo >= '" . $fechaInicio . " 00:00:00" . "'");
+               $registros ->where("OperacionPago.FechaCreo <=  '" . $fechaFin . " 23:59:00" . "'");  
+               } else {
+               $registros->where("OperacionPago.FechaDocumento >= '" . $fechaInicio . " 00:00:00" . "'");
+               $registros ->where("OperacionPago.FechaDocumento <=  '" . $fechaFin . " 23:59:00" . "'");
+               }
+               if ($valores['estatus_op']=='Procesados') {
+                   $ls[]='CXC COBRAR';
+                   $ls[]='Anulado';
+                   $registros->filterByTipo($ls, Criteria::NOT_IN);
+                   
+               }
+                if ($valores['estatus_op']=='Anulados') {
+                   $registros->filterByTipo('Anulado');
+                   
+               }
+              $registros->orderById('Asc');
+        $operaciones=$registros->find();
         foreach ($operaciones as $reg) {
             $fila++;
             $datos = null;
@@ -127,7 +148,7 @@ class consulta_reciboActions extends sfActions
             $datos[] = array("tipo" => 3, "valor" => substr($reg->getOperacion()->getTienda()->getNombre(), 0, 30));  // ENTERO
             $datos[] = array("tipo" => 3, "valor" => $reg->getOperacion()->getNombre());
             $datos[] = array("tipo" => 3, "valor" => $reg->getTipo());
-            $datos[] = array("tipo" => 3, "valor" => $reg->getTipo());
+
        
             if ($reg->getBancoId()) {
               $datos[] = array("tipo" => 3, "valor" => $reg->getBanco()->getNombre());   

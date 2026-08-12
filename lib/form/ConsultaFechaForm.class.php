@@ -5,6 +5,14 @@ class ConsultaFechaForm extends sfForm {
     public function configure() {
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
 
+        $filtro['fecha_documento']='Fecha Documento';
+                $filtro['fecha_creacion']='Fecha Creacion';
+        $this->setWidget('tipo_filtro', new sfWidgetFormChoice(array(
+                    "choices" => $filtro), array("class" => " form-control")));
+        $this->setValidator('tipo_filtro', new sfValidatorString(array('required' => false)));
+        
+        
+        
         $this->setWidget('fechaInicio', new sfWidgetFormInputText(array(),
                         array('class' => 'form-control', 'data-provide' => 'datepicker', 'data-date-format' => 'dd/mm/yyyy')));
         $this->setValidator('fechaInicio', new sfValidatorString(array('required' => true)));

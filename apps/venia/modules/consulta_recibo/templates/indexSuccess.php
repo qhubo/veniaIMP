@@ -40,15 +40,25 @@
             </div>
             
             
-            <div class="col-lg-1">
-                <button class="btn btn-outline-success" type="submit">
+            <div class="col-lg-2">
+                <button class="btn btn-sm btn-outline-success" type="submit">
                     <i class="fa fa-search "></i>
                     <span>Buscar</span>
                 </button>
             </div>
-
-      
-              <div class="col-lg-1">
+        </div>
+        
+        
+        <div class="row" style="padding-top:10px">
+            <div class="col-lg-1 control-label right "> Tipo Filtro </div>
+            <div class="col-lg-2 <?php if ($form['tipo_filtro']->hasError()) echo "has-error" ?>">
+                <?php echo $form['tipo_filtro'] ?>           
+                <span class="help-block form-error"> 
+                    <?php echo $form['tipo_filtro']->renderError() ?>  
+                </span>
+            </div>
+            <div class="col-lg-4"></div>
+            <div class="col-lg-1">
                 <a target="_blank" href="<?php echo url_for($modulo.'/reporteExcel') ?>" class="btn  btn-sm btn-warning" > <i class="flaticon2-printer"></i>Reporte </a>
             </div>
         </div>

@@ -14,7 +14,7 @@
     <thead >
         <tr class="active">
             <th  align="center"><span class="kt-font-success">Recibo </span></th>
-            <th  align="center"><span class="kt-font-success"> Fecha</span></th>
+            <th  align="center"><span class="kt-font-success"> Fecha Documento</span></th>
  
             <th  align="center"><span class="kt-font-success">Factura </span></th>
             <th  align="center"><span class="kt-font-success">Tienda </span></th>
@@ -22,7 +22,7 @@
             <th  align="center"><span class="kt-font-success"> Medio Pago </span></th>
             <th  align="center"><span class="kt-font-success">Banco  </span></th>
             <th  align="center"><span class="kt-font-success"> Documento</span></th>
-            <th  align="center"><span class="kt-font-success"> Fecha Documento</span></th>
+            <th  align="center"><span class="kt-font-success"> Fecha </span></th>
             <th  align="center"><span class="kt-font-success">Valor </span></th>
             <th  align="center"><span class="kt-font-success"> Usuario </span></th>
             <th  align="center"><span class="kt-font-success">Comisión  </span></th>
@@ -40,7 +40,7 @@
                     <?php echo $reg->getCodigo(); ; ?>
                        </a>
                        </td>
-                <td><?php echo $reg->getFechaCreo('d/m/Y'); ?></td>
+                <td><?php echo $reg->getFechaDocumento('d/m/Y'); ?></td>
              
                    <td><?php echo $reg->getOperacion()->getCodigoFactura(); ?></td>
                 <td><?php echo $reg->getOperacion()->getTienda()->getNombre(); ?></td>
@@ -48,7 +48,7 @@
                 <td><?php echo $reg->getTipo(); ?></td>
                 <td style="text-align: right" ><?php echo $reg->getBanco(); ?></td>
                 <td style="text-align: right" ><?php echo $reg->getDocumento(); ?></td>
-                <td style="text-align: center" ><?php echo $reg->getFechaDocumento('d/m/Y'); ?></td>
+                <td style="text-align: center" ><?php echo $reg->getFechaCreo('d/m/Y'); ?></td>
                 <td style="text-align: right" ><div style="text-align:right"> <?php echo Parametro::formato($reg->getValor()); ?></div></td>
                 <td><?php echo $reg->getUsuario(); ?></td>
 
