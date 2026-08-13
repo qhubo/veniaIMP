@@ -87,6 +87,9 @@ $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
                     <th  align="center"><font size="-2"> Nombre</font></th>
                     <th  align="center"><font size="-2"> Marca</font></th>
                     <th  align="center"><font size="-2"> Existencia</font></th>
+                    <th align="center">
+    <font size="-2">Marcas Vehículo</font>
+</th>
                     <th  align="center"><font size="-2"> Precio</font></th>
                     <th  align="center"><font size="-2"> Activo</font></th>
                     <th><font size="-2">Editar</font></th>
@@ -113,6 +116,29 @@ $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
                             </td>
                             <td> <font size="-1"> <?php echo $lista->getMarcaProducto(); ?></font> </td>
                             <td style="text-align: right;"> <font size="-1"> <?php echo $lista->getExistencia(); ?></font> </td>
+                          
+                            <td>
+    <?php
+    $marcas = isset($marcasVehiculo[$lista->getId()])
+            ? $marcasVehiculo[$lista->getId()]
+            : array();
+    ?>
+
+    <?php if (!empty($marcas)) { ?>
+
+        <?php foreach ($marcas as $marcaVehiculo) { ?>
+
+            <span class="label label-primary"
+                  style="display:inline-block; margin:2px; font-size:10px;">
+                <?php echo $marcaVehiculo; ?>
+            </span>
+
+        <?php } ?>
+
+ 
+
+    <?php } ?>
+</td>
                             <td style="text-align: right;"> <font size="-1"> <?php echo Parametro::formato($lista->getPrecio(), false); ?></font> </td>
                             <td> <font size="-1"> <?php if ($lista->getActivo()) { ?><li class="fa fa-check  font-green-jungle"></li> <?php } ?> </font>  </td>
                     <td>

@@ -2236,4 +2236,9 @@ propel:
     lista_empaque_unida_id:    ~
     codigo:                            { type: varchar(50) } 
  
-    
+  producto_marca: 
+    _attributes: { phpName: ProductoMarca, idMethod: native }
+    id:                                ~
+    empresa_id:                        ~
+    producto_id:                       ~
+    marca:                             { type: varchar(150) }   

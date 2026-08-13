@@ -310,29 +310,24 @@ if ($pefilq) {
 
         <div class="row">    
             <div class="col-lg-1"></div>
-            <!--            <div class="col-lg-2 ">Unidad Medida </div>
+
+
+    <label class="col-lg-1 control-label">
+        Marcas Vehículo
+    </label>
+
+    <div class="col-lg-6 <?php if ($form['marcasVehiculo']->hasError()) echo "has-error" ?>">
+        <?php echo $form['marcasVehiculo'] ?>
+
+        <span class="help-block form-error">
+            <?php echo $form['marcasVehiculo']->renderError() ?>
+        </span>
+    </div>
             
-                        <div class="col-lg-2 <?php if ($form['unidad_medida']->hasError()) echo "has-error" ?>">
-            <?php echo $form['unidad_medida'] ?>           
-                            <span class="help-block form-error"> 
-            <?php echo $form['unidad_medida']->renderError() ?>  
-                            </span>
-                        </div>-->
-
-            <!--     <div class="col-lg-2 ">Unidad Medida Costo </div>-->
-
-<!--            <div class="col-lg-2 <?php if ($form['unidad_medida_costo']->hasError()) echo "has-error" ?>">
-            <?php echo $form['unidad_medida_costo'] ?>           
-                <span class="help-block form-error"> 
-            <?php echo $form['unidad_medida_costo']->renderError() ?>  
-                </span>
-            </div>-->
-
+            
+            
    
-            <div class="col-lg-2 <?php if ($form['tercero']->hasError()) echo "has-error" ?>">
-
-            </div>
-            <div class="col-lg-1 align-items-lg-center">Activo </div> 
+                        <div class="col-lg-1 align-items-lg-center">Activo </div> 
             <div class="col-lg-1 <?php if ($form['activo']->hasError()) echo "has-error" ?>">
 
                 <?php echo $form['activo'] ?>  

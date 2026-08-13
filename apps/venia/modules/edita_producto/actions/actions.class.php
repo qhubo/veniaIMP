@@ -191,7 +191,7 @@ class edita_productoActions extends sfActions {
             $this->redirect('inicio/index');
         }
 
-        
+
         $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
         $adminsitrador = sfContext::getInstance()->getUser()->getAttribute('administrador', null, 'seguridad');
         $usuarioId = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'seguridad');
@@ -264,7 +264,6 @@ class edita_productoActions extends sfActions {
             $valores['nombre'] = $producto->getNombre();
             $valores['origen'] = $producto->getOrigen(); //
             $valores['descripcion'] = $producto->getDescripcion(); // > aa
-            //     $valores['descripcion_corta'] = $producto->getDescripcionCorta(); //
             $valores['tipo'] = $producto->getTipoAparatoId(); // 4
             $valores['marca'] = $producto->getMarcaId(); //
             $valores['codigo_barras'] = $producto->getCodigoBarras(); //
@@ -273,22 +272,9 @@ class edita_productoActions extends sfActions {
             $valores['proveedor'] = $producto->getProveedorId(); //
             $valores['costo'] = $producto->getCostoProveedor();
             $valores['precio'] = $producto->getPrecio(); // 2233
-            //   $valores['peso'] = $producto->getCargoPesoLibraProducto(); //
             $valores['estatus'] = $producto->getEstatus(); // 0
-            //  $valores['meta_title'] = $producto->getMetaTitulo(); //
-            //  $valores['meta_key'] = $producto->getMetaKey(); //
-            //   $valores['meta_des'] = $producto->getMetaDescripcion(); //
-            //    $valores['garantia_admin'] = $producto->getGarantiaAdministrativo(); //
-            //  $valores['garantia_trans'] = $producto->getGarantiaTransporte(); //
-            //   $valores['dia_garantia'] = $producto->getDiaGarantia(); //
-            //     $valores['alerta_minima'] = $producto->getAlertaMinimo(); //
             $valores['tercero'] = $producto->getTercero(); //
             $valores['activo'] = $producto->getActivo(); //
-            //  $valores['factura_servicio'] = $producto->getFacturaServicio();
-            //  $valores['link_descarga'] = $producto->getLinkDescarga();
-            //  $valores['alto'] = $producto->getAlto();
-            //  $valores['ancho'] = $producto->getAncho();
-            //  $valores['largo'] = $producto->getLargo();
             $valores['promocional'] = $producto->getPromocional();
             $valores['unidad_medida_costo'] = $producto->getUnidadMedidaCosto();
             $valores['unidad_medida'] = $producto->getUnidadMedida();
@@ -306,6 +292,16 @@ class edita_productoActions extends sfActions {
             $valores['ancho'] = $producto->getAncho();
             $valores['largo'] = $producto->getLargo();
             $valores['nombre_ingles'] = $producto->getNombreIngles();
+            $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
+$marcasVehiculo = ProductoMarcaQuery::create()
+        ->filterByEmpresaId($empresaId)
+        ->filterByProductoId($producto->getId())
+        ->orderByMarca('Asc')
+        ->find();
+$valores['marcasVehiculo'] = array();
+foreach ($marcasVehiculo as $productoMarca) {
+    $valores['marcasVehiculo'][] = $productoMarca->getMarca();
+}
             sfContext::getInstance()->getUser()->setAttribute('tipo_id', $producto->getTipoAparatoId(), 'seguridad');
             sfContext::getInstance()->getUser()->setAttribute('marca_id', $producto->getMarcaId(), 'seguridad');
         }
@@ -314,9 +310,7 @@ class edita_productoActions extends sfActions {
             $this->form->bind($request->getParameter("consulta"), $request->getFiles("consulta"));
             if ($this->form->isValid()) {
                 $valores = $this->form->getValues();
-//                echo "<pre>";
-//                print_r($valores);
-//                die();
+
                 $con = Propel::getConnection();
                 $con->beginTransaction();
                 try {
@@ -330,10 +324,8 @@ class edita_productoActions extends sfActions {
                     if ($valores['codigo_sku']) {
                         $nuevo->setCodigoSku($valores['codigo_sku']);
                     }
-                    //           $nuevo->setFacturaServicio($valores['factura_servicio']);
                     $nuevo->setNombre($valores['nombre']); // $producto; // silver rock
                     $nuevo->setDescripcion($valores['descripcion']); // $producto; // Descripcion
-                    //           $nuevo->setDescripcionCorta($valores['descripcion_corta']); // $producto; //
                     $nuevo->setTipoAparatoId($valores['tipo']); // $producto; // 3
                     if ($valores['marca']) {
                         $nuevo->setMarcaId($valores['marca']); // $producto; // 3
@@ -352,21 +344,8 @@ class edita_productoActions extends sfActions {
                     }
                     $nuevo->setUnidadMedida($valores['unidad_medida']);
                     $nuevo->setUnidadMedidaCosto($valores['unidad_medida_costo']);
-
-                    //           $nuevo->setAncho($valores['ancho']);
-                    //           $nuevo->setLargo($valores['largo']);
-                    //           $nuevo->setAlto($valores['alto']);
-                    //           $nuevo->setCargoPesoLibraProducto($valores['peso']); // $producto; //
                     $nuevo->setEstatus($valores['estatus']); // $producto; // 0
-                    //           $nuevo->setMetaTitulo($valores['meta_title']); // $producto; //
-                    //           $nuevo->setMetaKey($valores['meta_key']); // $producto; //
-                    //           $nuevo->setMetaDescripcion($valores['meta_des']); // $producto; //
-                    //           $nuevo->setGarantiaAdministrativo($valores['garantia_admin']); // $producto; //
-                    // //           $nuevo->setGarantiaTransporte($valores['garantia_trans']); // $producto; //
-                    //           $nuevo->setDiaGarantia($valores['dia_garantia']); // $producto; //
-                    //           $nuevo->setAlertaMinimo($valores['alerta_minima']); // $producto; //
                     $nuevo->setActivo($valores['activo']); // $producto; //
-                    //           $nuevo->setLinkDescarga($valores['link_descarga']);
                     $nuevo->setPromocional($valores['promocional']);
                     $nuevo->setTopVenta($valores['top_venta']);
                     $nuevo->setSalida($valores['salida']);
@@ -385,9 +364,8 @@ class edita_productoActions extends sfActions {
                     $nuevo->setLargo($valores['largo']);
                     if ($valores['proveedor']) {
                         $nuevo->setProveedorId($valores['proveedor']);
-                        ; //
                     }
-                    $nuevo->save();
+                    $nuevo->save();              
                     $con->commit();
                 } catch (Exception $e) {
                     $con->rollback();
@@ -396,6 +374,21 @@ class edita_productoActions extends sfActions {
                         $this->redirect('edita_producto/muestra?id=' . $id);
                     }
                 }
+                      $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
+                    ProductoMarcaQuery::create()->filterByEmpresaId($empresaId)->filterByProductoId($nuevo->getId())->delete();
+                    if (!empty($valores['marcasVehiculo']) && is_array($valores['marcasVehiculo'])) {
+                        foreach ($valores['marcasVehiculo'] as $marca) {
+                            $marca = trim($marca);
+                            if ($marca == '') {
+                                continue;
+                            }
+                            $productoMarca = new ProductoMarca();
+                            $productoMarca->setEmpresaId($empresaId);
+                            $productoMarca->setProductoId($nuevo->getId());
+                            $productoMarca->setMarca($marca);
+                            $productoMarca->save();
+                        }
+                    }
                 $imagen = $valores['archivo'];
                 if ($imagen) {
                     $nombre = "IMAGEN" . sha1(rand(1, 10) . date('YmdHi'));

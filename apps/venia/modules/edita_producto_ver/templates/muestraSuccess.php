@@ -191,8 +191,21 @@ if ($pefilq) {
             <div class="col-lg-12"><br></div>
         </div>
 
-        <div class="row">
-            <div class="col-lg-12"><br></div>
+        <div class="row" style="padding-bottom:10px;">    
+            <div class="col-lg-1"></div>
+
+
+    <label class="col-lg-1 control-label">
+        Marcas Vehículo
+    </label>
+
+    <div class="col-lg-6 <?php if ($form['marcasVehiculo']->hasError()) echo "has-error" ?>">
+        <?php echo $form['marcasVehiculo'] ?>
+
+        <span class="help-block form-error">
+            <?php echo $form['marcasVehiculo']->renderError() ?>
+        </span>
+    </div>
         </div>
 
         <div class="row">
@@ -258,6 +271,15 @@ if ($pefilq) {
 </div>
 <script type="text/javascript">
 $(document).ready(function () {
+    
+    // ==========================
+// Select2 - Marcas Vehículo
+// ==========================
+$("#consulta_marcasVehiculo").select2({
+    width: '100%',
+    placeholder: 'Seleccione una o varias marcas',
+    allowClear: true
+});
 
     // ==========================
     // Vista previa de imagen

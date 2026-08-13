@@ -61,6 +61,45 @@ class edita_producto_verActions extends sfActions {
                 $operaciones->filterByMarcaProducto($marca_producto);
             }
             $this->productos = $operaciones->find();
+            
+
+/*
+ * Cargar marcas de vehículo de los productos
+ */
+$this->marcasVehiculo = array();
+
+if ($this->productos) {
+
+    $productoIds = array();
+
+    foreach ($this->productos as $producto) {
+        $productoIds[] = $producto->getId();
+    }
+
+    if (!empty($productoIds)) {
+
+        $empresaId = sfContext::getInstance()
+                ->getUser()
+                ->getAttribute("usuario", null, 'empresa');
+
+        $productoMarcas = ProductoMarcaQuery::create()
+                ->filterByEmpresaId($empresaId)
+                ->filterByProductoId($productoIds)
+                ->orderByMarca('Asc')
+                ->find();
+
+        foreach ($productoMarcas as $productoMarca) {
+
+            $productoId = $productoMarca->getProductoId();
+
+            if (!isset($this->marcasVehiculo[$productoId])) {
+                $this->marcasVehiculo[$productoId] = array();
+            }
+
+            $this->marcasVehiculo[$productoId][] = $productoMarca->getMarca();
+        }
+    }
+}
         }
 
     }
@@ -110,6 +149,16 @@ class edita_producto_verActions extends sfActions {
             $valores['ancho'] = $producto->getAncho();
             $valores['largo'] = $producto->getLargo();
             $valores['nombre_ingles']=$producto->getNombreIngles();
+                        $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
+$marcasVehiculo = ProductoMarcaQuery::create()
+        ->filterByEmpresaId($empresaId)
+        ->filterByProductoId($producto->getId())
+        ->orderByMarca('Asc')
+        ->find();
+$valores['marcasVehiculo'] = array();
+foreach ($marcasVehiculo as $productoMarca) {
+    $valores['marcasVehiculo'][] = $productoMarca->getMarca();
+}
             sfContext::getInstance()->getUser()->setAttribute('tipo_id', $producto->getTipoAparatoId(), 'seguridad');
             sfContext::getInstance()->getUser()->setAttribute('marca_id', $producto->getMarcaId(), 'seguridad');
         }
@@ -174,6 +223,21 @@ class edita_producto_verActions extends sfActions {
                         $this->redirect('edita_producto_ver/muestra?id=' . $id);
                     }
                 }
+                        $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
+                    ProductoMarcaQuery::create()->filterByEmpresaId($empresaId)->filterByProductoId($nuevo->getId())->delete();
+                    if (!empty($valores['marcasVehiculo']) && is_array($valores['marcasVehiculo'])) {
+                        foreach ($valores['marcasVehiculo'] as $marca) {
+                            $marca = trim($marca);
+                            if ($marca == '') {
+                                continue;
+                            }
+                            $productoMarca = new ProductoMarca();
+                            $productoMarca->setEmpresaId($empresaId);
+                            $productoMarca->setProductoId($nuevo->getId());
+                            $productoMarca->setMarca($marca);
+                            $productoMarca->save();
+                        }
+                    }
                 $imagen = $valores['archivo'];
 //                echo "<pre>";
 //                print_r($valores['archivo']);

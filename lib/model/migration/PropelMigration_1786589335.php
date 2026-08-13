@@ -2,10 +2,10 @@
 
 /**
  * Data object containing the SQL and PHP code to migrate the database
- * up to version 1780027608.
- * Generated on 2026-05-29 06:06:48 
+ * up to version 1786589335.
+ * Generated on 2026-08-13 04:48:55 
  */
-class PropelMigration_1780027608
+class PropelMigration_1786589335
 {
 
     public function preUp($manager)
@@ -42,13 +42,21 @@ class PropelMigration_1780027608
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
+DROP TABLE IF EXISTS `operacion_caja`;
+
 DROP TABLE IF EXISTS `tempo`;
+
+ALTER TABLE `cliente` CHANGE `nit` `nit` VARCHAR(20);
 
 CREATE INDEX `cliente_FI_5` ON `cliente` (`vendedor_id`);
 
 ALTER TABLE `cliente` ADD CONSTRAINT `cliente_FK_5`
     FOREIGN KEY (`vendedor_id`)
     REFERENCES `vendedor` (`id`);
+
+ALTER TABLE `lista_precio` CHANGE `confidencial` `confidencial` TINYINT(1) DEFAULT 0;
+
+DROP INDEX `uq_marca_producto_nombre` ON `marca_producto`;
 
 ALTER TABLE `operacion_pago` CHANGE `documento` `documento` VARCHAR(500);
 
@@ -68,21 +76,21 @@ ALTER TABLE `partida_agrupa` CHANGE `mes` `mes` INTEGER DEFAULT false;
 
 ALTER TABLE `producto` CHANGE `codigo_sku` `codigo_sku` VARCHAR(32) NOT NULL;
 
-CREATE TABLE `lista_empaque_unida_detalle`
+CREATE TABLE `producto_marca`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `empresa_id` INTEGER,
-    `lista_empaque_unida_id` INTEGER,
-    `codigo` VARCHAR(50),
+    `producto_id` INTEGER,
+    `marca` VARCHAR(150),
     PRIMARY KEY (`id`),
-    INDEX `lista_empaque_unida_detalle_FI_1` (`empresa_id`),
-    INDEX `lista_empaque_unida_detalle_FI_2` (`lista_empaque_unida_id`),
-    CONSTRAINT `lista_empaque_unida_detalle_FK_1`
+    INDEX `producto_marca_FI_1` (`empresa_id`),
+    INDEX `producto_marca_FI_2` (`producto_id`),
+    CONSTRAINT `producto_marca_FK_1`
         FOREIGN KEY (`empresa_id`)
         REFERENCES `empresa` (`id`),
-    CONSTRAINT `lista_empaque_unida_detalle_FK_2`
-        FOREIGN KEY (`lista_empaque_unida_id`)
-        REFERENCES `lista_empaque_unida` (`id`)
+    CONSTRAINT `producto_marca_FK_2`
+        FOREIGN KEY (`producto_id`)
+        REFERENCES `producto` (`id`)
 ) ENGINE=InnoDB;
 
 # This restores the fkey checks, after having unset them earlier
@@ -105,11 +113,17 @@ SET FOREIGN_KEY_CHECKS = 1;
 # It "suspends judgement" for fkey relationships until are tables are set.
 SET FOREIGN_KEY_CHECKS = 0;
 
-DROP TABLE IF EXISTS `lista_empaque_unida_detalle`;
+DROP TABLE IF EXISTS `producto_marca`;
 
 ALTER TABLE `cliente` DROP FOREIGN KEY `cliente_FK_5`;
 
 DROP INDEX `cliente_FI_5` ON `cliente`;
+
+ALTER TABLE `cliente` CHANGE `nit` `nit` VARCHAR(200);
+
+ALTER TABLE `lista_precio` CHANGE `confidencial` `confidencial` bit(1);
+
+CREATE BTREE INDEX `uq_marca_producto_nombre` ON `marca_producto` (`nombre`);
 
 ALTER TABLE `operacion_pago` CHANGE `documento` `documento` VARCHAR(550);
 
@@ -128,6 +142,20 @@ ALTER TABLE `partida_agrupa` CHANGE `ano` `ano` INTEGER DEFAULT 0;
 ALTER TABLE `partida_agrupa` CHANGE `mes` `mes` INTEGER DEFAULT 0;
 
 ALTER TABLE `producto` CHANGE `codigo_sku` `codigo_sku` VARCHAR(100);
+
+CREATE TABLE `operacion_caja`
+(
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `empresa_id` INTEGER,
+    `codigo` VARCHAR(50),
+    `caja` INTEGER,
+    `peso` INTEGER,
+    PRIMARY KEY (`id`),
+    BTREE INDEX `operacion_caja_FI_1` (`empresa_id`),
+    CONSTRAINT `operacion_caja_FK_1`
+        FOREIGN KEY (`empresa_id`)
+        REFERENCES `empresa` (`id`)
+) ENGINE=InnoDB;
 
 CREATE TABLE `tempo`
 (
