@@ -277,7 +277,7 @@ class estado_cuentaActions extends sfActions {
                 $banco = $pago->getBanco()->getNombre();
             }
 
-            $Key = $pago->getFechaCreo('YmdHis') . "_C" . $pago->getId();
+            $Key = $pago->getFechaDocumento('YmdHis') . "_C" . $pago->getId();
             $lista[$Key] = [
                 'codigo' => "REC.  " . $pago->getCodigo(),
                 'fecha' => $pago->getFechaDocumento('d/m/Y'),
