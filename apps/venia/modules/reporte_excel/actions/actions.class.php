@@ -111,7 +111,7 @@ class reporte_excelActions extends sfActions {
 
 // ================= CABECERA =================
         $fila = 13;
-        $headers = ["No", "Código", "Descripción", "Origen", "Marca", "Características", "Unidades", "Precio Unit", "Total","Peso"];
+        $headers = ["No", "Código", "Descripción", "Origen", "Marca", "Características", "Unidades", "Precio Unit", "Total","Peso","CMB", "CMB TOTAL"];
 
         $col = "A";
         foreach ($headers as $h) {
@@ -151,6 +151,8 @@ class reporte_excelActions extends sfActions {
             $sheet->setCellValue("H$fila", $regist->getValorUnitario());
             $sheet->setCellValue("I$fila", $regist->getValorTotal());
             $sheet->setCellValue("J$fila", (  $regist->getProducto()->getPeso() * $regist->getCantidad()));
+            $sheet->setCellValue("K$fila", ($pro->getAlto() * $pro->getAncho() * $pro->getLargo()));
+            $sheet->setCellValue("L$fila", ( ($pro->getAlto() * $pro->getAncho() * $pro->getLargo()) * $regist->getCantidad()));
           
         }
 
