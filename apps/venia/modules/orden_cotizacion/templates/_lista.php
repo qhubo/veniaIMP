@@ -227,7 +227,7 @@ $(document).ready(function(){
                                              <form action="<?php echo url_for('orden_cotizacion/precio') ?>" method="get">
                                         <table class="table ">
                                             <tr>
-                                                <th>PUBLICO</th>
+                                                <th>PUBLICO </th>
                                                 <td style="text-align: right;"><?php echo Parametro::formato($ListaDetalle->getProducto()->getPrecio()); ?></td>
                                                 <td style="width:30px;">
                                                     <a class="btn btn-sm   btn-primary " href="<?php echo url_for('orden_cotizacion/precioEdit?edit=' . $ListaDetalle->getId()."&valor=".$ListaDetalle->getProducto()->getPrecio()) ?>"><i class="fa fa-check"></i> </a>  
