@@ -401,6 +401,7 @@ class reporte_ventaActions extends sfActions {
         $this->redirect($modulo . '/index');
     }
     public function executeIndex(sfWebRequest $request) {
+           error_reporting(-1);
         date_default_timezone_set("America/Guatemala");
         $this->vendedores = VendedorQuery::create()->orderByNombre()->find();
         $valores = unserialize(sfContext::getInstance()->getUser()->getAttribute('seleccioventa', null, 'consulta'));
