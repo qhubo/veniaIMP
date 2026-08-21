@@ -112,7 +112,7 @@
                         <td><?php echo $lista->getNit() ?> <br> <?php echo $lista->getNombre() ?></td>
 
                         <td>  <?php echo $lista->getEstatus() ?> 
-                        <?php if ($lista->getCotizacionesId() ) { ?>
+                        <?php if ($lista->getCodigoFactura()  <> "SETI0023" ) { ?>
                             <?php foreach($lista->getCotizacionesId() as $keyCO=>$value) { ?>
                             <?php $value= str_replace("LIST-","", $value); ?>
                            
