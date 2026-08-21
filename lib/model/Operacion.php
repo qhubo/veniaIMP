@@ -32,6 +32,7 @@ class Operacion extends BaseOperacion {
     
           public function getCotizacionesId() {
               
+              $LIST=null;
             $ordenCotitaconQ = OrdenCotizacionQuery::create()->findOneByCodigo($this->getCodigo());
             if ($ordenCotitaconQ) {
                 $LIST[$ordenCotitaconQ->getId()]= $ordenCotitaconQ->getCodigo();   

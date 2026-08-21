@@ -112,7 +112,7 @@
                         <td><?php echo $lista->getNit() ?> <br> <?php echo $lista->getNombre() ?></td>
 
                         <td>  <?php echo $lista->getEstatus() ?> 
-                        
+                        <?php if ($lista->getCotizacionesId() ) { ?>
                             <?php foreach($lista->getCotizacionesId() as $keyCO=>$value) { ?>
                             <?php $value= str_replace("LIST-","", $value); ?>
                            
@@ -124,19 +124,12 @@
                                 <?php echo $lista->getObservaciones() ?>  <br>  <strong> <?php echo $lista->getAnuloUsuario() ?>  </strong> <br>
                                 <?php echo $lista->getFechaAnulo('d/m/Y H:i:s') ?>   <br>
                             <?php } ?>
-                            <?php if ($TIPO_USUARIO == 'ADMINISTRADORRRRRRR') { ?>
-                                <a class="btn btn-sm  btn-block"   href="#" data-toggle="modal" data-target="#ajaxmo<?php echo $lista->getId() ?>">
-                                    <?php if ($lista->getVendedorId()) { ?>
-                                        <?php echo $lista->getVendedor()->getNombre(); ?>
-                                    <?php } else { ?> 
-                                        .....
-                                    <?php } ?>
-                                </a>                        
-                            <?php } else { ?>
+                     
                                 <?php if ($lista->getVendedorId()) { ?>
                                     <?php echo $lista->getVendedor()->getNombre(); ?>
                                 <?php } ?> 
-                            <?php } ?>
+                                  <?php } ?> 
+                         
                         </td>
                         <td style="text-align:right">  <?php echo Parametro::formato($lista->getValorTotal()) ?>    </td>
 
