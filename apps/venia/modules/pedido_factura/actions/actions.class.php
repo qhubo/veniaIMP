@@ -65,7 +65,9 @@ class pedido_facturaActions extends sfActions {
     }
 
     public function executeConfirmar(sfWebRequest $request) {
-
+   $con = Propel::getConnection();
+        $con->beginTransaction();
+        try {
         $id = $request->getParameter('id');
         $tipoSerie = $request->getParameter('tipoSerie');
         error_reporting(-1);
@@ -108,9 +110,17 @@ class pedido_facturaActions extends sfActions {
         }
         $ordenQ->setEstatus('Facturada');
         $ordenQ->save();
-//        $operaicon = OperacionQuery::create()->findOneById($id);
-//        $operaicon->setEstatus('Facturado');
-//        $operaicon->save();
+      $con->commit();
+   $this->getUser()->setFlash(            'exito',            'Pedido facturado con éxito'        );
+        $this->redirect('pedido_factura/index?codigo=' . $ordenQ->getCodigo());
+        } catch (Exception $e) {
+            $con->rollback();
+            if ($e->getMessage()) {
+                $this->getUser()->setFlash('error', $e->getMessage() . ', !Intentar Nuevamente');
+            }
+        $this->redirect('pedido_factura/index?codigo=' . $ordenQ->getCodigo());
+
+        }
 
         $this->getUser()->setFlash('exito', 'Pedido facturado  con exito');
         $this->redirect('pedido_factura/index?codigo=' . $ordenQ->getCodigo());
