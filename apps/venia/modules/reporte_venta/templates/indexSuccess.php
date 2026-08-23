@@ -112,14 +112,14 @@
                         <td><?php echo $lista->getNit() ?> <br> <?php echo $lista->getNombre() ?></td>
 
                         <td>  <?php echo $lista->getEstatus() ?> 
-                        <?php if ($lista->getCodigoFactura()  <> "SETI0023" ) { ?>
+    
                             <?php foreach($lista->getCotizacionesId() as $keyCO=>$value) { ?>
                             <?php $value= str_replace("LIST-","", $value); ?>
-                           
+             
                             
                  <a target="_blank" href="<?php echo url_for('reporte/empaque?id=' . $keyCO) ?>" class="btn btn-sm btn-warning btn-block" >  <?php echo $value; ?> </a>
                 <a target="_blank" href="<?php echo url_for('reporte_excel/empaque?id=' . $keyCO) ?>" class="btn btn-block  btn-sm  " style="background-color:#04AA6D; color:white"><?php echo $value; ?> </a>
-                            <?php } ?>
+                            <?php  } ?>
                             <?php if ($lista->getAnulado()) { ?>
                                 <?php echo $lista->getObservaciones() ?>  <br>  <strong> <?php echo $lista->getAnuloUsuario() ?>  </strong> <br>
                                 <?php echo $lista->getFechaAnulo('d/m/Y H:i:s') ?>   <br>
@@ -128,7 +128,7 @@
                                 <?php if ($lista->getVendedorId()) { ?>
                                     <?php echo $lista->getVendedor()->getNombre(); ?>
                                 <?php } ?> 
-                                  <?php } ?> 
+                                  <?php //} ?> 
                          
                         </td>
                         <td style="text-align:right">  <?php echo Parametro::formato($lista->getValorTotal()) ?>    </td>

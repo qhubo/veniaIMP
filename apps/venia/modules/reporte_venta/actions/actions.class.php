@@ -1,13 +1,5 @@
 <?php
 
-/**
- * reporte_venta actions.
- *
- * @package    plan
- * @subpackage reporte_venta
- * @author     Via
- * @version    SVN: $Id: actions.class.php 23810 2009-11-12 11:07:44Z Kris.Wallsmith $
- */
 class reporte_ventaActions extends sfActions {
 
     public function retornaProductos($id) {

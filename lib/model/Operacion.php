@@ -44,8 +44,10 @@ class Operacion extends BaseOperacion {
                     ->find();
             foreach ($ordenCotizacion as $registro) {
                 $empaque = OrdenCotizacionQuery::create()->findOneById($registro->getOrdenEmpaque());
+                if ($empaque) {
                 $orden= OrdenCotizacionQuery::create()->findOneById($empaque->getId());
                 $LIST[$empaque->getId()]= $orden->getCodigo(); 
+                }
             }
             
             
