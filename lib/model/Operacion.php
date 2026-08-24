@@ -24,7 +24,9 @@ class Operacion extends BaseOperacion {
                     ->find();
             foreach ($ordenCotizacion as $registro) {
                 $empaque = OrdenCotizacionQuery::create()->findOneById($registro->getOrdenEmpaque());
+                if ($empaque) {
                 $LIST[]= str_replace("LIST-","", $empaque->getCodigo()); ;
+                }
             }
             $pedidos = implode(",", $LIST);
             return $pedidos;
