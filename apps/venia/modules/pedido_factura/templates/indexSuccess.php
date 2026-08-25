@@ -59,11 +59,14 @@
                         <td>
                         <?php   $ordenCoti= OrdenCotizacionEmpaqueQuery::create()->findOneByOrdenEmpaque($dete->getId()); ?>    
                             <?php if (!$ordenCoti) { ?>
-                            <a href="<?php echo url_for('pedido_factura/nueva?codigo=' . $dete->getCodigo()) ?>" class="btn btn-sm btn-dark btn-secondary" > Facturar  >> </a>
+                            <a href="<?php echo url_for('pedido_factura/nueva?codigo=' . $dete->getCodigo()) ?>" class="btn btn-block btn-sm btn-dark btn-secondary" > Facturar  >> </a>
                             <?php } else { ?>
                             Facturandose con empaque <?php echo $ordenCoti->getOrdenCotizacion()->getCodigo(); ?>
 
                             <?php } ?>
+      <a target="_blank" href="<?php echo url_for('reporte/preFactura?id=' . $dete->getId()) ?>" class="btn btn-block btn-sm btn-info" > 
+             <i class="flaticon2-printer"></i>   PreFacturar </a>
+                       
                         
                         </td>
 

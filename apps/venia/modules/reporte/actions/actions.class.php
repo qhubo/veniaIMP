@@ -11,6 +11,67 @@
 class reporteActions extends sfActions {
 
 
+        public function executePreFactura(sfWebRequest $request) {
+
+        date_default_timezone_set("America/Guatemala");
+        error_reporting(-1);
+        $id = $request->getParameter('id');
+        $listas = $this->BuscaId($id);
+        
+        $IIREDB= OrdenCotizacionQuery::create()->filterById($listas, Criteria::IN)->find();
+        foreach($IIREDB as $reg) {
+            $listaCo[]= str_replace('LIST-','',$reg->getCodigo());
+        }
+        $codigo = 'LIST-'.implode("-", $listaCo);
+        
+        
+        $operacion = OrdenCotizacionQuery::create()->findOneById($id);
+        $detalle = OrdenCotizacionDetalleQuery::create()
+                ->filterByConfirmado(true)
+                ->filterByProductoId(null, Criteria::NOT_EQUAL)
+                ->filterByOrdenCotizacionId($listas, Criteria::IN)
+                ->withColumn('CAST(orden_cotizacion_detalle.bulto_inicio AS UNSIGNED)', 'BultoOrden')
+                ->orderBy('BultoOrden', Criteria::ASC)
+                ->find();
+
+        $html = '';
+        $logo = $operacion->getEmpresa()->getLogo();
+        $html = $this->getPartial('reporte/preFactura', array('codigo'=>$codigo, 'operacion' => $operacion, 'detalle' => $detalle, 'logo' => $logo));
+        $img_file = "uploads/images/" . $logo;
+
+        $pdf = new sfTCPDF("P", "mm", "Letter");
+        $this->id = $request->getParameter("id");
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetAuthor('Venia Link');
+        $pdf->SetTitle(" Prefactura " . $operacion->getCodigo());
+        $pdf->SetSubject('Prefactura');
+        $pdf->SetKeywords('Concilia,Banco,Cuenta'); // set default header data
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED); // set margins
+        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+        $pdf->SetMargins(3, 5, 5, true);
+        $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+        $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->SetHeaderMargin(0.1);
+        $pdf->SetFooterMargin(0);
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+        $pdf->SetFont('dejavusans', '', 9);
+        $pdf->AddPage();
+        $pdf->writeHTML($html);
+        $pdf->Image($img_file, 18, -8, 40); //, 50, '', '', '', '300', false, 0);
+
+
+
+        $pdf->Output('PreFactura ' . $operacion->getCodigo() . '.pdf', 'I');
+    }
+    
+    
+    
     public function executeExportar(sfWebRequest $request) {
         $tipoUsua = strtoupper(sfContext::getInstance()->getUser()->getAttribute("tipoUsuario", null, 'seguridad'));
    
