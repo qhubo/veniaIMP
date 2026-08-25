@@ -107,8 +107,9 @@ $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
                                          class="img-thumbnail img-producto"
                                          style="cursor:pointer"
                                                                          data-imagen="<?php echo $lista->getImagen() ?>">
-                                </td>
+                             
                             <?php } ?>
+                                       </td>
                             <td><?php echo $lista->getCodigoSku() ?></td>
                             <td> <font size="-1"> <?php echo $lista->getNombre(); ?></font> 
                                 <br>

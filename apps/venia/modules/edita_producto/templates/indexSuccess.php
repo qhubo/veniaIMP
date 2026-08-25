@@ -113,7 +113,7 @@ $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
                 <?php if ($productos) { ?>
                     <?php foreach ($productos as $lista) { ?>
                         <tr>
-                            <td>  
+               
                             
                             <td>
                                 <?php if ($lista->getImagen()  <> "") { ?>
@@ -124,8 +124,9 @@ $TIPO_USUARIO = strtoupper($usuarioQ->getTipoUsuario());
          data-toggle="modal"
          data-target="#modalImagen"
          data-imagen="<?php echo $lista->getImagen() ?>">
-</td>
+
                                 <?php }?>
+    </td>
                  
                             <td><?php echo $lista->getCodigoSku() ?></td>
                             <td> <font size="-1"> <?php echo $lista->getNombre(); ?></font> 
