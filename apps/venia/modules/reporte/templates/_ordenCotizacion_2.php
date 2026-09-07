@@ -116,13 +116,12 @@
 <table>
     <thead>
         <tr class="centrado" style="background-color:#F2F2F2">
-             <th style="width:60px;font-size: 26px; border-top: 1px solid #000; "> &nbsp;&nbsp;</th>
             <th style="width:20px;font-size: 26px; border-top: 1px solid #000; ">No</th>
             <th  style="width:75px;font-size: 26px; border-top: 1px solid #000;">Código</th>
-            <th  style="width:180px;font-size: 26px; border-top: 1px solid #000;">Descripción</th>
+            <th  style="width:225px;font-size: 26px; border-top: 1px solid #000;">Descripción</th>
             <th  style="width:85px;font-size: 26px; border-top: 1px solid #000;">Origen</th>
-            <th  style="width:75px;font-size: 26px; border-top: 1px solid #000;">Marca</th>
-            <th  style="width:75px;font-size: 26px; border-top: 1px solid #000;">Características</th>
+            <th  style="width:85px;font-size: 26px; border-top: 1px solid #000;">Marca</th>
+            <th  style="width:90px;font-size: 26px; border-top: 1px solid #000;">Características</th>
             <th  style="width:50px;font-size: 26px; border-top: 1px solid #000;">Unidades</th>
             <th  style="width:60px;font-size: 26px; border-top: 1px solid #000;">Precio Unit</th>
             <th  style="width:60px;font-size: 26px; border-top: 1px solid #000;">Total</th>
@@ -144,23 +143,14 @@
     <?php $totalCajas = $totalCajas + $regist->getCantidadCaja(); ?>  
     <?php $Subtotal = $Subtotal + $regist->getValorTotal(); ?>   
             <tr>
-                <td style="width:60px; font-size: 25px; " class="centrado">
-                    <?php if ($regist->getProductoId()) { ?>
-                           <?php if ($regist->getProducto()->getImagen() <> "") { ?>
-                                    <img src="<?php echo $regist->getProducto()->getImagen()   ?>" width="60">
-                            <?php } ?>
-                    <?php } ?>
-                    
-                    
-                </td>
                 <td style="width:20px; font-size: 25px; " class="centrado"><?php echo $can; ?></td>
                 <td style="width:75px;font-size: 25px; " ><?php echo $regist->getCodigo(); ?></td>
-                <td style="width:180px;font-size: 25px; "><?php echo $regist->getDetalle(); ?></td>
+                <td style="width:225px;font-size: 25px; "><?php echo $regist->getDetalle(); ?></td>
                 <td class="centrado" style="width:85px;font-size: 25px; "><?php echo $regist->getProducto()->getOrigen(); ?></td>
 
-                <td class="centrado" style="width:75px;font-size: 25px; "><?php echo $regist->getProducto()->getMarcaProducto(); ?></td>
+                <td class="centrado" style="width:90px;font-size: 25px; "><?php echo $regist->getProducto()->getMarcaProducto(); ?></td>
 
-                <td style="width:75px;font-size: 25px; "><?php echo $regist->getProducto()->getCaracteristica(); ?></td>
+                <td style="width:85px;font-size: 25px; "><?php echo $regist->getProducto()->getCaracteristica(); ?></td>
                 <td style="width:50px;font-size: 25px; " class="centrado"><?php echo $regist->getCantidad(); ?></td>
                 <td style="width:60px;font-size: 25px; " class="derecha"><?php  echo Parametro::formato($regist->getValorUnitario(),false); ?></td>
                 <td style="width:60px;font-size: 25px; " class="derecha"><?php echo  Parametro::formato($regist->getValorTotal(),false); ?></td>
