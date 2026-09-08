@@ -2,7 +2,7 @@
 
 body {
     font-family: dejavusans;
-    font-size: 16px;
+    font-size: 32px;
     color: #000;
 }
 
@@ -12,7 +12,7 @@ body {
 }
 
 .subtitulo {
-    font-size: 30px;
+    font-size: 26px;
 }
 
 .producto {
@@ -25,21 +25,21 @@ body {
 }
 
 .nombre {
-    font-size: 22px;
+    font-size: 30px;
     font-weight: bold;
 }
 
 .sku {
-    font-size: 19px;
+    font-size: 22px;
     color: #666666;
 }
 
 .marca {
-    font-size: 19px;
+    font-size: 25px;
 }
 
 .compatibilidad {
-    font-size: 14px;
+    font-size: 22px;
 }
 
 .existencia {
@@ -48,7 +48,7 @@ body {
 }
 
 .precio {
-    font-size: 20px;
+    font-size: 30px;
     font-weight: bold;
 }
 
@@ -72,326 +72,90 @@ body {
                 PORTAFOLIO DE PRODUCTOS
             </span>
            <br>
-            <span class="subtitulo">
-                <?php   echo $empresa ? $empresa->getNombre() : '';   ?>
-            </span>
+            <span class="subtitulo"> <?php   echo $empresa ? $empresa->getNombre() : '';   ?>  </span>
             <br>
-            <span class="subtitulo">
-                Fecha:   <?php echo date('d/m/Y'); ?>
-            </span>
-
+            <span class="subtitulo">    Fecha:   <?php echo date('d/m/Y'); ?>  </span>
         </td>
-
         <td width="20%">
-
         </td>
-
     </tr>
-
 </table>
-
-
 <br>
-
-
-<!-- =========================================================
-     PRODUCTOS
-     ========================================================= -->
-
-<?php
-
-$contador = 0;
-
-?>
-
-
-<table
-    width="100%"
-    cellpadding="5"
-    cellspacing="5"
->
-
-
+<?php $contador = 0; ?>
+<table width="100%" cellpadding="5" cellspacing="5" >
 <?php foreach ($productos as $producto) { ?>
-
-
-    <?php
-
-    $productoId = $producto->getId();
-
-
-    $existencia = isset(
-        $existencias[$productoId]
-    )
-        ? $existencias[$productoId]
-        : 0;
-
-
-    $marcas = isset(
-        $marcasVehiculo[$productoId]
-    )
-        ? $marcasVehiculo[$productoId]
-        : array();
-
-
+    <?php  $productoId = $producto->getId();
+    $existencia = isset( $existencias[$productoId]) ? $existencias[$productoId]: 0;
+    $marcas = isset($marcasVehiculo[$productoId])? $marcasVehiculo[$productoId]: array();
     $contador++;
-
-
     ?>
-
-
     <?php if (($contador - 1) % 2 == 0) { ?>
-
         <tr>
-
     <?php } ?>
-
-
-        <td
-            width="50%"
-            valign="top"
-        >
-
-
-            <!-- =============================================
-                 CARD
-                 ============================================= -->
-
-            <table
-                width="100%"
-                cellpadding="4"
-                class="producto"
-            >
-
+        <td width="50%" valign="top" >
+            <table  width="100%"  cellpadding="4" class="producto" >
                 <tr>
-
-                    <!-- IMAGEN -->
-
-                    <td
-                        width="38%"
-                        valign="middle"
-                        align="center"
-                    >
-
+                   <td width="38%" valign="middle" align="center"  >
                         <?php if ($producto->getImagen() != '') { ?>
-
-                            <img
-                                src="<?php
-                                    echo $producto->getImagen();
-                                ?>"
-                                width="120"
-                            >
-
+                            <img src="<?php  echo $producto->getImagen();  ?>" width="120" >
                         <?php } ?>
-
                     </td>
-
-
-                    <!-- INFORMACION -->
-
-                    <td
-                        width="62%"
-                        valign="top"
-                    >
-
-
-                        <!-- SKU -->
-
-                        <div class="sku">
-
-                            SKU:
-                            <?php
-                            echo $producto->getCodigoSku();
-                            ?>
-
+                    <td width="62%" valign="top"  >
+                       <div class="sku">
+                            SKU:  <?php  echo $producto->getCodigoSku();   ?>
                         </div>
-
-
-                        <!-- NOMBRE -->
-
                         <div class="nombre">
-
-                            <?php
-                            echo $producto->getNombre();
-                            ?>
-
+                            <?php  echo $producto->getNombre();  ?>
                         </div>
-
-
-                        <!-- INGLES -->
-
-                        <?php
-                        if (
-                            $producto->getNombreIngles() != ''
-                        ) {
-                        ?>
-
+                        <?php  if ( $producto->getNombreIngles() != '') { ?>
                             <div class="sku">
-
-                                <?php
-                                echo $producto->getNombreIngles();
-                                ?>
-
+                                <?php  echo $producto->getNombreIngles(); ?>
                             </div>
-
                         <?php } ?>
-
-
                         <br>
-
-
-                        <!-- MARCA PRODUCTO -->
-
-                        <div class="marca">
-
-                            <strong>
-                                Marca:
-                            </strong>
-
-                            <?php
-                            echo $producto->getMarcaProducto();
-                            ?>
-
+                       <div class="marca">
+                            <strong> Marca: </strong>
+                            <?php  echo $producto->getMarcaProducto(); ?>
                         </div>
-
-
-                        <!-- ORIGEN -->
-
-                        <?php
-                        if ($producto->getOrigen() != '') {
-                        ?>
-
+                        <?php if ($producto->getOrigen() != '') { ?>
                             <div class="marca">
-
-                                <strong>
-                                    Origen:
-                                </strong>
-
-                                <?php
-                                echo $producto->getOrigen();
-                                ?>
-
+                                <strong> Origen: </strong>
+                                <?php  echo $producto->getOrigen();  ?>
                             </div>
-
                         <?php } ?>
-
-
-                        <!-- =====================================
-                             VEHICULOS
-                             ===================================== -->
-
                         <?php if (!empty($marcas)) { ?>
-
                             <br>
-
                             <div class="compatibilidad">
-
-                                <strong>
-                                    Compatible con:
-                                </strong>
-
+                                <strong> Compatible con:  </strong>
                             </div>
-
-
                             <div>
-
-                                <?php
-                                foreach ($marcas as $marcaVehiculo) {
-                                ?>
-
+                                <?php  foreach ($marcas as $marcaVehiculo) {  ?>
                                     <span class="marca-vehiculo">
-
-                                        <?php
-                                        echo htmlspecialchars(
-                                            $marcaVehiculo
-                                        );
-                                        ?>
-
+                                        <?php  echo htmlspecialchars($marcaVehiculo);   ?>
                                     </span>
-
                                 <?php } ?>
-
                             </div>
-
                         <?php } ?>
-
-
                         <br>
-
-
-                        <!-- EXISTENCIA -->
-
-                        <div class="existencia">
-
-                            Existencia:
-
-                            <?php
-
-                            echo number_format(
-                                $existencia,
-                                0,
-                                '.',
-                                ','
-                            );
-
-                            ?>
-
+                        <div class="existencia">   Existencia:
+                            <?php echo number_format($existencia, 0,'.', ',' ); ?>
                         </div>
-
-
-                        <!-- PRECIO -->
-
                         <div class="precio">
-
-                            <?php
-
-                            echo Parametro::formato(
-                                $producto->getPrecio(),
-                                true
-                            );
-
-                            ?>
-
+                            <?php  echo Parametro::formato( $producto->getPrecio(),  true);  ?>
                         </div>
-
-
                     </td>
-
                 </tr>
-
             </table>
-
-
         </td>
-
-
     <?php if ($contador % 2 == 0) { ?>
-
         </tr>
-
         <tr>
-
-            <td
-                colspan="2"
-                height="5"
-            >
-            </td>
-
+            <td colspan="2" height="5" >  </td>
         </tr>
-
     <?php } ?>
-
-
 <?php } ?>
-
-
 <?php if ($contador % 2 != 0) { ?>
-
         <td width="50%"></td>
-
         </tr>
-
 <?php } ?>
-
-
 </table>
