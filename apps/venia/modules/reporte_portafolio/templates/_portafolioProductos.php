@@ -141,7 +141,7 @@ body {
                             <?php echo number_format($existencia, 0,'.', ',' ); ?>
                         </div>
                         <div class="precio">
-                            <?php  echo Parametro::formato( $producto->getPrecio(),  true);  ?>
+                            <?php  echo  "$ ".Parametro::formato( $producto->getPrecio(),  true);  ?>
                         </div>
                     </td>
                 </tr>
