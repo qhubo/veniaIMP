@@ -109,10 +109,14 @@
                 <i class="flaticon-squares kt-font-success"></i>
             </span>
             <h3 class="kt-portlet__head-title kt-font-brand">
-                Portafolio de Productos
+              Productos
             </h3>
         </div>
         <div class="kt-portlet__head-toolbar">
+            <a  href="<?php echo url_for('reporte_portafolio/portafolioPdf'); ?>"    target="_blank"  class="btn btn-danger btn-outline">
+    <i class="fa fa-file-pdf-o"></i>
+    PDF
+</a>
             <div class="kt-input-icon kt-input-icon--left portafolio-busqueda">
                 <input  type="text" class="form-control"  placeholder="Buscar producto..."  id="generalSearch" autocomplete="off" >
                 <span class="kt-input-icon__icon kt-input-icon__icon--left">
