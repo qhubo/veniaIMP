@@ -190,7 +190,7 @@ class reporte_portafolioActions extends sfActions {
         $pdf->SetAuthor('Venia Link');
         $pdf->SetTitle('Portafolio de Productos');
         $pdf->SetSubject('Portafolio de Productos');
-        $pdf->SetMargins(5, 10, 5);
+        $pdf->SetMargins(5, 14, 5);
         $pdf->SetHeaderMargin(5);
         $pdf->SetFooterMargin(0);
         $pdf->setPrintHeader(true);
