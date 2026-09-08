@@ -81,16 +81,9 @@ License: You must have a valid license purchased only from themeforest(the above
                         <div class="kt-container  kt-container--fluid ">
                             <!-- begin: Header Menu -->
                             <button class="kt-header-menu-wrapper-close" id="kt_header_menu_mobile_close_btn"><i class="la la-close"></i></button>
-                            <!--                                        <button type="button" class="btn btn-bold btn-label-info btn-sm" data-toggle="modal" data-target="#kt_modal_t"><?php echo $condomi; ?></button> 
-                            -->
-
-
-
-                            <?php //include_partial('inicio/menu') 
-                            ?>
-
+            <?php if ($modulo != 'reporte_portafolio') { ?>
                             <?php include_partial('inicio/menuDinamico') ?>
-
+            <?php } ?>
 
                             <!-- end: Header Menu -->
                             <!-- begin:: Brand -->
@@ -104,22 +97,26 @@ License: You must have a valid license purchased only from themeforest(the above
                                 <a href="#" data-toggle="modal" data-target="#kt_modal_t">
                                     <img height="120px" alt="Logo" src="<?php echo sfContext::getInstance()->getUser()->getAttribute("imagen", null, 'seguridad'); ?>" />
                                 </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
+          <?php if (($modulo <> 'reporte_portafolio')) { ?>
                                 <?php if (($modulo <> 'carga_producto')) { ?>
                                     <a href="#" class="btn " data-toggle="modal" data-target="#kt_modal_bus">
                                         <i class="flaticon-search"></i>
                                     </a>
                                 <?php } ?>
+                                       <?php } ?>
+
 
                             </div>
                             <div class="kt-header__topbar kt-grid__item">
 
-
+            <?php if ($modulo != 'reporte_portafolio') { ?>
                                 <!--begin: User bar -->
                                 <?php include_partial('inicio/user') ?>
+                                     <?php } ?>
                                 <!--end: User bar -->
                                 <!--begin: Quick panel toggler -->
                                 <?php include_partial('inicio/quickpanel') ?>
+                                     <?php if ($modulo != 'reporte_portafolio') { ?>
                                 <div class="kt-header__topbar-item dropdown">
                                     <div class="kt-header__topbar-wrapper">
                                         <span class="kt-header__topbar-icon kt-font-info ">
@@ -127,6 +124,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                         </span>
                                     </div>
                                 </div>
+                                    <?php } ?>
                                 <!--end: Quick panel toggler -->
                             </div>
                             <!-- end:: Header Topbar -->
@@ -149,11 +147,12 @@ License: You must have a valid license purchased only from themeforest(the above
                         <div class="col-md-2" style="text-align: right">
 
 
-
+      <?php if ($modulo != 'reporte_portafolio') { ?>
                             <a class="btn btn-block btn-sm " href="#" data-toggle="modal" data-target="#kt_modal_tienda">
 
                                 <?php echo strtoupper($nombreTienda); ?>&nbsp;&nbsp;&nbsp;
                             </a>
+                            <?php } ?>
                         </div>
 
 

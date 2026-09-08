@@ -23,7 +23,7 @@ class ProductoQuery extends BaseProductoQuery
         parent::__construct($dbName, $modelName, $modelAlias);
         $empresa_id = UsuarioQuery::getEmpresaSeleccionada('Producto');
         $filtra = sfContext::getInstance()->getUser()->getAttribute('usuario', null, 'filtra_empresa');
-        $filtra=true;
+
         if ($filtra) {
             if ($empresa_id) {
                 $this->filterByEmpresaId($empresa_id);
