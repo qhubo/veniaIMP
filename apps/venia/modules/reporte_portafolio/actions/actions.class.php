@@ -46,6 +46,34 @@ $ruta= "uploads/images/" . $logo;
                 <td width="20%"></td>
             </tr>
         </table><br><br>';
+       
+       
+       
+         $html = '
+        <style>
+            .titulo {
+                font-size: 40px;
+                font-weight: bold;
+            }
+
+            .subtitulo {
+                font-size: 18px;
+            }
+        </style>
+        <table width="100%" cellpadding="3">
+            <tr>
+                <td width="5%">
+       
+</td>
+                <td width="90%" align="center">
+                    <span class="titulo"> PORTAFOLIO DE PRODUCTOS </span>
+            
+                    <span class="subtitulo">' . $nombreEmpresa . '</span>
+       
+                </td>
+                <td width="5%"></td>
+            </tr>
+        </table>';
         $this->writeHTML($html,true, false, true, false, '');
         // Indicar a TCPDF dónde comienza el contenido
         $this->SetY(30);
