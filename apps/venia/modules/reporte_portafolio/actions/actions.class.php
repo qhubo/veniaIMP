@@ -52,6 +52,7 @@ class reporte_portafolioActions extends sfActions {
     }
 
     public function executePdf(sfWebRequest $request) {
+    
         date_default_timezone_set("America/Guatemala");
         error_reporting(-1);
         $empresaId = 1;
@@ -80,6 +81,8 @@ class reporte_portafolioActions extends sfActions {
                 }
             }
         }
+
+        
 //    foreach ($productos as $key => $producto) {
 //        $productoId = $producto->getId();
 //        $existencia = isset($existencias[$productoId])
@@ -100,9 +103,9 @@ class reporte_portafolioActions extends sfActions {
         if ($empresa) {
             $logo = $empresa->getLogo();
         }
-        $html = $this->getPartial('reporte/portafolioProductos', array('productos' => $productos, 'existencias' => $existencias, 'marcasVehiculo' => $marcasVehiculo, 'empresa' => $empresa));
-       echo $html;
-       die();
+        $html = $this->getPartial('reporte_portafolio/portafolioProductos', array('productos' => $productos, 'existencias' => $existencias, 'marcasVehiculo' => $marcasVehiculo, 'empresa' => $empresa));
+//       echo $html;
+//       die();
         $pdf = new sfTCPDF("P", "mm", "Letter");
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Venia Link');
