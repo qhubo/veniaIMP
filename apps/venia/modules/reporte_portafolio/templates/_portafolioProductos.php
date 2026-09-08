@@ -110,13 +110,16 @@ body {
                         
                             <br>
                             <div class="compatibilidad">
-                                <strong>  <?php if (count($marcas) ) { ?> Compatible con:     <?php } ?> </strong>
+                                <strong>  <?php if (count($marcas) >0 ) { ?> Compatible con:     <?php } ?> </strong>
                             </div>
                             <div>
                                 <?php  foreach ($marcas as $marcaVehiculo) {  ?>
                                     <span class="marca-vehiculo">
                                         <?php  echo htmlspecialchars($marcaVehiculo);   ?>
                                     </span>
+                                <?php } ?>
+                                <?php if (count($marcas)==0 ) { ?>
+                                <br>
                                 <?php } ?>
                             </div>
                         <?php } ?>

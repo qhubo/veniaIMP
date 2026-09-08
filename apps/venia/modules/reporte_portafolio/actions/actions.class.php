@@ -11,6 +11,14 @@ class PortafolioTCPDF extends sfTCPDF {
     public function Header() {
         $this->SetY(5);
         $nombreEmpresa = $this->empresa ? htmlspecialchars($this->empresa->getNombre(), ENT_QUOTES,'UTF-8') : '';
+        
+          $logo = '';
+        if ($this->empresa) {
+            $logo = $this->empresa->getLogo();
+        }
+        
+$ruta= "uploads/images/" . $logo;
+       
         $html = '
         <style>
             .titulo {
@@ -19,12 +27,14 @@ class PortafolioTCPDF extends sfTCPDF {
             }
 
             .subtitulo {
-                font-size: 9px;
+                font-size: 18px;
             }
         </style>
         <table width="100%" cellpadding="3">
             <tr>
-                <td width="20%"></td>
+                <td width="20%">
+ <img src="'.$ruta.'" width="80px;" >                
+</td>
                 <td width="60%" align="center">
                     <span class="titulo"> PORTAFOLIO DE PRODUCTOS </span>
                     <br>
