@@ -36,10 +36,20 @@ public function executeIndex(sfWebRequest $request){
             unset($this->productos[$key]);
         }
     }
-    
-//    echo "<pre>";
-//    print_r($this->productos);
-//    die();
+
+    $this->marcasVehiculo = array();
+    foreach ($this->productos as $producto) {
+        $productoId = $producto->getId();
+        $marcasVehiculo = ProductoMarcaQuery::create()
+            ->filterByProductoId($productoId)
+            ->orderByMarca('Asc')
+            ->find();
+        $this->marcasVehiculo[$productoId] = array();
+        foreach ($marcasVehiculo as $productoMarca) {
+            $this->marcasVehiculo[$productoId][] = $productoMarca->getMarca();
+        }
+   }
+   $this->marcas = $this->marcasVehiculo;
     sfContext::getInstance()->getUser()->setAttribute('usuario', false, 'filtra_empresa');
 
 }

@@ -128,17 +128,15 @@
             <?php if ($productos && count($productos) > 0) { ?>
                 <?php foreach ($productos as $lista) { ?>
                     <?php
-                    $existencia = isset($existencias[$lista->getId()])
-                        ? $existencias[$lista->getId()]
-                        : 0;
+                    $existencia = isset($existencias[$lista->getId()]) ? $existencias[$lista->getId()] : 0;
                     $textoBusqueda = strtolower(
-                        $lista->getCodigoSku() . ' ' .
-                        $lista->getNombre() . ' ' .
-                        $lista->getNombreIngles() . ' ' .
-                        $lista->getMarcaProducto() );
+                            $lista->getCodigoSku() . ' ' .
+                            $lista->getNombre() . ' ' .
+                            $lista->getNombreIngles() . ' ' .
+                            $lista->getMarcaProducto());
                     ?>
-                 <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 producto-card">
-                     <div class="portafolio-card">
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 producto-card">
+                        <div class="portafolio-card">
                             <div  class="portafolio-imagen img-producto"  data-imagen="<?php echo $lista->getImagen(); ?>" >
                                 <img  src="<?php echo $lista->getImagen(); ?>" alt="<?php echo htmlspecialchars($lista->getNombre()); ?>"  >
                             </div>
@@ -146,52 +144,64 @@
                                 <div class="portafolio-sku">
                                     SKU: <?php echo $lista->getCodigoSku(); ?>
                                 </div>
-                               <div class="portafolio-nombre">
-                                    <?php echo $lista->getNombre(); ?>
+                                <div class="portafolio-nombre">
+        <?php echo $lista->getNombre(); ?>
                                 </div>
-                                <?php if ($lista->getNombreIngles() != '') { ?>
+                                    <?php if ($lista->getNombreIngles() != '') { ?>
                                     <div class="portafolio-nombre-ingles">
-                                       <?php echo $lista->getNombreIngles(); ?>
+                                    <?php echo $lista->getNombreIngles(); ?>
                                     </div>
-                                <?php } ?>
+                                    <?php } ?>
                                 <div class="portafolio-marca">
                                     <strong>Marca:</strong>
-                                    <?php echo $lista->getMarcaProducto(); ?>
+        <?php echo $lista->getMarcaProducto(); ?>
                                 </div>
-                                <?php
-                                $marcas = isset($marcasVehiculo[$lista->getId()])
-                                    ? $marcasVehiculo[$lista->getId()]
-                                    : array();
-                                ?>
+
+        <?php
+        $marcas = isset($marcasVehiculo[$lista->getId()]) ? $marcasVehiculo[$lista->getId()] : array();
+        ?>
+
                                 <?php if (!empty($marcas)) { ?>
+
                                     <div class="marcas-vehiculo">
-                                        <?php foreach ($marcas as $marcaVehiculo) { ?>
-                                            <span class="marca-vehiculo"> <?php echo $marcaVehiculo; ?> </span>
-                                        <?php } ?>
+
+                                        <div style="font-size:11px;color:#777;margin-bottom:4px;">
+
+                                            <strong>
+                                                Compatible con:
+                                            </strong>
+
+                                        </div>
+            <?php foreach ($marcas as $marcaVehiculo) { ?>
+                                            <span class="marca-vehiculo">
+                <?php echo htmlspecialchars($marcaVehiculo, ENT_QUOTES, 'UTF-8'); ?>
+                                            </span>
+            <?php } ?>
                                     </div>
-                                <?php } ?>
+
+                                        <?php } ?>
                                 <div class="portafolio-existencia">
                                     <span class="existencia-label">
                                         <i class="fa fa-cubes"></i>
                                         Existencia:
-                                        <?php echo number_format($existencia,0,'.', ',' ); ?>
+                                <?php echo number_format($existencia, 0, '.', ','); ?>
                                     </span>
                                 </div>
                                 <div class="portafolio-precio">
-                                    <?php  echo Parametro::formato($lista->getPrecio(), true );  ?>
+        <?php echo Parametro::formato($lista->getPrecio(), true); ?>
                                 </div>
                             </div>
                         </div>
                     </div>
-                <?php } ?>
-            <?php } else { ?>
+                                <?php } ?>
+                            <?php } else { ?>
                 <div class="col-md-12">
                     <div class="alert alert-info text-center">
                         <i class="fa fa-info-circle"></i>
                         No existen productos disponibles en el portafolio.
                     </div>
                 </div>
-            <?php } ?>
+<?php } ?>
         </div>
         <div id="sinResultados" class="alert alert-warning text-center" style="display:none;" >
             <i class="fa fa-search"></i>
@@ -203,8 +213,8 @@
 <div class="modal fade" id="imagenProductoModal"  tabindex="-1"  role="dialog"  aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered"  role="document" >
         <div class="modal-content">
-           <div class="modal-header">
-               <h5 class="modal-title">
+            <div class="modal-header">
+                <h5 class="modal-title">
                     Imagen del producto
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
@@ -219,68 +229,45 @@
 </div>
 
 <script>
-$(document).ready(function () {
-    $('#generalSearch').on('keyup input', function () {
-        var texto = $.trim($(this).val()).toLowerCase();
-        var encontrados = 0;
-        $('.producto-card').each(function () {
-            var card = $(this);
-            /*
-             * Obtener todo el texto visible de la tarjeta
-             */
-            var contenido = card.text().toLowerCase();
-
-            /*
-             * Buscar
-             */
-            if (texto === '' || contenido.indexOf(texto) !== -1) {
-
-                card.show();
-
-                encontrados++;
-
+    $(document).ready(function () {
+        $('#generalSearch').on('keyup input', function () {
+            var texto = $.trim($(this).val()).toLowerCase();
+            var encontrados = 0;
+            $('.producto-card').each(function () {
+                var card = $(this);
+                var contenido = card.text().toLowerCase();
+                if (texto === '' || contenido.indexOf(texto) !== -1) {
+                    card.show();
+                    encontrados++;
+                } else {
+                    card.hide();
+                }
+            });
+            if (encontrados === 0) {
+                $('#sinResultados').show();
             } else {
-
-                card.hide();
-
+                $('#sinResultados').hide();
             }
 
         });
 
 
         /*
-         * Mostrar mensaje cuando no hay resultados
+         * =====================================================
+         * VER IMAGEN GRANDE
+         * =====================================================
          */
 
-        if (encontrados === 0) {
+        $(document).on('click', '.img-producto', function () {
 
-            $('#sinResultados').show();
+            var imagen = $(this).attr('data-imagen');
 
-        } else {
+            $('#imagenModal').attr('src', imagen);
 
-            $('#sinResultados').hide();
+            $('#imagenProductoModal').modal('show');
 
-        }
-
-    });
-
-
-    /*
-     * =====================================================
-     * VER IMAGEN GRANDE
-     * =====================================================
-     */
-
-    $(document).on('click', '.img-producto', function () {
-
-        var imagen = $(this).attr('data-imagen');
-
-        $('#imagenModal').attr('src', imagen);
-
-        $('#imagenProductoModal').modal('show');
+        });
 
     });
-
-});
 
 </script>
