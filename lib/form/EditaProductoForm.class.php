@@ -296,6 +296,7 @@ $this->setWidget('origen', new sfWidgetFormInputText(array(), array('class' => '
     'Land Rover' => 'Land Rover',
     'Lexus' => 'Lexus',
     'Lincoln' => 'Lincoln',
+    'Mahindra' => 'Mahindra',            
     'Mazda' => 'Mazda',
     'Mercedes-Benz' => 'Mercedes-Benz',
     'MG' => 'MG',
@@ -320,6 +321,8 @@ $this->setWidget('origen', new sfWidgetFormInputText(array(), array('class' => '
     'Volkswagen' => 'Volkswagen',
     'Volvo' => 'Volvo',
     'Wuling' => 'Wuling',
+    'Universal' => 'Universal'   
+            
 );
         
         
