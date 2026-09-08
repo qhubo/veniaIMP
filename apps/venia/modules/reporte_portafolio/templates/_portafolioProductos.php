@@ -119,7 +119,7 @@ body {
                                     </span>
                                 <?php } ?>
                                 <?php if (count($marcas)==0 ) { ?>
-                                <br>
+                                <br>      <br>
                                 <?php } ?>
                             </div>
                         <?php } ?>

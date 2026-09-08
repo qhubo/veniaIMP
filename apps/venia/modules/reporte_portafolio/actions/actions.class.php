@@ -45,7 +45,7 @@ $ruta= "uploads/images/" . $logo;
                 </td>
                 <td width="20%"></td>
             </tr>
-        </table>';
+        </table><br><br>';
         $this->writeHTML($html,true, false, true, false, '');
         // Indicar a TCPDF dónde comienza el contenido
         $this->SetY(30);
