@@ -51,7 +51,7 @@ class reporte_portafolioActions extends sfActions {
         sfContext::getInstance()->getUser()->setAttribute('usuario', false, 'filtra_empresa');
     }
 
-    public function executePortafolioPdf(sfWebRequest $request) {
+    public function executePdf(sfWebRequest $request) {
         date_default_timezone_set("America/Guatemala");
         error_reporting(-1);
         $empresaId = 1;
