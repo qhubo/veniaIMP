@@ -101,6 +101,8 @@ class reporte_portafolioActions extends sfActions {
             $logo = $empresa->getLogo();
         }
         $html = $this->getPartial('reporte/portafolioProductos', array('productos' => $productos, 'existencias' => $existencias, 'marcasVehiculo' => $marcasVehiculo, 'empresa' => $empresa));
+       echo $html;
+       die();
         $pdf = new sfTCPDF("P", "mm", "Letter");
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Venia Link');
