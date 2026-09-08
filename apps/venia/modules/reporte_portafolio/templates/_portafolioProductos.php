@@ -39,7 +39,7 @@ body {
 }
 
 .compatibilidad {
-    font-size:26px;
+    font-size: 22px;
 }
 
 .existencia {
@@ -124,10 +124,10 @@ body {
                             </div>
                         <?php } ?>
                         <?php if (!empty($marcas)) { ?>
-                         <?php if (count($marcas) >0) { ?>
+                        
                             <br>
                             <div class="compatibilidad">
-                                <strong> Compatible con:  </strong>
+                                <strong>  <?php if (count($marcas) ) { ?> Compatible con:     <?php } ?> </strong>
                             </div>
                             <div>
                                 <?php  foreach ($marcas as $marcaVehiculo) {  ?>
@@ -137,7 +137,6 @@ body {
                                 <?php } ?>
                             </div>
                         <?php } ?>
-                              <?php } ?>
                         <br>
                         <div class="existencia">   Existencia:
                             <?php echo number_format($existencia, 0,'.', ',' ); ?>
