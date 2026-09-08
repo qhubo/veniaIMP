@@ -10,17 +10,11 @@ class PortafolioTCPDF extends sfTCPDF {
 
     public function Header() {
         $this->SetY(5);
-
-        $nombreEmpresa = $this->empresa ? htmlspecialchars(
-                        $this->empresa->getNombre(),
-                        ENT_QUOTES,
-                        'UTF-8'
-                ) : '';
-
+        $nombreEmpresa = $this->empresa ? htmlspecialchars($this->empresa->getNombre(), ENT_QUOTES,'UTF-8') : '';
         $html = '
         <style>
             .titulo {
-                font-size: 18px;
+                font-size: 40px;
                 font-weight: bold;
             }
 
@@ -28,45 +22,22 @@ class PortafolioTCPDF extends sfTCPDF {
                 font-size: 9px;
             }
         </style>
-
         <table width="100%" cellpadding="3">
             <tr>
                 <td width="20%"></td>
-
                 <td width="60%" align="center">
-
-                    <span class="titulo">
-                        PORTAFOLIO DE PRODUCTOS
-                    </span>
-
+                    <span class="titulo"> PORTAFOLIO DE PRODUCTOS </span>
                     <br>
-
-                    <span class="subtitulo">
-                        ' . $nombreEmpresa . '
-                    </span>
-
+                    <span class="subtitulo">' . $nombreEmpresa . '</span>
                     <br>
-
                     <span class="subtitulo">
                         Fecha: ' . date('d/m/Y') . '
                     </span>
-
                 </td>
-
                 <td width="20%"></td>
             </tr>
-        </table>
-        ';
-
-        $this->writeHTML(
-                $html,
-                true,
-                false,
-                true,
-                false,
-                ''
-        );
-
+        </table>';
+        $this->writeHTML($html,true, false, true, false, '');
         // Indicar a TCPDF dónde comienza el contenido
         $this->SetY(30);
     }
@@ -208,12 +179,12 @@ class reporte_portafolioActions extends sfActions {
 //        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 //        $pdf->SetFont('dejavusans', '', 8);
 //        $pdf->AddPage();
-        if ($logo != '') {
-            $img_file = "uploads/images/" . $logo;
-            if (file_exists($img_file)) {
-                $pdf->Image($img_file, 10, 5, 35);
-            }
-        }
+//        if ($logo != '') {
+//            $img_file = "uploads/images/" . $logo;
+//            if (file_exists($img_file)) {
+//                $pdf->Image($img_file, 10, 5, 35);
+//            }
+//        }
         $pdf->writeHTML($html, true, false, true, false, '');
         $pdf->Output('Portafolio de Productos.pdf', 'I');
         die();
