@@ -153,24 +153,17 @@
                                     </div>
                                     <?php } ?>
                                 <div class="portafolio-marca">
-                                    <strong>Marca:</strong>
-        <?php echo $lista->getMarcaProducto(); ?>
+                                    <strong>Marca:</strong> <?php echo $lista->getMarcaProducto(); ?>
                                 </div>
 
-        <?php
-        $marcas = isset($marcasVehiculo[$lista->getId()]) ? $marcasVehiculo[$lista->getId()] : array();
-        ?>
-
-                                <?php if (!empty($marcas)) { ?>
-
+        <?php $marcas = isset($marcasVehiculo[$lista->getId()]) ? $marcasVehiculo[$lista->getId()] : array(); ?>
+               <?php if (!empty($marcas)) { ?>
+                                <?php if (count($marcas) >0 ) { ?>
                                     <div class="marcas-vehiculo">
-
                                         <div style="font-size:11px;color:#777;margin-bottom:4px;">
-
                                             <strong>
                                                 Compatible con:
                                             </strong>
-
                                         </div>
             <?php foreach ($marcas as $marcaVehiculo) { ?>
                                             <span class="marca-vehiculo">
@@ -193,6 +186,7 @@
                             </div>
                         </div>
                     </div>
+             <?php } ?>
                                 <?php } ?>
                             <?php } else { ?>
                 <div class="col-md-12">
