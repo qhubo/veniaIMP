@@ -62,10 +62,10 @@ $ruta= "uploads/images/" . $logo;
         </style>
         <table width="100%" cellpadding="3">
             <tr>
-                <td width="5%">
-       
+                <td width="20%">
+ <img src="'.$ruta.'" width="80px;" >                
 </td>
-                <td width="90%" align="center">
+                <td width="85%" align="center">
                     <span class="titulo"> PORTAFOLIO DE PRODUCTOS </span>
             
                     <span class="subtitulo">' . $nombreEmpresa . '</span>
