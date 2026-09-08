@@ -2,17 +2,17 @@
 
 body {
     font-family: dejavusans;
-    font-size: 8px;
+    font-size: 16px;
     color: #000;
 }
 
 .titulo {
-    font-size: 22px;
+    font-size: 40px;
     font-weight: bold;
 }
 
 .subtitulo {
-    font-size: 10px;
+    font-size: 20px;
 }
 
 .producto {
@@ -25,30 +25,30 @@ body {
 }
 
 .nombre {
-    font-size: 11px;
+    font-size: 22px;
     font-weight: bold;
 }
 
 .sku {
-    font-size: 8px;
+    font-size: 19px;
     color: #666666;
 }
 
 .marca {
-    font-size: 8px;
+    font-size: 19px;
 }
 
 .compatibilidad {
-    font-size: 7px;
+    font-size: 14px;
 }
 
 .existencia {
-    font-size: 9px;
+    font-size: 18px;
     font-weight: bold;
 }
 
 .precio {
-    font-size: 11px;
+    font-size: 20px;
     font-weight: bold;
 }
 
@@ -56,7 +56,7 @@ body {
     background-color: #146EBE;
     color: #FFFFFF;
     padding: 2px;
-    font-size: 7px;
+    font-size: 14px;
 }
 
 .separador {
