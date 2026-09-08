@@ -12,7 +12,7 @@ body {
 }
 
 .subtitulo {
-    font-size: 20px;
+    font-size: 30px;
 }
 
 .producto {
@@ -64,45 +64,20 @@ body {
 }
 
 </style>
-
-
-<!-- =========================================================
-     ENCABEZADO
-     ========================================================= -->
-
 <table width="100%" cellpadding="3">
-
     <tr>
-
-        <td width="20%">
-
-        </td>
-
+        <td width="20%">  </td>
         <td width="60%" align="center">
-
             <span class="titulo">
                 PORTAFOLIO DE PRODUCTOS
             </span>
-
-            <br>
-
+           <br>
             <span class="subtitulo">
-
-                <?php
-                echo $empresa
-                    ? $empresa->getNombre()
-                    : '';
-                ?>
-
+                <?php   echo $empresa ? $empresa->getNombre() : '';   ?>
             </span>
-
             <br>
-
             <span class="subtitulo">
-
-                Fecha:
-                <?php echo date('d/m/Y'); ?>
-
+                Fecha:   <?php echo date('d/m/Y'); ?>
             </span>
 
         </td>
