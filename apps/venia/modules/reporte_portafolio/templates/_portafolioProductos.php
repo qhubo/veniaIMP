@@ -108,11 +108,7 @@ body {
                         <?php } ?>
                         <?php if (!empty($marcas)) { ?>
                         
-                            <br>
-                            <div class="compatibilidad">
-                                <strong>  <?php if (count($marcas) >0 ) { ?> Compatible con:     <?php } ?> </strong>
-                            </div>
-                            <div>
+                                                  <div>
                                 <?php  foreach ($marcas as $marcaVehiculo) {  ?>
                                     <span class="marca-vehiculo">
                                         <?php  echo htmlspecialchars($marcaVehiculo);   ?>
@@ -122,11 +118,8 @@ body {
                                 <br>      <br>
                                 <?php } ?>
                             </div>
-                        <?php } ?>
-                        <br>
-                        <div class="existencia">   Existencia:
-                            <?php echo number_format($existencia, 0,'.', ',' ); ?>
-                        </div>
+                        <?php } ?>            
+                  
                         <div class="precio">
                             <?php  echo  "$ ".Parametro::formato( $producto->getPrecio(),  true);  ?>
                         </div>
