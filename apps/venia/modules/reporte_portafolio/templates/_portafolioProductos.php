@@ -56,7 +56,7 @@ body {
     background-color: #146EBE;
     color: #FFFFFF;
     padding: 2px;
-    font-size: 14px;
+    font-size: 28px;
 }
 
 .separador {
