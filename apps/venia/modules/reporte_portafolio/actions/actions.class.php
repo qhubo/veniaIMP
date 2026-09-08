@@ -18,8 +18,7 @@ class PortafolioTCPDF extends sfTCPDF {
         }
         
 $ruta= "uploads/images/" . $logo;
-       
-        $html = '
+       $html = '
         <style>
             .titulo {
                 font-size: 40px;
