@@ -58,7 +58,6 @@ body {
     padding: 2px;
     font-size: 28px;
 }
-
 .separador {
     height: 8px;
 }
