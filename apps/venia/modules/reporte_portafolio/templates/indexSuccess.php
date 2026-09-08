@@ -39,20 +39,20 @@
         margin-bottom: 5px;
     }
     .portafolio-nombre {
-        font-size: 16px;
+        font-size: 32px;
         font-weight: 600;
         color: #333;
         line-height: 20px;
         min-height: 40px;
     }
     .portafolio-nombre-ingles {
-        font-size: 12px;
+        font-size: 24px;
         color: #999;
         min-height: 18px;
         margin-top: 3px;
     }
     .portafolio-marca {
-        font-size: 12px;
+        font-size: 24px;
         color: #555;
         margin-top: 10px;
     }
@@ -67,7 +67,7 @@
         background: #146EBE;
         color: #fff;
         border-radius: 3px;
-        font-size: 10px;
+        font-size:20px;
     }
     .portafolio-existencia {
         margin-top: 12px;
@@ -78,11 +78,11 @@
         color: #fff;
         padding: 5px 9px;
         border-radius: 4px;
-        font-size: 11px;
+        font-size: 22px;
     }
     .portafolio-precio {
         margin-top: 10px;
-        font-size: 18px;
+        font-size: 36px;
         font-weight: bold;
         color: #333;
     }
