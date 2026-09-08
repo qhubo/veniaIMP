@@ -35,11 +35,11 @@ body {
 }
 
 .marca {
-    font-size: 25px;
+    font-size: 27px;
 }
 
 .compatibilidad {
-    font-size: 22px;
+    font-size:26px;
 }
 
 .existencia {
@@ -124,6 +124,7 @@ body {
                             </div>
                         <?php } ?>
                         <?php if (!empty($marcas)) { ?>
+                         <?php if (count($marcas) >0) { ?>
                             <br>
                             <div class="compatibilidad">
                                 <strong> Compatible con:  </strong>
@@ -136,6 +137,7 @@ body {
                                 <?php } ?>
                             </div>
                         <?php } ?>
+                              <?php } ?>
                         <br>
                         <div class="existencia">   Existencia:
                             <?php echo number_format($existencia, 0,'.', ',' ); ?>
