@@ -113,7 +113,7 @@
             </h3>
         </div>
         <div class="kt-portlet__head-toolbar">
-            <a  href="<?php echo url_for('reporte_portafolio/portafolioPdf'); ?>"    target="_blank"  class="btn btn-danger btn-outline">
+            <a  href="<?php echo url_for('reporte_portafolio/pdf'); ?>"    target="_blank"  class="btn btn-danger btn-outline">
     <i class="fa fa-file-pdf-o"></i>
     PDF
 </a>
