@@ -1,5 +1,77 @@
 <?php
 
+class PortafolioTCPDF extends sfTCPDF {
+
+    protected $empresa;
+
+    public function setEmpresa($empresa) {
+        $this->empresa = $empresa;
+    }
+
+    public function Header() {
+        $this->SetY(5);
+
+        $nombreEmpresa = $this->empresa ? htmlspecialchars(
+                        $this->empresa->getNombre(),
+                        ENT_QUOTES,
+                        'UTF-8'
+                ) : '';
+
+        $html = '
+        <style>
+            .titulo {
+                font-size: 18px;
+                font-weight: bold;
+            }
+
+            .subtitulo {
+                font-size: 9px;
+            }
+        </style>
+
+        <table width="100%" cellpadding="3">
+            <tr>
+                <td width="20%"></td>
+
+                <td width="60%" align="center">
+
+                    <span class="titulo">
+                        PORTAFOLIO DE PRODUCTOS
+                    </span>
+
+                    <br>
+
+                    <span class="subtitulo">
+                        ' . $nombreEmpresa . '
+                    </span>
+
+                    <br>
+
+                    <span class="subtitulo">
+                        Fecha: ' . date('d/m/Y') . '
+                    </span>
+
+                </td>
+
+                <td width="20%"></td>
+            </tr>
+        </table>
+        ';
+
+        $this->writeHTML(
+                $html,
+                true,
+                false,
+                true,
+                false,
+                ''
+        );
+
+        // Indicar a TCPDF dónde comienza el contenido
+        $this->SetY(30);
+    }
+}
+
 class reporte_portafolioActions extends sfActions {
 
     /**
@@ -52,7 +124,7 @@ class reporte_portafolioActions extends sfActions {
     }
 
     public function executePdf(sfWebRequest $request) {
-    
+
         date_default_timezone_set("America/Guatemala");
         error_reporting(-1);
         $empresaId = 1;
@@ -82,7 +154,7 @@ class reporte_portafolioActions extends sfActions {
             }
         }
 
-        
+
 //    foreach ($productos as $key => $producto) {
 //        $productoId = $producto->getId();
 //        $existencia = isset($existencias[$productoId])
@@ -104,23 +176,38 @@ class reporte_portafolioActions extends sfActions {
             $logo = $empresa->getLogo();
         }
         $html = $this->getPartial('reporte_portafolio/portafolioProductos', array('productos' => $productos, 'existencias' => $existencias, 'marcasVehiculo' => $marcasVehiculo, 'empresa' => $empresa));
-require_once sfConfig::get('sf_lib_dir') . '/PortafolioTCPDF.class.php';
 
-        $pdf = new sfTCPDF("P", "mm", "Letter");
+        $pdf = new PortafolioTCPDF("P", "mm", "Letter");
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor('Venia Link');
-        $pdf->SetTitle("Portafolio de Productos");
+        $pdf->SetTitle('Portafolio de Productos');
         $pdf->SetSubject('Portafolio de Productos');
-        $pdf->SetKeywords('Productos, Portafolio, Repuestos');
-        $pdf->SetMargins(5, 8, 5);
-        $pdf->SetHeaderMargin(0);
+        $pdf->SetMargins(5, 35, 5);
+        $pdf->SetHeaderMargin(5);
         $pdf->SetFooterMargin(0);
-        $pdf->setPrintHeader(false);
+        $pdf->setPrintHeader(true);
         $pdf->setPrintFooter(false);
         $pdf->SetAutoPageBreak(true, 8);
-        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
         $pdf->SetFont('dejavusans', '', 8);
+// Empresa que utilizará el Header()
+        $pdf->setEmpresa($empresa);
         $pdf->AddPage();
+
+//        $pdf = new sfTCPDF("P", "mm", "Letter");
+//        $pdf->SetCreator(PDF_CREATOR);
+//        $pdf->SetAuthor('Venia Link');
+//        $pdf->SetTitle("Portafolio de Productos");
+//        $pdf->SetSubject('Portafolio de Productos');
+//        $pdf->SetKeywords('Productos, Portafolio, Repuestos');
+//        $pdf->SetMargins(5, 8, 5);
+//        $pdf->SetHeaderMargin(0);
+//        $pdf->SetFooterMargin(0);
+//        $pdf->setPrintHeader(false);
+//        $pdf->setPrintFooter(false);
+//        $pdf->SetAutoPageBreak(true, 8);
+//        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+//        $pdf->SetFont('dejavusans', '', 8);
+//        $pdf->AddPage();
         if ($logo != '') {
             $img_file = "uploads/images/" . $logo;
             if (file_exists($img_file)) {
