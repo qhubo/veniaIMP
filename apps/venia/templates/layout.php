@@ -93,11 +93,13 @@ License: You must have a valid license purchased only from themeforest(the above
                                 <?php } ?>
                             </div>
                             <div class="kt-header__brand   kt-grid__item" id="kt_header_brand">
-
-                                <a href="#" data-toggle="modal" data-target="#kt_modal_t">
+                                          <?php if (($modulo == 'reporte_portafolio')) { ?>
+<img height="120px" alt="Logo" src="uploads/images/1_GOLDENNpng251230050448.png">
+                                          <?php } ?>
+          <?php if (($modulo <> 'reporte_portafolio')) { ?>
+    <a href="#" data-toggle="modal" data-target="#kt_modal_t">
                                     <img height="120px" alt="Logo" src="<?php echo sfContext::getInstance()->getUser()->getAttribute("imagen", null, 'seguridad'); ?>" />
                                 </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <?php if (($modulo <> 'reporte_portafolio')) { ?>
                                 <?php if (($modulo <> 'carga_producto')) { ?>
                                     <a href="#" class="btn " data-toggle="modal" data-target="#kt_modal_bus">
                                         <i class="flaticon-search"></i>
