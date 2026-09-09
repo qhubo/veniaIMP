@@ -194,7 +194,7 @@
                                     </span>
                                 </div>
                                 <div class="portafolio-precio">
-        <?php echo Parametro::formato($lista->getPrecio(), true); ?>
+        <?php echo "$ ".Parametro::formato($lista->getPrecio(), true); ?>
                                 </div>
                             </div>
                         </div>
