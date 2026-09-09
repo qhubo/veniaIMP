@@ -89,19 +89,28 @@
     .portafolio-busqueda {
         width: 250px;
     }
-    #imagenModal {
-        max-width: 100%;
-        max-height: 75vh;
-        object-fit: contain;
-        transition: .3s;
-    }
-    .imagen-modal-contenedor {
-        text-align: center;
-        padding: 10px;
-    }
+ .imagen-modal-contenedor {
+    text-align: center;
+    padding: 10px;
+    overflow: auto;
+    max-height: 80vh;
+}
+
+#imagenModal {
+    max-width: 100%;
+    max-height: 75vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    transition: transform .2s ease;
+    transform-origin: center center;
+    cursor: zoom-in;
+}
 </style>
-<script src='/assets/global/plugins/jquery.min.js'></script>
-<?php $modulo = $sf_params->get('module'); ?>
+<script src="/assets/global/plugins/jquery.min.js"></script>
+<script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <?php $modulo = $sf_params->get('module'); ?>
 <div class="kt-portlet kt-portlet--responsive-mobile">
     <div class="kt-portlet__head">
         <div class="kt-portlet__head-label">
@@ -225,26 +234,46 @@
         </div>
     </div>
 </div>
-
 <script>
     $(document).ready(function () {
+
+        /*
+         * =====================================================
+         * BUSCADOR DE PRODUCTOS
+         * =====================================================
+         */
+
         $('#generalSearch').on('keyup input', function () {
+
             var texto = $.trim($(this).val()).toLowerCase();
             var encontrados = 0;
+
             $('.producto-card').each(function () {
+
                 var card = $(this);
                 var contenido = card.text().toLowerCase();
+
                 if (texto === '' || contenido.indexOf(texto) !== -1) {
+
                     card.show();
                     encontrados++;
+
                 } else {
+
                     card.hide();
+
                 }
+
             });
-            if (encontrados === 0) {
+
+            if (encontrados === 0 && texto !== '') {
+
                 $('#sinResultados').show();
+
             } else {
+
                 $('#sinResultados').hide();
+
             }
 
         });
@@ -252,7 +281,7 @@
 
         /*
          * =====================================================
-         * VER IMAGEN GRANDE
+         * ABRIR IMAGEN GRANDE
          * =====================================================
          */
 
@@ -260,12 +289,66 @@
 
             var imagen = $(this).attr('data-imagen');
 
+            if (!imagen) {
+                return;
+            }
+
             $('#imagenModal').attr('src', imagen);
 
-            $('#imagenProductoModal').modal('show');
+            $('#imagenProductoModal')
+                .css('display', 'block')
+                .addClass('show');
+
+            $('body').addClass('modal-open');
 
         });
 
-    });
 
+        /*
+         * =====================================================
+         * CERRAR MODAL
+         * =====================================================
+         */
+
+        $(document).on('click', '#imagenProductoModal .close', function () {
+
+            cerrarModalImagen();
+
+        });
+
+
+        /*
+         * CERRAR AL HACER CLICK FUERA DE LA IMAGEN
+         */
+
+        $(document).on('click', '#imagenProductoModal', function (e) {
+
+            if ($(e.target).is('#imagenProductoModal')) {
+
+                cerrarModalImagen();
+
+            }
+
+        });
+
+
+        /*
+         * =====================================================
+         * FUNCIÓN CERRAR MODAL
+         * =====================================================
+         */
+
+        function cerrarModalImagen() {
+
+            $('#imagenProductoModal')
+                .removeClass('show')
+                .css('display', 'none');
+
+            $('#imagenModal').attr('src', '');
+
+            $('body').removeClass('modal-open');
+
+        }
+
+    });
 </script>
