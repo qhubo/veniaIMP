@@ -5,11 +5,11 @@ class estado_cuentaActions extends sfActions {
     public function executeReportePdf(sfWebRequest $request) {
         $clientev = $request->getParameter('clientev');
         $fechaInicial = $request->getParameter('fecharef');
-        $SUMAS = 0;
+   $SUMAS = 0;
         $RESTAR = 0;
-
         // ================= SALDO INICIAL =================
         $sumatorias = OperacionQuery::create()
+                ->where("Operacion.Fecha <= '" . $fechaInicial . " 00:01:00'")
                 ->withColumn('sum(Operacion.ValorTotal)', 'TotalTotal')
                 ->filterByEstatus('Anulado', Criteria::NOT_EQUAL)
                 ->filterByClienteId($clientev)
@@ -18,25 +18,41 @@ class estado_cuentaActions extends sfActions {
         if ($sumatorias) {
             $SUMAS = $sumatorias->getTotalTotal();
         }
+
         $listab[] = 'Anulado';
-        $listab[] = 'CXC COBRAR';
         $listab[] = 'CONTRA ENTREGA';
         $listab[] = 'CONTRAENTREGA';
         $listab[] = 'CHEQUE PREFECHADO';
 
+
+
         $restas = OperacionPagoQuery::create()
                 ->filterByTipo($listab, Criteria::NOT_IN)
-                ->withColumn('sum(OperacionPago.Valor)', 'TotalTotal')
+                ->where("OperacionPago.FechaDocumento < '" . $fechaInicial . " 01:01:01'")
+                // ->withColumn('sum(OperacionPago.Valor)', 'TotalTotal')
                 ->useOperacionQuery()
                 ->filterByClienteId($clientev)
                 ->endUse()
-                ->findOne();
+                ->find();
 
-        if ($restas) {
-            $RESTAR = $restas->getTotalTotal();
+        foreach ($restas as $re) {
+//      $query="SELECT SUM(COALESCE(op1.comision,0)) valor  FROM operacion_pago op1 WHERE op1.operacion_pago_padre_no = ".$re->getId();
+//        $con = Propel::getConnection();
+//        $stmt = $con->prepare($query);
+//        $resource = $stmt->execute();
+//        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//        $valor=$re->getComision();
+//        if ($result) {
+//            $valor = $result[0]['valor'];
+//           
+//            
+//        }
+            $RESTAR = $re->getValor() + $re->getComision() + $RESTAR;
         }
-
+//echo $RESTAR;
+//die();
         $notasCredito = NotaCreditoQuery::create()
+                ->where("NotaCredito.Fecha < '" . $fechaInicial . " 01:01:01'")
                 ->where("NotaCredito.Estatus not like '%Anul%'")
                 ->filterByClienteId($clientev)
                 ->find();
@@ -45,7 +61,6 @@ class estado_cuentaActions extends sfActions {
         foreach ($notasCredito as $nota) {
             $RESTAN += ($nota->getValorTotal() - $nota->getValorPagado());
         }
-
         $SALDO = $SUMAS - $RESTAR - $RESTAN;
 //        echo $fechaInicial;
 //        die();
