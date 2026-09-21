@@ -57,45 +57,64 @@ public function executeIndex(sfWebRequest $request)
     if (!$empresaId) {
         sfContext::getInstance()->getUser()->setAttribute('usuario', false, 'filtra_empresa');
     }
+
     $this->productos = ProductoQuery::create()
         ->filterByActivo(true)
         ->filterByImagen('', Criteria::NOT_EQUAL)
         ->find();
+
     $existencias = ProductoExistenciaQuery::create()
         ->withColumn('SUM(producto_existencia.cantidad)', 'existencia_total')
         ->groupByProductoId()
         ->find();
+
     $this->existencias = array();
+
     foreach ($existencias as $existencia) {
         $this->existencias[$existencia->getProductoId()] = (float)$existencia->getVirtualColumn('existencia_total');
     }
+
     foreach ($this->productos as $key => $producto) {
         $productoId = $producto->getId();
         $existencia = isset($this->existencias[$productoId]) ? $this->existencias[$productoId] : 0;
+
         if ($existencia <= 0) {
             unset($this->productos[$key]);
         }
     }
-    $this->marcasVehiculo = array();
+
     $this->marcasProducto = array();
+    $this->marcasVehiculo = array();
+    $this->listaMarcasVehiculo = array();
+
     foreach ($this->productos as $producto) {
         $productoId = $producto->getId();
 
         $marcaProducto = trim($producto->getMarcaProducto());
+
         if ($marcaProducto != '') {
             $this->marcasProducto[$marcaProducto] = $marcaProducto;
         }
-        $marcasVehiculo = ProductoMarcaQuery::create()
+
+        $marcas = ProductoMarcaQuery::create()
             ->filterByProductoId($productoId)
             ->orderByMarca('Asc')
             ->find();
+
         $this->marcasVehiculo[$productoId] = array();
-        foreach ($marcasVehiculo as $productoMarca) {
-            $this->marcasVehiculo[$productoId][] = $productoMarca->getMarca();
+
+        foreach ($marcas as $productoMarca) {
+            $marca = trim($productoMarca->getMarca());
+
+            if ($marca != '') {
+                $this->marcasVehiculo[$productoId][] = $marca;
+                $this->listaMarcasVehiculo[$marca] = $marca;
+            }
         }
     }
 
     natcasesort($this->marcasProducto);
+    natcasesort($this->listaMarcasVehiculo);
 
     $this->marcas = $this->marcasVehiculo;
 

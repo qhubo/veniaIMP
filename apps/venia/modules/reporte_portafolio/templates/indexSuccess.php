@@ -6,16 +6,6 @@
 <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js"></script>
 
 <?php $modulo=$sf_params->get('module'); ?>
-<?php
-$listaMarcasVehiculo=array();
-foreach($marcasVehiculo as $marcasProductoVehiculo){
-    foreach($marcasProductoVehiculo as $marcaVehiculo){
-        $marcaVehiculo=trim($marcaVehiculo);
-        if($marcaVehiculo!=''){$listaMarcasVehiculo[$marcaVehiculo]=$marcaVehiculo;}
-    }
-}
-natcasesort($listaMarcasVehiculo);
-?>
 
 <div class="kt-portlet kt-portlet--responsive-mobile">
     <div class="kt-portlet__head">
@@ -36,7 +26,7 @@ natcasesort($listaMarcasVehiculo);
                     <select id="filtroMarcaProducto" class="form-control">
                         <option value="">Todas las marcas</option>
                         <?php foreach($marcasProducto as $marcaProducto){ ?>
-                            <option value="<?php echo htmlspecialchars(strtolower($marcaProducto),ENT_QUOTES,'UTF-8'); ?>"><?php echo htmlspecialchars($marcaProducto,ENT_QUOTES,'UTF-8'); ?></option>
+                            <option value="<?php echo htmlspecialchars(strtolower(trim($marcaProducto)),ENT_QUOTES,'UTF-8'); ?>"><?php echo htmlspecialchars($marcaProducto,ENT_QUOTES,'UTF-8'); ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -46,7 +36,7 @@ natcasesort($listaMarcasVehiculo);
                     <select id="filtroMarcaVehiculo" class="form-control">
                         <option value="">Todas las marcas</option>
                         <?php foreach($listaMarcasVehiculo as $marcaVehiculo){ ?>
-                            <option value="<?php echo htmlspecialchars(strtolower($marcaVehiculo),ENT_QUOTES,'UTF-8'); ?>"><?php echo htmlspecialchars($marcaVehiculo,ENT_QUOTES,'UTF-8'); ?></option>
+                            <option value="<?php echo htmlspecialchars(strtolower(trim($marcaVehiculo)),ENT_QUOTES,'UTF-8'); ?>"><?php echo htmlspecialchars($marcaVehiculo,ENT_QUOTES,'UTF-8'); ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -58,7 +48,7 @@ natcasesort($listaMarcasVehiculo);
 
                 <div class="col-xl-4 col-lg-5 col-md-6 mb-2">
                     <label>Buscar</label>
-                    <div class="kt-input-icon kt-input-icon--left portafolio-busqueda" style="width:100%; padding-top: 1px;">
+                    <div class="kt-input-icon kt-input-icon--left portafolio-busqueda" style="width:100%;padding-top:1px;">
                         <input type="text" class="form-control" placeholder="Buscar producto..." id="generalSearch" autocomplete="off">
                         <span class="kt-input-icon__icon kt-input-icon__icon--left"><span><i class="la la-search"></i></span></span>
                     </div>
@@ -72,48 +62,74 @@ natcasesort($listaMarcasVehiculo);
 
         <div class="row" id="portafolioProductos">
             <?php if($productos && count($productos)>0){ ?>
+
                 <?php foreach($productos as $lista){ ?>
+
                     <?php
                     $productoId=$lista->getId();
                     $existencia=isset($existencias[$productoId])?$existencias[$productoId]:0;
                     $marcaProductoFiltro=strtolower(trim($lista->getMarcaProducto()));
                     $marcas=isset($marcasVehiculo[$productoId])?$marcasVehiculo[$productoId]:array();
-                    $marcasVehiculoFiltro=!empty($marcas)?strtolower(implode('|',$marcas)):'';
+                    $marcasVehiculoFiltro=array();
+
+                    foreach($marcas as $marcaVehiculo){
+                        $marcasVehiculoFiltro[]=strtolower(trim($marcaVehiculo));
+                    }
+
+                    $marcasVehiculoFiltro=implode('|',$marcasVehiculoFiltro);
                     ?>
-                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 producto-card" data-marca-producto="<?php echo htmlspecialchars($marcaProductoFiltro,ENT_QUOTES,'UTF-8'); ?>" data-marcas-vehiculo="<?php echo htmlspecialchars($marcasVehiculoFiltro,ENT_QUOTES,'UTF-8'); ?>">
+
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 producto-card"
+                         data-marca-producto="<?php echo htmlspecialchars($marcaProductoFiltro,ENT_QUOTES,'UTF-8'); ?>"
+                         data-marcas-vehiculo="<?php echo htmlspecialchars($marcasVehiculoFiltro,ENT_QUOTES,'UTF-8'); ?>">
+
                         <div class="portafolio-card">
                             <div class="portafolio-imagen img-producto" data-imagen="<?php echo $lista->getImagen(); ?>">
                                 <img src="<?php echo $lista->getImagen(); ?>" alt="<?php echo htmlspecialchars($lista->getNombre()); ?>">
                             </div>
+
                             <div class="portafolio-info">
                                 <div class="portafolio-sku">SKU: <?php echo $lista->getCodigoSku(); ?></div>
                                 <div class="portafolio-nombre"><?php echo $lista->getNombre(); ?></div>
+
                                 <?php if($lista->getNombreIngles()!=''){ ?>
                                     <div class="portafolio-nombre-ingles"><?php echo $lista->getNombreIngles(); ?></div>
                                 <?php } ?>
-                                <div class="portafolio-marca"><strong>Marca:</strong> <?php echo $lista->getMarcaProducto(); ?></div>
+
+                                <div class="portafolio-marca">
+                                    <strong>Marca:</strong> <?php echo $lista->getMarcaProducto(); ?>
+                                </div>
 
                                 <?php if(!empty($marcas)){ ?>
                                     <div class="marcas-vehiculo">
                                         <div style="font-size:11px;color:#777;margin-bottom:4px;"><strong>Compatible con:</strong></div>
+
                                         <?php foreach($marcas as $marcaVehiculo){ ?>
                                             <span class="marca-vehiculo"><?php echo htmlspecialchars($marcaVehiculo,ENT_QUOTES,'UTF-8'); ?></span>
                                         <?php } ?>
+
                                     </div>
                                 <?php } ?>
 
                                 <div class="portafolio-existencia">
                                     <span class="existencia-label"><i class="fa fa-cubes"></i> Existencia: <?php echo number_format($existencia,0,'.',','); ?></span>
                                 </div>
-                                <div class="portafolio-precio"><?php echo "$ ".Parametro::formato($lista->getPrecio(),true); ?></div>
+
+                                <div class="portafolio-precio">
+                                    <?php echo "$ ".Parametro::formato($lista->getPrecio(),true); ?>
+                                </div>
                             </div>
                         </div>
                     </div>
+
                 <?php } ?>
+
             <?php }else{ ?>
+
                 <div class="col-md-12">
                     <div class="alert alert-info text-center"><i class="fa fa-info-circle"></i> No existen productos disponibles en el portafolio.</div>
                 </div>
+
             <?php } ?>
         </div>
 
@@ -141,18 +157,19 @@ natcasesort($listaMarcasVehiculo);
 $(document).ready(function(){
     function filtrarProductos(){
         var texto=$.trim($('#generalSearch').val()).toLowerCase();
-        var marcaProducto=$('#filtroMarcaProducto').val();
-        var marcaVehiculo=$('#filtroMarcaVehiculo').val();
+        var marcaProducto=$('#filtroMarcaProducto').val().toLowerCase();
+        var marcaVehiculo=$('#filtroMarcaVehiculo').val().toLowerCase();
         var encontrados=0;
 
         $('.producto-card').each(function(){
             var card=$(this);
             var contenido=card.text().toLowerCase();
+            var marca=($.trim(card.attr('data-marca-producto'))||'').toLowerCase();
+            var vehiculos=($.trim(card.attr('data-marcas-vehiculo'))||'').toLowerCase();
+            var listaVehiculos=vehiculos!==''?vehiculos.split('|'):[];
             var cumpleTexto=texto===''||contenido.indexOf(texto)!==-1;
-            var marca=card.attr('data-marca-producto')||'';
             var cumpleMarcaProducto=marcaProducto===''||marca===marcaProducto;
-            var vehiculos=card.attr('data-marcas-vehiculo')||'';
-            var cumpleMarcaVehiculo=marcaVehiculo===''||vehiculos.split('|').indexOf(marcaVehiculo)!==-1;
+            var cumpleMarcaVehiculo=marcaVehiculo===''||listaVehiculos.indexOf(marcaVehiculo)!==-1;
 
             if(cumpleTexto&&cumpleMarcaProducto&&cumpleMarcaVehiculo){
                 card.show();
