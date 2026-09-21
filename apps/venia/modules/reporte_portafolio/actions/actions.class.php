@@ -10,126 +10,97 @@ class PortafolioTCPDF extends sfTCPDF {
 
     public function Header() {
         $this->SetY(5);
-        $nombreEmpresa = $this->empresa ? htmlspecialchars($this->empresa->getNombre(), ENT_QUOTES,'UTF-8') : '';
-        
-          $logo = '';
+        $nombreEmpresa = $this->empresa ? htmlspecialchars($this->empresa->getNombre(), ENT_QUOTES, 'UTF-8') : '';
+        $logo = '';
         if ($this->empresa) {
             $logo = $this->empresa->getLogo();
         }
-        
-$ruta= "uploads/images/" . $logo;
-       $html = '
-        <style>
-            .titulo {
-                font-size: 40px;
-                font-weight: bold;
-            }
-
-            .subtitulo {
-                font-size: 18px;
-            }
-        </style>
+        $ruta = "uploads/images/" . $logo;
+        $html = '<style> .titulo { font-size: 40px; font-weight: bold;  }  .subtitulo {  font-size: 18px;  } </style>
         <table width="100%" cellpadding="3">
             <tr>
-                <td width="20%">
- <img src="'.$ruta.'" width="80px;" >                
-</td>
+                <td width="20%"><img src="' . $ruta . '" width="80px;" > </td>
                 <td width="60%" align="center">
-                    <span class="titulo"> PORTAFOLIO DE PRODUCTOS </span>
-                    <br>
-                    <span class="subtitulo">' . $nombreEmpresa . '</span>
-                    <br>
-                    <span class="subtitulo">
-                        Fecha: ' . date('d/m/Y') . '
-                    </span>
+                    <span class="titulo"> PORTAFOLIO DE PRODUCTOS </span><br>
+                    <span class="subtitulo">' . $nombreEmpresa . '</span><br>
+                    <span class="subtitulo"> Fecha: ' . date('d/m/Y') . '</span>
                 </td>
                 <td width="20%"></td>
             </tr>
         </table><br><br>';
-       
-       
-       
-         $html = '
-        <style>
+        $html = '<style>
             .titulo {
                 font-size: 40px;
                 font-weight: bold;
             }
-
             .subtitulo {
                 font-size: 18px;
             }
         </style>
         <table width="100%" cellpadding="3">
             <tr>
-                <td width="20%">
- <img src="'.$ruta.'" width="80px;" >                
-</td>
-                <td width="85%" align="center">
-                    <span class="titulo"> PORTAFOLIO DE PRODUCTOS </span>
-            
-                    <span class="subtitulo">' . $nombreEmpresa . '</span>
-       
-                </td>
+                <td width="20%"><img src="' . $ruta . '" width="80px;" ></td>
+                <td width="85%" align="center"><span class="titulo"> PORTAFOLIO DE PRODUCTOS </span><span class="subtitulo">' . $nombreEmpresa . '</span></td>
                 <td width="5%"></td>
             </tr>
         </table>';
-        $this->writeHTML($html,true, false, true, false, '');
-        // Indicar a TCPDF dónde comienza el contenido
+        $this->writeHTML($html, true, false, true, false, '');
         $this->SetY(30);
     }
 }
 
 class reporte_portafolioActions extends sfActions {
 
-    /**
-     * Executes index action
-     *
-     * @param sfRequest $request A request object
-     */
-    public function executeIndex(sfWebRequest $request) {
-        $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
-        if (!$empresaId) {
-            sfContext::getInstance()->getUser()->setAttribute('usuario', false, 'filtra_empresa');
-        }
-        // Productos que cumplen las condiciones del portafolio
-        $this->productos = ProductoQuery::create()
-                ->filterByActivo(true)
-                ->filterByImagen('', Criteria::NOT_EQUAL)
-                ->find();
-        // Obtener existencia acumulada por producto
-        $existencias = ProductoExistenciaQuery::create()
-                ->withColumn('SUM(producto_existencia.cantidad)', 'existencia_total')
-                ->groupByProductoId()
-                ->find();
-        // Convertir las existencias en un arreglo
-        $this->existencias = array();
-        foreach ($existencias as $existencia) {
-            $this->existencias[$existencia->getProductoId()] = (float) $existencia->getVirtualColumn('existencia_total');
-        }
-        foreach ($this->productos as $key => $producto) {
-            $productoId = $producto->getId();
-            $existencia = isset($this->existencias[$productoId]) ? $this->existencias[$productoId] : 0;
-            if ($existencia <= 0) {
-                unset($this->productos[$key]);
-            }
-        }
-
-        $this->marcasVehiculo = array();
-        foreach ($this->productos as $producto) {
-            $productoId = $producto->getId();
-            $marcasVehiculo = ProductoMarcaQuery::create()
-                    ->filterByProductoId($productoId)
-                    ->orderByMarca('Asc')
-                    ->find();
-            $this->marcasVehiculo[$productoId] = array();
-            foreach ($marcasVehiculo as $productoMarca) {
-                $this->marcasVehiculo[$productoId][] = $productoMarca->getMarca();
-            }
-        }
-        $this->marcas = $this->marcasVehiculo;
+public function executeIndex(sfWebRequest $request)
+{
+    $empresaId = sfContext::getInstance()->getUser()->getAttribute("usuario", null, 'empresa');
+    if (!$empresaId) {
         sfContext::getInstance()->getUser()->setAttribute('usuario', false, 'filtra_empresa');
     }
+    $this->productos = ProductoQuery::create()
+        ->filterByActivo(true)
+        ->filterByImagen('', Criteria::NOT_EQUAL)
+        ->find();
+    $existencias = ProductoExistenciaQuery::create()
+        ->withColumn('SUM(producto_existencia.cantidad)', 'existencia_total')
+        ->groupByProductoId()
+        ->find();
+    $this->existencias = array();
+    foreach ($existencias as $existencia) {
+        $this->existencias[$existencia->getProductoId()] = (float)$existencia->getVirtualColumn('existencia_total');
+    }
+    foreach ($this->productos as $key => $producto) {
+        $productoId = $producto->getId();
+        $existencia = isset($this->existencias[$productoId]) ? $this->existencias[$productoId] : 0;
+        if ($existencia <= 0) {
+            unset($this->productos[$key]);
+        }
+    }
+    $this->marcasVehiculo = array();
+    $this->marcasProducto = array();
+    foreach ($this->productos as $producto) {
+        $productoId = $producto->getId();
+
+        $marcaProducto = trim($producto->getMarcaProducto());
+        if ($marcaProducto != '') {
+            $this->marcasProducto[$marcaProducto] = $marcaProducto;
+        }
+        $marcasVehiculo = ProductoMarcaQuery::create()
+            ->filterByProductoId($productoId)
+            ->orderByMarca('Asc')
+            ->find();
+        $this->marcasVehiculo[$productoId] = array();
+        foreach ($marcasVehiculo as $productoMarca) {
+            $this->marcasVehiculo[$productoId][] = $productoMarca->getMarca();
+        }
+    }
+
+    natcasesort($this->marcasProducto);
+
+    $this->marcas = $this->marcasVehiculo;
+
+    sfContext::getInstance()->getUser()->setAttribute('usuario', false, 'filtra_empresa');
+}
 
     public function executePdf(sfWebRequest $request) {
 
@@ -161,17 +132,6 @@ class reporte_portafolioActions extends sfActions {
                 }
             }
         }
-
-
-//    foreach ($productos as $key => $producto) {
-//        $productoId = $producto->getId();
-//        $existencia = isset($existencias[$productoId])
-//            ? $existencias[$productoId]
-//            : 0;
-//        if ($existencia <= 0) {
-//            unset($productos[$key]);
-//        }
-//    }
         $empresa = null;
         if ($productos) {
             foreach ($productos as $producto) {
