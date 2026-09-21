@@ -14,7 +14,10 @@
             <h3 class="kt-portlet__head-title kt-font-brand">Productos</h3>
         </div>
         <div class="kt-portlet__head-toolbar">
-            <a href="<?php echo url_for('reporte_portafolio/pdf'); ?>" target="_blank" class="btn btn-block btn-outline btn-danger btn-outline mr-2"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PDF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+<a href="<?php echo url_for('reporte_portafolio/pdf'); ?>" target="_blank" class="btn btn-block btn-outline btn-danger btn-outline mr-2">
+    <i class="fas fa-file-pdf"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PDF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</a>
+               
         </div>
     </div>
 
