@@ -11,6 +11,18 @@
         transition:.3s;
     }
 </style>
+<style>
+    form input[type="number"]::-webkit-inner-spin-button,
+form input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+form input[type="number"] {
+    -moz-appearance: textfield;
+}
+    </style>
+
 
 <?php $modulo = $sf_params->get('module'); ?>
 <script src='/assets/global/plugins/jquery.min.js'></script>
