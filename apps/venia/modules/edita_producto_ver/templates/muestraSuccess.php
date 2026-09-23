@@ -19,6 +19,17 @@ if ($pefilq) {
 }
 ?>
 <style>
+    form input[type="number"]::-webkit-inner-spin-button,
+form input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+form input[type="number"] {
+    -moz-appearance: textfield;
+}
+    </style>
+<style>
     .required {
         color: red;
         font-weight: bold;
