@@ -1,4 +1,3 @@
-
 <?php
 
 class reporte_preciosActions extends sfActions {
@@ -123,9 +122,7 @@ private function obtenerRegistros($valores,$empresaId) {
     }
 
     public function executeReporte(sfWebRequest $request) {
-        error_reporting(-1);
         date_default_timezone_set('America/Guatemala');
-
         $usuario=$this->getUser();
         $valores=unserialize($usuario->getAttribute('valores',null,'reporte_precios_costo'));
 
