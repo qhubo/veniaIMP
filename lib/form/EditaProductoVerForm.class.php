@@ -116,6 +116,8 @@ $this->setWidget('origen', new sfWidgetFormInputText(array(), array('class' => '
         )));
         $this->setValidator('modelo', new sfValidatorString(array('required' => false)));
         $this->setWidget('codigo_sku', new sfWidgetFormInputText(array(), array('class' => 'form-control',
+            
+            'readonly'=>'readonly',
                 //         "placeholder" => "Ingrese nombre producto",
              "placeholder" => "* Código Automatico ",
         )));
