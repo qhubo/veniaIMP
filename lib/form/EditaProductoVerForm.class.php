@@ -63,10 +63,9 @@ $marcaQ = MarcaProductoQuery::create()->find();
 $this->setWidget('origen', new sfWidgetFormInputText(array(), array('class' => 'form-control',)));
         $this->setValidator('origen', new sfValidatorString(array('required' => false)));
         
-        
-        
+                
         $this->setWidget('nombre', new sfWidgetFormInputText(array(), array('class' => 'form-control',
-            "placeholder" => "Ingrese nombre producto",
+            "placeholder" => "Ingrese nombre producto", 'readonly'=>'readonly',
         )));
         $this->setValidator('nombre', new sfValidatorString(array('required' => true)));
         
