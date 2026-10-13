@@ -77,12 +77,18 @@ class estado_cuentaActions extends sfActions {
         // echo "<pre>";
         // print_r($detalle);
         //  die();
-
+ date_default_timezone_set("America/Guatemala");
 
 
 // Obtener el saldo inicial calculado por DatosFactura()
 $SALDO = 0;
-$detalleINI = $this->DatosFactura($clientev, date('dd/mm/YYYY'));
+        $dia =date('dd/mm/YYYY');
+$detalleINI = $this->DatosFactura($clientev,$dia );
+        echo $dia;
+echo "<pre>";
+        print_r($detalleINI);
+        die();
+        
 foreach ($detalleINI as $movimiento) {
     if ($movimiento['codigo'] === 'Saldo a la fecha') {
         $SALDO = (float) $movimiento['saldo'];
