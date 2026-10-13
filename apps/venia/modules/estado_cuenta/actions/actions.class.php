@@ -82,8 +82,8 @@ class estado_cuentaActions extends sfActions {
 
 // Obtener el saldo inicial calculado por DatosFactura()
 $SALDO = 0;
-
-foreach ($detalle as $movimiento) {
+$detalleINI = $this->DatosFactura($clientev, date('dd/mm/YYYY'));
+foreach ($detalleINI as $movimiento) {
     if ($movimiento['codigo'] === 'Saldo a la fecha') {
         $SALDO = (float) $movimiento['saldo'];
         break;
