@@ -5,6 +5,9 @@ class estado_cuentaActions extends sfActions {
     public function executeReportePdf(sfWebRequest $request) {
         $clientev = $request->getParameter('clientev');
         $fechaInicial = $request->getParameter('fecharef');
+
+        echo $fechaInicial;
+        die();
    $SUMAS = 0;
         $RESTAR = 0;
         // ================= SALDO INICIAL =================
