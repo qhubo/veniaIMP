@@ -738,7 +738,6 @@ switch($estado){
                         $operacion->save();
                     }
                 }
-                $operacion->setValorTotal(0);
                 $operacion->setValorPagado($valorPagado);
                 $operacion->save();
 
