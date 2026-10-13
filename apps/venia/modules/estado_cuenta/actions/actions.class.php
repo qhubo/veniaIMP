@@ -82,7 +82,7 @@ class estado_cuentaActions extends sfActions {
 
 // Obtener el saldo inicial calculado por DatosFactura()
 $SALDO = 0;
-        $dia =date('dd/mm/YYYY');
+        $dia =date('d/m/Y');
 $detalleINI = $this->DatosFactura($clientev,$dia );
         echo $dia;
 echo "<pre>";
