@@ -76,6 +76,17 @@ class estado_cuentaActions extends sfActions {
         // print_r($detalle);
         //  die();
 
+
+
+// Obtener el saldo inicial calculado por DatosFactura()
+$SALDO = 0;
+
+foreach ($detalle as $movimiento) {
+    if ($movimiento['codigo'] === 'Saldo a la fecha') {
+        $SALDO = (float) $movimiento['saldo'];
+        break;
+    }
+}
         $html = $this->getPartial('estado_cuenta/reporte', array("logo" => $logo, 'NOMBRE_EMPRESA' => $NOMBRE_EMPRESA,
             'SALDO' => $SALDO, 'DIRECCION' => $DIRECCION, 'TELEFONO' => $TELEFONO, 'detalle' => $detalle, 'clienteQ' => $clienteQ));
 //        echo $html;
