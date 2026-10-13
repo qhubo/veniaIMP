@@ -585,6 +585,9 @@ switch($estado){
         $OperacionId = $request->getParameter('id'); //=155555&$dirh =
         $operacion = OperacionQuery::create()->findOneById($OperacionId);
         $this->operacion = OperacionQuery::create()->findOneById($OperacionId);
+//        echo "<pre>";
+//        print_r($this->operacion);
+//        die();
         $this->detalle = OperacionDetalleQuery::create()->filterByOperacionId($OperacionId)->find();
         $listaNo[] = 'CXC COBRAR';
         $listaNo[] = 'CHEQUE PREFECHADO';
@@ -735,6 +738,7 @@ switch($estado){
                         $operacion->save();
                     }
                 }
+                $operacion->setValorTotal(0);
                 $operacion->setValorPagado($valorPagado);
                 $operacion->save();
 
@@ -770,7 +774,7 @@ switch($estado){
                 if ($valorPagado >= $operacion->getValorTotal()) {
                     $this->redirect('cuenta_por_cobrar/index?id=' . $OperaPgo->getId());
                 }
-                $this->redirect('cuenta_por_cobrar/caja?id=' . $OperaPgo->getId());
+                $this->redirect('cuenta_por_cobrar/caja?id=' . $OperacionId);
             }
         }
 
