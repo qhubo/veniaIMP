@@ -5,6 +5,8 @@ class estado_cuentaActions extends sfActions {
     public function executeReportePdf(sfWebRequest $request) {
         $clientev = $request->getParameter('clientev');
         $fechaInicial = $request->getParameter('fecharef');
+
+     
    $SUMAS = 0;
         $RESTAR = 0;
         // ================= SALDO INICIAL =================
@@ -75,7 +77,21 @@ class estado_cuentaActions extends sfActions {
         // echo "<pre>";
         // print_r($detalle);
         //  die();
+ date_default_timezone_set("America/Guatemala");
 
+
+// Obtener el saldo inicial calculado por DatosFactura()
+$SALDO = 0;
+        $dia =date('d/m/Y');
+$detalleINI = $this->DatosFactura($clientev,$dia );
+ 
+        
+foreach ($detalleINI as $movimiento) {
+    if ($movimiento['codigo'] === 'Saldo a la fecha') {
+        $SALDO = (float) $movimiento['saldo'];
+        break;
+    }
+}
         $html = $this->getPartial('estado_cuenta/reporte', array("logo" => $logo, 'NOMBRE_EMPRESA' => $NOMBRE_EMPRESA,
             'SALDO' => $SALDO, 'DIRECCION' => $DIRECCION, 'TELEFONO' => $TELEFONO, 'detalle' => $detalle, 'clienteQ' => $clienteQ));
 //        echo $html;
