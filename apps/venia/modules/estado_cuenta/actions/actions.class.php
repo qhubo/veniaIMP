@@ -84,10 +84,7 @@ class estado_cuentaActions extends sfActions {
 $SALDO = 0;
         $dia =date('d/m/Y');
 $detalleINI = $this->DatosFactura($clientev,$dia );
-        echo $dia;
-echo "<pre>";
-        print_r($detalleINI);
-        die();
+ 
         
 foreach ($detalleINI as $movimiento) {
     if ($movimiento['codigo'] === 'Saldo a la fecha') {
