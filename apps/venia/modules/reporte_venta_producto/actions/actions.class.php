@@ -79,34 +79,42 @@ class reporte_venta_productoActions extends sfActions {
         $valores['inicio'] = '01:00';
         $valores['fin'] = '23:00';
 
-        $query = "select tt.nombre tienda, op.codigo_factura codigo_factura,  cli.codigo cliente, op.nombre, op.estatus, DATE_FORMAT(op.fecha, '%d/%m/%y')  fecha, ve.nombre vendedor, ";
-        $query .= " op.usuario, op.valor_total, op.valor_pagado, de.codigo codigo_producto, de.detalle, de.cantidad, de.valor_unitario, ";
-        $query .= " de.valor_total, pro.costo_proveedor   from operacion  op left join operacion_detalle de  on op.id= de.operacion_id  left join ";
-        $query .= "vendedor ve on ve.id = op.vendedor_id  left join cliente cli on cli.id= op.cliente_id ";
-        $query .= "left join producto pro on pro.id = producto_id  left join tienda tt on tt.id= op.tienda_id ";
-        $query .= " where op.empresa_id= ".$empresaId." and op.anulado=0 and  de.cantidad >0 and  op.fecha  >= '" . $fechaInicio . " 00:00:00' and op.fecha <= '" . $fechaFin . " 23:59'";
-        if ($valores['vendedor']) {
-            $query .= "  and  vendedor_id = " . $valores['vendedor'] . " ";
-        }
-//           if ($valores['bodega']) {
-//            $query .= "  and  tienda_id = " . $valores['bodega'] . " ";
-//        }
-        if ($valores['busqueda']) {
-            $query .= "  and  op.nombre like '%" . $valores['busqueda'] . "%'";
-        }
-        if ($valores['cliente']) {
-            $query .= " and  ( cli.nombre like  '%" . $valores['cliente'] . "%' or cli.codigo like  '%" . $valores['cliente'] . "%' ) ";
-        }
-        if ($valores['producto']) {
-            $query .= " and  ( pro.nombre like  '%" . $valores['producto'] . "%' or pro.codigo_sku like  '%" . $valores['producto'] . "%' ) ";
-        }
+    $con = Propel::getConnection();
 
-        $query .= " order by op.fecha";
-        $con = Propel::getConnection();
-        $stmt = $con->prepare($query);
-        $resource = $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $this->registros = $result;
+$query = "SELECT tt.nombre tienda, op.codigo_factura, cli.codigo cliente, op.nombre, op.estatus,
+          DATE_FORMAT(op.fecha,'%d/%m/%y') fecha, ve.nombre vendedor, op.usuario,
+          op.valor_total, op.valor_pagado, de.codigo codigo_producto, de.detalle,
+          de.cantidad, de.valor_unitario, de.valor_total, de.costo_unitario AS costo_proveedor
+          FROM operacion op
+          INNER JOIN operacion_detalle de ON de.operacion_id=op.id
+          LEFT JOIN vendedor ve ON ve.id=op.vendedor_id
+          LEFT JOIN cliente cli ON cli.id=op.cliente_id
+          LEFT JOIN producto pro ON pro.id=de.producto_id
+          LEFT JOIN tienda tt ON tt.id=op.tienda_id
+          WHERE op.empresa_id=".(int)$empresaId."
+          AND op.anulado=0 AND de.cantidad>0
+          AND op.fecha>='".$fechaInicio." 00:00:00'
+          AND op.fecha<='".$fechaFin." 23:59:59'";
+
+if (!empty($valores['vendedor']))
+    $query .= " AND op.vendedor_id=".(int)$valores['vendedor'];
+
+if (!empty($valores['busqueda']))
+    $query .= " AND op.nombre LIKE ".$con->quote('%'.$valores['busqueda'].'%');
+
+if (!empty($valores['cliente'])) {
+    $f = $con->quote('%'.$valores['cliente'].'%');
+    $query .= " AND (cli.nombre LIKE $f OR cli.codigo LIKE $f)";
+}
+
+if (!empty($valores['producto'])) {
+    $f = $con->quote('%'.$valores['producto'].'%');
+    $query .= " AND (pro.nombre LIKE $f OR pro.codigo_sku LIKE $f)";
+}
+
+$query .= " ORDER BY op.fecha";
+
+
 //       die();
 
 
@@ -253,29 +261,43 @@ class reporte_venta_productoActions extends sfActions {
         $valores['inicio'] = '01:00';
         $valores['fin'] = '23:00';
 
-        $query = "select tt.nombre tienda, op.codigo_factura codigo_factura,  cli.codigo cliente, op.nombre, op.estatus, DATE_FORMAT(op.fecha, '%d/%m/%y')  fecha, ve.nombre vendedor, ";
-        $query .= " op.usuario, op.valor_total, op.valor_pagado, de.codigo codigo_producto, de.detalle, de.cantidad, de.valor_unitario, ";
-        $query .= " de.valor_total, pro.costo_proveedor   from operacion  op left join operacion_detalle de  on op.id= de.operacion_id  left join ";
-        $query .= "vendedor ve on ve.id = op.vendedor_id  left join cliente cli on cli.id= op.cliente_id ";
-        $query .= "left join producto pro on pro.id = producto_id   left join tienda tt on tt.id= op.tienda_id ";
-        $query .= " where op.empresa_id= ".$empresaId." and  op.anulado=0 and de.cantidad >0 and  op.fecha  >= '" . $fechaInicio . " 00:00:00' and op.fecha <= '" . $fechaFin . " 23:59'";
-        if ($valores['vendedor']) {
-            $query .= "  and  vendedor_id = " . $valores['vendedor'] . " ";
-        }
-//         if ($valores['bodega']) {
-//            $query .= "  and  tienda_id = " . $valores['bodega'] . " ";
-//        }
-        if ($valores['busqueda']) {
-            $query .= "  and  op.nombre like '%" . $valores['busqueda'] . "%'";
-        }
-        if ($valores['cliente']) {
-            $query .= " and  ( cli.nombre like  '%" . $valores['cliente'] . "%' or cli.codigo like  '%" . $valores['cliente'] . "%' ) ";
-        }
-        if ($valores['producto']) {
-            $query .= " and  ( pro.nombre like  '%" . $valores['producto'] . "%' or pro.codigo_sku like  '%" . $valores['producto'] . "%' ) ";
-        }
+        $con = Propel::getConnection();
 
-        $query .= " order by op.fecha";
+$query = "SELECT tt.nombre tienda, op.codigo_factura, cli.codigo cliente, op.nombre, op.estatus,
+          DATE_FORMAT(op.fecha,'%d/%m/%y') fecha, ve.nombre vendedor, op.usuario,
+          op.valor_total, op.valor_pagado, de.codigo codigo_producto, de.detalle,
+          de.cantidad, de.valor_unitario, de.valor_total,
+          de.costo_unitario AS costo_proveedor
+          FROM operacion op
+          INNER JOIN operacion_detalle de ON de.operacion_id=op.id
+          LEFT JOIN vendedor ve ON ve.id=op.vendedor_id
+          LEFT JOIN cliente cli ON cli.id=op.cliente_id
+          LEFT JOIN producto pro ON pro.id=de.producto_id
+          LEFT JOIN tienda tt ON tt.id=op.tienda_id
+          WHERE op.empresa_id=".(int)$empresaId."
+          AND op.anulado=0 AND de.cantidad>0
+          AND op.fecha>='".$fechaInicio." 00:00:00'
+          AND op.fecha<='".$fechaFin." 23:59:59'";
+
+if (!empty($valores['vendedor']))
+    $query .= " AND op.vendedor_id=".(int)$valores['vendedor'];
+
+if (!empty($valores['busqueda']))
+    $query .= " AND op.nombre LIKE ".$con->quote('%'.$valores['busqueda'].'%');
+
+if (!empty($valores['cliente'])) {
+    $f = $con->quote('%'.$valores['cliente'].'%');
+    $query .= " AND (cli.nombre LIKE $f OR cli.codigo LIKE $f)";
+}
+
+if (!empty($valores['producto'])) {
+    $f = $con->quote('%'.$valores['producto'].'%');
+    $query .= " AND (pro.nombre LIKE $f OR pro.codigo_sku LIKE $f)";
+}
+
+$query .= " ORDER BY op.fecha";
+
+
 //        echo $query;
 //        die();
         $con = Propel::getConnection();
