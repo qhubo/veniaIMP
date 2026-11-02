@@ -326,25 +326,19 @@
 
 
 
-    <?php
-    /*
-     * IVA
-     *
-     * Si tu sistema maneja el IVA de forma separada,
-     * aquí puedes sustituir esta fórmula por el valor
-     * almacenado en la operación.
-     */
 
-    $iva = $subtotal * 0.12;
-    $total = $subtotal + $iva;
-    ?>
+<!-- =========================================================
+     TOTALES
+     ========================================================= -->
 
+<?php
+// Los valores totales de los productos ya son los definitivos.
+// No agregar IVA adicional.
+$total = round($subtotal, 2);
+?>
 
-
-
-
+<table class="totales">
     <tr>
-
         <td></td>
 
         <td class="total-final" style="text-align:right;">
@@ -354,8 +348,9 @@
         <td class="total-final" style="text-align:right;">
             <?php echo Parametro::formato($total, false); ?>
         </td>
-
     </tr>
+</table>
+
 
 </table>
 
