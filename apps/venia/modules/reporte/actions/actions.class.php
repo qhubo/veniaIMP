@@ -26,13 +26,30 @@ class reporteActions extends sfActions {
         
         
         $operacion = OrdenCotizacionQuery::create()->findOneById($id);
-        $detalle = OrdenCotizacionDetalleQuery::create()
-                ->filterByConfirmado(true)
-                ->filterByProductoId(null, Criteria::NOT_EQUAL)
-                ->filterByOrdenCotizacionId($listas, Criteria::IN)
-                ->withColumn('CAST(orden_cotizacion_detalle.bulto_inicio AS UNSIGNED)', 'BultoOrden')
-                ->orderBy('BultoOrden', Criteria::ASC)
-                ->find();
+//        $detalle = OrdenCotizacionDetalleQuery::create()
+//                ->filterByConfirmado(true)
+//                ->filterByProductoId(null, Criteria::NOT_EQUAL)
+//                ->filterByOrdenCotizacionId($listas, Criteria::IN)
+//                ->withColumn('CAST(orden_cotizacion_detalle.bulto_inicio AS UNSIGNED)', 'BultoOrden')
+//                ->orderBy('BultoOrden', Criteria::ASC)
+//                ->find();
+        $operacion = OrdenCotizacionQuery::create()->findOneById($id);
+
+$list = array($operacion->getId());
+
+$ordenEmpaque = OrdenCotizacionEmpaqueQuery::create()
+    ->filterByOrdenCotizacionId($operacion->getId())
+    ->find();
+
+foreach ($ordenEmpaque as $reg) {
+    $list[] = $reg->getOrdenEmpaque();
+}
+
+$detalle = OrdenCotizacionDetalleQuery::create()
+    ->filterByOrdenCotizacionId($list, Criteria::IN)
+    ->orderByServicioId('Asc')
+    ->orderByOrdenCotizacionId()
+    ->find();
 
         $html = '';
         $logo = $operacion->getEmpresa()->getLogo();
