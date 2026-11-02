@@ -11,7 +11,137 @@
 class reporteActions extends sfActions {
 
 
-        public function executePreFactura(sfWebRequest $request) {
+    
+public function executePreFactura(sfWebRequest $request)
+{
+    date_default_timezone_set("America/Guatemala");
+
+    $id = (int) $request->getParameter('id');
+
+    // 1. Obtener la orden principal
+    $operacion = OrdenCotizacionQuery::create()
+        ->findOneById($id);
+
+    if (!$operacion) {
+        throw new sfError404Exception('Orden de cotización no encontrada.');
+    }
+
+    // 2. Construir la misma lista de órdenes que executeNueva()
+    $list = array($operacion->getId());
+
+    $ordenEmpaque = OrdenCotizacionEmpaqueQuery::create()
+        ->filterByOrdenCotizacionId($operacion->getId())
+        ->find();
+
+    foreach ($ordenEmpaque as $reg) {
+        $list[] = $reg->getOrdenEmpaque();
+    }
+
+    $list = array_values(array_unique($list));
+
+    // 3. Construir el código con las mismas órdenes consultadas
+    $ordenes = OrdenCotizacionQuery::create()
+        ->filterById($list, Criteria::IN)
+        ->find();
+
+    $listaCo = array();
+
+    foreach ($ordenes as $reg) {
+        $listaCo[] = str_replace('LIST-', '', $reg->getCodigo());
+    }
+
+    $codigo = 'LIST-' . implode('-', $listaCo);
+
+    // 4. Obtener exactamente los mismos detalles que Nueva
+    $detalle = OrdenCotizacionDetalleQuery::create()
+        ->filterByOrdenCotizacionId($list, Criteria::IN)
+        ->orderByServicioId('Asc')
+        ->orderByOrdenCotizacionId()
+        ->find();
+
+    // 5. Generar HTML de la prefactura
+    $logo = $operacion->getEmpresa()->getLogo();
+
+    $html = $this->getPartial('reporte/preFactura', array(
+        'codigo'    => $codigo,
+        'operacion' => $operacion,
+        'detalle'   => $detalle,
+        'logo'      => $logo
+    ));
+
+    $img_file = "uploads/images/" . $logo;
+
+    // 6. Configuración del PDF
+    $pdf = new sfTCPDF("P", "mm", "Letter");
+
+    $this->id = $id;
+
+    $pdf->SetCreator(PDF_CREATOR);
+    $pdf->SetAuthor('Venia Link');
+    $pdf->SetTitle("Prefactura " . $operacion->getCodigo());
+    $pdf->SetSubject('Prefactura');
+    $pdf->SetKeywords('Concilia,Banco,Cuenta');
+
+    $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+    $pdf->SetMargins(
+        PDF_MARGIN_LEFT,
+        PDF_MARGIN_TOP,
+        PDF_MARGIN_RIGHT
+    );
+
+    $pdf->SetHeaderMargin(PDF_HEADER_MARGIN);
+    $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+    $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+    $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+    $pdf->SetMargins(3, 5, 5, true);
+
+    $pdf->setHeaderFont(array(
+        PDF_FONT_NAME_MAIN,
+        '',
+        PDF_FONT_SIZE_MAIN
+    ));
+
+    $pdf->SetHeaderData(
+        PDF_HEADER_LOGO,
+        PDF_HEADER_LOGO_WIDTH,
+        PDF_HEADER_TITLE,
+        PDF_HEADER_STRING
+    );
+
+    $pdf->setFooterFont(array(
+        PDF_FONT_NAME_DATA,
+        '',
+        PDF_FONT_SIZE_DATA
+    ));
+
+    $pdf->SetHeaderMargin(0.1);
+    $pdf->SetFooterMargin(0);
+
+    $pdf->setPrintHeader(false);
+    $pdf->setPrintFooter(false);
+
+    $pdf->SetFont('dejavusans', '', 9);
+
+    // 7. Generar PDF
+    $pdf->AddPage();
+    $pdf->writeHTML($html);
+
+    if (!empty($logo) && file_exists($img_file)) {
+        $pdf->Image($img_file, 18, -8, 40);
+    }
+
+    // 8. Mostrar PDF en navegador
+    $pdf->Output(
+        'PreFactura ' . $operacion->getCodigo() . '.pdf',
+        'I'
+    );
+}
+
+
+        public function executePreFactura20261102(sfWebRequest $request) {
 
         date_default_timezone_set("America/Guatemala");
         error_reporting(-1);
