@@ -228,6 +228,75 @@ class Operacion extends BaseOperacion {
         return $return;
     }
 
+public function save(PropelPDO $con = null)
+{
+    $empresaId = UsuarioQuery::getEmpresaSeleccionada('Operacion');
+
+    if ($this->isNew()) {
+
+        if ($empresaId) {
+            $this->setEmpresaId($empresaId);
+        }
+
+        if (trim($this->getCodigo()) == "") {
+
+            $tipo = $empresaId . 'OPE';
+            $pre = $empresaId . 'OPE';
+            $numero = 1;
+
+            $busca = CorrelativoCodigoQuery::create()
+                    ->filterByTipo($tipo)
+                    ->findOne();
+
+            if (!$busca) {
+                $busca = new CorrelativoCodigo();
+                $busca->setTipo($tipo);
+                $busca->setPrefijo($pre);
+                $busca->setNumeroAsginar($numero);
+                $busca->save();
+            }
+
+            $numero = $busca->getNumeroAsginar();
+
+            $prefijo = $pre . $numero;
+
+            if (strlen($numero) == 1) {
+                $prefijo = $pre . '0' . $numero;
+            }
+
+            if ($numero > 99) {
+                $prefijo = $pre . $numero;
+            }
+
+            $this->setCodigo($prefijo);
+
+            $busca->setNumeroAsginar($numero + 1);
+            $busca->save();
+        }
+
+    } else {
+
+        // Bloquear temporalmente la actualización a cero.
+        if ((float) $this->getValorTotal() == 0.0) {
+            $id = (int) $this->getId();
+            // Utilizar la conexión recibida o la conexión predeterminada.
+            $conexion = $con ? $con : Propel::getConnection();
+            $sql = "SELECT valor_total
+                    FROM operacion
+                    WHERE id = " . $id;
+            $stmt = $conexion->prepare($sql);
+            $stmt->execute();
+            $original = $stmt->fetch(PDO::FETCH_ASSOC);
+            $this->setValorTotal($original['valor_total']);
+       
+ 
+        }
+    }
+
+    parent::save($con);
+}
+
+
     static public function FacturaFel($operaId) {
         $OPERACION = OperacionQuery::create()->findOneById($operaId);
 
@@ -1031,44 +1100,7 @@ class Operacion extends BaseOperacion {
         return $return;
     }
 
-    public function save(PropelPDO $con = null) {
-        $empresaId = UsuarioQuery::getEmpresaSeleccionada('Operacion');
 
-        if ($this->isNew()) {
-            if ($empresaId) {
-                $this->setEmpresaId($empresaId);
-            }
-            if (trim($this->getCodigo()) == "") {
-                $tipo = $empresaId . 'OPE';
-                $pre = $empresaId . 'OPE';
-                $numero = 1;
-                $busca = CorrelativoCodigoQuery::create()
-                        ->filterByTipo($tipo)
-                        ->findOne();
-                if (!$busca) {
-                    $busca = New CorrelativoCodigo();
-                    $busca->setTipo($tipo);
-                    $busca->setPrefijo($pre);
-                    $busca->setNumeroAsginar($numero);
-                    $busca->save();
-                }
-                $numero = $busca->getNumeroAsginar();
-                $numero = $busca->getNumeroAsginar();
-                $prefijo = $pre . $numero;
-                if (strlen($numero) == 1) {
-                    $prefijo = $pre . '0' . $numero;
-                }
-                if ($numero > 99) {
-                    $prefijo = $pre . $numero;
-                }
-                $this->setCodigo($prefijo);
-                $busca->setNumeroAsginar($numero + 1);
-                $busca->save();
-            }
-        }
-
-        parent::save($con);
-    }
 
     public function getValorPrefechado() {
         $return = 0;

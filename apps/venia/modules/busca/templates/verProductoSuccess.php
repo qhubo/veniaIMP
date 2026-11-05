@@ -96,7 +96,7 @@
             <th>Codigo</th>
             <th >Nombre</th>
 	    <?php foreach ($tiendas as $data) { ?>
-                <th>Existencia <?php echo $data->getCodigo(); ?></th>
+            <th> Existencia <br> <?php echo $data->getNombre(); ?></th>
             <?php } ?>
             <th >Precio Venta</th>
                <?php foreach ($tipoPrecios as $data) { ?>

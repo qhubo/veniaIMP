@@ -30,11 +30,11 @@
             <th>Codigo</th>
             <th width="50%">Nombre</th>
 	    <?php foreach ($tiendas as $data) { ?>
-                <th width="10%">Existencia <?php echo $data->getCodigo(); ?></th>
+            <th width="10%">Existencia<br> <?php echo $data->getNombre(); ?></th>
             <?php } ?>
             <th width="10%">Precio Venta</th>
                <?php foreach ($tipoPrecios as $data) { ?>
-                <th width="10%"> Precio <?php echo $data->getNombre(); ?></th>
+                <th width="10%"> Precio <br> <?php echo $data->getNombre(); ?></th>
             <?php } ?>
                 
             <?php if ($TIPO_USUARIO == 'ADMINISTRADOR') { ?>
