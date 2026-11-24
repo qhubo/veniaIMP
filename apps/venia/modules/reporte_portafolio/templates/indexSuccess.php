@@ -14,7 +14,7 @@
             <h3 class="kt-portlet__head-title kt-font-brand">Productos</h3>
         </div>
         <div class="kt-portlet__head-toolbar">
-<a href="<?php echo url_for('reporte_portafolio/pdf'); ?>" target="_blank" class="btn btn-block btn-outline btn-danger btn-outline mr-2">
+<a id="exportarPdfPortafolio" href="<?php echo url_for('reporte_portafolio/pdf'); ?>" target="_blank" class="btn btn-block btn-outline btn-danger btn-outline mr-2">
     <i class="fas fa-file-pdf"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PDF&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </a>
                
@@ -60,6 +60,8 @@
 
             <div class="portafolio-resultados">
                 <span id="contadorProductos"><?php echo count($productos); ?> productos</span>
+                &nbsp;|&nbsp;
+                <span id="totalExistencias">Existencia total: <?php echo number_format($existenciaTotal,0,'.',','); ?></span>
             </div>
         </div>
 
@@ -80,9 +82,21 @@
                     }
 
                     $marcasVehiculoFiltro=implode('|',$marcasVehiculoFiltro);
+                    $textoBusqueda=implode(' ',array(
+                        $lista->getCodigoSku(),
+                        $lista->getNombre(),
+                        $lista->getNombreIngles(),
+                        $lista->getMarcaProducto(),
+                        $lista->getOrigen(),
+                        implode(' ',$marcas),
+                        number_format($existencia,0,'.',','),
+                        Parametro::formato($lista->getPrecio(),true)
+                    ));
                     ?>
 
                     <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 producto-card"
+                         data-existencia="<?php echo htmlspecialchars((string)$existencia,ENT_QUOTES,'UTF-8'); ?>"
+                         data-busqueda="<?php echo htmlspecialchars(strtolower($textoBusqueda),ENT_QUOTES,'UTF-8'); ?>"
                          data-marca-producto="<?php echo htmlspecialchars($marcaProductoFiltro,ENT_QUOTES,'UTF-8'); ?>"
                          data-marcas-vehiculo="<?php echo htmlspecialchars($marcasVehiculoFiltro,ENT_QUOTES,'UTF-8'); ?>">
 
@@ -163,10 +177,11 @@ $(document).ready(function(){
         var marcaProducto=$('#filtroMarcaProducto').val().toLowerCase();
         var marcaVehiculo=$('#filtroMarcaVehiculo').val().toLowerCase();
         var encontrados=0;
+        var existenciaTotal=0;
 
         $('.producto-card').each(function(){
             var card=$(this);
-            var contenido=card.text().toLowerCase();
+            var contenido=($.trim(card.attr('data-busqueda'))||'').toLowerCase();
             var marca=($.trim(card.attr('data-marca-producto'))||'').toLowerCase();
             var vehiculos=($.trim(card.attr('data-marcas-vehiculo'))||'').toLowerCase();
             var listaVehiculos=vehiculos!==''?vehiculos.split('|'):[];
@@ -177,14 +192,25 @@ $(document).ready(function(){
             if(cumpleTexto&&cumpleMarcaProducto&&cumpleMarcaVehiculo){
                 card.show();
                 encontrados++;
+                existenciaTotal+=parseFloat(card.attr('data-existencia'))||0;
             }else{
                 card.hide();
             }
         });
 
         $('#contadorProductos').text(encontrados+(encontrados===1?' producto':' productos'));
+        $('#totalExistencias').text('Existencia total: '+existenciaTotal.toLocaleString('en-US',{maximumFractionDigits:0}));
         if(encontrados===0){$('#sinResultados').show();}else{$('#sinResultados').hide();}
     }
+
+    $('#exportarPdfPortafolio').on('click',function(){
+        var parametros={
+            marca_producto:$('#filtroMarcaProducto').val(),
+            marca_vehiculo:$('#filtroMarcaVehiculo').val(),
+            buscar:$('#generalSearch').val()
+        };
+        this.href='<?php echo url_for('reporte_portafolio/pdf'); ?>'+'?'+$.param(parametros);
+    });
 
     $('#filtroMarcaProducto,#filtroMarcaVehiculo').on('change',filtrarProductos);
     $('#generalSearch').on('keyup input',filtrarProductos);

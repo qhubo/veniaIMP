@@ -69,6 +69,7 @@ public function executeIndex(sfWebRequest $request)
         ->find();
 
     $this->existencias = array();
+    $this->existenciaTotal = 0;
 
     foreach ($existencias as $existencia) {
         $this->existencias[$existencia->getProductoId()] = (float)$existencia->getVirtualColumn('existencia_total');
@@ -80,6 +81,8 @@ public function executeIndex(sfWebRequest $request)
 
         if ($existencia <= 0) {
             unset($this->productos[$key]);
+        } else {
+            $this->existenciaTotal += $existencia;
         }
     }
 
@@ -124,8 +127,11 @@ public function executeIndex(sfWebRequest $request)
     public function executePdf(sfWebRequest $request) {
 
         date_default_timezone_set("America/Guatemala");
-        error_reporting(-1);
-        $empresaId = 1;
+        $filtros = array(
+            'marcaProducto' => trim($request->getParameter('marca_producto', '')),
+            'marcaVehiculo' => trim($request->getParameter('marca_vehiculo', '')),
+            'buscar' => trim($request->getParameter('buscar', '')),
+        );
         $productos = ProductoQuery::create()->filterByActivo(true)->filterByImagen('', Criteria::NOT_EQUAL)->find();
         $existenciasQuery = ProductoExistenciaQuery::create()
                 ->withColumn('SUM(producto_existencia.cantidad)', 'existencia_total')
@@ -136,10 +142,11 @@ public function executeIndex(sfWebRequest $request)
             $existencias[$existencia->getProductoId()] = (float) $existencia->getVirtualColumn('existencia_total');
         }
         $marcasVehiculo = array();
+        $productosFiltrados = array();
+        $existenciaTotal = 0;
         foreach ($productos as $producto) {
             $productoId = $producto->getId();
             $marcas = ProductoMarcaQuery::create()
-                    ->filterByEmpresaId($empresaId)
                     ->filterByProductoId($productoId)
                     ->orderByMarca('Asc')
                     ->find();
@@ -150,7 +157,49 @@ public function executeIndex(sfWebRequest $request)
                     $marcasVehiculo[$productoId][] = $marca;
                 }
             }
+
+            $existencia = isset($existencias[$productoId]) ? $existencias[$productoId] : 0;
+            if ($existencia <= 0) {
+                continue;
+            }
+
+            if ($filtros['marcaProducto'] !== '' && strcasecmp(trim($producto->getMarcaProducto()), $filtros['marcaProducto']) !== 0) {
+                continue;
+            }
+
+            if ($filtros['marcaVehiculo'] !== '') {
+                $coincideMarcaVehiculo = false;
+                foreach ($marcasVehiculo[$productoId] as $marcaVehiculo) {
+                    if (strcasecmp($marcaVehiculo, $filtros['marcaVehiculo']) === 0) {
+                        $coincideMarcaVehiculo = true;
+                        break;
+                    }
+                }
+                if (!$coincideMarcaVehiculo) {
+                    continue;
+                }
+            }
+
+            if ($filtros['buscar'] !== '') {
+                $textoProducto = implode(' ', array(
+                    $producto->getCodigoSku(),
+                    $producto->getNombre(),
+                    $producto->getNombreIngles(),
+                    $producto->getMarcaProducto(),
+                    $producto->getOrigen(),
+                    implode(' ', $marcasVehiculo[$productoId]),
+                    number_format($existencia, 0, '.', ','),
+                    Parametro::formato($producto->getPrecio(), true),
+                ));
+                if (stripos($textoProducto, $filtros['buscar']) === false) {
+                    continue;
+                }
+            }
+
+            $productosFiltrados[] = $producto;
+            $existenciaTotal += $existencia;
         }
+        $productos = $productosFiltrados;
         $empresa = null;
         if ($productos) {
             foreach ($productos as $producto) {
@@ -162,7 +211,14 @@ public function executeIndex(sfWebRequest $request)
         if ($empresa) {
             $logo = $empresa->getLogo();
         }
-        $html = $this->getPartial('reporte_portafolio/portafolioProductos', array('productos' => $productos, 'existencias' => $existencias, 'marcasVehiculo' => $marcasVehiculo, 'empresa' => $empresa));
+        $html = $this->getPartial('reporte_portafolio/portafolioProductos', array(
+            'productos' => $productos,
+            'existencias' => $existencias,
+            'marcasVehiculo' => $marcasVehiculo,
+            'empresa' => $empresa,
+            'existenciaTotal' => $existenciaTotal,
+            'filtros' => $filtros,
+        ));
 
         $pdf = new PortafolioTCPDF("P", "mm", "Letter");
         $pdf->SetCreator(PDF_CREATOR);

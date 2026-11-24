@@ -51,6 +51,15 @@ body {
     font-size: 30px;
     font-weight: bold;
 }
+.existencia-total {
+    font-size: 20px;
+    font-weight: bold;
+    background-color: #EAF7F5;
+    padding: 6px;
+}
+.filtros-aplicados {
+    font-size: 16px;
+}
 
 .marca-vehiculo {
     background-color: #146EBE;
@@ -65,6 +74,16 @@ body {
 </style>
 
 <?php $contador = 0; ?>
+<div class="filtros-aplicados">
+    <strong>Filtros aplicados:</strong>
+    Marca producto: <?php echo $filtros['marcaProducto'] !== '' ? htmlspecialchars($filtros['marcaProducto'], ENT_QUOTES, 'UTF-8') : 'Todas'; ?>
+    | Marca vehículo: <?php echo $filtros['marcaVehiculo'] !== '' ? htmlspecialchars($filtros['marcaVehiculo'], ENT_QUOTES, 'UTF-8') : 'Todas'; ?>
+    | Búsqueda: <?php echo $filtros['buscar'] !== '' ? htmlspecialchars($filtros['buscar'], ENT_QUOTES, 'UTF-8') : 'Sin búsqueda'; ?>
+</div>
+<div class="existencia-total">Productos: <?php echo count($productos); ?> | Existencia total: <?php echo number_format($existenciaTotal, 0, '.', ','); ?></div>
+<?php if (!$productos || count($productos) === 0) { ?>
+    <div class="producto">No se encontraron productos con los filtros seleccionados.</div>
+<?php } ?>
 <table width="100%" cellpadding="5" cellspacing="5" >
 <?php foreach ($productos as $producto) { ?>
     <?php  $productoId = $producto->getId();
@@ -122,6 +141,9 @@ body {
                   
                         <div class="precio">
                             <?php  echo  "$ ".Parametro::formato( $producto->getPrecio(),  true);  ?>
+                        </div>
+                        <div class="existencia">
+                            Existencia total: <?php echo number_format($existencia, 0, '.', ','); ?>
                         </div>
                     </td>
                 </tr>
